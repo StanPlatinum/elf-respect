@@ -1,4 +1,4 @@
-# This is a basic dyninst usege example for beginners.
+# This is a basic usage example for beginners.
 
 ### Thanks for Xiaozhu's helpful instructions, and the following two blogs. Here are links:
 https://blog.csdn.net/touatou/article/details/79498006
