@@ -8,11 +8,13 @@ https://blog.csdn.net/Touatou/article/details/79404562
 
 ### Prerequisites
 OS: Ubuntu 16.04/18.04
+
 Necessary tools: g++, boost, libelf, libdwarf, libtbb (all can be installed via the 'apt install' command)
 
 ### Compile Dyninst
 Download the source code from github:
 https://github.com/dyninst/dyninst
+
 Simplely follow the instructions on Dyninst's github README: cmake, make, and sudo make install
 
 # Go with the example
@@ -22,3 +24,10 @@ gcc test_dynamic.c -o test_dynamic
 
 ### Compile the injection program
 make
+
+# Run the demo
+./test_dynamic
+
+check the [pid] it shows and keep the [pid]
+
+./modify [pid]
