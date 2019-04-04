@@ -12,9 +12,8 @@ INC = -I$(DYNINST_API)/h -I$(TBB_INCLUDE)
 LIB = -L$(DYNINST_API)/lib -L$(ELFUTIL_LIB)
 DEP = -ldyninstAPI -lparseAPI -linstructionAPI -lsymtabAPI -lelf -ldynDwarf -ldw -ldynElf -lcommon -lboost_system
 
-
 modify: modify.cpp
 	g++ $(CFLAGS) $(INC) $(LIB) modify.cpp -o modify $(DEP)
 
 clean:
-	rm -f modify
+	rm -f *.o modify test_dynamic
