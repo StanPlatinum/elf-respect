@@ -54,7 +54,10 @@ int main( int argc, char ** argv )
         nw( seq_1, seq_2, seq_1_al, seq_2_al, prm ) ;   
  
         // Print alignment
-        print_al( seq_1_al, seq_2_al ) ;        
- 
+        //print_al( seq_1_al, seq_2_al ) ;        
+
+	cout << seq_1_al << endl;
+	cout << seq_2_al << endl;
+
         return  0 ;
 }
