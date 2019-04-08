@@ -1,12 +1,3 @@
------------------
-Purpose of nw_sgx
------------------
-The project demonstrates several fundamental usages of Intel(R) Software Guard 
-Extensions (SGX) SDK:
-- Initializing and destroying an enclave
-- Creating ECALLs or OCALLs
-- Calling trusted libraries inside the enclave
-
 ----------------------
 Introduction of nw_sgx
 ----------------------
