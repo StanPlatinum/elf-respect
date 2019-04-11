@@ -15,5 +15,8 @@ DEP = -ldyninstAPI -lparseAPI -linstructionAPI -lsymtabAPI -lelf -ldynDwarf -ldw
 modify: modify.cpp
 	g++ $(CFLAGS) $(INC) $(LIB) modify.cpp -o modify $(DEP)
 
+inst_mem: inst_mem.cpp
+	g++ $(CFLAGS) $(INC) $(LIB) inst_mem.cpp -o inst_mem $(DEP)
+
 clean:
-	rm -f *.o modify test_dynamic
+	rm -f *.o modify test_dynamic inst_mem
