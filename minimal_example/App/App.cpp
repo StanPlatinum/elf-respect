@@ -234,7 +234,7 @@ int SGX_CDECL main(int argc, char *argv[])
     (void)(argv);
 
     int stolen_secret = 0;
-
+    printf("secret initial value: %d\n", stolen_secret);
     int *p_outside = &stolen_secret;
     printf("address of secret, seen from outside: %lu\n", (uint64_t)p_outside);
 
@@ -254,6 +254,7 @@ int SGX_CDECL main(int argc, char *argv[])
 
     /* stealing way */
     /* we directly pass the address for now... */
+    printf("calling malicious data processing...\n");
     Ecall_MaliciousDataProcessing(global_eid, (uint64_t)p_outside);
     printf("secret got from outside the enclave: %d\n", stolen_secret);
 
