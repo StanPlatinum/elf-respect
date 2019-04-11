@@ -1,5 +1,5 @@
 make
-
+./app
 then you will see the following lines if everything goes well.
 
 secret initial value: 0
