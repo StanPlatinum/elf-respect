@@ -38,15 +38,21 @@ gcc test_dynamic.c -o test_dynamic
 ### Compile the injection program
 before make, you may want to change the $DYNINST_ROOT in the Makefile
 
-and set your LD_LIBRARY_PATH in ~/.bashrc file, e.g., adding 
+and set your LD_LIBRARY_PATH in ~/.bashrc file, e.g., adding: 
+
 
 \# User specific aliases and functions
+
 export DYNINST_ROOT= WHERE YOUR DYNINST DOWNLOAD DIR IS
+
 export DYNINST_BUILD_DIR=WHERE YOUR DYNINST BUILD DIR IS
 
 export ELF_UTIL_LIB=$DYNINST_BUILD_DIR/elfutils/lib
+
 export DYNINSTAPI_RT_LIB=$DYNINST_ROOT/lib/libdyninstAPI_RT.so
+
 export LD_LIBRARY_PATH=.:$ELF_UTIL_LIB:$DYNINST_ROOT/lib:$BOOST_ROOT/lib:$TBB_RELEASE_LIB:$LD_LIBRARY_PATH
+
 
 to the tail of your ~/.bashrc file
 
