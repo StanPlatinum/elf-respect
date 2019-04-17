@@ -16,8 +16,7 @@
 extern "C" {
 #endif
 
-void Ecall_SomeDataProcessing(char* buf, size_t len);
-void Ecall_MaliciousDataProcessing(uint64_t p_inside);
+void hle_test(void);
 
 sgx_status_t SGX_CDECL Ocall_PrintString(const char* str);
 

@@ -1,16 +1,20 @@
 
 CFLAGS = -g -O2 -std=c++11
 
-DYNINST_ROOT = /home/liuweijie/dyninst
-DYNINST_BUILD_DIR = $(DYNINST_ROOT)
+DYNINST_ROOT = /home/liuweijie/dyninst4sgx/dyninst-install
+DYNINST_BUILD_DIR = /home/liuweijie/dyninst4sgx/dyninst-build
 
-DYNINST_API = $(DYNINST_ROOT)/dyninstAPI
-TBB_INCLUDE = $(DYNINST_ROOT)/tbb
+DYNINST_LIB = $(DYNINST_ROOT)/lib
+DYNINST_INC = $(DYNINST_ROOT)/include
+
 ELFUTIL_LIB = $(DYNINST_BUILD_DIR)/elfutils/lib
 
-INC = -I$(DYNINST_API)/h -I$(TBB_INCLUDE)
-LIB = -L$(DYNINST_API)/lib -L$(ELFUTIL_LIB)
+INC = -I$(DYNINST_INC)
+LIB = -L$(DYNINST_LIB) -L$(ELFUTIL_LIB)
 DEP = -ldyninstAPI -lparseAPI -linstructionAPI -lsymtabAPI -lelf -ldynDwarf -ldw -ldynElf -lcommon -lboost_system
+
+test_dynamic: test_dynamic.c
+	gcc test_dynamic.c -o test_dynamic
 
 modify: modify.cpp
 	g++ $(CFLAGS) $(INC) $(LIB) modify.cpp -o modify $(DEP)
