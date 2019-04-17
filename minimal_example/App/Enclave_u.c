@@ -11,13 +11,13 @@ typedef struct ms_Ecall_MaliciousDataProcessing_t {
 } ms_Ecall_MaliciousDataProcessing_t;
 
 typedef struct ms_Ocall_PrintString_t {
-	char* ms_str;
+	const char* ms_str;
 } ms_Ocall_PrintString_t;
 
 static sgx_status_t SGX_CDECL Enclave_Ocall_PrintString(void* pms)
 {
 	ms_Ocall_PrintString_t* ms = SGX_CAST(ms_Ocall_PrintString_t*, pms);
-	Ocall_PrintString((const char*)ms->ms_str);
+	Ocall_PrintString(ms->ms_str);
 
 	return SGX_SUCCESS;
 }
