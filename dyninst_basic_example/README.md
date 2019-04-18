@@ -58,6 +58,8 @@ to the tail of your ~/.bashrc file
 
 make
 
+after all setting done, you can use ldd commmand to check if the libs are linked as you expect.
+
 # Run the demo
 ./test_dynamic
 
