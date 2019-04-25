@@ -22,5 +22,8 @@ modify: modify.cpp
 inst_mem: inst_mem.cpp
 	g++ $(CFLAGS) $(INC) $(LIB) inst_mem.cpp -o inst_mem $(DEP)
 
+parse: parse.cpp
+	g++ $(CFLAGS) $(INC) $(LIB) parse.cpp -o parse $(DEP)
+
 clean:
 	rm -f *.o modify test_dynamic inst_mem
