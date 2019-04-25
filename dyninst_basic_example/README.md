@@ -12,7 +12,7 @@ OS: Ubuntu 16.04/18.04
 
 Necessary tools: g++, boost, libelf, libdwarf, libtbb (all can be installed via the 'apt install' command)
 
-Actually you can avoid this since boost, libelf, libdwarf, and libtbb will be downloaded and installed from source code during installing dyninst. 
+Actually you can avoid this since boost, libelf, libdwarf, and libtbb will be downloaded and installed from source code during installing dyninst. In this case, you must set your boost, elfutil, tbb, or dwarf header/lib path in ~/.bashrc and in your applications' Makefile.
 
 ### Compile Dyninst
 Download the source code from github:
@@ -20,7 +20,7 @@ https://github.com/dyninst/dyninst
 
 Simplely follow the instructions on Dyninst's github README: cmake, and sudo make install
 
-For better use, you can
+For better using (I mean, for better configuring...), you can
 
 mkdir dyninst-build
 
