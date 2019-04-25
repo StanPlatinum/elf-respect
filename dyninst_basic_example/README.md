@@ -28,7 +28,7 @@ mkdir dyninst-install
 
 cd dyninst-build
 
-cmake ../$(DYNINST_ROOT) -DCMAKE_INSTALL_PREFIX=./dyninst-install
+cmake ../$(DYNINST_ROOT) -DCMAKE_INSTALL_PREFIX=../dyninst-install
 
 # Go with the example
 
