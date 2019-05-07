@@ -47,6 +47,7 @@ int nw(
  
         for( int i = 0; i <= L2; i++ ) {
 		/* Weijie: debug info here... */	
+		// L1 is in each F[i]...
 		printf("i:%d\n", i);
 		printf("F[i][0]:%d\n", F[i][0]);	
 		delete F[ i ]; 
