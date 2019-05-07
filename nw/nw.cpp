@@ -45,7 +45,8 @@ int nw(
                 cout << endl;
         }
  
-        for( int i = 0; i <= L2; i++ ) { 
+        for( int i = 0; i <= L2; i++ ) {
+		/* Weijie: debug info here... */	
 		printf("i:%d\n", i);
 		printf("F[i][0]:%d\n", F[i][0]);	
 		delete F[ i ]; 
