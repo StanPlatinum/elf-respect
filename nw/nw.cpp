@@ -45,7 +45,11 @@ int nw(
                 cout << endl;
         }
  
-        for( int i = 0; i <= L2; i++ )  delete F[ i ];
+        for( int i = 0; i <= L2; i++ ) { 
+		printf("i:%d\n", i);
+		printf("F[i][0]:%d\n", F[i][0]);	
+		delete F[ i ]; 
+	}
         delete[] F;
         for( int i = 0; i <= L2; i++ )  delete traceback[ i ];
         delete[] traceback;
