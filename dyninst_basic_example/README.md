@@ -66,3 +66,15 @@ after all setting done, you can use ldd commmand to check if the libs are linked
 check the [pid] it shows and keep the [pid]
 
 ./modify [pid]
+
+
+# To statically link with Dyninst
+1. Compile tbb static libraries.
+Ref: https://stackoverflow.com/questions/638278/how-to-statically-link-to-tbb
+
+Go to tbb source code. Should be in $DYNINST_BUILD/tbb/src/TBB
+
+Run command `make extra_inc=big_iron.inc`.
+
+`libtbb.a` and `libtbbmalloc.a` should be tbb/src/TBB/build/linux_intel64_gcc_*
+
