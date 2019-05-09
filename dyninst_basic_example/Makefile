@@ -13,6 +13,9 @@ INC = -I$(DYNINST_INC)
 LIB = -L$(DYNINST_LIB) -L$(ELFUTIL_LIB)
 DEP = -ldyninstAPI -lparseAPI -linstructionAPI -lsymtabAPI -lelf -ldynDwarf -ldw -ldynElf -lcommon -lboost_system
 
+CFLAGS_STATIC = -O2 -std=c++11 -static
+DEP_STATIC = -lparseAPI_static -linstructionAPI_static -lcommon_static -ldynElf_static -ldynDwarf_static -lsymtabAPI_static -lboost_system -lboost_filesystem -ldw -lelf -lebl -ldl -lpthread -lz -ltbb -ltbbmalloc
+
 test_dynamic: test_dynamic.c
 	gcc test_dynamic.c -o test_dynamic
 
@@ -24,6 +27,9 @@ inst_mem: inst_mem.cpp
 
 parse: parse.cpp
 	g++ $(CFLAGS) $(INC) $(LIB) parse.cpp -o parse $(DEP)
+
+parse-static: parse.cpp
+	g++ $(CFLAGS_STATIC) $(INC) $(LIB) parse.cpp -o parse-static -Wl,--start-group $(DEP_STATIC) -Wl,--end-group
 
 clean:
 	rm -f *.o modify test_dynamic inst_mem
