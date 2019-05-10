@@ -1,19 +1,17 @@
 
 CFLAGS = -g -O2 -std=c++11
 
-DYNINST_ROOT = /home/weijliu/dyninst4checker/dyninst-install
-DYNINST_BUILD_DIR = /home/weijliu/dyninst4checker/dyninst-build
+DYNINST_ROOT = /home/liuweijie/dyninst4sgxminidep/dyninst-install
+DYNINST_BUILD_DIR = /home/liuweijie/dyninst4sgxminidep/dyninst-build
 
 DYNINST_LIB = $(DYNINST_ROOT)/lib
 DYNINST_INC = $(DYNINST_ROOT)/include
 
-TBB_INC = $(DYNINST_BUILD_DIR)/tbb/include
-
-TBB_LIB_STATIC = /home/weijliu/tbb-2018_U6/build/linux_intel64_gcc_cc5.4.0_libc2.23_kernel4.4.0_release
-
 ELFUTIL_LIB = $(DYNINST_BUILD_DIR)/elfutils/lib
 
-INC = -I$(DYNINST_INC) -I$(TBB_INC)
+TBB_LIB_STATIC = /home/liuweijie/tbb-2018_U6/build/linux_intel64_gcc_cc7_libc2.27_kernel4.15.0_release
+
+INC = -I$(DYNINST_INC)
 LIB = -L$(DYNINST_LIB) -L$(ELFUTIL_LIB) -L$(TBB_LIB_STATIC)
 DEP = -ldyninstAPI -lparseAPI -linstructionAPI -lsymtabAPI -lelf -ldynDwarf -ldw -ldynElf -lcommon -lboost_system
 
