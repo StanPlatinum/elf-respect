@@ -1,22 +1,19 @@
 
 CFLAGS = -g -O2 -std=c++11
 
-DYNINST_ROOT = /home/weijliu/dyninst4checker/dyninst-install
-DYNINST_BUILD_DIR = /home/weijliu/dyninst4checker/dyninst-build
+DYNINST_ROOT = /home/liuweijie/dyninst4sgx/dyninst-install
+DYNINST_BUILD_DIR = /home/liuweijie/dyninst4sgx/dyninst-build
 
 DYNINST_LIB = $(DYNINST_ROOT)/lib
 DYNINST_INC = $(DYNINST_ROOT)/include
 
-TBB_INC = $(DYNINST_BUILD_DIR)/tbb/include
-
 ELFUTIL_LIB = $(DYNINST_BUILD_DIR)/elfutils/lib
 
-INC = -I$(DYNINST_INC) -I$(TBB_INC)
+INC = -I$(DYNINST_INC)
 LIB = -L$(DYNINST_LIB) -L$(ELFUTIL_LIB)
 DEP = -ldyninstAPI -lparseAPI -linstructionAPI -lsymtabAPI -lelf -ldynDwarf -ldw -ldynElf -lcommon -lboost_system
 
 CFLAGS_STATIC = -O2 -std=c++11 -static
-
 DEP_STATIC = -lparseAPI_static -linstructionAPI_static -lcommon_static -ldynElf_static -ldynDwarf_static -lsymtabAPI_static -lboost_system -lboost_filesystem -ldw -lelf -lebl -ldl -lpthread -lz -ltbb -ltbbmalloc
 
 test_dynamic: test_dynamic.c
