@@ -32,4 +32,4 @@ parse-static: parse.cpp
 	g++ $(CFLAGS_STATIC) $(INC) $(LIB) parse.cpp -o parse-static -Wl,--start-group $(DEP_STATIC) -Wl,--end-group
 
 clean:
-	rm -f *.o modify test_dynamic inst_mem
+	rm -f *.o modify test_dynamic inst_mem parse parse-static
