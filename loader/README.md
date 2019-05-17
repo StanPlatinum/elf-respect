@@ -13,3 +13,5 @@ already push to my branch
 
 2. on my thinkpad, should make a soft link like this:
 /lib/ld64.so.1 -> /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2*
+
+3. remember to build it with "make SGX_MODE=HW SGX_DEBUG=1 DEBUG=ON RAND=ON"
