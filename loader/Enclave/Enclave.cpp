@@ -16,8 +16,6 @@ typedef void (*sighandler_t)(int);
 
 #include "elf.h"        /* ELF */
 
-#include "../App/attack.h"
-
 #ifdef LD_DEBUG
 void printf(const char *fmt, ...)
 {

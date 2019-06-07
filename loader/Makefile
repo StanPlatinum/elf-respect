@@ -191,9 +191,10 @@ App/Enclave_u.o: App/enclave.c App/Enclave_u.c
 	@$(CC) $(App_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
-App/attack.o: App/attack.s
-	@$(CC) $(App_C_Flags) -c $< -o $@
-	@echo "CC   <=  $<"
+# try not to compile attack
+#App/attack.o: App/attack.s
+#	@$(CC) $(App_C_Flags) -c $< -o $@
+#	@echo "CC   <=  $<"
 
 App/App.o: App/App.cpp App/ocall.cpp
 	@$(CXX) $(App_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
@@ -203,7 +204,8 @@ App/App.o: App/App.cpp App/ocall.cpp
 # edited by Weijie
 # @$(CXX) $^ -o $@ $(App_Link_Flags)
 # @$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags)
-$(App_Name): App/Enclave_u.o App/attack.o App/App.o
+#$(App_Name): App/Enclave_u.o App/attack.o App/App.o
+$(App_Name): App/Enclave_u.o App/App.o
 	@echo $(App_Link_Flags)
 	@$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags)
 	@echo "LINK =>  $@"
@@ -242,4 +244,5 @@ $(Signed_Enclave_Name): $(Enclave_Name)
 
 clean:
 	@rm -f $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
-		blob App/attack.o gen_def Enclave/ocall_type.h
+		blob gen_def Enclave/ocall_type.h
+#		blob App/attack.o gen_def Enclave/ocall_type.h

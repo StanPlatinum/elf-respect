@@ -166,10 +166,12 @@ void ocall_print_string(const char *str)
     printf("%s", str);
 }
 
+#if 0
 /* For attack demo */
 #include "attack.h"
-static unsigned long base;
+#endif
 
+static unsigned long base;
 using namespace std;
 #include <vector>
 vector<unsigned long> gg;
@@ -204,6 +206,7 @@ unsigned long guess_base(unsigned long addr)
             + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
 }
 
+#if 0
 // Called by EEXIT attack
 char stack_for_attack[0x80000];
 const char *attack_msg = "ROP_EEXIT success";
@@ -212,6 +215,7 @@ extern "C" void print_attack_msg(const char **msg) {
     puts(*msg);
     exit(1);
 }
+#endif
 
 #include "ocall.cpp"
 
