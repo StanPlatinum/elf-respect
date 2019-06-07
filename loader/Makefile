@@ -36,7 +36,6 @@ DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 DEFINE_IN_ATTACK_H = -DRAND=1
 ifeq ($(RAND), OFF)
 	DEFINE_IN_ATTACK_H = -DRAND=0
-else
 endif
 ifeq ($(DEBUG), ON)
 	DEFINE_IN_ATTACK_H += -DLD_DEBUG
