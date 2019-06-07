@@ -33,24 +33,31 @@
 IN_ENCLAVE_PROGRAM=program
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 
-DEFINE_IN_ATTACK_H = -DRAND=1
-ifeq ($(RAND), OFF)
-	DEFINE_IN_ATTACK_H = -DRAND=0
-endif
+# abandon original's settings
+#DEFINE_IN_ATTACK_H = -DRAND=1
+#ifeq ($(RAND), OFF)
+#	DEFINE_IN_ATTACK_H = -DRAND=0
+#endif
+#ifdef TECH
+#	DEFINE_IN_ATTACK_H += -DTECH=$(TECH)
+#endif
+#ifdef ATTACKER
+#	DEFINE_IN_ATTACK_H += -DATTACKER=$(ATTACKER)
+#endif
+
+# switch on the debug option
 ifeq ($(DEBUG), ON)
 	DEFINE_IN_ATTACK_H += -DLD_DEBUG
-endif
-ifdef TECH
-	DEFINE_IN_ATTACK_H += -DTECH=$(TECH)
-endif
-ifdef ATTACKER
-	DEFINE_IN_ATTACK_H += -DATTACKER=$(ATTACKER)
 endif
 
 ######## SGX SDK Settings ########
 
 SGX_SDK ?= /opt/intel/sgxsdk
-SGX_MODE ?= SIM
+#SGX_MODE ?= SIM
+
+SGX_MODE ?= HW
+SGX_DEBUG ?= 1
+
 SGX_ARCH ?= x64
 
 ifeq ($(shell getconf LONG_BIT), 32)
