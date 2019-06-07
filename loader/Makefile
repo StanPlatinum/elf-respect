@@ -46,6 +46,7 @@ DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 #endif
 
 # switch on the debug option
+DEBUG ?= ON
 ifeq ($(DEBUG), ON)
 	DEFINE_IN_ATTACK_H += -DLD_DEBUG
 endif

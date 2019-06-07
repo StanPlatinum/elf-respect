@@ -14,7 +14,7 @@ already push to my branch
 2. on my thinkpad, should make a soft link like this:
 /lib/ld64.so.1 -> /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2*
 
-3. remember to build it with "make DEBUG=ON"
+3. remember to build it with "make" (already DEBUG ?= ON and use HW/SGX_DEBUG mode)
 
 Clearly, it uses objcopy to attach two sections with section flag assigned...
 In the Makefile, Enclave/%.o have been built using the following command:
