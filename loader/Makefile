@@ -29,26 +29,15 @@
 #
 #
 
-# Jaebaek
 IN_ENCLAVE_PROGRAM=program
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 
 # abandon original's settings
-#DEFINE_IN_ATTACK_H = -DRAND=1
-#ifeq ($(RAND), OFF)
-#	DEFINE_IN_ATTACK_H = -DRAND=0
-#endif
-#ifdef TECH
-#	DEFINE_IN_ATTACK_H += -DTECH=$(TECH)
-#endif
-#ifdef ATTACKER
-#	DEFINE_IN_ATTACK_H += -DATTACKER=$(ATTACKER)
-#endif
 
-# switch on the debug option
+# default switch on the debug option
 DEBUG ?= ON
 ifeq ($(DEBUG), ON)
-	DEFINE_IN_ATTACK_H += -DLD_DEBUG
+	DEBUG_OPT += -DLD_DEBUG
 endif
 
 ######## SGX SDK Settings ########
@@ -158,7 +147,7 @@ Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefau
 
 Enclave_Cpp_Objects := $(Enclave_Cpp_Files:.cpp=.o)
 
-NoSGX := nosgx
+#NoSGX := nosgx
 Enclave_Name := enclave.so
 Signed_Enclave_Name := enclave.signed.so
 Enclave_Config_File := Enclave/Enclave.config.xml
@@ -207,7 +196,7 @@ App/attack.o: App/attack.s
 	@echo "CC   <=  $<"
 
 App/App.o: App/App.cpp App/ocall.cpp
-	@$(CXX) $(App_Cpp_Flags) $(DEFINE_IN_ATTACK_H) -c $< -o $@
+	@$(CXX) $(App_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
 	@echo "CXX  <=  $<"
 
 
@@ -235,7 +224,7 @@ Enclave/Enclave_t.o: Enclave/enclave.c Enclave/Enclave_t.c Enclave/ocall_type.h
 	@echo "CC   <=  $<"
 
 Enclave/%.o: Enclave/%.cpp $(IN_ENCLAVE_PROGRAM)
-	$(CXX) $(Enclave_Cpp_Flags) $(DEFINE_IN_ATTACK_H) -c $< -o $@
+	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
 	@objcopy --add-section .sgx.bin=$(IN_ENCLAVE_PROGRAM) --set-section-flags .sgx.bin=alloc,data $@
 	@fallocate -l 32M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
@@ -245,18 +234,6 @@ $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
 	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
 	@echo "LINK =>  $@"
 
-nosgx.o: nosgx.cpp
-	@$(CXX) $(DEFINE_IN_ATTACK_H) -c $^ -o $@
-	@objcopy --add-section .sgx.bin=$(IN_ENCLAVE_PROGRAM) --set-section-flags .sgx.bin=alloc,data $@
-	@fallocate -l 32M blob
-	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
-	@echo "CXX =>  $@"
-
-$(NoSGX): nosgx.o
-	@mkdir -p tmp/
-	@$(CXX) $^ -o $@ $(DEF_SYMBOL_SCRIPT)
-	@echo "LINK program =>  $@"
-
 $(Signed_Enclave_Name): $(Enclave_Name)
 	@$(SGX_ENCLAVE_SIGNER) sign -key Enclave/Enclave_private.pem -enclave $(Enclave_Name) -out $@ -config $(Enclave_Config_File)
 	@echo "SIGN =>  $@"
@@ -265,4 +242,4 @@ $(Signed_Enclave_Name): $(Enclave_Name)
 
 clean:
 	@rm -f $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
-		blob nosgx.o nosgx App/attack.o gen_def Enclave/ocall_type.h
+		blob App/attack.o gen_def Enclave/ocall_type.h
