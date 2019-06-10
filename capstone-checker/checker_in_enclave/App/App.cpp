@@ -235,10 +235,13 @@ void Ocall_PrintString(const char *str){
     printf("%s", str);
 }
 
-#define NW_DEBUG 1
-#define INPUT_MAX_SIZE 500
-#define AL_MAX_SIZE 1000
+#include <fcntl.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
+#include "libelf.h"
+#include "capstone/capstone.h"
 
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
@@ -246,38 +249,92 @@ int SGX_CDECL main(int argc, char *argv[])
         char *  program = *argv ;
         bool    prm = false;
 
+        int fd;
+        Elf *e;
+        Elf_Scn *scn = NULL;
+        Elf64_Shdr *shdr64;
+        size_t shstrndx;
 
-        if( argc < 3 )
-        {
-                cerr << "\n   Usage:   " << program << " seq_1 seq_2 [-p]\n";
-                cerr << "\n   -p:       Print matrices\n";
-                cerr << "\n   Output:   alignment\n\n";
-
-                exit( 1 ) ;
+        if (elf_version(EV_CURRENT) == EV_NONE) {
+                fprintf(stderr, "ELF library initialization failed\n");
+                return -1;
         }
 
-        // Sequences to be aligned
-        char *seq_1   =  argv[ 1 ] ;
-        char *seq_2   =  argv[ 2 ] ;
-
-        if( argc == 4 )
-	{
-		string  pr_arg  =  argv[ 3 ] ;
-                if( pr_arg == "-p" )  prm = true;   // Print matrices
+        fd = open(argv[1], O_RDONLY, 0);
+        if (fd < 0) {
+                fprintf(stderr, " Cannot open file %s\n", argv[1]);
+                return -1;
+        }
+        e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+        if (e == NULL) {
+                fprintf (stderr, "elf_begin failed\n");
+                return -1;
+        }
+        if (elf_getshdrstrndx(e, &shstrndx) != 0){
+                fprintf(stderr, " cannot get string section\n");
+                return -1;
         }
 
-        #if NW_DEBUG
-            cout << "seq_1: " << seq_1 << endl;
-            cout << "seq_2: " << seq_2 << endl;
-            cout << "-p: " << prm << endl;
-        #endif
+        char* name;
+        Elf64_Off textOff = 0;
+        Elf64_Xword textSize;
+        Elf64_Addr textAddr;
+        while ( (scn = elf_nextscn(e, scn)) != NULL) {
+                shdr64 = elf64_getshdr(scn);
+                name = elf_strptr(e, shstrndx, shdr64->sh_name);
+                if (name == NULL) {
+                        fprintf(stderr, "elf_strptr returns NULL\n");
+                        continue;
+                }
+                if (strcmp(name, ".text") == 0) {
+                        textOff = shdr64->sh_offset;
+                        textSize = shdr64->sh_size;
+                        textAddr = shdr64->sh_addr;
+                        break;
+                }
+        }
 
-        // Aligned sequences, could not handle size more than AL_MAX_SIZE
-	// These following two should be global.
-        char* seq_1_al;
-	seq_1_al = (char*)malloc(AL_MAX_SIZE*sizeof(char));
-        char* seq_2_al;
-	seq_2_al = (char*)malloc(AL_MAX_SIZE*sizeof(char));
+        if (textOff == 0) {
+                fprintf(stderr, "Cannot find .text section\n");
+        } else {
+                fprintf(stderr, "Text sections at %lx with size %d\n", textOff, textSize);
+        }
+        close(fd);
+
+        fd = open(argv[1], O_RDONLY, 0);
+        char* buf = (char*)malloc(textSize);
+        ssize_t ret = pread(fd, buf, textSize, textOff);
+        if (ret != textSize) {
+                fprintf(stderr, "Error in reading code\n");
+                return -1;
+        }
+        close(fd);
+
+        csh handle;
+        cs_insn *insn;
+        size_t count;
+
+        if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+                printf("ERROR: Failed to initialize engine!\n");
+                return -1;
+        }
+
+
+        count = cs_disasm(handle, (const unsigned char*)buf, textSize, textAddr, 0, &insn);
+        if (count) {
+                size_t j;
+
+                for (j = 0; j < count; j++) {
+                        printf("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+                }
+
+                cs_free(insn, count);
+        } else
+                printf("ERROR: Failed to disassemble given code!\n");
+
+        cs_close(&handle);
+        free(buf);
+
 
     /* Initialize the enclave */
     if(initialize_enclave() < 0){
@@ -286,11 +343,7 @@ int SGX_CDECL main(int argc, char *argv[])
         return -1; 
     }
  
-    Ecall_nw(global_eid, seq_1, seq_2, seq_1_al, seq_2_al, prm);
-
-    cout << "Results:" << endl;
-    cout << "seq_1_al: " << seq_1_al << endl;
-    cout << "seq_2_al: " << seq_2_al << endl;
+    Ecall_entry(global_eid);
 
     /* Destroy the enclave */
     sgx_destroy_enclave(global_eid);

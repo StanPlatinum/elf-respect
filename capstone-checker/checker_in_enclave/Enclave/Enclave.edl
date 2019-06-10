@@ -34,7 +34,6 @@
 enclave {
     
     include "user_types.h" /* buffer_t */
-    include "stdbool.h"
 
     /* Import ECALL/OCALL from sub-directory EDLs.
      *  [from]: specifies the location of EDL file. 
@@ -43,12 +42,7 @@ enclave {
      */
     
     trusted{
-	public void Ecall_nw(
-        [in, string] char *seq_1,          /*  Needleman-Wunsch   */
-        [in, string] char *seq_2,          /*  algorithm for      */
-        [in, out, string] char *seq_1_al,       /*  global alignment   */
-        [in, out, string] char *seq_2_al,       /*  of nt sequence.    */
-        bool         prm
+	public void Ecall_entry(
 	);
     };
     untrusted {
