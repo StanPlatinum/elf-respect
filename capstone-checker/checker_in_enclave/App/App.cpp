@@ -243,6 +243,8 @@ void Ocall_PrintString(const char *str){
 #include "libelf.h"
 #include "capstone/capstone.h"
 
+#include "ocall.cpp"
+
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
 {

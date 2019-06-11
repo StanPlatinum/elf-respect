@@ -5,6 +5,9 @@
 #include "Enclave.h"
 #include "Enclave_t.h"
 
+#include "my_stdio.h"
+#include "my_stdio.c"
+
 /* My private Enclave functions */
 void PrintDebugInfo(const char *fmt, ...)
 {

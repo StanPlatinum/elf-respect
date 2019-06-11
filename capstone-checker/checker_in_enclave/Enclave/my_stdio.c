@@ -1,13 +1,14 @@
 /* my_stdio.cpp */
+
 #include "my_stdio.h"
 #include <stdarg.h>
 #include <string.h>
-#include “SampleEnclave_t.h"
 
-int stdin = 0, stdout = 1, stderr = 2;
+#define BUF_SIZE 1024
+
+//int stdin = 0, stdout = 1, stderr = 2;
 
 void fprintf(int file, const char* fmt, ...) {
-#define BUF_SIZE 1024
     char buf[BUFSIZ] = {'\0'};
     va_list ap;
     va_start(ap, fmt);
