@@ -47,6 +47,11 @@ enclave {
     };
     untrusted {
         void Ocall_PrintString([in, string] const char *str);
+	
+	int ocall_open([in, string] const char* filename, int mode);
+        int ocall_read(int file, [out, size=size] void *buf, unsigned int size);
+        int ocall_write(int file, [in, size=size] void *buf, unsigned int size);
+        void ocall_close(int file);
     };
 
 };
