@@ -31,7 +31,7 @@
 
 ######## Checker Settings ########
 
-CHECKER_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include
+CHECKER_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
 CHECKER_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -I/home/liuweijie/capstone/install-x86/lib
 
 CHECKER_Static_LIB_PATH = ./TrustedLib

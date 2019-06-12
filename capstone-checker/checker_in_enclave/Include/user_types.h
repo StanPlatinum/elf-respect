@@ -29,9 +29,7 @@
  *
  */
 
-
 /* User defined types */
-
 
 #define LOOPS_PER_THREAD 500
 

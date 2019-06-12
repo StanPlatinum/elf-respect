@@ -345,8 +345,9 @@ int SGX_CDECL main(int argc, char *argv[])
 		return -1; 
 	}
 
+	/* Start to call... */
 	int* rv;
-	Ecall_entry(global_eid, rv);
+	Ecall_entry(global_eid, rv, argv[1]);
 
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
