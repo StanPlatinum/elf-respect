@@ -6,7 +6,7 @@
 
 #define BUF_SIZE 1024
 
-//int stdin = 0, stdout = 1, stderr = 2;
+int stdin = 0, stdout = 1, stderr = 2;
 
 void fprintf(int file, const char* fmt, ...) {
     char buf[BUFSIZ] = {'\0'};

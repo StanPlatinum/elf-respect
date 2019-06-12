@@ -31,7 +31,7 @@
 
 ######## Checker Settings ########
 
-CHECKER_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include
+CHECKER_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include
 CHECKER_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -I/home/liuweijie/capstone/install-x86/lib
 
 CHECKER_Static_LIB_PATH = ./TrustedLib
@@ -127,7 +127,7 @@ endif
 Crypto_Library_Name := sgx_tcrypto
 
 Enclave_Cpp_Files := $(wildcard Enclave/*.cpp)
-Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport
+Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport -I$(CHECKER_INC_PATH)
 
 Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(Enclave_Include_Paths)
 Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++03 -nostdinc++
@@ -234,13 +234,11 @@ Enclave/Enclave_t.c: $(SGX_EDGER8R) Enclave/Enclave.edl
 	@echo "GEN  =>  $@"
 
 Enclave/Enclave_t.o: Enclave/Enclave_t.c
-#	@$(CC) $(Enclave_C_Flags) -c $< -o $@
-	@$(CC) $(Enclave_C_Flags) -c -I$(CHECKER_INC_PATH) $< -o $@
+	@$(CC) $(Enclave_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
 Enclave/%.o: Enclave/%.cpp
-#	@$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
-	@$(CXX) $(Enclave_Cpp_Flags) -c -I$(CHECKER_INC_PATH) $< -o $@
+	@$(CXX) $(Enclave_Cpp_Flags) -c $< -o $@
 	@echo "CXX  <=  $<"
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)

@@ -19,5 +19,30 @@ void PrintDebugInfo(const char *fmt, ...)
 	Ocall_PrintString(buf);
 }
 
-void Ecall_entry() {
+#include "libelf.h"
+#include "capstone/capstone.h"
+
+int Ecall_entry(char *filename) {
+        int fd;
+        Elf *e;
+        Elf_Scn *scn = NULL;
+        Elf64_Shdr *shdr64;
+        size_t shstrndx;
+
+        if (elf_version(EV_CURRENT) == EV_NONE) {
+                fprintf(stderr, "ELF library initialization failed\n");
+                return -1;
+        }
+
+        fd = open(filename, O_RDONLY);
+        if (fd < 0) {
+                fprintf(stderr, " Cannot open file %s\n", filename);
+                return -1;
+        }
+        e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+        if (e == NULL) {
+                fprintf (stderr, "elf_begin failed\n");
+                return -1;
+        }
+	return 0;
 }
