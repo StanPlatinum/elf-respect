@@ -32,12 +32,11 @@
 ######## Checker Settings ########
 
 CHECKER_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -I/home/liuweijie/capstone/install-x86/lib
+CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -I/home/liuweijie/capstone/install-x86/lib
+CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
-CHECKER_Static_LIB_PATH = ./TrustedLib
-
-CHECKER_Link_Outside := -L$(CHECKER_LIB_PATH) -lelf -lcapstone
-CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf -lz -lcapstone
+CHECKER_Link_Outside := -L$(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone
+CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static
 
 ######## SGX SDK Settings ########
 
@@ -219,8 +218,7 @@ App/%.o: App/%.cpp
 
 $(App_Name): App/Enclave_u.o $(App_Cpp_Objects)
 #	@$(CXX) $^ -o $@ $(App_Link_Flags)
-	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Static)
-#	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Outside)
+	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Outside)
 	@echo "LINK =>  $@"
 
 .config_$(Build_Mode)_$(SGX_ARCH):
@@ -243,8 +241,7 @@ Enclave/%.o: Enclave/%.cpp
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
 #	@$(CXX) $^ -o $@ $(Enclave_Link_Flags)
-	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Outside)
-#	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static)
+	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static)
 	@echo "LINK =>  $@"
 
 $(Signed_Enclave_Name): $(Enclave_Name)
