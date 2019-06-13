@@ -3,7 +3,7 @@ INC = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuwe
 #LIB = -L/home/xmeng/dyninstapi/install/lib -L/home/xmeng/capstone/install-x86/lib64
 LIB = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
 #STATIC_LIB = -L/home/xmeng/dyninstapi/install/lib -L/home/xmeng/zlib-1.2.11 -L/home/xmeng/capstone/install-x86/lib64
-STATIC_LIB = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
+STATIC_LIB = -L/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/lib -L/home/liuweijie/capstone/install-x86/lib
 
 checker: checker.c
 	cc $(INC) $(LIB) -o checker checker.c -lelf -lcapstone
@@ -12,4 +12,4 @@ checker-static: checker.c
 	cc -O2 -static $(INC) $(STATIC_LIB) checker.c -o checker-static -lelf -lz -lcapstone
 
 clean:
-	rm -rf checker
+	rm -rf checker checker-static

@@ -219,8 +219,8 @@ App/%.o: App/%.cpp
 
 $(App_Name): App/Enclave_u.o $(App_Cpp_Objects)
 #	@$(CXX) $^ -o $@ $(App_Link_Flags)
-#	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Static)
-	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Outside)
+	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Static)
+#	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Outside)
 	@echo "LINK =>  $@"
 
 .config_$(Build_Mode)_$(SGX_ARCH):
@@ -243,8 +243,8 @@ Enclave/%.o: Enclave/%.cpp
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
 #	@$(CXX) $^ -o $@ $(Enclave_Link_Flags)
-#	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Outside)
-	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static)
+	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Outside)
+#	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static)
 	@echo "LINK =>  $@"
 
 $(Signed_Enclave_Name): $(Enclave_Name)
