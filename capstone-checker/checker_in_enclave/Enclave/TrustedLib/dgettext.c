@@ -1,15 +1,3 @@
-Skip to content
-Explore 
-Search
-
-Sign in
-0 0 0 git-mirror/glibc
- Code  Pull requests 0  Projects 0  Insights
-glibc/intl/dgettext.c
-f7a9f78  on 4 Jan 2016
- Joseph Myers Update copyright dates with scripts/update-copyrights.
-     
-57 lines (45 sloc)  1.67 KB
 /* Implementation of the dgettext(3) function.
    Copyright (C) 1995-2016 Free Software Foundation, Inc.
    This program is free software: you can redistribute it and/or modify
@@ -63,12 +51,3 @@ DGETTEXT (const char *domainname, const char *msgid)
 /* Alias for function name in GNU C Library.  */
 weak_alias (__dgettext, dgettext);
 #endif
-© 2019 GitHub, Inc.
-Help
-Support
-API
-Training
-Blog
-About
-GitHub Enterprise Server 2.16.8
-Press h to open a hovercard with more details.
