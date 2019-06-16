@@ -7,7 +7,7 @@
 #define __GID_T_TYPE            __U32_TYPE
 #define __MODE_T_TYPE           __U32_TYPE
 
-#define __TIME_T_TYPE           long int
+#define __MY_TIME_T_TYPE           long int
 
 /*-------------------------------*/
 
@@ -18,19 +18,18 @@ __STD_TYPE __UID_T_TYPE __uid_t;        /* Type of user identifications.  */
 __STD_TYPE __GID_T_TYPE __gid_t;        /* Type of group identifications.  */
 __STD_TYPE __MODE_T_TYPE __mode_t;      /* Type of file attribute bitmasks.  */
 
-__STD_TYPE __TIME_T_TYPE __time_t;      /* Seconds since the Epoch.  */
+__STD_TYPE __MY_TIME_T_TYPE __time_t;      /* Seconds since the Epoch.  */
 
 /*-------------------------------*/
 
 #ifndef __time_t_defined
 #define __time_t_defined 1
 
-#include <bits/types.h>
+//#include <bits/types.h>
 
 /* Returned by `time'.  */
 typedef __time_t time_t;
 #endif
-
 
 #ifndef __gid_t_defined
 typedef __gid_t gid_t;

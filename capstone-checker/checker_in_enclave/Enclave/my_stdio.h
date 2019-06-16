@@ -35,8 +35,6 @@ int read(int file, void *buf, unsigned int size);
 int write(int file, void *buf, unsigned int size);
 void close(int file);
 
-void fprintf(int file, const char* format, ...);
-
 #ifdef __cplusplus
 }
 #endif

@@ -30,19 +30,22 @@ int Ecall_entry(char *filename) {
         size_t shstrndx;
 
         if (elf_version(EV_CURRENT) == EV_NONE) {
-                fprintf(stderr, "ELF library initialization failed\n");
+                PrintDebugInfo("ELF library initialization failed\n");
                 return -1;
         }
 
         fd = open(filename, O_RDONLY);
         if (fd < 0) {
-                fprintf(stderr, " Cannot open file %s\n", filename);
+                PrintDebugInfo("Cannot open file %s\n", filename);
                 return -1;
         }
+#if 0
         e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
         if (e == NULL) {
-                fprintf (stderr, "elf_begin failed\n");
+                PrintDebugInfo("elf_begin failed\n");
                 return -1;
         }
+#endif
+	close(fd);
 	return 0;
 }
