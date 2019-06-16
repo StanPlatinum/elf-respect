@@ -10,7 +10,7 @@ checker: checker.c
 	cc $(INC) $(LIB) -o checker checker.c -lelf -lcapstone
 
 checker-static: checker.c
-	cc -O2 -static $(INC) $(STATIC_LIB) checker.c -o checker-static -lelf_static -lz_static -lcapstone_static
+	cc -O2 -static $(INC) $(STATIC_LIB) checker.c -o checker-static -lelf_static -lz_static -lcapstone_static -lc_static
 
 clean:
 	rm -rf checker checker-static
