@@ -36,8 +36,8 @@ CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib 
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
 CHECKER_Link_Outside := -L$(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone
-#CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static -lc_static
-CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static
+CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static -lc_static
+#CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static
 
 ######## SGX SDK Settings ########
 
