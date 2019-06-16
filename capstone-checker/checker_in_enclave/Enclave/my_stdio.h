@@ -28,6 +28,8 @@
 extern "C" {
 #endif
 
+ssize_t pread(int, void *, size_t, off_t);
+
 extern int stdin, stdout, stderr;
 
 int open(const char* filename, int mode);

@@ -28,6 +28,12 @@ int ocall_write(int file, void *buf, unsigned int size) {
 	return write(file, buf, size);
 }
 
+#if 0
+off_t ocall_lseek(int fildes, off_t offset, int whence) {
+	return lseek(fildes, offset, whence);
+}
+#endif
+
 void ocall_close(int file) {
 	//close(fd);
 	close(file);

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <unistd.h>
+
 
 #include "Enclave.h"
 #include "Enclave_t.h"
@@ -75,7 +77,13 @@ int Ecall_entry(char *filename) {
 
 	fd = open(filename, O_RDONLY);
 	char* buf = (char*)malloc(textSize);
-	ssize_t ret = read(fd, buf, textSize, textOff);
+
+	/* Weijie: use lseek and read instead of pread... */
+	//off_t lseek_result;
+	//lseek_result = lseek(fd, textOff, SEEK_SET);
+	//ssize_t ret = read(fd, buf, textSize);
+	ssize_t ret = pread(fd, buf, textSize, textOff);
+
 	if (ret != textSize) {
 		PrintDebugInfo("Error in reading code\n");
 		return -1;
@@ -91,7 +99,7 @@ int Ecall_entry(char *filename) {
 		return -1;
 	}
 
-	count = cs_disasm(handle, (const uint8_t*)buf, textSize, textAddr, 0, &insn);
+	count = cs_disasm(handle, (const unsigned char*)buf, textSize, textAddr, 0, &insn);
 	if (count) {
 		size_t j;
 		for (j = 0; j < count; j++) {
