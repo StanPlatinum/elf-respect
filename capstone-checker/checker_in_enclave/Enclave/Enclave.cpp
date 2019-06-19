@@ -23,6 +23,7 @@ void PrintDebugInfo(const char *fmt, ...)
 #include "my_stdio.c"
 
 int Ecall_entry(char *filename) {
+	
 	int fd;
 	Elf *e;
 	Elf_Scn *scn = NULL;
@@ -43,11 +44,11 @@ int Ecall_entry(char *filename) {
 PrintDebugInfo("-----checking.-----\n");
 
 	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-PrintDebugInfo("-----checking.-----\n");
 	if (e == NULL) {
 		PrintDebugInfo("elf_begin failed\n");
 		return -1;
 	}
+
 
 	if (elf_getshdrstrndx(e, &shstrndx) != 0){
 		PrintDebugInfo("Cannot get string section\n");
