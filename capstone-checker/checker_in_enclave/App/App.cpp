@@ -314,9 +314,22 @@ int SGX_CDECL main(int argc, char *argv[])
         }
         close(fd);
 
-printf("close 1.\n");
+        fd = open(filename, O_RDONLY);
+        char* buf = (char*)malloc(textSize);
 
-printf("-----App checking.-----\n");
+        /* Weijie: use lseek and read instead of pread... */
+        //off_t lseek_result;
+        //lseek_result = lseek(fd, textOff, SEEK_SET);
+        //ssize_t ret = read(fd, buf, textSize);
+        ssize_t ret = pread(fd, buf, textSize, textOff);
+
+        if (ret != textSize) {
+                printf("Error in reading code\n");
+                return -1;
+        }
+        close(fd);
+
+	printf("-----App checking-----\n");
 
 	/* Start to call... */
 	int* rv;

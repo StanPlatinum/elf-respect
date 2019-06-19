@@ -41,8 +41,6 @@ int Ecall_entry(char *filename) {
 		return -1;
 	}
 
-PrintDebugInfo("-----checking.-----\n");
-
 	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
 	if (e == NULL) {
 		PrintDebugInfo("elf_begin failed\n");
@@ -79,8 +77,6 @@ PrintDebugInfo("-----checking.-----\n");
 		PrintDebugInfo("Text sections at %lx with size %d\n", textOff, textSize);
 	}
 	close(fd);
-
-PrintDebugInfo("close 1.\n");
 
 	fd = open(filename, O_RDONLY);
 	char* buf = (char*)malloc(textSize);
