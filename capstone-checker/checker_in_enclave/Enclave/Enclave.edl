@@ -37,6 +37,8 @@ enclave {
 
     include "libelf_extra_types.h"
 
+    include "capstone_x86.h"
+
     /* Import ECALL/OCALL from sub-directory EDLs.
      *  [from]: specifies the location of EDL file. 
      *  [import]: specifies the functions to import, 
@@ -46,6 +48,10 @@ enclave {
     trusted{
 	public int Ecall_entry(
 		//[in, string] char *filename
+	);
+	public size_t Ecall_cs_disasm(
+		size_t csh, 
+		[in, out] cs_insn *insn
 	);
     };
     untrusted {

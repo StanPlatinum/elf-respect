@@ -331,10 +331,30 @@ int SGX_CDECL main(int argc, char *argv[])
 
 	printf("-----App checking-----\n");
 
+	csh handle;
+        cs_insn *insn;
+        size_t count;
+
+        if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+                printf("ERROR: Failed to initialize engine!\n");
+                return -1;
+        }
+
 	/* Start to call... */
-	int* rv;
-	//Ecall_entry(global_eid, rv, argv[1]);
-	Ecall_entry(global_eid, rv);
+	//int* rv;
+	//Ecall_entry(global_eid, rv);
+	Ecall_cs_disasm(global_eid, count, handle, insn);
+	printf("-----App checking-----\n");
+        
+	if (count) {
+                size_t j;
+                for (j = 0; j < count; j++) {
+                        printf("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+                }
+                cs_free(insn, count);
+        } else
+                printf("ERROR: Failed to disassemble given code!\n");
+        cs_close(&handle);
 
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
