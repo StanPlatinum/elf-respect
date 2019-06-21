@@ -45,7 +45,7 @@ enclave {
     
     trusted{
 	public int Ecall_entry(
-		[in, string] char *filename
+		//[in, string] char *filename
 	);
     };
     untrusted {
