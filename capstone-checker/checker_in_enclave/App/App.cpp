@@ -347,16 +347,19 @@ int SGX_CDECL main(int argc, char *argv[])
 	//Ecall_entry(global_eid, rv);
 	Ecall_cs_disasm(global_eid, count_p, handle, insn);
 	count = *count_p;
-	printf("-----App checking-----\n");
+	printf("-----App checking again-----\n");
         
 	if (count) {
                 size_t j;
                 for (j = 0; j < count; j++) {
                         printf("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
                 }
-                cs_free(insn, count);
+		//printf("-----App checking before cs_freeing-----\n");
+                //cs_free(insn, count);
         } else
                 printf("ERROR: Failed to disassemble given code!\n");
+
+	printf("-----App checking before cs_closing-----\n");
         cs_close(&handle);
 
 	/* Destroy the enclave */
