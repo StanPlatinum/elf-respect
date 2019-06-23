@@ -108,7 +108,8 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
                 0x00
 	};
         PrintDebugInfo("-----checking disasm-----\n");
-	//count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
+	count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
+#if 0	
 	//Weijie: test
 	count = 1;
 	insn[0].id = 1;
@@ -122,6 +123,6 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 	char b[160] = "op_srt";
 	strncpy(insn[0].op_str, b, sizeof(insn[0].op_str));
 	insn[0].detail = NULL;
-
+#endif
 	return count;
 }
