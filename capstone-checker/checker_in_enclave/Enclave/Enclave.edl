@@ -46,6 +46,8 @@ enclave {
      */
     
     trusted{
+	public void PrintDebugInfoOutside(
+	);
 	public int Ecall_entry(
 		//[in, string] char *filename
 	);
