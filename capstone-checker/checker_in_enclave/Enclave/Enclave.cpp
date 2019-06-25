@@ -24,7 +24,6 @@ void PrintDebugInfoOutside(void)
 }
 
 #include "libelf.h"
-#include "capstone/capstone.h"
 #include "my_stdio.c"
 
 /* Weijie: old version */

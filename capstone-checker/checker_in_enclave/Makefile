@@ -31,14 +31,14 @@
 
 ######## Checker Settings ########
 
-CHECKER_Dyn_INC_PATH = /home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu 
-CHECKER_Static_INC_PATH = /home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/home/liuweijie/musl-1.1.22/install/include 
-CHECKER_Dyn_LIB_PATH = /home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
-#CHECKER_Dyn_LIB_PATH = /home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib -L/home/liuweijie/musl-1.1.22/install/lib
+CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu 
+CHECKER_Static_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/home/liuweijie/musl-1.1.22/install/include 
+CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
+#CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib -L/home/liuweijie/musl-1.1.22/install/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
-CHECKER_Link_Outside := -L$(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
-CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lcapstone_static -lz_static -lc_static
+CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
+CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
 #CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static
 
 ######## SGX SDK Settings ########
@@ -88,7 +88,7 @@ endif
 
 App_Cpp_Files := $(wildcard App/*.cpp)
 #App_Include_Paths := -IInclude -IApp -I$(SGX_SDK)/include
-App_Include_Paths := -IInclude -IApp -I$(SGX_SDK)/include -I$(CHECKER_Dyn_INC_PATH)
+App_Include_Paths := -IInclude -IApp -I$(SGX_SDK)/include $(CHECKER_Dyn_INC_PATH)
 
 App_C_Flags := $(SGX_COMMON_CFLAGS) -fPIC -Wno-attributes $(App_Include_Paths)
 
@@ -129,7 +129,7 @@ endif
 Crypto_Library_Name := sgx_tcrypto
 
 Enclave_Cpp_Files := $(wildcard Enclave/*.cpp)
-Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport -I$(CHECKER_Static_INC_PATH)
+Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
 
 Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(Enclave_Include_Paths)
 Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++03 -nostdinc++

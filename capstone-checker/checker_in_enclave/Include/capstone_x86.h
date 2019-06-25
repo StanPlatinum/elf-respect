@@ -527,6 +527,14 @@ size_t CAPSTONE_API cs_disasm(csh handle,
 		size_t count,
 		cs_insn **insn);
 
+/* Weijie: my dbg func */
+CAPSTONE_EXPORT
+size_t CAPSTONE_API cs_disasm_dbg(csh handle,
+                const uint8_t *code, size_t code_size,
+                uint64_t address,
+                size_t count,
+                cs_insn **insn, void (*pPrint)(void));
+
 /**
   Deprecated function - to be retired in the next version!
   Use cs_disasm() instead of cs_disasm_ex()
