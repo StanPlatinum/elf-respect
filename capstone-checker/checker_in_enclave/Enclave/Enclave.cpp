@@ -81,6 +81,38 @@ int Ecall_entry(void) {
 	return 0;
 }
 
+/* Weijie: add signal handler */
+int exception_handler(sgx_exception_info_t *info)
+{
+    switch(info->exception_type)
+		{
+		case SGX_EXCEPTION_HARDWARE :
+			break;
+		case SGX_EXCEPTION_SOFTWARE :
+			break;
+		}
+    switch (info->exception_vector)
+    {
+    case SGX_EXCEPTION_VECTOR_AC:
+        break;
+    case SGX_EXCEPTION_VECTOR_BP:
+        break;
+    case SGX_EXCEPTION_VECTOR_BR:
+        break;
+    case SGX_EXCEPTION_VECTOR_DB:
+        break;
+    case SGX_EXCEPTION_VECTOR_DE:
+        break;
+    case SGX_EXCEPTION_VECTOR_MF:
+        break;
+    case SGX_EXCEPTION_VECTOR_UD:
+        break;
+    case SGX_EXCEPTION_VECTOR_XM:
+        break;
+    }
+    return EXCEPTION_CONTINUE_SEARCH;
+}
+
 size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
         //cs_insn *insn;
         size_t count;
