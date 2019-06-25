@@ -240,6 +240,8 @@ void Ocall_PrintString(const char *str){
 #include <unistd.h>
 #include <string.h>
 
+#include <signal.h>
+
 #include "libelf.h"
 #include "capstone/capstone.h"
 
