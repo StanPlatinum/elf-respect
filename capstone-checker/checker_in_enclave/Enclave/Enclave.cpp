@@ -82,7 +82,6 @@ int Ecall_entry(void) {
 	return 0;
 }
 
-#if 0
 /* Weijie: add signal handler */
 int exception_handler(sgx_exception_info_t *info)
 {
@@ -114,7 +113,27 @@ int exception_handler(sgx_exception_info_t *info)
 	}
 	return EXCEPTION_CONTINUE_SEARCH;
 }
-#endif
+
+int add_hooks_for_exception()
+{
+    void *ret = sgx_register_exception_handler(10,exception_handler);
+    if(ret !=  NULL)
+    {
+        ocall_print_string("registered");
+    }
+    else{
+        ocall_print_string("not registered");
+    }
+    
+    ret = sgx_register_exception_handler(0,exception_handler);
+    if(ret !=  NULL)
+    {
+        ocall_print_string("registered");
+    }
+    else{
+        ocall_print_string("not registered");
+    }
+}
 
 size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 	//cs_insn *insn;
@@ -146,6 +165,10 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 		0xf2, 0x44, 0x0f, 0x10, 0xb4, 0x24, 0x98, 0x00, 0x00, 0x00,
 		0x00
 	};
+	
+	PrintDebugInfo("-----registering hooks for exception-----\n");
+	add_hooks_for_exception();
+	
 	PrintDebugInfo("-----checking disasm-----\n");
 	count = cs_disasm_dbg(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn, PrintDebugInfoOutside);
 	//count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
