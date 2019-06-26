@@ -20,7 +20,11 @@ void PrintDebugInfo(const char *fmt, ...)
 /* My public Enclave functions */
 void PrintDebugInfoOutside(void)
 {
-	//Ocall_PrintString("PDIO test\n");
+	Ocall_PrintString("PDIO test\n");
+}
+
+void PrintDebugInfoOutside2(void)
+{
 	Ocall_PrintString("PDIO test in ud->disasm...\n");
 }
 
@@ -82,33 +86,45 @@ int Ecall_entry(void) {
 	return 0;
 }
 
+#include "sgx_trts_exception.h"
+
 /* Weijie: add signal handler */
 int exception_handler(sgx_exception_info_t *info)
 {
 	switch(info->exception_type)
 	{
 		case SGX_EXCEPTION_HARDWARE :
+			PrintDebugInfo("hardware exception triggered\n");
 			break;
 		case SGX_EXCEPTION_SOFTWARE :
+			PrintDebugInfo("software exception triggered\n");
 			break;
 	}
 	switch (info->exception_vector)
 	{
 		case SGX_EXCEPTION_VECTOR_AC:
+			PrintDebugInfo("ac exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_BP:
+			PrintDebugInfo("bp exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_BR:
+			PrintDebugInfo("br exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_DB:
+			PrintDebugInfo("db exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_DE:
+			PrintDebugInfo("de exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_MF:
+			PrintDebugInfo("mf exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_UD:
+			PrintDebugInfo("ud exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_XM:
+			PrintDebugInfo("xm exception triggered\n");
 			break;
 	}
 	return EXCEPTION_CONTINUE_SEARCH;
@@ -116,23 +132,14 @@ int exception_handler(sgx_exception_info_t *info)
 
 int add_hooks_for_exception()
 {
-    void *ret = sgx_register_exception_handler(10,exception_handler);
-    if(ret !=  NULL)
-    {
-        ocall_print_string("registered");
-    }
-    else{
-        ocall_print_string("not registered");
-    }
-    
-    ret = sgx_register_exception_handler(0,exception_handler);
-    if(ret !=  NULL)
-    {
-        ocall_print_string("registered");
-    }
-    else{
-        ocall_print_string("not registered");
-    }
+	void *ret = sgx_register_exception_handler(10, exception_handler);
+	if(ret !=  NULL)
+	{
+		PrintDebugInfo("handler registered\n");
+	}
+	else{
+		PrintDebugInfo("handler not registered\n");
+	}
 }
 
 size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
@@ -153,7 +160,6 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 		0x8f, 0xe9, 0x70, 0x9a, 0xcc,
 		0x8f, 0xe8, 0xd0, 0xa3, 0x05, 0x18, 0x33, 0x2e, 0x00, 0x60,
 		0xc4, 0xe3, 0x79, 0x0b, 0xc0, 0x0a,
-
 		0x62, 0xf1, 0xed, 0x48, 0xfb, 0xd6,
 		0x62, 0xb1, 0x3d, 0x48, 0x72, 0x34, 0x8e, 0x03,
 		0x62, 0xe2, 0x7e, 0x48, 0x3a, 0xcb,
@@ -165,12 +171,12 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 		0xf2, 0x44, 0x0f, 0x10, 0xb4, 0x24, 0x98, 0x00, 0x00, 0x00,
 		0x00
 	};
-	
+
 	PrintDebugInfo("-----registering hooks for exception-----\n");
 	add_hooks_for_exception();
-	
+
 	PrintDebugInfo("-----checking disasm-----\n");
-	count = cs_disasm_dbg(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn, PrintDebugInfoOutside);
+	count = cs_disasm_dbg(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn, PrintDebugInfoOutside, PrintDebugInfoOutside2);
 	//count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
 
 #if 0

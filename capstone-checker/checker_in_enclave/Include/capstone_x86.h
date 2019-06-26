@@ -533,7 +533,7 @@ size_t CAPSTONE_API cs_disasm_dbg(csh handle,
                 const uint8_t *code, size_t code_size,
                 uint64_t address,
                 size_t count,
-                cs_insn **insn, void (*pPrint)(void));
+                cs_insn **insn, void (*pPrint)(void), void (*pPrint2)(void));
 
 /**
   Deprecated function - to be retired in the next version!
