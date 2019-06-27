@@ -31,7 +31,7 @@ void PrintDebugInfoOutside2(void)
 #include "libelf.h"
 #include "my_stdio.c"
 
-/* Weijie: old version */
+/* Weijie: the whole cs_open/disasm/close version */
 int Ecall_entry(void) {
 	/* Weijie: new enclave starts here. */
 	csh handle;
@@ -94,37 +94,27 @@ int exception_handler(sgx_exception_info_t *info)
 	switch(info->exception_type)
 	{
 		case SGX_EXCEPTION_HARDWARE :
-			PrintDebugInfo("hardware exception triggered\n");
 			break;
 		case SGX_EXCEPTION_SOFTWARE :
-			PrintDebugInfo("software exception triggered\n");
 			break;
 	}
 	switch (info->exception_vector)
 	{
 		case SGX_EXCEPTION_VECTOR_AC:
-			PrintDebugInfo("ac exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_BP:
-			PrintDebugInfo("bp exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_BR:
-			PrintDebugInfo("br exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_DB:
-			PrintDebugInfo("db exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_DE:
-			PrintDebugInfo("de exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_MF:
-			PrintDebugInfo("mf exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_UD:
-			PrintDebugInfo("ud exception triggered\n");
 			break;
 		case SGX_EXCEPTION_VECTOR_XM:
-			PrintDebugInfo("xm exception triggered\n");
 			break;
 	}
 	return EXCEPTION_CONTINUE_SEARCH;
@@ -132,7 +122,7 @@ int exception_handler(sgx_exception_info_t *info)
 
 int add_hooks_for_exception()
 {
-	void *ret = sgx_register_exception_handler(10, exception_handler);
+	void *ret = sgx_register_exception_handler(0, exception_handler);
 	if(ret !=  NULL)
 	{
 		PrintDebugInfo("handler registered\n");
@@ -174,6 +164,9 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 
 	PrintDebugInfo("-----registering hooks for exception-----\n");
 	add_hooks_for_exception();
+	//PrintDebugInfo("-----test arithmetic exception-----\n");
+	//int x = 5/0;
+	//PrintDebugInfo("-----test other exceptions-----\n");
 
 	PrintDebugInfo("-----checking disasm-----\n");
 	count = cs_disasm_dbg(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn, PrintDebugInfoOutside, PrintDebugInfoOutside2);

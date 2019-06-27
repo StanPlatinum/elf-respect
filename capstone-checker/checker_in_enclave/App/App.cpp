@@ -338,15 +338,17 @@ int SGX_CDECL main(int argc, char *argv[])
 	size_t count;
         size_t *count_p = &count;
 	/* ecall's return value should be a pointer...*/
+	
+	/* Start to call... */
+	int* rv;
+	Ecall_entry(global_eid, rv);
 
+/* the following: "calling Ecall_cs_disasm version" */
+#if 0
         if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
                 printf("ERROR: Failed to initialize engine!\n");
                 return -1;
         }
-
-	/* Start to call... */
-	//int* rv;
-	//Ecall_entry(global_eid, rv);
 	Ecall_cs_disasm(global_eid, count_p, handle, insn);
 	count = *count_p;
 	printf("-----App checking again-----\n");
@@ -363,6 +365,7 @@ int SGX_CDECL main(int argc, char *argv[])
 
 	printf("-----App checking before cs_closing-----\n");
         cs_close(&handle);
+#endif
 
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
