@@ -269,17 +269,19 @@ int SGX_CDECL main(int argc, char *argv[])
         Elf64_Shdr *shdr64;
         size_t shstrndx;
 
-        if (elf_version(EV_CURRENT) == EV_NONE) {
-                printf("ELF library initialization failed\n");
-                return -1;
-        }
-
         fd = open(filename, O_RDONLY);
         if (fd < 0) {
                 printf("Cannot open file %s\n", filename);
                 return -1;
         }
-        e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+        
+	if (elf_version(EV_CURRENT) == EV_NONE) {
+                printf("ELF library initialization failed\n");
+                return -1;
+        }
+
+	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+
         if (e == NULL) {
                 printf("elf_begin failed\n");
                 return -1;
@@ -290,6 +292,8 @@ int SGX_CDECL main(int argc, char *argv[])
                 printf("Cannot get string section\n");
                 return -1;
         }
+
+	printf("-----get textSize-----\n");
 
         char* name;
         Elf64_Off textOff = 0;
@@ -312,9 +316,12 @@ int SGX_CDECL main(int argc, char *argv[])
         if (textOff == 0) {
                 printf("Cannot find .text section\n");
         } else {
-                printf("Text sections at %lx with size %d\n", textOff, textSize);
+                printf("Text sections at %lx with size %ld\n", textOff, textSize);
         }
+
         close(fd);
+
+	printf("-----open file: %s, again-----\n", filename);
 
         fd = open(filename, O_RDONLY);
         char* buf = (char*)malloc(textSize);
@@ -333,18 +340,18 @@ int SGX_CDECL main(int argc, char *argv[])
 
 	printf("-----App checking-----\n");
 
-	csh handle;
-        cs_insn *insn;
-	size_t count;
-        size_t *count_p = &count;
-	/* ecall's return value should be a pointer...*/
-	
 	/* Start to call... */
+	/* ecall's return value should be a pointer...*/
 	int* rv;
 	Ecall_entry(global_eid, rv);
 
 /* the following: "calling Ecall_cs_disasm version" */
 #if 0
+	csh handle;
+        cs_insn *insn;
+	size_t count;
+        size_t *count_p = &count;
+
         if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
                 printf("ERROR: Failed to initialize engine!\n");
                 return -1;
@@ -367,6 +374,7 @@ int SGX_CDECL main(int argc, char *argv[])
         cs_close(&handle);
 #endif
 
+	printf("-----mission completed-----\n");
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
 

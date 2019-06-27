@@ -86,6 +86,9 @@ int Ecall_entry(void) {
 	return 0;
 }
 
+/********************************************************************/
+/* for debugging */
+
 #include "sgx_trts_exception.h"
 
 /* Weijie: add signal handler */
