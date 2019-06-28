@@ -6,6 +6,9 @@ sudo ln -s /usr/include/x86_64-linux-gnu/gnu /usr/include/gnu
 
 I don't add -I~/capstone/include into the CHECKER_Static_INC_PATH, just using -IInclude...
 
-### Remember to use my own capstone version:
+### Remember to use my own capstone and elfutils version:
 
 https://github.com/lpjlwj/capstone
+
+https://github.com/lpjlwj/elfutils4sgx
+
