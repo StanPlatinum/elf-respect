@@ -6,7 +6,7 @@
 #include "Enclave.h"
 #include "Enclave_t.h"
 
-/* My private Enclave functions */
+/* My private Enclave function */
 void PrintDebugInfo(const char *fmt, ...)
 {
 	char buf[BUFSIZ] = {'\0'};
@@ -31,8 +31,41 @@ void PrintDebugInfoOutside2(void)
 #include "libelf.h"
 #include "my_stdio.c"
 
-/* Weijie: the whole cs_open/disasm/close version */
-int Ecall_entry(void) {
+/* Weijie: ecall of whole elf operations */
+int Ecall_elf_entry(char *filename) {
+
+	int fd;
+	Elf *e;
+        size_t shstrndx;
+
+        fd = open(filename, O_RDONLY);
+
+        if (fd < 0) {
+                PrintDebugInfo("Cannot open file %s\n", filename);
+                return -1;
+        }
+
+        if (elf_version(EV_CURRENT) == EV_NONE) {
+                PrintDebugInfo("ELF library initialization failed\n");
+                return -1;
+        }
+
+	PrintDebugInfo("-----checking elf_begin-----\n");
+	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+        if (e == NULL) {
+                PrintDebugInfo("elf_begin failed\n");
+                return -1;
+        }
+	PrintDebugInfo("-----checking elf_getshdrstrndx-----\n");
+        if (elf_getshdrstrndx(e, &shstrndx) != 0){
+                PrintDebugInfo("Cannot get string section\n");
+                return -1;
+        }
+	return 0;
+}
+
+/* Weijie: ecall of whole cs_open/disasm/close */
+int Ecall_cs_entry(void) {
 	/* Weijie: new enclave starts here. */
 	csh handle;
 	cs_insn *insn;
@@ -192,3 +225,5 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 #endif
 	return count;
 }
+
+/********************************************************************/

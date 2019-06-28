@@ -281,17 +281,19 @@ int SGX_CDECL main(int argc, char *argv[])
         }
 
 	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-
         if (e == NULL) {
                 printf("elf_begin failed\n");
                 return -1;
         }
-
-
         if (elf_getshdrstrndx(e, &shstrndx) != 0){
                 printf("Cannot get string section\n");
                 return -1;
         }
+	printf("-----App checking-----\n");
+	
+	/* Start to call... */
+	int* rv;
+	Ecall_elf_entry(global_eid, rv, filename);
 
 	printf("-----get textSize-----\n");
 
@@ -338,15 +340,20 @@ int SGX_CDECL main(int argc, char *argv[])
         }
         close(fd);
 
+	printf("-----mission completed-----\n");
+	/* Destroy the enclave */
+	sgx_destroy_enclave(global_eid);
+
+#if 0
 	printf("-----App checking-----\n");
 
 	/* Start to call... */
 	/* ecall's return value should be a pointer...*/
 	int* rv;
-	Ecall_entry(global_eid, rv);
+	Ecall_cs_entry(global_eid, rv);
 
-/* the following: "calling Ecall_cs_disasm version" */
-#if 0
+	/* the following: "calling Ecall_cs_disasm version" */
+	/*
 	csh handle;
         cs_insn *insn;
 	size_t count;
@@ -372,12 +379,13 @@ int SGX_CDECL main(int argc, char *argv[])
 
 	printf("-----App checking before cs_closing-----\n");
         cs_close(&handle);
-#endif
+	*/
 
 	printf("-----mission completed-----\n");
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
-
+#endif
+	
 	return 0;
 }
 
