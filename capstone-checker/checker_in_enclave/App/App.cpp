@@ -289,11 +289,12 @@ int SGX_CDECL main(int argc, char *argv[])
                 printf("Cannot get string section\n");
                 return -1;
         }
-	printf("-----App checking-----\n");
-	
+
+	//printf("-----App checking-----\n");
+	/* seems we need put elf analysis outside the enclave... */	
 	/* Start to call... */
-	int* rv;
-	Ecall_elf_entry(global_eid, rv, filename);
+	//int* rv;
+	//Ecall_elf_entry(global_eid, rv, filename);
 
 	printf("-----get textSize-----\n");
 
