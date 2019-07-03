@@ -274,7 +274,6 @@ int SGX_CDECL main(int argc, char *argv[])
                 printf("Cannot open file %s\n", filename);
                 return -1;
         }
-        
 	if (elf_version(EV_CURRENT) == EV_NONE) {
                 printf("ELF library initialization failed\n");
                 return -1;
@@ -293,8 +292,8 @@ int SGX_CDECL main(int argc, char *argv[])
 	//printf("-----App checking-----\n");
 	/* seems we need put elf analysis outside the enclave... */	
 	/* Start to call... */
-	//int* rv;
-	//Ecall_elf_entry(global_eid, rv, filename);
+	int* rv;
+	Ecall_elf_entry(global_eid, rv, filename);
 
 	printf("-----get textSize-----\n");
 
