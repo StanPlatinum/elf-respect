@@ -34,12 +34,10 @@
 CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu 
 CHECKER_Static_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/home/liuweijie/musl-1.1.22/install/include 
 CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
-#CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib -L/home/liuweijie/musl-1.1.22/install/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
 CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
 CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
-#CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -lz_static -lcapstone_static
 
 ######## SGX SDK Settings ########
 

@@ -25,7 +25,12 @@ void PrintDebugInfoOutside(void)
 
 void PrintDebugInfoOutside2(void)
 {
-	Ocall_PrintString("PDIO test in ud->disasm...\n");
+	Ocall_PrintString("PDIO test in ud->disasm ...\n");
+}
+
+void PrintDebugInfoOutside3(void)
+{
+	Ocall_PrintString("PDIO test in elf_begin ...\n");
 }
 
 #include "libelf.h"
@@ -51,8 +56,11 @@ int Ecall_elf_entry(char *filename) {
         }
 
 	PrintDebugInfo("-----checking elf_begin-----\n");
-	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-        if (e == NULL) {
+	//e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+	//Weijie: test
+	e = elf_begin_dbg(fd, ELF_C_READ_MMAP, NULL, PrintDebugInfoOutside3);
+        
+	if (e == NULL) {
                 PrintDebugInfo("elf_begin failed\n");
                 return -1;
         }
