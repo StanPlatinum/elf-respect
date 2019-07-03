@@ -10,5 +10,7 @@ I don't add -I~/capstone/include into the CHECKER_Static_INC_PATH, just using -I
 
 https://github.com/lpjlwj/capstone
 
-to build elfutils in dyninst, remember to add -DENABLE_STATIC_LIBS=YES to the tail of cmake command ...
+https://github.com/lpjlwj/elfutils4sgx
+
+~~to build elfutils in dyninst, remember to add -DENABLE_STATIC_LIBS=YES to the tail of cmake command ...~~
 
