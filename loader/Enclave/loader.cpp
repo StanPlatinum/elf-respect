@@ -154,7 +154,7 @@ static void validate_ehdr(void)
     /* ELF format check - relocatable */
     if (pehdr->e_type != ET_REL)
         dlog("%u: Ehdr not relocatable", __LINE__);
-
+    
     /* check the architecture - currently only support x86_64 */
     if (pehdr->e_machine != EM_X86_64)
         dlog("%u: Ehdr not x86_64", __LINE__);
@@ -187,7 +187,7 @@ static void update_reltab(void)
     if ((pshdr = GET_OBJ(Elf64_Shdr, pehdr->e_shoff)) == NULL
             || !CHECK_SIZE(pshdr, pehdr->e_shnum*sizeof(Elf64_Shdr)))
         dlog("%u: Shdr size", __LINE__);
-
+ 
     /* pointers to symbol, string, relocation tables */
     n_rel = 0;
     for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
@@ -201,6 +201,7 @@ static void update_reltab(void)
     n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
     reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
     n_rel = 0;
+        
     for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
         if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
             reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
@@ -210,10 +211,14 @@ static void update_reltab(void)
             // assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
             for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
                 unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
+		//Weijie: test
+    		dlog("%u: ---test---", __LINE__);
+		//Weijie: the following line will crash ...
                 reltab[n_rel][j].r_offset =
                     REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
             }
             ++n_rel;
+
         }
     }
 }
