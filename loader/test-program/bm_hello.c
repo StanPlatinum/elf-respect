@@ -6,9 +6,8 @@
 
 void enclave_main()
 {
-	int j = 0;
+	//int j = 0;
 	//puts("hello");
-	for (int i = 0; i < 10; i++)
-		j++;
+	//for (int i = 0; i < 10; i++)	j++;
 	//enclave_exit();
 }
