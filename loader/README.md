@@ -1,20 +1,20 @@
-Idea 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
+Approach 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
 
-Idea 2: Dynamically load the program on RWX pages _as input data_, then run it.
+Approach 2: Dynamically load the program on RWX pages _as input data_, then run it.
 
-
-Idea from SGX-Shield:
+SGX-Shield uses the 2nd way.
 
 ------------------------------------
 Weijie: Some Notes
 ------------------------------------
-1. should modify the Makefile:
-already push to my branch
+1. modifying the Makefile:
+(already push to my branch)
 
-2. on my thinkpad, should make a soft link like this:
+2. making a soft link like this (on my thinkpad):
+
 /lib/ld64.so.1 -> /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2*
 
-3. remember to build it with "make" (already DEBUG ?= ON and use HW/SGX_DEBUG mode)
+3. remember to build it with just "make" (already DEBUG ?= ON and use HW/SGX_DEBUG mode)
 
 Clearly, it uses objcopy to attach two sections with section flag assigned...
 In the Makefile, Enclave/%.o have been built using the following command:
