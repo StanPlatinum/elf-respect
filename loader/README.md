@@ -16,6 +16,10 @@ Weijie: Some Notes
 
 3. remember to build it with just "make" (already DEBUG ?= ON and use HW/SGX_DEBUG mode)
 
+***
+
+## Analyzing sgx-shield
+
 Clearly, it uses objcopy to attach two sections with section flag assigned...
 In the Makefile, Enclave/%.o have been built using the following command:
 ```
@@ -24,4 +28,12 @@ Enclave/%.o: Enclave/%.cpp $(IN_ENCLAVE_PROGRAM)
 	@objcopy --add-section .sgx.bin=$(IN_ENCLAVE_PROGRAM) --set-section-flags .sgx.bin=alloc,data $@
 	@fallocate -l 32M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
+```
+
+It also uses define_symbols.lds (a partial linker scripts for the above-mentioned sections) to do the alignment:
+```
+    .sgx.code ALIGN(0x1000): {
+        __sgx_code = .;
+        *(.sgx.code)
+    }
 ```
