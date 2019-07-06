@@ -211,11 +211,11 @@ static void update_reltab(void)
             // assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
             for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
                 unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
+		//Weijie: the following line will crash ...
+		reltab[n_rel][j].r_offset =
+                    REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 		//Weijie: test
     		dlog("%u: ---test---", __LINE__);
-		//Weijie: the following line will crash ...
-                reltab[n_rel][j].r_offset =
-                    REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
             }
             ++n_rel;
 
