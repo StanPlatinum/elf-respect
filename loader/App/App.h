@@ -30,6 +30,8 @@
  */
 
 
+/* Weijie: this is a classic and normal App.h */
+
 #ifndef _APP_H_
 #define _APP_H_
 
