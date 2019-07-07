@@ -1,3 +1,5 @@
+/* Definitions of ocall, which are outside the enclave, and could be called by App (for different testing 'enclave_main()'s) */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
