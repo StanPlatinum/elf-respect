@@ -29,6 +29,7 @@
  *
  */
 
+/* Weijie: this is a classic Enclave.h */
 
 #ifndef _ENCLAVE_H_
 #define _ENCLAVE_H_
