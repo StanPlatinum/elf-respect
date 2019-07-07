@@ -1,6 +1,8 @@
 #ifndef _UAPI_LINUX_ELF_H
 #define _UAPI_LINUX_ELF_H
 
+/* Weijie: need to find if there is anything different from original Elf64_Rela struct */
+
 // Jaebaek: elf headers are from Linux Intel SGX SDK
 //          (See Linux SDK
 //

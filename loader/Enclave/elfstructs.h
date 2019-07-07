@@ -26,6 +26,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/* Weijie: this file seems not being modified */
+
 typedef uint8_t		Elf_Byte;
 
 typedef uint32_t	Elf32_Addr;	/* Unsigned program address */

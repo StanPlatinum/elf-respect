@@ -27,6 +27,8 @@
  * $FreeBSD$
  */
 
+/* Weijie: this file seems not being modified */
+
 #ifndef _SYS_ELF_COMMON_H_
 #define	_SYS_ELF_COMMON_H_ 1
 

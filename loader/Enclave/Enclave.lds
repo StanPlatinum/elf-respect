@@ -1,4 +1,4 @@
-//This is the original lds file
+/* This is the original lds file */
 
 enclave.so
 {
