@@ -5,6 +5,8 @@
  *          Enclave_u.c can be re-generated.
  */
 
+/* Under ../App/ dir, a similar file also exists. */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

@@ -1,3 +1,5 @@
+//This is the original lds file
+
 enclave.so
 {
     global:

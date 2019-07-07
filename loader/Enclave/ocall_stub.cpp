@@ -1,9 +1,12 @@
+/* Ocalls that could be used inside */
+
 #ifdef LD_DEBUG
 //#define abort() exit(1)
 #define abort()
 #else
 #define abort()
 #endif
+
 static clock_t sgx_clock()
 {
     clock_t retv;
@@ -14,6 +17,7 @@ static clock_t sgx_clock()
     }
     return retv;
 }
+
 static time_t sgx_time(time_t *timep)
 {
     time_t retv;
@@ -24,7 +28,9 @@ static time_t sgx_time(time_t *timep)
     }
     return retv;
 }
+
 static struct tm localtime;
+
 static struct tm *sgx_localtime(const time_t *timep)
 {
     // TODO: copy res to enclave mem region
@@ -37,7 +43,9 @@ static struct tm *sgx_localtime(const time_t *timep)
     cpy((char *)&localtime, (char *)retv, sizeof(struct tm));
     return &localtime;
 }
+
 static struct tm gmtime;
+
 static struct tm *sgx_gmtime(const time_t *timep)
 {
     // TODO: copy res to enclave mem region
@@ -60,6 +68,7 @@ static time_t sgx_mktime(struct tm *timeptr)
     }
     return retv;
 }
+
 static int sgx_gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     int retv;
@@ -70,6 +79,7 @@ static int sgx_gettimeofday(struct timeval *tv, struct timezone *tz)
     }
     return retv;
 }
+
 static int sgx_puts(const char *str)
 {
     int retv;
@@ -80,6 +90,7 @@ static int sgx_puts(const char *str)
     }
     return retv;
 }
+
 static int sgx_open(const char *pathname, int flags, unsigned mode)
 {
     int retv;
@@ -90,6 +101,7 @@ static int sgx_open(const char *pathname, int flags, unsigned mode)
     }
     return retv;
 }
+
 static int sgx_close(int fd)
 {
     int retv;
@@ -100,6 +112,7 @@ static int sgx_close(int fd)
     }
     return retv;
 }
+
 static ssize_t sgx_read(int fd, char * buf, size_t buf_len)
 {
     ssize_t retv;
@@ -110,6 +123,7 @@ static ssize_t sgx_read(int fd, char * buf, size_t buf_len)
     }
     return retv;
 }
+
 static ssize_t sgx_write(int fd, const char *buf, size_t n)
 {
     ssize_t retv;
@@ -120,6 +134,7 @@ static ssize_t sgx_write(int fd, const char *buf, size_t n)
     }
     return retv;
 }
+
 static off_t sgx_lseek(int fildes, off_t offset, int whence)
 {
     off_t retv;
@@ -130,6 +145,7 @@ static off_t sgx_lseek(int fildes, off_t offset, int whence)
     }
     return retv;
 }
+
 static int sgx_socket(int af, int type, int protocol)
 {
     int retv;
@@ -140,6 +156,7 @@ static int sgx_socket(int af, int type, int protocol)
     }
     return retv;
 }
+
 static int sgx_bind(int s, const struct sockaddr *addr, size_t addr_size)
 {
     int retv;
@@ -150,6 +167,7 @@ static int sgx_bind(int s, const struct sockaddr *addr, size_t addr_size)
     }
     return retv;
 }
+
 static int sgx_connect(int s, const struct sockaddr *addr, size_t addrlen)
 {
     int retv;
@@ -160,6 +178,7 @@ static int sgx_connect(int s, const struct sockaddr *addr, size_t addrlen)
     }
     return retv;
 }
+
 static int sgx_listen(int s, int backlog)
 {
     int retv;
@@ -170,6 +189,7 @@ static int sgx_listen(int s, int backlog)
     }
     return retv;
 }
+
 static int sgx_accept(int s, struct sockaddr *addr, socklen_t *addrlen)
 {
     int retv;
@@ -181,6 +201,7 @@ static int sgx_accept(int s, struct sockaddr *addr, socklen_t *addrlen)
     }
     return retv;
 }
+
 static int sgx_fstat(int fd, struct stat *buf)
 {
     int retv;
@@ -191,6 +212,7 @@ static int sgx_fstat(int fd, struct stat *buf)
     }
     return retv;
 }
+
 static ssize_t sgx_send(int s, const void *buf, size_t len, int flags)
 {
     ssize_t retv;
@@ -201,6 +223,7 @@ static ssize_t sgx_send(int s, const void *buf, size_t len, int flags)
     }
     return retv;
 }
+
 static ssize_t sgx_recv(int s, void *buf, size_t len, int flags)
 {
     ssize_t retv;
@@ -211,6 +234,7 @@ static ssize_t sgx_recv(int s, void *buf, size_t len, int flags)
     }
     return retv;
 }
+
 static ssize_t sgx_sendto(int sockfd, const void *buf, size_t len, int flags,
         const struct sockaddr *dest_addr, size_t addrlen)
 {
@@ -223,6 +247,7 @@ static ssize_t sgx_sendto(int sockfd, const void *buf, size_t len, int flags,
     }
     return retv;
 }
+
 static ssize_t sgx_recvfrom(int s, void *buf, size_t len, int flags,
         struct sockaddr *dest_addr, socklen_t* addrlen)
 {
@@ -235,6 +260,7 @@ static ssize_t sgx_recvfrom(int s, void *buf, size_t len, int flags,
     }
     return retv;
 }
+
 static int sgx_gethostname(char *name, size_t namelen)
 {
     int retv;
@@ -253,6 +279,7 @@ int getaddrinfo(const char *node, const char *service,
         */
 #define INFO_MAX 64
 static addrinfo addrinfoarr[INFO_MAX];
+
 static int sgx_getaddrinfo(const char *node, const char *service,
         const struct addrinfo *hints, unsigned long *res)
 {
@@ -276,6 +303,7 @@ static int sgx_getaddrinfo(const char *node, const char *service,
 }
 
 static char envret[0x100];
+
 static char *sgx_getenv(const char *env)
 {
     // TODO: copy res to enclave mem region
@@ -290,6 +318,7 @@ static char *sgx_getenv(const char *env)
     envret[i] = '\0';
     return envret;
 }
+
 static int sgx_getsockname(int s, struct sockaddr *name, socklen_t *addrlen)
 {
     int retv;
@@ -301,6 +330,7 @@ static int sgx_getsockname(int s, struct sockaddr *name, socklen_t *addrlen)
     }
     return retv;
 }
+
 static int sgx_getsockopt(int s, int level, int optname, void *optval,
         socklen_t* optlen)
 {
@@ -313,7 +343,9 @@ static int sgx_getsockopt(int s, int level, int optname, void *optval,
     }
     return retv;
 }
+
 static struct servent serventret;
+
 static struct servent *sgx_getservbyname(const char *name, const char *proto)
 {
     // TODO: copy res to enclave mem region
@@ -326,7 +358,9 @@ static struct servent *sgx_getservbyname(const char *name, const char *proto)
     cpy((char *)&serventret, (char *)retv, sizeof(struct servent));
     return &serventret;
 }
+
 static struct protoent protoentret;
+
 static struct protoent *sgx_getprotobynumber(int proto)
 {
     // TODO: copy res to enclave mem region
@@ -339,6 +373,7 @@ static struct protoent *sgx_getprotobynumber(int proto)
     cpy((char *)&protoentret, (char *)retv, sizeof(struct protoent));
     return &protoentret;
 }
+
 static int sgx_setsockopt(int s, int level, int optname, const void *optval, size_t optlen)
 {
     int retv;
@@ -349,6 +384,7 @@ static int sgx_setsockopt(int s, int level, int optname, const void *optval, siz
     }
     return retv;
 }
+
 static unsigned short sgx_htons(unsigned short hostshort)
 {
     unsigned short retv;
@@ -359,6 +395,7 @@ static unsigned short sgx_htons(unsigned short hostshort)
     }
     return retv;
 }
+
 static unsigned long sgx_htonl(unsigned long hostlong)
 {
     unsigned long retv;
@@ -369,6 +406,7 @@ static unsigned long sgx_htonl(unsigned long hostlong)
     }
     return retv;
 }
+
 static unsigned short sgx_ntohs(unsigned short netshort)
 {
     unsigned short retv;
@@ -379,6 +417,7 @@ static unsigned short sgx_ntohs(unsigned short netshort)
     }
     return retv;
 }
+
 static unsigned long sgx_ntohl(unsigned long netlong)
 {
     unsigned long retv;
@@ -389,6 +428,7 @@ static unsigned long sgx_ntohl(unsigned long netlong)
     }
     return retv;
 }
+
 static sighandler_t sgx_signal(int signum, sighandler_t a)
 {
     sighandler_t retv;
@@ -399,6 +439,7 @@ static sighandler_t sgx_signal(int signum, sighandler_t a)
     }
     return retv;
 }
+
 static int sgx_shutdown(int a, int b)
 {
     int retv;
