@@ -29,8 +29,8 @@
 #
 #
 
-#IN_ENCLAVE_PROGRAM=program
-IN_ENCLAVE_PROGRAM = test-program/bm_hello.o
+IN_ENCLAVE_PROGRAM=program
+#IN_ENCLAVE_PROGRAM = test-program/bm_hello.o
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 

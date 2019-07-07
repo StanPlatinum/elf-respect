@@ -1,4 +1,4 @@
-/* Ocalls that could be used inside */
+/* Weijie: Ocalls that could be used inside */
 
 #ifdef LD_DEBUG
 //#define abort() exit(1)

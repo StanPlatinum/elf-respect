@@ -1,4 +1,7 @@
-/* Weijie: operations for .sgx.bin and .sgx.code which are inserted using objcopy */
+/* 
+ * Weijie: 
+ * operations for .sgx.bin and .sgx.code which are inserted using objcopy
+ */
 
 SECTIONS
 {

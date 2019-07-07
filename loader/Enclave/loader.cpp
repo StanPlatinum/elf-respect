@@ -212,10 +212,13 @@ static void update_reltab(void)
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				//Weijie: the following line will crash ...
+				//Weijie: debugging reltab ...
+				reltab[n_rel][j].r_offset = 0;
+				//Weijie: it turns out that ...
+				//dlog("%u: ---test---", __LINE__);
+				//dlog("%u: ---dst---", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
-				//Weijie: test
-				dlog("%u: ---test---", __LINE__);
 			}
 			++n_rel;
 
