@@ -215,8 +215,8 @@ static void update_reltab(void)
 				//Weijie: debugging reltab ...
 				reltab[n_rel][j].r_offset = 0;
 				//Weijie: it turns out that ...
-				//dlog("%u: ---test---", __LINE__);
-				//dlog("%u: ---dst---", dst);
+				dlog("%u: ---test---", __LINE__);
+				dlog("%u: ---dst---", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
@@ -225,7 +225,7 @@ static void update_reltab(void)
 		}
 	}
 	//Weijie: test
-	dlog("%u: ---test---", __LINE__);
+	//dlog("%u: ---test---", __LINE__);
 }
 
 static void fill_zero(char *ptr, Elf64_Word size) {
@@ -275,6 +275,7 @@ static void load(void)
 	Elf64_Addr last_st_value = (Elf64_Addr)-1;
 	Elf64_Xword last_size = 0;
 	unsigned shndx = -1;
+
 	for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
 		if (shndx != symtab[i].st_shndx) {
 			last_off = (Elf64_Addr)-1;
@@ -282,6 +283,10 @@ static void load(void)
 			last_size = 0;
 			shndx = symtab[i].st_shndx;
 		}
+
+		//Weijie: test
+		dlog("%u: ---test---", __LINE__);
+	
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
 		/* special shndx --> assumption: no abs, no undef */
@@ -314,6 +319,7 @@ static void load(void)
 				}
 			}
 		}
+
 		dlog("sym %04u/%d %08lx", i, n_symtab, (unsigned long)symtab[i].st_value);
 #if PTRACE
 		find_ptrace_target(&strtab[symtab[i].st_name], i);
