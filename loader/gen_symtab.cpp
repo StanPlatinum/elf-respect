@@ -164,6 +164,7 @@ void read_relocatable(const char* file)
 
 int main(int argc, const char *argv[])
 {
-    read_relocatable("program");
+    //Weijie: test
+    read_relocatable("./test-program/bm_hello.o");
     return 0;
 }
