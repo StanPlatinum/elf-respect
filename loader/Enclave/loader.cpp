@@ -78,6 +78,9 @@ void *reserve_data(size_t size, size_t align)
 #else
 void *reserve_data(size_t size, size_t align)
 {
+	//Weijie: test
+	dlog("%u: entering reserve_data else part...", __LINE__);
+	
 	static void *data_end = _SGXDATA_BASE;
 	void *ret = (void *)rounddown(align, (addr_t)data_end+(align-1));
 	data_end = (void *)((addr_t)ret+rounddown(align, size+(align-1)));
@@ -103,6 +106,9 @@ void *reserve_code(size_t size, size_t align)
 #else
 void *reserve_code(size_t size, size_t align)
 {
+	//Weijie: test
+	dlog("%u: entering reserve_code else part...", __LINE__);
+
 	static void *code_end = _SGXCODE_BASE;
 	void *ret = (void *)rounddown(align, (addr_t)code_end+(align-1));
 	code_end = (void *)((addr_t)ret+rounddown(align, size+(align-1)));
@@ -215,8 +221,8 @@ static void update_reltab(void)
 				//Weijie: debugging reltab ...
 				reltab[n_rel][j].r_offset = 0;
 				//Weijie: it turns out that ...
-				dlog("%u: ---test---", __LINE__);
-				dlog("%u: ---dst---", dst);
+				//dlog("%u: ---test---", __LINE__);
+				//dlog("%u: ---dst---", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
@@ -285,7 +291,7 @@ static void load(void)
 		}
 
 		//Weijie: test
-		dlog("%u: ---test---", __LINE__);
+		//dlog("%u: ---test---", __LINE__);
 	
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
@@ -331,14 +337,21 @@ static void relocate(void)
 {
 	for (unsigned k = 0; k < n_rel; ++k)
 		for (unsigned i = 0; i < n_reltab[k]; ++i) {
+			
+			//Weijie: test
+			dlog("%u ---checking---reltab[k][i]", __LINE__);
+			
 			unsigned int ofs = REL_DST_OFS(reltab[k][i].r_offset);
 			unsigned int dst_sym = REL_DST_NDX(reltab[k][i].r_offset);
 			unsigned int src_sym = ELF64_R_SYM(reltab[k][i].r_info);
 			const unsigned int type = ELF64_R_TYPE(reltab[k][i].r_info);
-			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
-#if PTRACE
-			check_breakpoint(src_sym, dst);
-#endif
+			
+			//Weijie: test
+			//The following line will crash
+			dlog("%u: dst_sym", dst_sym);
+			addr_t dst = (addr_t)symtab[dst_sym].st_value;
+			//Weijie: test
+			dst += (addr_t)ofs;
 
 			dlog("rel[%04u] %04u (%08lx) --> %04u", i, dst_sym, dst, src_sym);
 			if (type == R_X86_64_64) {

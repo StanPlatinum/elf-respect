@@ -79,6 +79,8 @@ void read_sections(const int& fd, const Elf64_Ehdr *ehdr)
     if (ehdr->e_shentsize != sizeof (Elf64_Shdr))
         err(EXIT_FAILURE, "Shdr entry size");
 
+    cout << "reading section headers..." << endl;
+
     /* read section headers */
     shdr_array = new Elf64_Shdr[ehdr->e_shnum];
     if (!shdr_array)
@@ -86,6 +88,8 @@ void read_sections(const int& fd, const Elf64_Ehdr *ehdr)
     if (pread(fd, shdr_array, ehdr->e_shnum * sizeof(Elf64_Ehdr), ehdr->e_shoff)
             != ehdr->e_shnum * sizeof(Elf64_Ehdr))
         err(EXIT_FAILURE, "Shdr pread");
+
+    cout << "reading section header strings..." << endl;
 
     /* read section header strings */
     char *shstrtab;
@@ -108,6 +112,8 @@ void read_sections(const int& fd, const Elf64_Ehdr *ehdr)
         }
     }
 
+    cout << "reading symtab..." << endl;
+
     /* read symtab, strtab, reltab */
     n_symtab = shdr_array[symtab_ndx].sh_size / sizeof(Elf64_Sym);
     symtab = new Elf64_Sym[n_symtab];
@@ -117,12 +123,16 @@ void read_sections(const int& fd, const Elf64_Ehdr *ehdr)
             != shdr_array[symtab_ndx].sh_size)
         err(EXIT_FAILURE, "Shdr symtab %s pread", &shstrtab[shdr_array[symtab_ndx].sh_name]);
 
+    cout << "reading strtab..." << endl;
+
     strtab = new char[shdr_array[strtab_ndx].sh_size];
     if (!strtab)
         err(EXIT_FAILURE, "Shdr strtab new");
     if (pread(fd, strtab, shdr_array[strtab_ndx].sh_size, shdr_array[strtab_ndx].sh_offset)
             != shdr_array[strtab_ndx].sh_size)
         err(EXIT_FAILURE, "Shdr strtab pread");
+
+    cout << "reading reltab..." << endl;
 
     n_reltab = shdr_array[reltab_ndx].sh_size / sizeof(Elf64_Rela);
     reltab = new Elf64_Rela[n_reltab];
@@ -132,6 +142,7 @@ void read_sections(const int& fd, const Elf64_Ehdr *ehdr)
             != shdr_array[reltab_ndx].sh_size)
         err(EXIT_FAILURE, "Shdr reltab %s pread", &shstrtab[shdr_array[reltab_ndx].sh_name]);
 
+    cout << "searching functions..." << endl;
 
     /* find timestamp functions */
     for (size_t i = 1; i < n_symtab; ++i) {
@@ -155,7 +166,9 @@ void read_relocatable(const char* file)
     if ((fd = open(file, O_RDONLY, 0)) < 0)
         err(EXIT_FAILURE, "open \"%s\" failed", file);
 
+    cout << "reading elf header..." << endl;
     read_ehdr(fd, &ehdr);
+    cout << "reading sections..." << endl;
     read_sections(fd, &ehdr);
 
     close(fd);
