@@ -5,7 +5,7 @@ Please note that the size of input1 cannot be 10...
 Introduction of stock_sgx
 ----------------------
 ECALL: 
-- void Ecall_nw([in, string] char *seq_1, [in, string] char *seq_2, [in, out, string] char *seq_1_al, [in, out, string] char *seq_2_al, bool prm);
+- void Ecall_stock_main(void);
 OCALL: 
 - void Ocall_PrintString([in, string] const char *str);
 
