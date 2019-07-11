@@ -33,7 +33,7 @@
  **/
 
 //! Header files
-//#include <iostream>
+#include <iostream>
 //#include <fstream>
 #include <string>
 #include <sstream>
@@ -192,8 +192,11 @@ float * runBlackScholesModel(float spotPrice, int timesteps, float riskRate, flo
 	stockPrice[0] = spotPrice;					//! Stock price at t=0 is spot price
 
 	//! Populate array with random nos.
-	for (int i = 0; i < timesteps - 1; i++)
+	for (int i = 0; i < timesteps - 1; i++){
+		//Weijie: test
+		//std::cout << "normRan[" << i << "]: " << normRand[i] << ", mean: " << mean << ", stdDev: " << stdDev << std::endl;
 		normRand[i] = randGen(mean, stdDev);
+	}
 
 	//! Apply Black Scholes equation to calculate stock price at next timestep
 	for (int i = 0; i < timesteps - 1; i++)

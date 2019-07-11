@@ -76,26 +76,32 @@ float * find2DMean(float **matrix, int numLoops, int timesteps)
         return avg;
 }
 
+//Weijie: test
+long int seed = 1;
+float randGen_fake(float mean, float stdDev){
+        seed++;
+        if (seed > 179)	seed = -180;
+	if (seed == 0)	seed = 1;
+        //std::cout << "seed: " << seed << std::endl;
+	return (mean + stdDev * 1.0 / seed);
+}
+
+#if 0
 /** ---------------------------------------------------------------------------
   Generates a random number seeded by system clock based on standard
   normal distribution on taking mean 0.0 and standard deviation 1.0
   ----------------------------------------------------------------------------*/
-//Weijie: test
-unsigned long int seed = 1;
-
 float randGen(float mean, float stdDev)
 {
         //Weijie: we cannot use sys clock ...
         //So here we set seed starting with 1 ...
         //auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-        seed++;
-        if (seed > 4294967295)  seed = 1;
-        //std::cout << "seed: " << seed << std::endl;
 
         std::default_random_engine generator(static_cast<unsigned int>(seed));
         std::normal_distribution<float> distribution(mean, stdDev);
         return distribution(generator);
 }
+#endif
 
 float * runBlackScholesModel(float spotPrice, int timesteps, float riskRate, float volatility)
 {
@@ -109,7 +115,7 @@ float * runBlackScholesModel(float spotPrice, int timesteps, float riskRate, flo
 
         //! Populate array with random nos.
         for (int i = 0; i < timesteps - 1; i++)
-                normRand[i] = randGen(mean, stdDev);
+                normRand[i] = randGen_fake(mean, stdDev);
 
         //! Apply Black Scholes equation to calculate stock price at next timestep
         for (int i = 0; i < timesteps - 1; i++)

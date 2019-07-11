@@ -27,6 +27,6 @@ How to Build/Execute stock_sgx
     f. Simulation Mode, Release build:
         $ make SGX_MODE=SIM SGX_DEBUG=0
 3. Execute the binary directly:
-    $ ./app sequence1 sequence2
+    $ ./app
 4. Remember to "make clean" before switching build mode
 
