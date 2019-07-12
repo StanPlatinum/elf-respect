@@ -72,6 +72,9 @@ float calcVolatility(float spotPrice, int timesteps)
 
 	float stdDev = sqrtf(sum);
 
+	//Weijie: test
+	delete[] priceArr;
+
 	//! Return as percentage
 	return (stdDev / 100.0f);
 }
@@ -79,7 +82,11 @@ float calcVolatility(float spotPrice, int timesteps)
 float * find2DMean(float **matrix, int numLoops, int timesteps)
 {
 	int j;
+
+
 	float* avg = new float[timesteps];
+
+
 	float sum = 0.0f;
 
 	for (int i = 0; i < timesteps; i++)
@@ -130,31 +137,42 @@ float * runBlackScholesModel(float spotPrice, int timesteps, float riskRate, flo
 {
 	float  mean = 0.0f, stdDev = 1.0f;                      //! Mean and standard deviation
 	float  deltaT = 1.0f / timesteps;                       //! Timestep
+	
 	float* normRand = new float[timesteps - 1];   //! Array of normally distributed random nos.
 	//Weijie: use my own make_unique
 	//std::unique_ptr<float[]> normRand = make_unique<float[]>(timesteps - 1);      //! Array of normally distributed random nos.
+	
+	//PrintDebugInfo("newing stockPrice\n");
+
 	float* stockPrice = new float[timesteps];       //! Array of stock price at diff. times
+	
+	//PrintDebugInfo("not crash ...\n");
+	
 	stockPrice[0] = spotPrice;                                      //! Stock price at t=0 is spot price
 
 	//! Populate array with random nos.
 	for (int i = 0; i < timesteps - 1; i++)
 		normRand[i] = randGen_fake(mean, stdDev);
 
+	
 	//! Apply Black Scholes equation to calculate stock price at next timestep
 	for (int i = 0; i < timesteps - 1; i++)
 		stockPrice[i + 1] = stockPrice[i] * exp(((riskRate - (powf(volatility, 2.0f) / 2.0f)) * deltaT) + (volatility * normRand[i] * sqrtf(deltaT)));
 
+	//Weijie: test
+	delete[] normRand;
+	
 	return stockPrice;
 }
 
 void Ecall_stock_main(void)
 {
 	int inLoops = 100;	//! Inner loop iterations
-	int outLoops = 10000;   //! Outer loop iterations
+	//int outLoops = 10000;   //! Outer loop iterations
+	//Weijie: 10000 is too much big
+	int outLoops = 200;   //! Outer loop iterations
 	int timesteps = 180;    //! Stock market time-intervals (min)
 
-	PrintDebugInfo("allocating...\n");
-	
 	//! Matrix for stock-price vectors per iteration
 	float **stock = new float *[inLoops];
 	for (int i = 0; i < inLoops; i++)
@@ -171,12 +189,8 @@ void Ecall_stock_main(void)
 	float riskRate = 0.001f;        //! Risk free interest rate (%)
 	float spotPrice = 100.0f;       //! Spot price (at t = 0)
 
-	PrintDebugInfo("calculating V...\n");
-
 	//! Market volatility (calculated from ml_data.csv)
 	float volatility = calcVolatility(spotPrice, timesteps);
-
-	PrintDebugInfo("running BS...\n");
 
 	int i;
 	for (i = 0; i < outLoops; i++)
@@ -186,8 +200,12 @@ void Ecall_stock_main(void)
 
 		avgStock[i] = find2DMean(stock, inLoops, timesteps);
 	}
+
+
 	optStock = find2DMean(avgStock, outLoops, timesteps);
 
+	//PrintDebugInfo("freeing ...\n");
+	
 	for (i = 0; i < inLoops; i++)
 		delete[] stock[i];
 	delete[] stock;
