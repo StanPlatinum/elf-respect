@@ -1,9 +1,8 @@
 Being tested again, the demo could be run carefully.
-Please note that the size of input1 cannot be 10...
 
-----------------------
+-------------------------
 Introduction of stock_sgx
-----------------------
+-------------------------
 ECALL: 
 - void Ecall_stock_main(void);
 OCALL: 
