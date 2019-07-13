@@ -56,37 +56,15 @@ static uint32_t get_rand(void)
 	return val;
 }
 
-#if RAND
-void *reserve_data(size_t size, size_t align)
-{
-	uint64_t ofs;
-	do {
-		ofs = rounddown(align, get_rand() % (_SGX_SIZE - size)) + (uint64_t)_SGXDATA_BASE;
-		for (unsigned i = 1;i < _n_symtab;++i)
-			if ((symtab[i].st_value <= ofs && ofs < symtab[i].st_value + symtab[i].st_size)
-					|| (symtab[i].st_value < ofs + size
-						&& ofs + size <= symtab[i].st_value + symtab[i].st_size)
-					|| (ofs <= symtab[i].st_value && symtab[i].st_value < ofs + size)
-					|| (ofs < symtab[i].st_value + symtab[i].st_size
-						&& symtab[i].st_value + symtab[i].st_size <= ofs + size)) {
-				ofs = 0;
-				break;
-			}
-	} while (!ofs || (ofs + size > (uint64_t)_SGXDATA_BASE + _SGX_SIZE));
-	return (void *)ofs;
-}
-#else
 void *reserve_data(size_t size, size_t align)
 {
 	//Weijie: test
-	dlog("%u: entering reserve_data else part...", __LINE__);
-	
+	//dlog("%u: entering reserve_data else part...", __LINE__);
 	static void *data_end = _SGXDATA_BASE;
 	void *ret = (void *)rounddown(align, (addr_t)data_end+(align-1));
 	data_end = (void *)((addr_t)ret+rounddown(align, size+(align-1)));
 	return ret;
 }
-#endif
 
 bool is_available(uint8_t *base, size_t index, size_t size)
 {
@@ -95,26 +73,15 @@ bool is_available(uint8_t *base, size_t index, size_t size)
 	return true;
 }
 
-#if RAND
-void *reserve_code(size_t size, size_t align)
-{
-	uint64_t index;
-	do index = rounddown(align, get_rand() % (_SGX_SIZE - size));
-	while (!is_available((uint8_t *)_SGXCODE_BASE, index, size));
-	return (void *)((uint64_t)_SGXCODE_BASE + index);
-}
-#else
 void *reserve_code(size_t size, size_t align)
 {
 	//Weijie: test
-	dlog("%u: entering reserve_code else part...", __LINE__);
-
+	//dlog("%u: entering reserve_code else part...", __LINE__);
 	static void *code_end = _SGXCODE_BASE;
 	void *ret = (void *)rounddown(align, (addr_t)code_end+(align-1));
 	code_end = (void *)((addr_t)ret+rounddown(align, size+(align-1)));
 	return ret;
 }
-#endif
 
 void *reserve(Elf64_Xword flags, size_t size, size_t align)
 {
@@ -289,13 +256,16 @@ static void load(void)
 			shndx = symtab[i].st_shndx;
 		}
 
-		//Weijie: test
-		dlog("%u: ---test---", __LINE__);
 	
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
+		
+		//Weijie: the following line would crash ...
+		dlog("%u: ---test---", __LINE__);
+		dlog("%u: i in symtab[i]", i);
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
+			
 			symtab[i].st_value = (Elf64_Addr)reserve(0, symtab[i].st_size, symtab[i].st_value);
 			fill_zero((char *)symtab[i].st_value, symtab[i].st_size);
 		} else if (!found) {
@@ -338,8 +308,7 @@ static void relocate(void)
 		for (unsigned i = 0; i < n_reltab[k]; ++i) {
 			
 			//Weijie: test
-			dlog("%u ---checking---reltab[k][i]", __LINE__);
-			
+			//dlog("%u ---checking---reltab[k][i]", __LINE__);
 			unsigned int ofs = REL_DST_OFS(reltab[k][i].r_offset);
 			unsigned int dst_sym = REL_DST_NDX(reltab[k][i].r_offset);
 			unsigned int src_sym = ELF64_R_SYM(reltab[k][i].r_info);
@@ -347,7 +316,7 @@ static void relocate(void)
 			
 			//Weijie: test
 			//The following line will crash
-			dlog("%u: dst_sym", dst_sym);
+			//dlog("%u: dst_sym", dst_sym);
 			addr_t dst = (addr_t)symtab[dst_sym].st_value;
 			//Weijie: test
 			dst += (addr_t)ofs;
