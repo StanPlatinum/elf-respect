@@ -21,6 +21,8 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <string>
 //#include <sstream>
 //#include <random>
+
+#include <cmath>
 #include <memory>
 
 #include <vector>

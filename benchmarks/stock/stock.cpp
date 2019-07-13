@@ -7,7 +7,8 @@
 #include <vector>
 
 //Weijie: <random> could not be include inside enclave, but powf and sqrtf functions can be used inside enclave...
-#include <random>
+//#include <random>
+#include <cmath>
 
 std::vector<std::string> split(std::string str,std::string pattern)
 {
