@@ -217,9 +217,8 @@ static void update_reltab(void)
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
-				//Weijie: the following line will crash ...
+				//Weijie: the following line may crash if the target program is compiled wrongly ...
 				//Weijie: debugging reltab ...
-				//reltab[n_rel][j].r_offset = 0;
 				//Weijie: it turns out that ...
 				//dlog("%u: ---test---", __LINE__);
 				//dlog("%u: ---dst---", dst);
@@ -291,7 +290,7 @@ static void load(void)
 		}
 
 		//Weijie: test
-		//dlog("%u: ---test---", __LINE__);
+		dlog("%u: ---test---", __LINE__);
 	
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
