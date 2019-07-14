@@ -1,3 +1,5 @@
+CC = clang
+
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 EXTRA_FLAGS = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables

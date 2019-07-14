@@ -58,7 +58,6 @@ static uint32_t get_rand(void)
 
 void *reserve_data(size_t size, size_t align)
 {
-	//Weijie: test
 	//dlog("%u: entering reserve_data else part...", __LINE__);
 	static void *data_end = _SGXDATA_BASE;
 	void *ret = (void *)rounddown(align, (addr_t)data_end+(align-1));
@@ -75,7 +74,6 @@ bool is_available(uint8_t *base, size_t index, size_t size)
 
 void *reserve_code(size_t size, size_t align)
 {
-	//Weijie: test
 	//dlog("%u: entering reserve_code else part...", __LINE__);
 	static void *code_end = _SGXCODE_BASE;
 	void *ret = (void *)rounddown(align, (addr_t)code_end+(align-1));
@@ -185,10 +183,8 @@ static void update_reltab(void)
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				//Weijie: the following line may crash if the target program is compiled wrongly ...
-				//Weijie: debugging reltab ...
 				//Weijie: it turns out that ...
 				//dlog("%u: ---test---", __LINE__);
-				//dlog("%u: ---dst---", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
@@ -196,8 +192,6 @@ static void update_reltab(void)
 
 		}
 	}
-	//Weijie: test
-	//dlog("%u: ---test---", __LINE__);
 }
 
 static void fill_zero(char *ptr, Elf64_Word size) {
@@ -248,20 +242,21 @@ static void load(void)
 	Elf64_Xword last_size = 0;
 	unsigned shndx = -1;
 
-	for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
+	//for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
+	//Weijie: ignore filename ABS
+	for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
 		if (shndx != symtab[i].st_shndx) {
 			last_off = (Elf64_Addr)-1;
 			last_st_value = (Elf64_Addr)-1;
 			last_size = 0;
 			shndx = symtab[i].st_shndx;
 		}
-
 	
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
 		
 		//Weijie: the following line would crash ...
-		dlog("%u: ---test---", __LINE__);
+		//dlog("%u: ---test---", __LINE__);
 		dlog("%u: i in symtab[i]", i);
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
@@ -306,7 +301,6 @@ static void relocate(void)
 {
 	for (unsigned k = 0; k < n_rel; ++k)
 		for (unsigned i = 0; i < n_reltab[k]; ++i) {
-			
 			//Weijie: test
 			//dlog("%u ---checking---reltab[k][i]", __LINE__);
 			unsigned int ofs = REL_DST_OFS(reltab[k][i].r_offset);
@@ -314,12 +308,9 @@ static void relocate(void)
 			unsigned int src_sym = ELF64_R_SYM(reltab[k][i].r_info);
 			const unsigned int type = ELF64_R_TYPE(reltab[k][i].r_info);
 			
-			//Weijie: test
-			//The following line will crash
+			//The following line may crash
 			//dlog("%u: dst_sym", dst_sym);
-			addr_t dst = (addr_t)symtab[dst_sym].st_value;
-			//Weijie: test
-			dst += (addr_t)ofs;
+			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
 
 			dlog("rel[%04u] %04u (%08lx) --> %04u", i, dst_sym, dst, src_sym);
 			if (type == R_X86_64_64) {
@@ -368,19 +359,19 @@ void enclave_main()
 	update_reltab();
 	pr_progress("loading");
 	load();
-	pr_progress("relocating");
-	relocate();
-
+	//Weijie: cannot simply delete relocation
+	//pr_progress("relocating");
+	//relocate();
+	dlog("%u: ---test---", __LINE__);
+	
 	entry = (void (*)())(main_sym->st_value);
+	
 	dlog("main: %p", entry);
 
 	pr_progress("entering");
-#if PTRACE
-	run_with_ptrace(entry);
-#else
+
 	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
-#endif
 	pr_progress("returning");
 }
