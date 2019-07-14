@@ -30,6 +30,7 @@
 #
 
 #IN_ENCLAVE_PROGRAM=program
+# The input should be relocatable, not executable
 IN_ENCLAVE_PROGRAM = test-program/bm_hello.o
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds

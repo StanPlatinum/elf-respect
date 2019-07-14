@@ -242,8 +242,9 @@ static void load(void)
 	Elf64_Xword last_size = 0;
 	unsigned shndx = -1;
 
-	//for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
 	//Weijie: ignore filename ABS
+	//Weijie: test if i could start with 2
+	//for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
 	for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
 		if (shndx != symtab[i].st_shndx) {
 			last_off = (Elf64_Addr)-1;
@@ -257,7 +258,7 @@ static void load(void)
 		
 		//Weijie: the following line would crash ...
 		//dlog("%u: ---test---", __LINE__);
-		dlog("%u: i in symtab[i]", i);
+		//dlog("%u: i in symtab[i]", i);
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
 			
@@ -270,8 +271,13 @@ static void load(void)
 				symtab[i].st_value = last_st_value + symoff - last_off;
 			} else {
 				/* find main */
-				if (symoff == pehdr->e_entry)
+				
+				//Weijie: checking if loader could find main()...
+				//dlog("%u: finding main...", __LINE__);
+				dlog("symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
+				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
+				}
 
 				symtab[i].st_value = (Elf64_Addr)reserve(pshdr[symtab[i].st_shndx].sh_flags,
 						symtab[i].st_size, pshdr[symtab[i].st_shndx].sh_addralign);
@@ -359,17 +365,16 @@ void enclave_main()
 	update_reltab();
 	pr_progress("loading");
 	load();
-	//Weijie: cannot simply delete relocation
+	
+	//Weijie: cannot simply delete relocation in original sgx-shield demo
 	//pr_progress("relocating");
 	//relocate();
-	dlog("%u: ---test---", __LINE__);
+	dlog("%u: ---finding entry---", __LINE__);
 	
 	entry = (void (*)())(main_sym->st_value);
-	
 	dlog("main: %p", entry);
 
 	pr_progress("entering");
-
 	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
