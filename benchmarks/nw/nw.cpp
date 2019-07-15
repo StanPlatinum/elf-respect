@@ -140,7 +140,8 @@ int nw_align(                  // Needleman-Wunsch algorithm
         int  L2 = strlen(seq_2);
 
         /* define by Weijie */
-        char attach[2] = {NULL};
+        //char attach[2] = {NULL};
+        char attach[2] = "";
 
         for( i = 1; i <= L2; i++ )
         {
