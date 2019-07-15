@@ -1,14 +1,16 @@
-CC = clang
+CC = gcc
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
-EXTRA_FLAGS = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+
+EXTRA_FLAGS2 = -Wl, -eenclave_main
 
 LIBCDIR = ../Enclave/TrustedLib
 LIBC = $(LIBCDIR)/libc_static.a
 
 bm_hello.o: bm_hello.c enclave.h
-	$(CC) -c $(BASE_CFLAGS) -o $@ $< $(EXTRA_FLAGS)
+	$(CC) -c $(BASE_CFLAGS) -o $@ $< $(EXTRA_FLAGS1) $(EXTRA_FLAGS2)
 
 bm_hello: bm_hello.o
 	$(CC) -o bm_hello $<
