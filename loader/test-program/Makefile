@@ -18,11 +18,23 @@ bm_hello.o: bm_hello.c enclave.h
 #Weijie: start generate _start
 lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
-ASM_OBJS = lib/stack.o lib/start.o
-tools/linker: tools/linkage_editor.cpp
-	$(CXX) -o $@ $(LINKERFLAG) $<
 
-test_program: tools/linker $(ASM_OBJS)
+ASM_OBJS = lib/stack.o lib/start.o
+
+tools/linker: tools/linkage_editor.cpp
+	$(CXX) -o $@ $(LINKERFLAG) $^
+
+#Weijie: add malloc
+malloc.o: malloc/malloc.c malloc/dlmalloc.inc
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
+
+#Weijie: prepare whole static linked (with libc_static.a) obj
+objs/libc_targetprogram.a: bm_hello.o malloc.o $(LIBC_PATH)
+	cp $^ objs/
+	$(MAKE) -C objs
+	cp malloc.o objs/
+
+test_program: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cp lib/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker test_program
