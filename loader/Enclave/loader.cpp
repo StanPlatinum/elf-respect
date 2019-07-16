@@ -367,14 +367,17 @@ void enclave_main()
 	load();
 	
 	//Weijie: cannot simply delete relocation in original sgx-shield demo
-	//pr_progress("relocating");
-	//relocate();
+	//Weijie: cannot delete the following lines in current demo
+	pr_progress("relocating");
+	relocate();
 	dlog("%u: ---finding entry---", __LINE__);
 	
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);
 
 	pr_progress("entering");
+
+	//Weijie: the asm inline commands could be commented
 	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
