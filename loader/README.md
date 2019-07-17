@@ -1,4 +1,8 @@
-## Usage:
+## Usage
+
+***
+
+### Basic usage
 
 1. build target relocatable elf
 
@@ -8,7 +12,7 @@ cd target-program && make
 
 cd .. && make
 
-optional command:
+### Optional command:
 
 1. generate symtab debugging tool
 
@@ -22,14 +26,6 @@ make symtab_test
 Some Notes:
 ------------------------------------
 
-Approach 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
-
-Approach 2: Dynamically load the program on RWX pages _as input data_, then run it.
-
-SGX-Shield uses the 2nd way.
-
-------------------------------------
-
 1. modifying the Makefile: (already push to my branch)
 
 2. making a soft link like this (on my thinkpad):
@@ -40,7 +36,15 @@ SGX-Shield uses the 2nd way.
 
 ***
 
-### Analyzing sgx-shield
+## Sgx-shield Analyzing
+
+### Possible ways to make a loader
+
+Approach 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
+
+Approach 2: Dynamically load the program on RWX pages _as input data_, then run it.
+
+SGX-Shield uses the 2nd way.
 
 Clearly, it uses objcopy to attach two sections with section flag assigned...
 In the Makefile, Enclave/%.o have been built using the following command:
@@ -59,3 +63,7 @@ It also uses define_symbols.lds (a partial linker scripts for the above-mentione
         *(.sgx.code)
     }
 ```
+
+### How to add a program entry
+
+Sgx-shield uses a rather oblivious way to re-generate the relocatable ELF file. It re-compiles the program using analyzing .symtab, and adds a \_start to the end of the program.
