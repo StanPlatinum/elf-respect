@@ -5,12 +5,14 @@ TARGET_NAME = simple_loop
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
+EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+
 LIBC_DIR = ./TrustedLib
 LIBC_PATH = $(LIBC_DIR)/libc_static.a
 LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc_static.a
 
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
-#Weijie: later
+#Weijie: later the whole libc will be added into this ...
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
 
 all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
@@ -43,7 +45,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	cp malloc.o objs/
 
 #Weijie: don't use the following lines ...
-#EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #EXTRA_FLAGS2 = -Wl, -eenclave_main
 #$(TARGET_NAME): $(TARGET_NAME).o
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
