@@ -19,7 +19,7 @@ make symtab_test
 ./symtab_test $(TARGET_NAME)
 
 ------------------------------------
-Weijie: Some Notes
+Some Notes:
 ------------------------------------
 
 Approach 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
@@ -40,7 +40,7 @@ SGX-Shield uses the 2nd way.
 
 ***
 
-## Analyzing sgx-shield
+### Analyzing sgx-shield
 
 Clearly, it uses objcopy to attach two sections with section flag assigned...
 In the Makefile, Enclave/%.o have been built using the following command:
