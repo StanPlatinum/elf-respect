@@ -49,28 +49,32 @@ enclave {
 	/* expose an interface for outside debugging */
 	public void PrintDebugInfoOutside(
 	);
-
+	/*
 	public int Ecall_elf_entry(
 		[in, string] char *filename
 	);
+	*/
 
 	public int Ecall_cs_entry(
 	);
 
 	/* for debugging */
+	/*
 	public size_t Ecall_cs_disasm(
 		size_t csh, 
 		[out] cs_insn insn[1]
 	);
+	*/
     };
     untrusted {
         void Ocall_PrintString([in, string] const char *str);
-	
 	/* file IO */
+	/*	
 	int ocall_open([in, string] const char* filename, int mode);
         int ocall_read(int file, [out, size=size] void *buf, unsigned int size);
         int ocall_write(int file, [in, size=size] void *buf, unsigned int size);
         void ocall_close(int file);
+	*/
     };
 
 };
