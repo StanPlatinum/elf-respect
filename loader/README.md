@@ -1,4 +1,5 @@
-Usage:
+## Usage:
+
 1. build target relocatable elf
 
 cd target-program && make
@@ -12,6 +13,10 @@ optional command:
 1. generate symtab debugging tool
 
 make symtab
+
+2. run the tool
+
+./symtab $(TARGET_NAME)
 
 ------------------------------------
 
