@@ -19,6 +19,8 @@ make symtab_test
 ./symtab_test $(TARGET_NAME)
 
 ------------------------------------
+Weijie: Some Notes
+------------------------------------
 
 Approach 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
 
@@ -27,10 +29,8 @@ Approach 2: Dynamically load the program on RWX pages _as input data_, then run 
 SGX-Shield uses the 2nd way.
 
 ------------------------------------
-Weijie: Some Notes
-------------------------------------
-1. modifying the Makefile:
-(already push to my branch)
+
+1. modifying the Makefile: (already push to my branch)
 
 2. making a soft link like this (on my thinkpad):
 
