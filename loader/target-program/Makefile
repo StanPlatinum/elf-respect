@@ -1,5 +1,6 @@
+#Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
 CC = gcc
-CXX = g++
+CXX = clang++
 
 TARGET_NAME = simple_loop
 

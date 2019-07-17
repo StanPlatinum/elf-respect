@@ -32,7 +32,7 @@ Some Notes:
 
 /lib/ld64.so.1 -> /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2*
 
-3. remember to build it with just "make" (already DEBUG ?= ON and use HW/SGX_DEBUG mode)
+3. remember to build it with just "make" (already switched to DEBUG ?= ON and using HW/SGX_DEBUG mode)
 
 ***
 
