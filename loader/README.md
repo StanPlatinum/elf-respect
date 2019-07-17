@@ -1,3 +1,20 @@
+Usage:
+1. build target relocatable elf
+
+cd target-program && make
+
+2. build sgx application 
+
+cd .. && make
+
+optional command:
+
+1. generate symtab debugging tool
+
+make symtab
+
+------------------------------------
+
 Approach 1: Anyone could choose to modify p_flags in the code seg of the static executable file, from PF_R|PF_X to PF_R|PF_W|PF_X, making the ELF's code seg writable after making (objdump-ing) and loading.
 
 Approach 2: Dynamically load the program on RWX pages _as input data_, then run it.
