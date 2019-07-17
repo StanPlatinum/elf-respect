@@ -12,11 +12,11 @@ optional command:
 
 1. generate symtab debugging tool
 
-make symtab
+make symtab_test
 
 2. run the tool
 
-./symtab $(TARGET_NAME)
+./symtab_test $(TARGET_NAME)
 
 ------------------------------------
 
