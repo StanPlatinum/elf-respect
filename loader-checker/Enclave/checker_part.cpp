@@ -20,21 +20,20 @@ void PrintDebugInfo(const char *fmt, ...)
 /* My public Enclave functions */
 void PrintDebugInfoOutside(void)
 {
-	Ocall_PrintString("PDIO test\n");
+	ocall_print_string("PDIO test\n");
 }
 
 void PrintDebugInfoOutside2(void)
 {
-	Ocall_PrintString("PDIO test in ud->disasm ...\n");
+	ocall_print_string("PDIO test in ud->disasm ...\n");
 }
 
 void PrintDebugInfoOutside3(void)
 {
-	Ocall_PrintString("PDIO test in elf_begin ...\n");
+	ocall_print_string("PDIO test in elf_begin ...\n");
 }
 
 #include "libelf.h"
-//#include "my_stdio.c"
 
 /* Weijie: ecall of whole cs_open/disasm/close */
 int Ecall_cs_entry(void) {

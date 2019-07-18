@@ -27,9 +27,19 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-#
 
-#IN_ENCLAVE_PROGRAM=program
+######## Checker Settings ########
+
+CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
+CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include
+CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
+CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
+
+CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
+CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
+
+######## Target Settings ########
+
 #Weijie: The input should be relocatable, not executable
 IN_ENCLAVE_PROGRAM = target-program/simple_loop
 
@@ -46,11 +56,8 @@ endif
 ######## SGX SDK Settings ########
 
 SGX_SDK ?= /opt/intel/sgxsdk
-#SGX_MODE ?= SIM
-
 SGX_MODE ?= HW
 SGX_DEBUG ?= 1
-
 SGX_ARCH ?= x64
 
 ifeq ($(shell getconf LONG_BIT), 32)
@@ -92,7 +99,10 @@ else
 endif
 
 App_Cpp_Files := App/App.cpp
-App_Include_Paths := -IInclude -IApp -I$(SGX_SDK)/include
+
+#add by Weijie
+App_Include_Paths := -IInclude -IApp -I$(SGX_SDK)/include $(CHECKER_Dyn_INC_PATH)
+
 App_C_Flags := $(SGX_COMMON_CFLAGS) -fPIC -Wno-attributes $(App_Include_Paths)
 
 # Three configuration modes - Debug, prerelease, release
@@ -132,7 +142,9 @@ endif
 Crypto_Library_Name := sgx_tcrypto
 
 Enclave_Cpp_Files := Enclave/Enclave.cpp
-Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport
+
+#added by Weijie
+Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
 
 
 # edited by Weijie
@@ -208,9 +220,10 @@ App/App.o: App/App.cpp App/ocall.cpp
 # @$(CXX) $^ -o $@ $(App_Link_Flags)
 # @$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags)
 #$(App_Name): App/Enclave_u.o App/attack.o App/App.o
+# checker part added by Weijie
 $(App_Name): App/Enclave_u.o App/App.o
 	@echo $(App_Link_Flags)
-	@$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags)
+	@$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags) $(CHECKER_Link_Outside)
 	@echo "LINK =>  $@"
 
 
@@ -236,7 +249,9 @@ Enclave/%.o: Enclave/%.cpp $(IN_ENCLAVE_PROGRAM)
 	@echo "CXX  <=  $<"
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
-	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
+	#@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
+	# checker part added by Weijie
+	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static) $(DEF_SYMBOL_SCRIPT)
 	@echo "LINK =>  $@"
 
 $(Signed_Enclave_Name): $(Enclave_Name)

@@ -346,6 +346,10 @@ static void relocate(void)
 		}
 }
 
+//Weijie: add checker here
+#include "checker_part.cpp"
+
+
 void enclave_main()
 {
 	pr_progress("hello from enclave_main!");
