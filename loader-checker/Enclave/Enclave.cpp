@@ -36,4 +36,4 @@ extern char __elf_end;          /* defined in the linker script */
 #define _HEAP_BASE (((addr_t)&__elf_end + 0xfff) & ~0xfff)
 
 const unsigned long __sgx_data_ofs = 0x2027000;
-#include "loader.cpp"
+#include "loader_checker.cpp"
