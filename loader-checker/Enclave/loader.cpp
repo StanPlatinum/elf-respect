@@ -348,7 +348,10 @@ static void relocate(void)
 
 //Weijie: add checker here
 #include "checker_part.cpp"
-
+/*
+ * Weijie:
+ * Usage: cs_disasm_entry(unsigned char* buf_test);
+ */
 
 void enclave_main()
 {

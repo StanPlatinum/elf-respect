@@ -34,13 +34,19 @@ void PrintDebugInfoOutside3(void)
 }
 
 #include "libelf.h"
+#include "libelf_extra_types.h"
 
-/* Weijie: ecall of whole cs_open/disasm/close */
-int Ecall_cs_entry(void) {
+#include "capstone_x86.h"
+
+/* Weijie: used be an ecall of whole cs_open/disasm/close */
+int cs_disasm_entry(unsigned char* buf_test) {
 	PrintDebugInfo("Weijie: new enclave starts here.\n");
 	csh handle;
 	cs_insn *insn;
 	size_t count;
+
+	//Weijie: test
+	/*
 	unsigned char buf_test[] =
 	{
 		0x74, 0x1d,
@@ -68,6 +74,7 @@ int Ecall_cs_entry(void) {
 		0xf2, 0x44, 0x0f, 0x10, 0xb4, 0x24, 0x98, 0x00, 0x00, 0x00,
 		0x00
 	};
+	*/
 
 	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
 		PrintDebugInfo("ERROR: Failed to initialize engine!\n");

@@ -32,6 +32,10 @@
 /* Enclave.edl - Top EDL file. */
 
 enclave {
+
+    /* Weijie: must include the following line, otherwise the compiling won't pass */
+    include "libelf_extra_types.h"
+
     trusted {
         public void enclave_main();
     };
