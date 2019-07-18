@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2011-2017 Intel Corporation. All rights reserved.
+ * Copyright (C) 2011-2016 Intel Corporation. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -29,6 +29,7 @@
  *
  */
 
+/* Weijie: this is a classic Enclave.h */
 
 #ifndef _ENCLAVE_H_
 #define _ENCLAVE_H_
@@ -40,6 +41,7 @@
 extern "C" {
 #endif
 
+void printf(const char *fmt, ...);
 
 #if defined(__cplusplus)
 }
