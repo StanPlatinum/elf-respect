@@ -381,7 +381,18 @@ void enclave_main()
 	
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);
+	//Weijie: checker starts here.
 
+	Elf64_Xword program_textSize;
+	program_textSize = main_sym->st_size;
+	unsigned char* buf = (unsigned char *)malloc(program_textSize);
+	int rv;
+	rv = cs_disasm_entry(buf);
+	if (rv == 0){
+		//Weijie: proceed
+	}	
+
+	//Weijie: checker ends here.
 	pr_progress("entering");
 
 	//Weijie: the asm inline commands could be commented

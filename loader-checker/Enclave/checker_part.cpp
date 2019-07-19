@@ -40,7 +40,7 @@ void PrintDebugInfoOutside3(void)
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
 int cs_disasm_entry(unsigned char* buf_test) {
-	PrintDebugInfo("Weijie: new enclave starts here.\n");
+	//PrintDebugInfo("Weijie: new enclave starts here.\n");
 	csh handle;
 	cs_insn *insn;
 	size_t count;
@@ -81,9 +81,9 @@ int cs_disasm_entry(unsigned char* buf_test) {
 		return -1;
 	}
 
-	PrintDebugInfo("-----checking disasm-----\n");
+	PrintDebugInfo("-----disassembling-----\n");
 	count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
-	PrintDebugInfo("-----checking printf-----\n");
+	PrintDebugInfo("-----printing-----\n");
 	if (count) {
 		size_t j;
 		for (j = 0; j < count; j++) {
