@@ -23,7 +23,7 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"
 
-#Weijie: generate target obj file: enclave.o
+#Weijie: generate target obj file: enclave_main.o
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
 
