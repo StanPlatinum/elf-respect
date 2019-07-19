@@ -1,6 +1,6 @@
 #Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
-#CC = clang
-CC = gcc
+CC = clang
+#CC = gcc
 CXX = clang++
 
 TARGET_NAME = simple_loop
@@ -25,7 +25,8 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 
 #Weijie: generate target obj file: enclave_main.o
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
+	gcc -c $(SGX_CFLAGS) -I. -o $@ $< 
 
 #Weijie: start generate _start
 lib/%.o: lib/%.s
@@ -34,12 +35,12 @@ lib/%.o: lib/%.s
 ASM_OBJS = lib/stack.o lib/start.o
 
 tools/linker: tools/linkage_editor.cpp
-	$(CXX) -o $@ $(LINKERFLAG) $^
+	$(CXX) -o $@ $^
 
 #Weijie: add malloc. 
 #Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	gcc -c $(SGX_CFLAGS) -o $@ $<
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: prepare whole static linked (with libc_static.a) obj
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
