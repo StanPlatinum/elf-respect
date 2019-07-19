@@ -26,9 +26,10 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 #Weijie: generate target obj file: enclave_main.o
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
-	gcc -c $(SGX_CFLAGS) -I. -o $@ $< 
+	gcc -c -I. -o $@ $< 
+	#gcc -c $(SGX_CFLAGS) -I. -o $@ $< 
 
-#Weijie: start generate _start
+#Weijie: generate _start
 lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
 
@@ -37,12 +38,13 @@ ASM_OBJS = lib/stack.o lib/start.o
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
-#Weijie: add malloc. 
+#Weijie: add malloc.o 
 #Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: prepare whole static linked (with libc_static.a) obj
+#Weijie: execute Makefile in Dir objs/
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	cp $^ objs/
 	$(MAKE) -C objs
