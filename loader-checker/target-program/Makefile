@@ -1,4 +1,5 @@
 #Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
+#CC = clang
 CC = gcc
 CXX = clang++
 
@@ -35,9 +36,10 @@ ASM_OBJS = lib/stack.o lib/start.o
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $(LINKERFLAG) $^
 
-#Weijie: add malloc
+#Weijie: add malloc. 
+#Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	$(CC) -c $(SGX_CFLAGS) -o $@ $<
+	gcc -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: prepare whole static linked (with libc_static.a) obj
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
