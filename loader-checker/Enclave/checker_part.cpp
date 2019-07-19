@@ -39,7 +39,7 @@ void PrintDebugInfoOutside3(void)
 #include "capstone_x86.h"
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
-int cs_disasm_entry(unsigned char* buf_test) {
+int cs_disasm_entry(unsigned char* buf_test, Elf64_Addr textAddr) {
 	//PrintDebugInfo("Weijie: new enclave starts here.\n");
 	csh handle;
 	cs_insn *insn;
@@ -82,7 +82,7 @@ int cs_disasm_entry(unsigned char* buf_test) {
 	}
 
 	PrintDebugInfo("-----disassembling-----\n");
-	count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
+	count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, textAddr, 0, &insn);
 	PrintDebugInfo("-----printing-----\n");
 	if (count) {
 		size_t j;

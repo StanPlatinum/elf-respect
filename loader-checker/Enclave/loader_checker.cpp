@@ -383,11 +383,18 @@ void enclave_main()
 	dlog("main: %p", entry);
 	//Weijie: checker starts here.
 
+	pr_progress("disassembling");
+	
+	PrintDebugInfo("-----setting params-----\n");
 	Elf64_Xword program_textSize;
 	program_textSize = main_sym->st_size;
+	Elf64_Addr textAddr;
+	textAddr = main_sym->st_value;
+
 	unsigned char* buf = (unsigned char *)malloc(program_textSize);
+	
 	int rv;
-	rv = cs_disasm_entry(buf);
+	rv = cs_disasm_entry(buf, textAddr);
 	if (rv == 0){
 		//Weijie: proceed
 	}	
