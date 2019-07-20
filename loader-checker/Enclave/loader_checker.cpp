@@ -201,12 +201,8 @@ static void cpy(char *dst, char *src, size_t size) {
 	while (size--) dst[size] = src[size];
 }
 
-#ifndef NOSGX
 #include "ocall_stub.cpp"
 #include "ocall_stub_table.cpp"
-#else
-#include "nosgx_ocall_stub.cpp"
-#endif
 static unsigned char find_special_symbol(const char* name, const size_t i)
 {
 	if (STR_EQUAL(name, "dep.bdr\0", 8)) {
@@ -350,12 +346,12 @@ static void relocate(void)
 #include "checker_part.cpp"
 /*
  * Weijie:
- * Usage: cs_disasm_entry(unsigned char* buf_test);
+ * Usage: cs_disasm_entry(unsigned char* buf_test, Elf64_Addr textAddr);
  */
 
 void enclave_main()
 {
-	pr_progress("hello from enclave_main!");
+	pr_progress("Hello from enclave_main!");
 	void (*entry)();
 	dlog("program at %p (%lx)", program, program_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
@@ -390,9 +386,10 @@ void enclave_main()
 	program_textSize = main_sym->st_size;
 	Elf64_Addr textAddr;
 	textAddr = main_sym->st_value;
-
+	Elf64_Off textOff;
+	//set textOff
 	unsigned char* buf = (unsigned char *)malloc(program_textSize);
-	
+	//fill in buf
 	int rv;
 	rv = cs_disasm_entry(buf, textAddr);
 	if (rv == 0){
