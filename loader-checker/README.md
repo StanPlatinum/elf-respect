@@ -67,3 +67,7 @@ It also uses define_symbols.lds (a partial linker scripts for the above-mentione
 ### How to add a program entry
 
 Sgx-shield uses a rather oblivious way to re-generate the relocatable ELF file. It re-compiles the program using analyzing .symtab, and adds a \_start to the end of the program.
+
+### We may take a 3rd way.
+
+The compiled assembly of target program could be the input to our loader (in enclave), before RA process has been performed and secure communication channel has been established. After that, loader analysis the assembly and re-compile it with necessary components such as _tlibc.
