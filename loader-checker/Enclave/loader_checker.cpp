@@ -33,6 +33,9 @@ static Elf64_Sym *symtab;
 char *strtab;
 static Elf64_Sym *main_sym;
 
+//Weijie: add main_index
+int main_index;
+
 /*
  * After loading the metadata,
  * rel.r_offset = [ the index of the relocation source : the offset from the source ]
@@ -273,6 +276,8 @@ static void load(void)
 				dlog("symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
+					//Weijie: record i
+					main_index = i;
 				}
 
 				symtab[i].st_value = (Elf64_Addr)reserve(pshdr[symtab[i].st_shndx].sh_flags,
@@ -289,13 +294,20 @@ static void load(void)
 					last_off = symoff;
 					last_st_value = symtab[i].st_value;
 				}
+
+				/*
+				//Weijie: store main data
+				if (symoff == pehdr->e_entry) {
+					dlog("copy data from symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
+					//Weijie: copy data, but without reserve, will crash
+					cpy((char *)main_sym, (char *)symtab[i].st_value, symtab[i].st_size);
+				}
+				*/
+				
 			}
 		}
 
 		dlog("sym %04u/%d %08lx", i, n_symtab, (unsigned long)symtab[i].st_value);
-#if PTRACE
-		find_ptrace_target(&strtab[symtab[i].st_name], i);
-#endif
 	}
 }
 
@@ -390,6 +402,8 @@ void enclave_main()
 	//set textOff
 	unsigned char* buf = (unsigned char *)malloc(program_textSize);
 	//fill in buf
+	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
+
 	int rv;
 	rv = cs_disasm_entry(buf, textAddr);
 	if (rv == 0){
