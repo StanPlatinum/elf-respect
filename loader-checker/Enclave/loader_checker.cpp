@@ -251,16 +251,16 @@ static void load(void)
 			last_size = 0;
 			shndx = symtab[i].st_shndx;
 		}
-	
+
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
-		
+
 		//Weijie: the following line would crash ...
 		//dlog("%u: ---test---", __LINE__);
 		//dlog("%u: i in symtab[i]", i);
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
-			
+
 			symtab[i].st_value = (Elf64_Addr)reserve(0, symtab[i].st_size, symtab[i].st_value);
 			fill_zero((char *)symtab[i].st_value, symtab[i].st_size);
 		} else if (!found) {
@@ -270,7 +270,7 @@ static void load(void)
 				symtab[i].st_value = last_st_value + symoff - last_off;
 			} else {
 				/* find main */
-				
+
 				//Weijie: checking if loader could find main()...
 				//dlog("%u: finding main...", __LINE__);
 				dlog("symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
@@ -298,12 +298,12 @@ static void load(void)
 				/*
 				//Weijie: store main data
 				if (symoff == pehdr->e_entry) {
-					dlog("copy data from symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
-					//Weijie: copy data, but without reserve, will crash
-					cpy((char *)main_sym, (char *)symtab[i].st_value, symtab[i].st_size);
+				dlog("copy data from symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
+				//Weijie: copy data, but without reserve, will crash
+				cpy((char *)main_sym, (char *)symtab[i].st_value, symtab[i].st_size);
 				}
 				*/
-				
+
 			}
 		}
 
@@ -321,7 +321,7 @@ static void relocate(void)
 			unsigned int dst_sym = REL_DST_NDX(reltab[k][i].r_offset);
 			unsigned int src_sym = ELF64_R_SYM(reltab[k][i].r_info);
 			const unsigned int type = ELF64_R_TYPE(reltab[k][i].r_info);
-			
+
 			//The following line may crash
 			//dlog("%u: dst_sym", dst_sym);
 			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
@@ -380,37 +380,61 @@ void enclave_main()
 	update_reltab();
 	pr_progress("loading");
 	load();
-	
+
 	//Weijie: cannot simply delete relocation in original sgx-shield demo
 	//Weijie: cannot delete the following lines in current demo
 	pr_progress("relocating");
 	relocate();
-	dlog("%u: ---finding entry---", __LINE__);
-	
-	entry = (void (*)())(main_sym->st_value);
-	dlog("main: %p", entry);
+
 	//Weijie: checker starts here.
+	/*
+	   pr_progress("disassembling _start");
 
-	pr_progress("disassembling");
-	
-	PrintDebugInfo("-----setting params-----\n");
-	Elf64_Xword program_textSize;
-	program_textSize = main_sym->st_size;
-	Elf64_Addr textAddr;
-	textAddr = main_sym->st_value;
-	Elf64_Off textOff;
-	//set textOff
-	unsigned char* buf = (unsigned char *)malloc(program_textSize);
-	//fill in buf
-	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
+	   PrintDebugInfo("-----setting params-----\n");
+	   Elf64_Xword textSize;
+	   textSize = main_sym->st_size;
+	   Elf64_Addr textAddr;
+	   textAddr = main_sym->st_value;
+	   unsigned char* buf = (unsigned char *)malloc(textSize);
+	   cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
+	   dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+	   int rv;
+	   rv = cs_disasm_entry(buf, textSize, textAddr);
+	   free(buf);
+	 */
 
+	pr_progress("disassembling all parts");
+
+	int j;
 	int rv;
-	rv = cs_disasm_entry(buf, textAddr);
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	unsigned char* buf;
+	//Weijie: assume j >= 3
+	for (j = 2; j < n_symtab - 1; j++){
+		textSize = symtab[j].st_size;
+		if (textSize > 0){
+			PrintDebugInfo("-----setting params-----\n");
+			textAddr = symtab[j].st_value;
+			buf = (unsigned char *)malloc(textSize);
+			//Weijie: fill in buf
+			cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+			dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+			rv = cs_disasm_entry(buf, textSize, textAddr);
+			free(buf);
+		}
+	}
 	if (rv == 0){
 		//Weijie: proceed
 	}	
 
+	pr_progress("checking");
+
 	//Weijie: checker ends here.
+	dlog("%u: ---finding entry---", __LINE__);	
+	entry = (void (*)())(main_sym->st_value);
+	dlog("main: %p", entry);
+
 	pr_progress("entering");
 
 	//Weijie: the asm inline commands could be commented
