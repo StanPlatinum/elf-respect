@@ -31,7 +31,7 @@
 ######## Checker Settings ########
 
 CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include
+CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I/home/liuweijie/sdk2.3-18.04/linux-sgx-12223e5a170a81512bf3d2fa7615eed20e4b2518/sdk/trts -I/home/liuweijie/sdk2.3-18.04/linux-sgx-12223e5a170a81512bf3d2fa7615eed20e4b2518/common/inc/internal
 CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 

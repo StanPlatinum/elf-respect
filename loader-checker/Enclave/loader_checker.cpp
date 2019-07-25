@@ -362,6 +362,7 @@ static void relocate(void)
  */
 
 #include <trts_internal.h>
+//void *get_enclave_base();
 
 void enclave_main()
 {
@@ -390,8 +391,6 @@ void enclave_main()
 
 	//Weijie: checker starts here.
 	/*
-	   pr_progress("disassembling _start");
-
 	   PrintDebugInfo("-----setting params-----\n");
 	   Elf64_Xword textSize;
 	   textSize = main_sym->st_size;
@@ -432,9 +431,9 @@ void enclave_main()
 
 	pr_progress("checking");
 	PrintDebugInfo("-----getting bounds-----\n");
-	size_t this_enclave_size = get_enclave_size();
+	//size_t this_enclave_size = get_enclave_size();
 	void *this_enclave_base = get_enclave_base();
-	dlog("base: %u, size: %u", this_enclave_size, this_enclave_base);
+	dlog("base: %u", this_enclave_base);
 
 	//Weijie: checker ends here.
 	dlog("%u: ---finding entry---", __LINE__);	
