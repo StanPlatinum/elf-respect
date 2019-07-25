@@ -358,8 +358,10 @@ static void relocate(void)
 #include "checker_part.cpp"
 /*
  * Weijie:
- * Usage: cs_disasm_entry(unsigned char* buf_test, Elf64_Addr textAddr);
+ * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
  */
+
+#include <trts_internal.h>
 
 void enclave_main()
 {
@@ -429,6 +431,10 @@ void enclave_main()
 	}	
 
 	pr_progress("checking");
+	PrintDebugInfo("-----getting bounds-----\n");
+	size_t this_enclave_size = get_enclave_size();
+	void *this_enclave_base = get_enclave_base();
+	dlog("base: %u, size: %u", this_enclave_size, this_enclave_base);
 
 	//Weijie: checker ends here.
 	dlog("%u: ---finding entry---", __LINE__);	
