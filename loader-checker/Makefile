@@ -30,8 +30,10 @@
 
 ######## Checker Settings ########
 
+SGX_SRC_PATH = /home/liuweijie/sdk2.3-18.04/linux-sgx-12223e5a170a81512bf3d2fa7615eed20e4b2518
+
 CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I/home/liuweijie/sdk2.3-18.04/linux-sgx-12223e5a170a81512bf3d2fa7615eed20e4b2518/sdk/trts -I/home/liuweijie/sdk2.3-18.04/linux-sgx-12223e5a170a81512bf3d2fa7615eed20e4b2518/common/inc/internal
+CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
@@ -154,11 +156,13 @@ Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fst
 Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++03 -nostdinc++
 Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
 	-Wl,--whole-archive -l$(Trts_Library_Name) -Wl,--no-whole-archive \
-	-Wl,--start-group -lsgx_tstdc -lsgx_tstdcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
+	-Wl,--start-group -lsgx_tstdc -lsgx_tcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
 	-Wl,-Bstatic -Wl,-Bsymbolic -Wl,--no-undefined \
 	-Wl,-pie,-eenclave_entry -Wl,--export-dynamic  \
 	-Wl,--defsym,__ImageBase=0 \
 	-Wl,--version-script=Enclave/Enclave.lds
+	#Weijie: change lsgx_tstdcxx to lsgx_tcxx
+	#-Wl,--start-group -lsgx_tstdc -lsgx_tstdcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
 
 Enclave_Cpp_Objects := $(Enclave_Cpp_Files:.cpp=.o)
 
