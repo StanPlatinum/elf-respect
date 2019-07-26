@@ -1,4 +1,3 @@
-#Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
 CC = clang
 #CC = gcc
 CXX = clang++
@@ -45,7 +44,6 @@ tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
 #Weijie: add malloc.o 
-#Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 

@@ -29,11 +29,6 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"
 
-#Weijie: generate _start
-lib/%.o: lib/%.s
-	$(CC) -c -o $@ $<
-	echo "generating lib/*.o"
-
 #Weijie: generate target obj file: enclave_main.o
 #Weijie: test
 enclave_main.o: $(TARGET_NAME).c enclave.h
@@ -41,6 +36,11 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	gcc -c enclave_main.s -o $@
 	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
 	#gcc -c -I. -o $@ $< 
+
+#Weijie: generate _start
+lib/%.o: lib/%.s
+	$(CC) -c -o $@ $<
+	echo "generating lib/*.o"
 
 ASM_OBJS = lib/stack.o lib/start.o
 
@@ -65,6 +65,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
 
 clean:
-	rm -f *.s *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f *.s *.o objs/*.o objs/*.lo $(TARGET_NAME)
 
 
