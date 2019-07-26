@@ -3,7 +3,7 @@ CC = clang
 #CC = gcc
 CXX = clang++
 
-TARGET_NAME = simple_loop
+TARGET_NAME = test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -29,18 +29,15 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"
 
+#Weijie: generate target obj file: enclave_main.o
+enclave_main.o: $(TARGET_NAME).c enclave.h
+	#$(CC) -S -I. -o enclave_main.s $<
+	#gcc -c enclave_main.s -o $@
+	gcc -c test.new.s -o $@
+
 #Weijie: generate _start
 lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
-	echo "generating lib/*.o"
-
-#Weijie: generate target obj file: enclave_main.o
-#Weijie: test
-enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	gcc -c enclave_main.s -o $@
-	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
-	#gcc -c -I. -o $@ $< 
 
 ASM_OBJS = lib/stack.o lib/start.o
 
@@ -59,12 +56,7 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	$(MAKE) -C objs
 	cp malloc.o objs/
 
-#Weijie: don't use the following lines ...
-#EXTRA_FLAGS2 = -Wl, -eenclave_main
-#$(TARGET_NAME): $(TARGET_NAME).o
-	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
-
 clean:
-	rm -f *.s *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f enclave_main.s *.o objs/*.o objs/*.lo list $(TARGET_NAME)
 
 
