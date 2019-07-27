@@ -262,12 +262,12 @@ void Ecall_nw(
         print_traceback( traceback, seq_1, seq_2 );
 }
 
-int enclave_main(void){
+void enclave_main(void){
 	char seq_1[] = "AGTACGTC";
         char seq_2[] = "ACGTCGT";
 	char seq_1_al[50];
         char seq_2_al[50];
 
 	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
-	return 0;
+	return;
 }
