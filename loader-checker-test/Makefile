@@ -43,7 +43,8 @@ CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_
 ######## Target Settings ########
 
 #Weijie: The input should be relocatable, not executable
-IN_ENCLAVE_PROGRAM = target-program/test
+IN_ENCLAVE_PROGRAM = target-program/nw4test
+#IN_ENCLAVE_PROGRAM = target-program/test
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 
