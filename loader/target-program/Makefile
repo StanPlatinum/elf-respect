@@ -35,7 +35,9 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 
 #Weijie: generate target obj file: enclave.o
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
+	$(CC) -S $(SGX_CFLAGS) -I. -o enclave_main.s $< 
+	gcc -c $(SGX_CFLAGS) -I. -o $@ enclave_main.s 
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
 
 #Weijie: generate _start
 lib/%.o: lib/%.s
@@ -62,6 +64,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
 
 clean:
-	rm -f *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f *.o list enclave_main.s lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
 
 

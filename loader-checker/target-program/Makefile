@@ -9,7 +9,7 @@ BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-LIBC_DIR = ./TrustedLib
+LIBC_DIR = ./libc
 LIBC_PATH = $(LIBC_DIR)/libc.a
 LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
@@ -37,7 +37,8 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -S -I. -o enclave_main.s $<
 	gcc -c enclave_main.s -o $@
 	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
-	#gcc -c -I. -o $@ $< 
+	#gcc -c -I. -o $@ $<
+	#Weijie: must use clang to compile the source .c file, otherwise _G_O_T_will not be found.
 
 #Weijie: generate _start
 lib/%.o: lib/%.s
@@ -67,6 +68,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
 
 clean:
-	rm -f *.s *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f enclave_main.s list *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
 
 
