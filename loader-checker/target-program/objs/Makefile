@@ -2,8 +2,9 @@
 
 all: libc_targetprogram.a
 
-libc_targetprogram.a: ./libc_static.a
-	$(AR) -x ./libc_static.a
+#Weijie: the following libc name should be in accordance with the one in TrustedLib Dir.
+libc_targetprogram.a: ./libc.a
+	$(AR) -x ./libc.a
 	$(AR) -rs libc_targetprogram.a *.o ../enclave_main.o
 
 clean:

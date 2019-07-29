@@ -19,7 +19,13 @@ SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
 
-ASM_OBJS = lib/stack.o lib/start.o lib/exit.o
+#Weijie: add Makefile in lib/ for ocalls
+OCALL_OBJS_DIR = lib/
+OCALL_LIB_MK = lib/ocall.mk
+
+include $(OCALL_LIB_MK)
+
+ASM_OBJS = lib/stack.o lib/start.o
 
 all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cp lib/*.o objs
@@ -31,9 +37,10 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
 
-#Weijie: start generate _start
-$(ASM_OBJS): lib/stack.c lib/start.s lib/exit.s
+#Weijie: generate _start
+lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
+	echo "generating lib/*.o"
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $(LINKERFLAG) $^

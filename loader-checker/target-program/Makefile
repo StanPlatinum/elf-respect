@@ -10,8 +10,8 @@ BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 LIBC_DIR = ./TrustedLib
-LIBC_PATH = $(LIBC_DIR)/libc_static.a
-LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc_static.a
+LIBC_PATH = $(LIBC_DIR)/libc.a
+LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -22,6 +22,8 @@ include $(OCALL_LIB_MK)
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
+
+ASM_OBJS = lib/stack.o lib/start.o
 
 all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cp lib/*.o objs
@@ -42,13 +44,13 @@ lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
 	echo "generating lib/*.o"
 
-ASM_OBJS = lib/stack.o lib/start.o
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
 #Weijie: add malloc.o 
 #Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
+#Weijie: But later it turns out a negligible issue. malloc.o could be compiled with either gcc or clang (llvm).
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
@@ -65,6 +67,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
 
 clean:
-	rm -f *.s *.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f *.s *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
 
 

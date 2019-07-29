@@ -132,6 +132,8 @@ static void validate_ehdr(void)
 
 	if (pehdr->e_shentsize != sizeof (Elf64_Shdr))
 		dlog("%u: Shdr entry size", __LINE__);
+
+	dlog("validate header successfully, %u", __LINE__);
 }
 
 void *get_buf(size_t size) {
@@ -182,9 +184,11 @@ static void update_reltab(void)
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
-				//Weijie: the following line may crash if the target program is compiled wrongly ...
-				//Weijie: it turns out that ...
-				//dlog("%u: ---test---", __LINE__);
+				//Weijie: the following line may crash if the target program is compiled wrongly. That's mainly because the dst cannot be searched (return -1).
+				dlog("%u: ---test---", __LINE__);
+				dlog("n_rel:\t%u", n_rel);
+				dlog("j:\t%u", j);
+				dlog("dst:\t%u", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
@@ -192,6 +196,8 @@ static void update_reltab(void)
 
 		}
 	}
+
+	dlog("update relocatable successfully, %u", __LINE__);
 }
 
 static void fill_zero(char *ptr, Elf64_Word size) {

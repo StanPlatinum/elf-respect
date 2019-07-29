@@ -1,0 +1,2 @@
+OCALL_OBJS = $(OCALL_OBJS_DIR)exit.o
+
