@@ -1,6 +1,6 @@
 #Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
-#CC = clang
-CC = gcc
+CC = clang
+#CC = gcc
 CXX = clang++
 
 TARGET_NAME = simple_loop
@@ -10,12 +10,16 @@ BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 LIBC_DIR = ./TrustedLib
-LIBC_PATH = $(LIBC_DIR)/libc_static.a
-LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc_static.a
+#LIBC_PATH = $(LIBC_DIR)/libc_static.a
+LIBC_PATH = $(LIBC_DIR)/libc.a
+#LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc_static.a
+LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
+
+ASM_OBJS = lib/stack.o lib/start.o lib/exit.o
 
 all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cp lib/*.o objs
@@ -28,10 +32,8 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
 
 #Weijie: start generate _start
-lib/%.o: lib/%.s
+$(ASM_OBJS): lib/stack.c lib/start.s lib/exit.s
 	$(CC) -c -o $@ $<
-
-ASM_OBJS = lib/stack.o lib/start.o
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $(LINKERFLAG) $^
@@ -39,7 +41,7 @@ tools/linker: tools/linkage_editor.cpp
 #Weijie: add malloc. 
 #Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	gcc -c $(SGX_CFLAGS) -o $@ $<
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: prepare whole static linked (with libc_static.a) obj
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
@@ -53,6 +55,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
 
 clean:
-	rm -f *.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
 
 
