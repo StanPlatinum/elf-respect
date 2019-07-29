@@ -1086,7 +1086,8 @@ void select_needed_relocatables(const std::vector<string>& files, std::set<strin
 }
 //-------- drop unnecessary relocatable files --------<
 
-#define DEBUG 0
+//Weijie: debugging
+#define DEBUG 1
 
 int main(int argc, const char *argv[])
 {

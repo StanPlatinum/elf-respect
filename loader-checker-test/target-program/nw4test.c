@@ -263,10 +263,6 @@ void Ecall_nw(
         int  L1 = my_strlen(seq_1);
         int  L2 = my_strlen(seq_2);
 
-	int ** F;
-	char ** traceback;
-
-#if 0
         // Dynamic programming matrix
         int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
         for( int i = 0; i <= L2; i++ )  
@@ -276,7 +272,6 @@ void Ecall_nw(
         for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
-#endif
         // Initialize traceback and F matrix (fill in first row and column)
         dpm_init( F, traceback, L1, L2, d );
         /* Initialize seq_als */
@@ -298,6 +293,8 @@ void enclave_main(void){
 	char seq_1_al[50];
         char seq_2_al[50];
 
-	//Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
-	return;
+	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
+
+	//Weijie: make it returning
+	enclave_main();
 }

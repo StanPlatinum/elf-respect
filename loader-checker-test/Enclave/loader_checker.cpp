@@ -442,8 +442,8 @@ void enclave_main()
 	pr_progress("entering");
 
 	//Weijie: the asm inline commands could be commented
-	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
+	//__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
 	entry();
-	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
+	//__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
 	pr_progress("returning");
 }
