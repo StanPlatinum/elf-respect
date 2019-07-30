@@ -1,6 +1,8 @@
-#Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
-CC = clang
+#CC = clang
 #CC = gcc
+#Weijie: add llvm install path
+CC = /opt/llvm/bin/clang
+
 CXX = clang++
 
 TARGET_NAME = simple_loop
