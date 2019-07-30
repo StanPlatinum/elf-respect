@@ -1,0 +1,2326 @@
+The system is: Linux - 4.15.0-54-generic - x86_64
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /usr/bin/cc 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/home/liuweijie/elf-respect/llvm/build/CMakeFiles/3.10.2/CompilerIdC/a.out"
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/home/liuweijie/elf-respect/llvm/build/CMakeFiles/3.10.2/CompilerIdCXX/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b34da/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b34da.dir/build.make CMakeFiles/cmTC_b34da.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b34da.dir/testCCompiler.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_b34da.dir/testCCompiler.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_b34da
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b34da.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_b34da.dir/testCCompiler.c.o  -o cmTC_b34da 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_263d6/fast"
+/usr/bin/make -f CMakeFiles/cmTC_263d6.dir/build.make CMakeFiles/cmTC_263d6.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.10/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_263d6
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_263d6.dir/link.txt --verbose=1
+/usr/bin/cc     -v CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o  -o cmTC_263d6 
+Using built-in specs.
+COLLECT_GCC=/usr/bin/cc
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper
+OFFLOAD_TARGET_NAMES=nvptx-none
+OFFLOAD_TARGET_DEFAULT=1
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 7.4.0-1ubuntu1~18.04.1' --with-bugurl=file:///usr/share/doc/gcc-7/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++ --prefix=/usr --with-gcc-major-version-only --program-suffix=-7 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Thread model: posix
+gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_263d6' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxGtQtU.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_263d6 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_263d6' '-mtune=generic' '-march=x86-64'
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_263d6/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_263d6.dir/build.make CMakeFiles/cmTC_263d6.dir/build]
+  ignore line: [make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/usr/bin/cc    -o CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.10/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_263d6]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_263d6.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/cc     -v CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o  -o cmTC_263d6 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/cc]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper]
+  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+  ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+  ignore line: [Target: x86_64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 7.4.0-1ubuntu1~18.04.1' --with-bugurl=file:///usr/share/doc/gcc-7/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++ --prefix=/usr --with-gcc-major-version-only --program-suffix=-7 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_263d6' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccxGtQtU.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_263d6 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccxGtQtU.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--sysroot=/] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_263d6] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib]
+    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..]
+    arg [CMakeFiles/cmTC_263d6.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--push-state] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--pop-state] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--push-state] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--pop-state] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7] ==> [/usr/lib/gcc/x86_64-linux-gnu/7]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> [/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/7;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+
+
+Detecting C [-std=c11] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_5d9fa/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5d9fa.dir/build.make CMakeFiles/cmTC_5d9fa.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5d9fa.dir/feature_tests.c.o
+/usr/bin/cc   -std=c11 -o CMakeFiles/cmTC_5d9fa.dir/feature_tests.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_5d9fa
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5d9fa.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_5d9fa.dir/feature_tests.c.o  -o cmTC_5d9fa 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:1c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c99] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_cc4a7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_cc4a7.dir/build.make CMakeFiles/cmTC_cc4a7.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cc4a7.dir/feature_tests.c.o
+/usr/bin/cc   -std=c99 -o CMakeFiles/cmTC_cc4a7.dir/feature_tests.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_cc4a7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cc4a7.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_cc4a7.dir/feature_tests.c.o  -o cmTC_cc4a7 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c90] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ae99b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ae99b.dir/build.make CMakeFiles/cmTC_ae99b.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ae99b.dir/feature_tests.c.o
+/usr/bin/cc   -std=c90 -o CMakeFiles/cmTC_ae99b.dir/feature_tests.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_ae99b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ae99b.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_ae99b.dir/feature_tests.c.o  -o cmTC_ae99b 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:0c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:0c_variadic_macros
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d7d0e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d7d0e.dir/build.make CMakeFiles/cmTC_d7d0e.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_d7d0e.dir/testCXXCompiler.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_d7d0e.dir/testCXXCompiler.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_d7d0e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d7d0e.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_d7d0e.dir/testCXXCompiler.cxx.o  -o cmTC_d7d0e 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_62f25/fast"
+/usr/bin/make -f CMakeFiles/cmTC_62f25.dir/build.make CMakeFiles/cmTC_62f25.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o
+/usr/bin/c++     -o CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_62f25
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_62f25.dir/link.txt --verbose=1
+/usr/bin/c++      -v CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_62f25 
+Using built-in specs.
+COLLECT_GCC=/usr/bin/c++
+COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper
+OFFLOAD_TARGET_NAMES=nvptx-none
+OFFLOAD_TARGET_DEFAULT=1
+Target: x86_64-linux-gnu
+Configured with: ../src/configure -v --with-pkgversion='Ubuntu 7.4.0-1ubuntu1~18.04.1' --with-bugurl=file:///usr/share/doc/gcc-7/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++ --prefix=/usr --with-gcc-major-version-only --program-suffix=-7 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Thread model: posix
+gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1) 
+COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/
+LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_62f25' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccgV1Vzk.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_62f25 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o
+COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_62f25' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_62f25/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_62f25.dir/build.make CMakeFiles/cmTC_62f25.dir/build]
+  ignore line: [make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/usr/bin/c++     -o CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_62f25]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_62f25.dir/link.txt --verbose=1]
+  ignore line: [/usr/bin/c++      -v CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_62f25 ]
+  ignore line: [Using built-in specs.]
+  ignore line: [COLLECT_GCC=/usr/bin/c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper]
+  ignore line: [OFFLOAD_TARGET_NAMES=nvptx-none]
+  ignore line: [OFFLOAD_TARGET_DEFAULT=1]
+  ignore line: [Target: x86_64-linux-gnu]
+  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 7.4.0-1ubuntu1~18.04.1' --with-bugurl=file:///usr/share/doc/gcc-7/README.Bugs --enable-languages=c,ada,c++,go,brig,d,fortran,objc,obj-c++ --prefix=/usr --with-gcc-major-version-only --program-suffix=-7 --program-prefix=x86_64-linux-gnu- --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --enable-default-pie --with-system-zlib --with-target-system-zlib --enable-objc-gc=auto --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-offload-targets=nvptx-none --without-cuda-driver --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.4.0 (Ubuntu 7.4.0-1ubuntu1~18.04.1) ]
+  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/]
+  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/7/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/7/../../../:/lib/:/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_62f25' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
+  link line: [ /usr/lib/gcc/x86_64-linux-gnu/7/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper -plugin-opt=-fresolution=/tmp/ccgV1Vzk.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o cmTC_62f25 /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/7 -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/7/../../.. CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/7/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccgV1Vzk.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--sysroot=/] ==> ignore
+    arg [--build-id] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
+    arg [--as-needed] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-znow] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_62f25] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/Scrt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtbeginS.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib]
+    arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
+    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
+    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..]
+    arg [CMakeFiles/cmTC_62f25.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/crtendS.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7] ==> [/usr/lib/gcc/x86_64-linux-gnu/7]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
+  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
+  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/7/../../..] ==> [/usr/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/7;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit fwks: []
+
+
+
+
+Detecting CXX [-std=c++1z] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_52277/fast"
+/usr/bin/make -f CMakeFiles/cmTC_52277.dir/build.make CMakeFiles/cmTC_52277.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_52277.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++1z -o CMakeFiles/cmTC_52277.dir/feature_tests.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_52277
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52277.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_52277.dir/feature_tests.cxx.o  -o cmTC_52277 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++14] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_5c645/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5c645.dir/build.make CMakeFiles/cmTC_5c645.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_5c645.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++14 -o CMakeFiles/cmTC_5c645.dir/feature_tests.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_5c645
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5c645.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_5c645.dir/feature_tests.cxx.o  -o cmTC_5c645 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++11] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_52ec1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_52ec1.dir/build.make CMakeFiles/cmTC_52ec1.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_52ec1.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++11 -o CMakeFiles/cmTC_52ec1.dir/feature_tests.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_52ec1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_52ec1.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_52ec1.dir/feature_tests.cxx.o  -o cmTC_52ec1 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++98] compiler features compiled with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_55b9a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_55b9a.dir/build.make CMakeFiles/cmTC_55b9a.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_55b9a.dir/feature_tests.cxx.o
+/usr/bin/c++    -std=c++98 -o CMakeFiles/cmTC_55b9a.dir/feature_tests.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_55b9a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_55b9a.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_55b9a.dir/feature_tests.cxx.o  -o cmTC_55b9a 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:0cxx_alias_templates
+    Feature record: CXX_FEATURE:0cxx_alignas
+    Feature record: CXX_FEATURE:0cxx_alignof
+    Feature record: CXX_FEATURE:0cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:0cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:0cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:0cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:0cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:0cxx_default_function_template_args
+    Feature record: CXX_FEATURE:0cxx_defaulted_functions
+    Feature record: CXX_FEATURE:0cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:0cxx_delegating_constructors
+    Feature record: CXX_FEATURE:0cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:0cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:0cxx_explicit_conversions
+    Feature record: CXX_FEATURE:0cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:0cxx_extern_templates
+    Feature record: CXX_FEATURE:0cxx_final
+    Feature record: CXX_FEATURE:0cxx_func_identifier
+    Feature record: CXX_FEATURE:0cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:0cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:0cxx_inline_namespaces
+    Feature record: CXX_FEATURE:0cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:0cxx_local_type_template_args
+    Feature record: CXX_FEATURE:0cxx_long_long_type
+    Feature record: CXX_FEATURE:0cxx_noexcept
+    Feature record: CXX_FEATURE:0cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:0cxx_nullptr
+    Feature record: CXX_FEATURE:0cxx_override
+    Feature record: CXX_FEATURE:0cxx_range_for
+    Feature record: CXX_FEATURE:0cxx_raw_string_literals
+    Feature record: CXX_FEATURE:0cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:0cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:0cxx_rvalue_references
+    Feature record: CXX_FEATURE:0cxx_sizeof_member
+    Feature record: CXX_FEATURE:0cxx_static_assert
+    Feature record: CXX_FEATURE:0cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:0cxx_thread_local
+    Feature record: CXX_FEATURE:0cxx_trailing_return_types
+    Feature record: CXX_FEATURE:0cxx_unicode_literals
+    Feature record: CXX_FEATURE:0cxx_uniform_initialization
+    Feature record: CXX_FEATURE:0cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:0cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:0cxx_variadic_macros
+    Feature record: CXX_FEATURE:0cxx_variadic_templates
+Determining if the include file dirent.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_82e3e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_82e3e.dir/build.make CMakeFiles/cmTC_82e3e.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_82e3e.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_82e3e.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_82e3e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_82e3e.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_82e3e.dir/CheckIncludeFile.c.o  -o cmTC_82e3e 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file dlfcn.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f6178/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f6178.dir/build.make CMakeFiles/cmTC_f6178.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_f6178.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_f6178.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_f6178
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f6178.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_f6178.dir/CheckIncludeFile.c.o  -o cmTC_f6178 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file errno.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ede24/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ede24.dir/build.make CMakeFiles/cmTC_ede24.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ede24.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ede24.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_ede24
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ede24.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_ede24.dir/CheckIncludeFile.c.o  -o cmTC_ede24 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file execinfo.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_0ceec/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0ceec.dir/build.make CMakeFiles/cmTC_0ceec.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0ceec.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_0ceec.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0ceec
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0ceec.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_0ceec.dir/CheckIncludeFile.c.o  -o cmTC_0ceec 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file fcntl.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_23929/fast"
+/usr/bin/make -f CMakeFiles/cmTC_23929.dir/build.make CMakeFiles/cmTC_23929.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_23929.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_23929.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_23929
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_23929.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_23929.dir/CheckIncludeFile.c.o  -o cmTC_23929 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file inttypes.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b7a7e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b7a7e.dir/build.make CMakeFiles/cmTC_b7a7e.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b7a7e.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_b7a7e.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_b7a7e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b7a7e.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_b7a7e.dir/CheckIncludeFile.c.o  -o cmTC_b7a7e 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file link.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_a6c3a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a6c3a.dir/build.make CMakeFiles/cmTC_a6c3a.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a6c3a.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_a6c3a.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_a6c3a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a6c3a.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_a6c3a.dir/CheckIncludeFile.c.o  -o cmTC_a6c3a 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file malloc.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ada03/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ada03.dir/build.make CMakeFiles/cmTC_ada03.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_ada03.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_ada03.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_ada03
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ada03.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_ada03.dir/CheckIncludeFile.c.o  -o cmTC_ada03 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_49df1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_49df1.dir/build.make CMakeFiles/cmTC_49df1.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_49df1.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_49df1.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_49df1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_49df1.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_49df1.dir/CheckIncludeFile.c.o  -o cmTC_49df1 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file signal.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_1561c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1561c.dir/build.make CMakeFiles/cmTC_1561c.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1561c.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_1561c.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_1561c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1561c.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_1561c.dir/CheckIncludeFile.c.o  -o cmTC_1561c 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file stdint.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_5cbda/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5cbda.dir/build.make CMakeFiles/cmTC_5cbda.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5cbda.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_5cbda.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_5cbda
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5cbda.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_5cbda.dir/CheckIncludeFile.c.o  -o cmTC_5cbda 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/dir.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d70e1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d70e1.dir/build.make CMakeFiles/cmTC_d70e1.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d70e1.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_d70e1.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_d70e1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d70e1.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_d70e1.dir/CheckIncludeFile.c.o  -o cmTC_d70e1 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/ioctl.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_fa646/fast"
+/usr/bin/make -f CMakeFiles/cmTC_fa646.dir/build.make CMakeFiles/cmTC_fa646.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_fa646.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_fa646.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_fa646
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_fa646.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_fa646.dir/CheckIncludeFile.c.o  -o cmTC_fa646 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/mman.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_55be0/fast"
+/usr/bin/make -f CMakeFiles/cmTC_55be0.dir/build.make CMakeFiles/cmTC_55be0.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_55be0.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_55be0.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_55be0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_55be0.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_55be0.dir/CheckIncludeFile.c.o  -o cmTC_55be0 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/param.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9715f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9715f.dir/build.make CMakeFiles/cmTC_9715f.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9715f.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_9715f.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_9715f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9715f.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_9715f.dir/CheckIncludeFile.c.o  -o cmTC_9715f 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/resource.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_74c4d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_74c4d.dir/build.make CMakeFiles/cmTC_74c4d.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_74c4d.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_74c4d.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_74c4d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_74c4d.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_74c4d.dir/CheckIncludeFile.c.o  -o cmTC_74c4d 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/stat.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_0583e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0583e.dir/build.make CMakeFiles/cmTC_0583e.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0583e.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_0583e.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0583e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0583e.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_0583e.dir/CheckIncludeFile.c.o  -o cmTC_0583e 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/time.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_3e461/fast"
+/usr/bin/make -f CMakeFiles/cmTC_3e461.dir/build.make CMakeFiles/cmTC_3e461.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3e461.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_3e461.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_3e461
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3e461.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_3e461.dir/CheckIncludeFile.c.o  -o cmTC_3e461 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/types.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_94fe4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_94fe4.dir/build.make CMakeFiles/cmTC_94fe4.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_94fe4.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_94fe4.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_94fe4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_94fe4.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_94fe4.dir/CheckIncludeFile.c.o  -o cmTC_94fe4 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file sys/uio.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_0ee85/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0ee85.dir/build.make CMakeFiles/cmTC_0ee85.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0ee85.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_0ee85.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_0ee85
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0ee85.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_0ee85.dir/CheckIncludeFile.c.o  -o cmTC_0ee85 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file termios.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c835a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c835a.dir/build.make CMakeFiles/cmTC_c835a.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c835a.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_c835a.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_c835a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c835a.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_c835a.dir/CheckIncludeFile.c.o  -o cmTC_c835a 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file unistd.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c503c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c503c.dir/build.make CMakeFiles/cmTC_c503c.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c503c.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_c503c.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_c503c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c503c.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_c503c.dir/CheckIncludeFile.c.o  -o cmTC_c503c 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file zlib.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_3511f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_3511f.dir/build.make CMakeFiles/cmTC_3511f.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_3511f.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_3511f.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_3511f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3511f.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_3511f.dir/CheckIncludeFile.c.o  -o cmTC_3511f 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file fenv.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_525cf/fast"
+/usr/bin/make -f CMakeFiles/cmTC_525cf.dir/build.make CMakeFiles/cmTC_525cf.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_525cf.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_525cf.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_525cf
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_525cf.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_525cf.dir/CheckIncludeFile.c.o  -o cmTC_525cf 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the FE_ALL_EXCEPT exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_1d794/fast"
+/usr/bin/make -f CMakeFiles/cmTC_1d794.dir/build.make CMakeFiles/cmTC_1d794.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_1d794.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_1d794.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_1d794
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1d794.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_1d794.dir/CheckSymbolExists.c.o  -o cmTC_1d794 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <fenv.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef FE_ALL_EXCEPT
+  return ((int*)(&FE_ALL_EXCEPT))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the FE_INEXACT exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_0a060/fast"
+/usr/bin/make -f CMakeFiles/cmTC_0a060.dir/build.make CMakeFiles/cmTC_0a060.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_0a060.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_0a060.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_0a060
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_0a060.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_0a060.dir/CheckSymbolExists.c.o  -o cmTC_0a060 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <fenv.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef FE_INEXACT
+  return ((int*)(&FE_INEXACT))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_143a1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_143a1.dir/build.make CMakeFiles/cmTC_143a1.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_143a1.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_143a1.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_143a1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_143a1.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_143a1.dir/CheckFunctionExists.c.o  -o cmTC_143a1 -lpthread -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function pthread_getspecific exists in the pthread passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b1d05/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b1d05.dir/build.make CMakeFiles/cmTC_b1d05.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b1d05.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_getspecific   -o CMakeFiles/cmTC_b1d05.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_b1d05
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1d05.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_getspecific    CMakeFiles/cmTC_b1d05.dir/CheckFunctionExists.c.o  -o cmTC_b1d05 -lpthread -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function pthread_rwlock_init exists in the pthread passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_df118/fast"
+/usr/bin/make -f CMakeFiles/cmTC_df118.dir/build.make CMakeFiles/cmTC_df118.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_df118.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_rwlock_init   -o CMakeFiles/cmTC_df118.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_df118
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_df118.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_rwlock_init    CMakeFiles/cmTC_df118.dir/CheckFunctionExists.c.o  -o cmTC_df118 -lpthread -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function pthread_mutex_lock exists in the pthread passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4525f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4525f.dir/build.make CMakeFiles/cmTC_4525f.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4525f.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_mutex_lock   -o CMakeFiles/cmTC_4525f.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_4525f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4525f.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_mutex_lock    CMakeFiles/cmTC_4525f.dir/CheckFunctionExists.c.o  -o cmTC_4525f -lpthread -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function dlopen exists in the dl passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c4209/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c4209.dir/build.make CMakeFiles/cmTC_c4209.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c4209.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=dlopen   -o CMakeFiles/cmTC_c4209.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_c4209
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c4209.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=dlopen    CMakeFiles/cmTC_c4209.dir/CheckFunctionExists.c.o  -o cmTC_c4209 -ldl -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function clock_gettime exists in the rt passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_26da9/fast"
+/usr/bin/make -f CMakeFiles/cmTC_26da9.dir/build.make CMakeFiles/cmTC_26da9.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_26da9.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=clock_gettime   -o CMakeFiles/cmTC_26da9.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_26da9
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_26da9.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=clock_gettime    CMakeFiles/cmTC_26da9.dir/CheckFunctionExists.c.o  -o cmTC_26da9 -lrt -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the include file pthread.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_a2a86/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a2a86.dir/build.make CMakeFiles/cmTC_a2a86.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a2a86.dir/CheckIncludeFile.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_a2a86.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_a2a86
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a2a86.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_a2a86.dir/CheckIncludeFile.c.o  -o cmTC_a2a86 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function pthread_create exists in the pthread passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_57f30/fast"
+/usr/bin/make -f CMakeFiles/cmTC_57f30.dir/build.make CMakeFiles/cmTC_57f30.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_57f30.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_57f30.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_57f30
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_57f30.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_57f30.dir/CheckFunctionExists.c.o  -o cmTC_57f30 -lpthread -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function compress2 exists in the z passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9073c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9073c.dir/build.make CMakeFiles/cmTC_9073c.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_9073c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=compress2   -o CMakeFiles/cmTC_9073c.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_9073c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9073c.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=compress2    CMakeFiles/cmTC_9073c.dir/CheckFunctionExists.c.o  -o cmTC_9073c -lz -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the function setupterm exists in the tinfo passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_02c6c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_02c6c.dir/build.make CMakeFiles/cmTC_02c6c.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_02c6c.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=setupterm   -o CMakeFiles/cmTC_02c6c.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_02c6c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_02c6c.dir/link.txt --verbose=1
+/usr/bin/cc  -DCHECK_FUNCTION_EXISTS=setupterm    CMakeFiles/cmTC_02c6c.dir/CheckFunctionExists.c.o  -o cmTC_02c6c -ltinfo -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+
+Determining if the backtrace exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_32666/fast"
+/usr/bin/make -f CMakeFiles/cmTC_32666.dir/build.make CMakeFiles/cmTC_32666.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_32666.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_32666.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_32666
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_32666.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_32666.dir/CheckSymbolExists.c.o  -o cmTC_32666 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <execinfo.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef backtrace
+  return ((int*)(&backtrace))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the _Unwind_Backtrace exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_bcdab/fast"
+/usr/bin/make -f CMakeFiles/cmTC_bcdab.dir/build.make CMakeFiles/cmTC_bcdab.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_bcdab
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bcdab.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_bcdab.dir/CheckSymbolExists.c.o  -o cmTC_bcdab -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unwind.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef _Unwind_Backtrace
+  return ((int*)(&_Unwind_Backtrace))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the getpagesize exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6b885/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6b885.dir/build.make CMakeFiles/cmTC_6b885.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6b885.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_6b885.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_6b885
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6b885.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_6b885.dir/CheckSymbolExists.c.o  -o cmTC_6b885 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getpagesize
+  return ((int*)(&getpagesize))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the sysconf exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_936b2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_936b2.dir/build.make CMakeFiles/cmTC_936b2.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_936b2.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_936b2.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_936b2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_936b2.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_936b2.dir/CheckSymbolExists.c.o  -o cmTC_936b2 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sysconf
+  return ((int*)(&sysconf))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the getrusage exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_4af43/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4af43.dir/build.make CMakeFiles/cmTC_4af43.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_4af43.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_4af43.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_4af43
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4af43.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_4af43.dir/CheckSymbolExists.c.o  -o cmTC_4af43 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/resource.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getrusage
+  return ((int*)(&getrusage))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the setrlimit exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_98801/fast"
+/usr/bin/make -f CMakeFiles/cmTC_98801.dir/build.make CMakeFiles/cmTC_98801.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_98801.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_98801.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_98801
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_98801.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_98801.dir/CheckSymbolExists.c.o  -o cmTC_98801 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/resource.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef setrlimit
+  return ((int*)(&setrlimit))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the isatty exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_733f8/fast"
+/usr/bin/make -f CMakeFiles/cmTC_733f8.dir/build.make CMakeFiles/cmTC_733f8.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_733f8.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_733f8.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_733f8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_733f8.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_733f8.dir/CheckSymbolExists.c.o  -o cmTC_733f8 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef isatty
+  return ((int*)(&isatty))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the futimens exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b04e4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b04e4.dir/build.make CMakeFiles/cmTC_b04e4.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_b04e4.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_b04e4.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_b04e4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b04e4.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_b04e4.dir/CheckSymbolExists.c.o  -o cmTC_b04e4 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/stat.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef futimens
+  return ((int*)(&futimens))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the futimes exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_7c924/fast"
+/usr/bin/make -f CMakeFiles/cmTC_7c924.dir/build.make CMakeFiles/cmTC_7c924.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_7c924.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_7c924.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_7c924
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7c924.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_7c924.dir/CheckSymbolExists.c.o  -o cmTC_7c924 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/time.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef futimes
+  return ((int*)(&futimes))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the posix_fallocate exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2b6ee/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2b6ee.dir/build.make CMakeFiles/cmTC_2b6ee.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2b6ee.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_2b6ee.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_2b6ee
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2b6ee.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_2b6ee.dir/CheckSymbolExists.c.o  -o cmTC_2b6ee -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <fcntl.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef posix_fallocate
+  return ((int*)(&posix_fallocate))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the sigaltstack exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2539e/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2539e.dir/build.make CMakeFiles/cmTC_2539e.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2539e.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_2539e.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_2539e
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2539e.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_2539e.dir/CheckSymbolExists.c.o  -o cmTC_2539e -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <signal.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sigaltstack
+  return ((int*)(&sigaltstack))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the writev exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_a53de/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a53de.dir/build.make CMakeFiles/cmTC_a53de.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_a53de.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_a53de.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_a53de
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a53de.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_a53de.dir/CheckSymbolExists.c.o  -o cmTC_a53de -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/uio.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef writev
+  return ((int*)(&writev))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the lseek64 exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_aec56/fast"
+/usr/bin/make -f CMakeFiles/cmTC_aec56.dir/build.make CMakeFiles/cmTC_aec56.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_aec56.dir/CheckSymbolExists.c.o
+/usr/bin/cc -D_LARGEFILE64_SOURCE   -o CMakeFiles/cmTC_aec56.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_aec56
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aec56.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_aec56.dir/CheckSymbolExists.c.o  -o cmTC_aec56 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/types.h>
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef lseek64
+  return ((int*)(&lseek64))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the mallinfo exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d1553/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d1553.dir/build.make CMakeFiles/cmTC_d1553.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_d1553.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_d1553.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_d1553
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d1553.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_d1553.dir/CheckSymbolExists.c.o  -o cmTC_d1553 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <malloc.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef mallinfo
+  return ((int*)(&mallinfo))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the mkdtemp exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_528f2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_528f2.dir/build.make CMakeFiles/cmTC_528f2.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_528f2.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_528f2.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_528f2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_528f2.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_528f2.dir/CheckSymbolExists.c.o  -o cmTC_528f2 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef mkdtemp
+  return ((int*)(&mkdtemp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the mkstemp exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_95ed4/fast"
+/usr/bin/make -f CMakeFiles/cmTC_95ed4.dir/build.make CMakeFiles/cmTC_95ed4.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_95ed4.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_95ed4.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_95ed4
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_95ed4.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_95ed4.dir/CheckSymbolExists.c.o  -o cmTC_95ed4 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef mkstemp
+  return ((int*)(&mkstemp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the mktemp exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_01cdb/fast"
+/usr/bin/make -f CMakeFiles/cmTC_01cdb.dir/build.make CMakeFiles/cmTC_01cdb.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_01cdb.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_01cdb.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_01cdb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_01cdb.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_01cdb.dir/CheckSymbolExists.c.o  -o cmTC_01cdb -lm 
+CMakeFiles/cmTC_01cdb.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x1b): warning: the use of `mktemp' is dangerous, better use `mkstemp' or `mkdtemp'
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef mktemp
+  return ((int*)(&mktemp))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the getcwd exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_efc62/fast"
+/usr/bin/make -f CMakeFiles/cmTC_efc62.dir/build.make CMakeFiles/cmTC_efc62.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_efc62.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_efc62.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_efc62
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_efc62.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_efc62.dir/CheckSymbolExists.c.o  -o cmTC_efc62 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getcwd
+  return ((int*)(&getcwd))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the gettimeofday exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_bea73/fast"
+/usr/bin/make -f CMakeFiles/cmTC_bea73.dir/build.make CMakeFiles/cmTC_bea73.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_bea73.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_bea73.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_bea73
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bea73.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_bea73.dir/CheckSymbolExists.c.o  -o cmTC_bea73 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/time.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef gettimeofday
+  return ((int*)(&gettimeofday))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the getrlimit exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_dda9c/fast"
+/usr/bin/make -f CMakeFiles/cmTC_dda9c.dir/build.make CMakeFiles/cmTC_dda9c.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_dda9c.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_dda9c.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_dda9c
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dda9c.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_dda9c.dir/CheckSymbolExists.c.o  -o cmTC_dda9c -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef getrlimit
+  return ((int*)(&getrlimit))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the posix_spawn exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_cd1c8/fast"
+/usr/bin/make -f CMakeFiles/cmTC_cd1c8.dir/build.make CMakeFiles/cmTC_cd1c8.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_cd1c8.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_cd1c8.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_cd1c8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_cd1c8.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_cd1c8.dir/CheckSymbolExists.c.o  -o cmTC_cd1c8 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <spawn.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef posix_spawn
+  return ((int*)(&posix_spawn))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the pread exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_21501/fast"
+/usr/bin/make -f CMakeFiles/cmTC_21501.dir/build.make CMakeFiles/cmTC_21501.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_21501.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_21501.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_21501
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_21501.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_21501.dir/CheckSymbolExists.c.o  -o cmTC_21501 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pread
+  return ((int*)(&pread))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the realpath exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_15565/fast"
+/usr/bin/make -f CMakeFiles/cmTC_15565.dir/build.make CMakeFiles/cmTC_15565.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_15565.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_15565.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_15565
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_15565.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_15565.dir/CheckSymbolExists.c.o  -o cmTC_15565 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef realpath
+  return ((int*)(&realpath))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the sbrk exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6657f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6657f.dir/build.make CMakeFiles/cmTC_6657f.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6657f.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_6657f.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_6657f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6657f.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_6657f.dir/CheckSymbolExists.c.o  -o cmTC_6657f -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef sbrk
+  return ((int*)(&sbrk))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the strtoll exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6e3fb/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6e3fb.dir/build.make CMakeFiles/cmTC_6e3fb.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_6e3fb.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_6e3fb.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_6e3fb
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6e3fb.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_6e3fb.dir/CheckSymbolExists.c.o  -o cmTC_6e3fb -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strtoll
+  return ((int*)(&strtoll))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the strerror exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_79dcd/fast"
+/usr/bin/make -f CMakeFiles/cmTC_79dcd.dir/build.make CMakeFiles/cmTC_79dcd.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_79dcd.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_79dcd.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_79dcd
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_79dcd.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_79dcd.dir/CheckSymbolExists.c.o  -o cmTC_79dcd -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <string.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strerror
+  return ((int*)(&strerror))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the strerror_r exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_bb614/fast"
+/usr/bin/make -f CMakeFiles/cmTC_bb614.dir/build.make CMakeFiles/cmTC_bb614.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_bb614.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_bb614.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_bb614
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bb614.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_bb614.dir/CheckSymbolExists.c.o  -o cmTC_bb614 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <string.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef strerror_r
+  return ((int*)(&strerror_r))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the setenv exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_414c5/fast"
+/usr/bin/make -f CMakeFiles/cmTC_414c5.dir/build.make CMakeFiles/cmTC_414c5.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_414c5.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_414c5.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_414c5
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_414c5.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_414c5.dir/CheckSymbolExists.c.o  -o cmTC_414c5 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdlib.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef setenv
+  return ((int*)(&setenv))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the dlopen exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2da8b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2da8b.dir/build.make CMakeFiles/cmTC_2da8b.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_2da8b.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_2da8b.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_2da8b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2da8b.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_2da8b.dir/CheckSymbolExists.c.o  -o cmTC_2da8b -lm -ldl 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <dlfcn.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef dlopen
+  return ((int*)(&dlopen))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the __GLIBC__ exist passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_5bb0a/fast"
+/usr/bin/make -f CMakeFiles/cmTC_5bb0a.dir/build.make CMakeFiles/cmTC_5bb0a.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_5bb0a.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTC_5bb0a.dir/CheckSymbolExists.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTC_5bb0a
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_5bb0a.dir/link.txt --verbose=1
+/usr/bin/cc      CMakeFiles/cmTC_5bb0a.dir/CheckSymbolExists.c.o  -o cmTC_5bb0a -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+File /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <stdio.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef __GLIBC__
+  return ((int*)(&__GLIBC__))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Performing C++ SOURCE FILE Test HAVE_INT64_T succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_ff671/fast"
+/usr/bin/make -f CMakeFiles/cmTC_ff671.dir/build.make CMakeFiles/cmTC_ff671.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_ff671.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_INT64_T   -o CMakeFiles/cmTC_ff671.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_ff671
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_ff671.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAVE_INT64_T    CMakeFiles/cmTC_ff671.dir/src.cxx.o  -o cmTC_ff671 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+    #include<sys/types.h>
+#include<inttypes.h>
+#include<stdint.h>
+ int64_t typeVar;
+    int main() {
+        return 0;
+    }
+    
+Performing C++ SOURCE FILE Test HAVE_UINT64_T succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c26c6/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c26c6.dir/build.make CMakeFiles/cmTC_c26c6.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c26c6.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_UINT64_T   -o CMakeFiles/cmTC_c26c6.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_c26c6
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c26c6.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAVE_UINT64_T    CMakeFiles/cmTC_c26c6.dir/src.cxx.o  -o cmTC_c26c6 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+    #include<sys/types.h>
+#include<inttypes.h>
+#include<stdint.h>
+ uint64_t typeVar;
+    int main() {
+        return 0;
+    }
+    
+Performing C++ SOURCE FILE Test HAVE_U_INT64_T succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_92cc3/fast"
+/usr/bin/make -f CMakeFiles/cmTC_92cc3.dir/build.make CMakeFiles/cmTC_92cc3.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_92cc3.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_U_INT64_T   -o CMakeFiles/cmTC_92cc3.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_92cc3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_92cc3.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAVE_U_INT64_T    CMakeFiles/cmTC_92cc3.dir/src.cxx.o  -o cmTC_92cc3 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+    #include<sys/types.h>
+#include<inttypes.h>
+#include<stdint.h>
+ u_int64_t typeVar;
+    int main() {
+        return 0;
+    }
+    
+Performing C++ SOURCE FILE Test HAVE_CXX_ATOMICS_WITHOUT_LIB succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_6b721/fast"
+/usr/bin/make -f CMakeFiles/cmTC_6b721.dir/build.make CMakeFiles/cmTC_6b721.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_6b721.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_CXX_ATOMICS_WITHOUT_LIB -std=c++11   -o CMakeFiles/cmTC_6b721.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_6b721
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_6b721.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAVE_CXX_ATOMICS_WITHOUT_LIB -std=c++11    CMakeFiles/cmTC_6b721.dir/src.cxx.o  -o cmTC_6b721 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#include <atomic>
+std::atomic<int> x;
+int main() {
+  return x;
+}
+
+Performing C++ SOURCE FILE Test HAVE_CXX_ATOMICS64_WITHOUT_LIB succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c6e85/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c6e85.dir/build.make CMakeFiles/cmTC_c6e85.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_c6e85.dir/src.cxx.o
+/usr/bin/c++    -DHAVE_CXX_ATOMICS64_WITHOUT_LIB -std=c++11   -o CMakeFiles/cmTC_c6e85.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_c6e85
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c6e85.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAVE_CXX_ATOMICS64_WITHOUT_LIB -std=c++11    CMakeFiles/cmTC_c6e85.dir/src.cxx.o  -o cmTC_c6e85 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#include <atomic>
+#include <cstdint>
+std::atomic<uint64_t> x (0);
+int main() {
+  uint64_t i = x.load(std::memory_order_relaxed);
+  return 0;
+}
+
+Performing C++ SOURCE FILE Test LLVM_HAS_ATOMICS succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f3e03/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f3e03.dir/build.make CMakeFiles/cmTC_f3e03.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f3e03.dir/src.cxx.o
+/usr/bin/c++    -DLLVM_HAS_ATOMICS   -o CMakeFiles/cmTC_f3e03.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_f3e03
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f3e03.dir/link.txt --verbose=1
+/usr/bin/c++   -DLLVM_HAS_ATOMICS    CMakeFiles/cmTC_f3e03.dir/src.cxx.o  -o cmTC_f3e03 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+
+#ifdef _MSC_VER
+#include <Intrin.h> /* Workaround for PR19898. */
+#include <windows.h>
+#endif
+int main() {
+#ifdef _MSC_VER
+        volatile LONG val = 1;
+        MemoryBarrier();
+        InterlockedCompareExchange(&val, 0, 1);
+        InterlockedIncrement(&val);
+        InterlockedDecrement(&val);
+#else
+        volatile unsigned long val = 1;
+        __sync_synchronize();
+        __sync_val_compare_and_swap(&val, 1, 0);
+        __sync_add_and_fetch(&val, 1);
+        __sync_sub_and_fetch(&val, 1);
+#endif
+        return 0;
+      }
+
+Performing C++ SOURCE FILE Test SUPPORTS_VARIADIC_MACROS_FLAG succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_f4612/fast"
+/usr/bin/make -f CMakeFiles/cmTC_f4612.dir/build.make CMakeFiles/cmTC_f4612.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_f4612.dir/src.cxx.o
+/usr/bin/c++    -DSUPPORTS_VARIADIC_MACROS_FLAG   -Wvariadic-macros -o CMakeFiles/cmTC_f4612.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_f4612
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_f4612.dir/link.txt --verbose=1
+/usr/bin/c++   -DSUPPORTS_VARIADIC_MACROS_FLAG    CMakeFiles/cmTC_f4612.dir/src.cxx.o  -o cmTC_f4612 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test HAS_MAYBE_UNINITIALIZED succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_9e218/fast"
+/usr/bin/make -f CMakeFiles/cmTC_9e218.dir/build.make CMakeFiles/cmTC_9e218.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_9e218.dir/src.cxx.o
+/usr/bin/c++    -DHAS_MAYBE_UNINITIALIZED   -Wmaybe-uninitialized -o CMakeFiles/cmTC_9e218.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_9e218
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_9e218.dir/link.txt --verbose=1
+/usr/bin/c++   -DHAS_MAYBE_UNINITIALIZED    CMakeFiles/cmTC_9e218.dir/src.cxx.o  -o cmTC_9e218 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_SUPPORTS_FPIC succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_886d8/fast"
+/usr/bin/make -f CMakeFiles/cmTC_886d8.dir/build.make CMakeFiles/cmTC_886d8.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_886d8.dir/src.c.o
+/usr/bin/cc   -DC_SUPPORTS_FPIC   -Werror -fPIC -o CMakeFiles/cmTC_886d8.dir/src.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_886d8
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_886d8.dir/link.txt --verbose=1
+/usr/bin/cc  -DC_SUPPORTS_FPIC    CMakeFiles/cmTC_886d8.dir/src.c.o  -o cmTC_886d8 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_FPIC succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d46ec/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d46ec.dir/build.make CMakeFiles/cmTC_d46ec.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_d46ec.dir/src.cxx.o
+/usr/bin/c++    -DCXX_SUPPORTS_FPIC   -Werror -fPIC -o CMakeFiles/cmTC_d46ec.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_d46ec
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d46ec.dir/link.txt --verbose=1
+/usr/bin/c++   -DCXX_SUPPORTS_FPIC    CMakeFiles/cmTC_d46ec.dir/src.cxx.o  -o cmTC_d46ec -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test SUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_dafe0/fast"
+/usr/bin/make -f CMakeFiles/cmTC_dafe0.dir/build.make CMakeFiles/cmTC_dafe0.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_dafe0.dir/src.cxx.o
+/usr/bin/c++    -fPIC -DSUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG   -fvisibility-inlines-hidden -o CMakeFiles/cmTC_dafe0.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_dafe0
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dafe0.dir/link.txt --verbose=1
+/usr/bin/c++   -fPIC -DSUPPORTS_FVISIBILITY_INLINES_HIDDEN_FLAG    CMakeFiles/cmTC_dafe0.dir/src.cxx.o  -o cmTC_dafe0 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_MISSING_FIELD_INITIALIZERS_FLAG succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_2ddd1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2ddd1.dir/build.make CMakeFiles/cmTC_2ddd1.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_2ddd1.dir/src.cxx.o
+/usr/bin/c++    -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -DCXX_SUPPORTS_MISSING_FIELD_INITIALIZERS_FLAG   -Wmissing-field-initializers -o CMakeFiles/cmTC_2ddd1.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_2ddd1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2ddd1.dir/link.txt --verbose=1
+/usr/bin/c++   -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -DCXX_SUPPORTS_MISSING_FIELD_INITIALIZERS_FLAG    CMakeFiles/cmTC_2ddd1.dir/src.cxx.o  -o cmTC_2ddd1 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_DELETE_NON_VIRTUAL_DTOR_FLAG succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_16ef3/fast"
+/usr/bin/make -f CMakeFiles/cmTC_16ef3.dir/build.make CMakeFiles/cmTC_16ef3.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_16ef3.dir/src.cxx.o
+/usr/bin/c++    -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-maybe-uninitialized -DCXX_SUPPORTS_DELETE_NON_VIRTUAL_DTOR_FLAG   -Werror -Wdelete-non-virtual-dtor -o CMakeFiles/cmTC_16ef3.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_16ef3
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_16ef3.dir/link.txt --verbose=1
+/usr/bin/c++   -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-maybe-uninitialized -DCXX_SUPPORTS_DELETE_NON_VIRTUAL_DTOR_FLAG    CMakeFiles/cmTC_16ef3.dir/src.cxx.o  -o cmTC_16ef3 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C SOURCE FILE Test C_SUPPORTS_WERROR_DATE_TIME succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_8bc08/fast"
+/usr/bin/make -f CMakeFiles/cmTC_8bc08.dir/build.make CMakeFiles/cmTC_8bc08.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_8bc08.dir/src.c.o
+/usr/bin/cc   -fPIC -Wall -W -Wno-unused-parameter -Wwrite-strings -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-comment -DC_SUPPORTS_WERROR_DATE_TIME   -Werror -Werror=date-time -o CMakeFiles/cmTC_8bc08.dir/src.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.c
+Linking C executable cmTC_8bc08
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_8bc08.dir/link.txt --verbose=1
+/usr/bin/cc  -fPIC -Wall -W -Wno-unused-parameter -Wwrite-strings -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-comment -DC_SUPPORTS_WERROR_DATE_TIME    CMakeFiles/cmTC_8bc08.dir/src.c.o  -o cmTC_8bc08 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main(void) { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_WERROR_DATE_TIME succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_98a17/fast"
+/usr/bin/make -f CMakeFiles/cmTC_98a17.dir/build.make CMakeFiles/cmTC_98a17.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_98a17.dir/src.cxx.o
+/usr/bin/c++    -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-maybe-uninitialized -Wdelete-non-virtual-dtor -Wno-comment -DCXX_SUPPORTS_WERROR_DATE_TIME   -Werror -Werror=date-time -o CMakeFiles/cmTC_98a17.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_98a17
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_98a17.dir/link.txt --verbose=1
+/usr/bin/c++   -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-maybe-uninitialized -Wdelete-non-virtual-dtor -Wno-comment -DCXX_SUPPORTS_WERROR_DATE_TIME    CMakeFiles/cmTC_98a17.dir/src.cxx.o  -o cmTC_98a17 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Performing C++ SOURCE FILE Test CXX_SUPPORTS_CXX11 succeeded with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_b1ff2/fast"
+/usr/bin/make -f CMakeFiles/cmTC_b1ff2.dir/build.make CMakeFiles/cmTC_b1ff2.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_b1ff2.dir/src.cxx.o
+/usr/bin/c++    -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-maybe-uninitialized -Wdelete-non-virtual-dtor -Wno-comment -Werror=date-time -DCXX_SUPPORTS_CXX11   -std=c++11 -o CMakeFiles/cmTC_b1ff2.dir/src.cxx.o -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/src.cxx
+Linking CXX executable cmTC_b1ff2
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b1ff2.dir/link.txt --verbose=1
+/usr/bin/c++   -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-maybe-uninitialized -Wdelete-non-virtual-dtor -Wno-comment -Werror=date-time -DCXX_SUPPORTS_CXX11    CMakeFiles/cmTC_b1ff2.dir/src.cxx.o  -o cmTC_b1ff2 -lm 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+Source file was:
+int main() { return 0; }
+Determining if the include file sys/resource.h exists passed with the following output:
+Change Dir: /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_c3547/fast"
+/usr/bin/make -f CMakeFiles/cmTC_c3547.dir/build.make CMakeFiles/cmTC_c3547.dir/build
+make[1]: Entering directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_c3547.dir/CheckIncludeFile.c.o
+/usr/bin/cc   -fPIC -Wall -W -Wno-unused-parameter -Wwrite-strings -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-comment -Werror=date-time    -o CMakeFiles/cmTC_c3547.dir/CheckIncludeFile.c.o   -c /home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp/CheckIncludeFile.c
+Linking C executable cmTC_c3547
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_c3547.dir/link.txt --verbose=1
+/usr/bin/cc  -fPIC -Wall -W -Wno-unused-parameter -Wwrite-strings -Wno-missing-field-initializers -pedantic -Wno-long-long -Wno-comment -Werror=date-time    -Wl,-allow-shlib-undefined  CMakeFiles/cmTC_c3547.dir/CheckIncludeFile.c.o  -o cmTC_c3547 
+make[1]: Leaving directory '/home/liuweijie/elf-respect/llvm/build/CMakeFiles/CMakeTmp'
+
+

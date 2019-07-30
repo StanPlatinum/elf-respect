@@ -1,4 +1,4 @@
-## Privacy-preserving TEE protoype on a service-oriented environment (e.g. MLaaS)
+## Privacy-preserving TEE protoype on a service-oriented environment such as on an MLaaS platform
 
 ### Checking if an (malicious) enclave would leak data at runtime 
 
@@ -6,7 +6,7 @@
 
 ***
 
-Usage:
+# Usage:
 
 ## build llvm
 
