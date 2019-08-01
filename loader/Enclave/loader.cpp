@@ -250,8 +250,8 @@ static void load(void)
 
 	//Weijie: ignore filename ABS
 	//Weijie: test if i could start with 2
-	//for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
-	for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
+	for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
+	//for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
 		if (shndx != symtab[i].st_shndx) {
 			last_off = (Elf64_Addr)-1;
 			last_st_value = (Elf64_Addr)-1;

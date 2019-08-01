@@ -1,8 +1,8 @@
-#CC = clang
+CC = clang
 #CC = gcc
 #Weijie: add llvm install path
 #CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC
+#CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC
 #CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0
 #CC = /opt/llvm/bin/clang
 
