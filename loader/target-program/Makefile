@@ -1,7 +1,10 @@
 #CC = clang
 #CC = gcc
 #Weijie: add llvm install path
-CC = /opt/llvm/bin/clang
+#CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC
+#CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0
+#CC = /opt/llvm/bin/clang
 
 #CXX = clang++
 
@@ -17,6 +20,7 @@ LIBC_PATH = $(LIBC_DIR)/libc.a
 #LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc_static.a
 LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
+#SGX_CFLAGS = $(BASE_CFLAGS) $(EXTRA_FLAGS1) -fno-stack-protector -fvisibility=hidden
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
