@@ -1,21 +1,20 @@
+#CC = clang -fno-asynchronous-unwind-tables -fno-jump-tables
 CC = clang
 #CC = gcc
 CXX = clang++
 
 #TARGET_NAME = test
-TARGET_NAME = nw4test
+TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_simple
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
-EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-
-#LIBC_DIR = ./TrustedLib
-#LIBC_PATH = $(LIBC_DIR)/libc_static.a
 NOLIBC_FLAG = -nodefaultlibs -nostdlib
 
 LIBCDIR = musl-libc
 LIBC = $(LIBCDIR)/lib/libc.a
+#Weijie: use musl-libc to provide exit.o
+SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -23,9 +22,6 @@ OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
 ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o
-
-#Weijie: use musl-libc to provide exit.o
-SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
 
 all: $(LIBC) $(TARGET_NAME)
 
@@ -42,12 +38,6 @@ $(TARGET_NAME): objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS)
 lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
 
-#Weijie: generate target obj file
-enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	gcc -c enclave_main.s -o $@
-	#gcc -c new.s -o $@
-
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
@@ -60,6 +50,12 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC)
 #Weijie: add malloc.o 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
+
+#Weijie: generate target obj file
+enclave_main.o: $(TARGET_NAME).c enclave.h
+	$(CC) -S -I. -o enclave_main.s $<
+	gcc -c enclave_main.s -o $@
+	#gcc -c new.s -o $@
 
 clean:
 	rm -f enclave_main.s *.o objs/*.o objs/*.lo list $(TARGET_NAME) \

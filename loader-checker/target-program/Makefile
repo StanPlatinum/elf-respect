@@ -1,13 +1,11 @@
-#Weijie: still must use gcc to compile the source..., clang would fail, don't know why...
-CC = clang
+#Weijie: must use gcc to compile the ENCLAVE. clang would fail due to some reasons...
+CC = clang -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = gcc
 CXX = clang++
 
 TARGET_NAME = simple_loop
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
-
-EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 LIBC_DIR = ./libc
 LIBC_PATH = $(LIBC_DIR)/libc.a
@@ -21,7 +19,6 @@ include $(OCALL_LIB_MK)
 
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
-#SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
 
 ASM_OBJS = lib/stack.o lib/start.o
 
@@ -31,29 +28,13 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"
 
-#Weijie: generate target obj file: enclave_main.o
-#Weijie: test
-enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	gcc -c enclave_main.s -o $@
-	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
-	#gcc -c -I. -o $@ $<
-	#Weijie: must use clang to compile the source .c file, otherwise _G_O_T_will not be found.
-
 #Weijie: generate _start
 lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
 	echo "generating lib/*.o"
 
-
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
-
-#Weijie: add malloc.o 
-#Weijie: Here malloc.o should be compiled with gcc, otherwise bad things (related with nonnull) will happen.
-#Weijie: But later it turns out a negligible issue. malloc.o could be compiled with either gcc or clang (llvm).
-malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: prepare whole static linked (with libc_static.a) obj
 #Weijie: execute Makefile in Dir objs/
@@ -62,12 +43,19 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	$(MAKE) -C objs
 	cp malloc.o objs/
 
-#Weijie: don't use the following lines ...
-#EXTRA_FLAGS2 = -Wl, -eenclave_main
-#$(TARGET_NAME): $(TARGET_NAME).o
-	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
+#Weijie: add malloc.o 
+#Weijie: But later it turns out a negligible issue. malloc.o could be compiled with either gcc or clang (llvm).
+malloc.o: malloc/malloc.c malloc/dlmalloc.inc
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
+
+#Weijie: generate target obj file: enclave_main.o
+#Weijie: separated compiling
+enclave_main.o: $(TARGET_NAME).c enclave.h
+	$(CC) -S -I. -o enclave_main.s $<
+	gcc -c enclave_main.s -o $@
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
+	#gcc -c -I. -o $@ $<
+	#Weijie: must use clang to compile the source .c file, otherwise _G_O_T_will not be found.
 
 clean:
 	rm -f enclave_main.s list *.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
-
-
