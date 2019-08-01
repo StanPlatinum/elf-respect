@@ -94,6 +94,9 @@ FunctionPass *createX86EvexToVexInsts();
 
 void initializeEvexToVexInstPassPass(PassRegistry &);
 
+//Weijie: add functionpass declaration
+FunctionPass *createX86SGXASLR();
+
 } // End llvm namespace
 
 #endif

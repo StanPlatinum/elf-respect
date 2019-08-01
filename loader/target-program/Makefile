@@ -3,7 +3,7 @@
 #Weijie: add llvm install path
 CC = /opt/llvm/bin/clang
 
-CXX = clang++
+#CXX = clang++
 
 TARGET_NAME = simple_loop
 

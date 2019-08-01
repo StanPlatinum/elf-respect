@@ -402,4 +402,7 @@ void X86PassConfig::addPreEmitPass() {
     addPass(createX86FixupLEAs());
     addPass(createX86EvexToVexInsts());
   }
+
+  //Weijie: add pass
+  addPass(createX86SGXASLR());
 }

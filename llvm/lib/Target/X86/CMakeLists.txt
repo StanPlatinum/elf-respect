@@ -24,6 +24,8 @@ else()
   set(LLVM_OPTIONAL_SOURCES LLVMGlobalISel ${GLOBAL_ISEL_FILES})
 endif()
 
+#Weijie: add
+#  X86SGXASLR.cpp
 
 set(sources
   X86AsmPrinter.cpp
@@ -44,6 +46,7 @@ set(sources
   X86MCInstLower.cpp
   X86MachineFunctionInfo.cpp
   X86OptimizeLEAs.cpp
+  X86SGXASLR.cpp
   X86PadShortFunction.cpp
   X86RegisterInfo.cpp
   X86SelectionDAGInfo.cpp

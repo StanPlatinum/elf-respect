@@ -69,6 +69,37 @@ class LLVM_LIBRARY_VISIBILITY X86AsmPrinter : public AsmPrinter {
     unsigned RequiredShadowSize = 0, CurrentShadowSize = 0;
   };
 
+  //Weijie: add InstCounter
+    class InstCounter {
+  public:
+    InstCounter (TargetMachine &TM) : TM(TM), codeSize(0), CodeEmitter(NULL) {}
+    ~InstCounter () {}
+    void count(MCInst &Inst, const MCSubtargetInfo &STI);
+    unsigned get() { return instSize; }
+    unsigned getCodeSize() { return codeSize; }
+    void setCodeSize(unsigned size) { codeSize = size; }
+    void free() { delete CodeEmitter; }
+    void reset(MachineFunction &F);
+  private:
+    MachineFunction *MF;
+    TargetMachine &TM;
+    MCCodeEmitter *CodeEmitter;
+    unsigned instSize;
+    unsigned codeSize;
+  };
+
+  //Weijie: add handler bundled instructions
+  bool isBundled;
+  bool flushBundle;
+  unsigned bundleSize;
+  bool bundleCall;
+  SmallVector<MCInst, 8> bundledInst;
+
+  //Weijie: add another
+  InstCounter IC;
+  unsigned units;
+  bool isUncondBranch;
+
   StackMapShadowTracker SMShadowTracker;
 
   // All instructions emitted by the X86AsmPrinter should use this helper
@@ -77,6 +108,10 @@ class LLVM_LIBRARY_VISIBILITY X86AsmPrinter : public AsmPrinter {
   // This helper function invokes the SMShadowTracker on each instruction before
   // outputting it to the OutStream. This allows the shadow tracker to minimise
   // the number of NOPs used for stackmap padding.
+
+  //Weijie: add declaration
+  void EmitAndAlignInstruction(MCInst &Inst);
+
   void EmitAndCountInstruction(MCInst &Inst);
   void LowerSTACKMAP(const MachineInstr &MI);
   void LowerPATCHPOINT(const MachineInstr &MI, X86MCInstLower &MCIL);
@@ -99,7 +134,10 @@ class LLVM_LIBRARY_VISIBILITY X86AsmPrinter : public AsmPrinter {
 public:
   explicit X86AsmPrinter(TargetMachine &TM,
                          std::unique_ptr<MCStreamer> Streamer)
-      : AsmPrinter(TM, std::move(Streamer)), SM(*this), FM(*this) {}
+      : AsmPrinter(TM, std::move(Streamer)), SM(*this), FM(*this)
+	//Weijie: test
+ 	, IC(TM), isBundled(false), bundleSize(0), bundleCall(false) {}
+  	//Weijie: end of modification
 
   StringRef getPassName() const override {
     return "X86 Assembly Printer";

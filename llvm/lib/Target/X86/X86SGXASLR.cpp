@@ -762,6 +762,8 @@ bool X86SGXASLR::applySoftDEPandSFI(MachineBasicBlock &MBB) {
   return Modified;
 }
 
+//Weijie: comment applyASLR
+#if 0
 /*
  * Jaebaek: applyASLR() makes all basic-blocks have UncondBr or Return or IndirectBr.
  * Interating only terminators:
@@ -832,5 +834,6 @@ bool X86SGXASLR::applyASLR(MachineFunction &MF, MachineFunction::iterator MFI)
 
   return modified;
 }
+#endif
 
 FunctionPass *llvm::createX86SGXASLR() { return new X86SGXASLR(); }

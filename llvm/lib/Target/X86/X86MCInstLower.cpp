@@ -101,10 +101,78 @@ void X86AsmPrinter::StackMapShadowTracker::emitShadowPadding(
   }
 }
 
+//Weijie: test
+const unsigned maxUnitForASLR = 32;
+const unsigned jmpInstBytes = 5;
+void X86AsmPrinter::EmitAndAlignInstruction(MCInst &Inst) {
+  if (MF->hasInlineAsm()) {
+    EmitAndCountInstruction(Inst);
+    return;
+  }
+  if (Inst.getOpcode() == X86::JMP_1)
+    Inst.setOpcode(X86::JMP_4);
+  IC.count(Inst, getSubtargetInfo());
+  unsigned isz = IC.get();
+  if (isBundled) {
+    bundleSize += isz;
+    bundledInst.push_back(Inst);
+    return;
+  }
+  if (IC.getCodeSize() > (maxUnitForASLR - jmpInstBytes)) {
+    // emit jmp
+    Twine tmp = MF->getName() + "." + Twine(units++);
+    MCSymbol *Sym = OutContext.getOrCreateSymbol(tmp);
+
+    // Jaebaek: We don't need to add another uncondBr at the 32-bytes boundary.
+    if (isUncondBranch)
+      EmitAndCountInstruction(Inst);
+    else
+      EmitAndCountInstruction(MCInstBuilder(X86::JMP_4)
+          .addExpr(MCSymbolRefExpr::create(Sym,
+              MCSymbolRefExpr::VK_None, OutContext)));
+
+    // emit align
+    OutStreamer->EmitCodeAlignment(maxUnitForASLR);
+
+    // emit label
+    OutStreamer->EmitLabel(Sym);
+
+    // Jaebaek: We don't need to add another uncondBr at the 32-bytes boundary.
+    if (isUncondBranch)
+      IC.setCodeSize(0);
+    else {
+      IC.setCodeSize(isz);
+      EmitAndCountInstruction(Inst);
+    }
+    return;
+  }
+  EmitAndCountInstruction(Inst);
+}
+//Weijie: end of modification
+
 void X86AsmPrinter::EmitAndCountInstruction(MCInst &Inst) {
   OutStreamer->EmitInstruction(Inst, getSubtargetInfo());
   SMShadowTracker.count(Inst, getSubtargetInfo(), CodeEmitter.get());
 }
+
+//Weijie: test
+void X86AsmPrinter::InstCounter::count(MCInst &Inst, const MCSubtargetInfo &STI) {
+  SmallString<256> Code;
+  SmallVector<MCFixup, 4> Fixups;
+  raw_svector_ostream VecOS(Code);
+  CodeEmitter->encodeInstruction(Inst, VecOS, Fixups, STI);
+  instSize = Code.size();
+  // cout << Inst.getOpcode() << " -- " << instSize << endl;
+  codeSize += instSize;
+}
+
+void X86AsmPrinter::InstCounter::reset(MachineFunction &F) {
+  MF = &F;
+  CodeEmitter = TM.getTarget().createMCCodeEmitter(
+        *F.getSubtarget().getInstrInfo(),
+        *F.getSubtarget().getRegisterInfo(), F.getContext());
+}
+//end of modification
 
 X86MCInstLower::X86MCInstLower(const MachineFunction &mf,
                                X86AsmPrinter &asmprinter)
@@ -1242,6 +1310,58 @@ void X86AsmPrinter::EmitInstruction(const MachineInstr *MI) {
     if (MI->getAsmPrinterFlags() & AC_EVEX_2_VEX)
       OutStreamer->AddComment("EVEX TO VEX Compression ", false);
   }
+
+  //Weijie: add dep and sfi
+   if (!MF->hasInlineAsm()) {
+    assert(!MI->isIndirectBranch() && "Jaebaek there exists indirect jump!");
+    isUncondBranch = (MI->isReturn() || MI->isUnconditionalBranch() || MI->isIndirectBranch());
+
+    /* Jaebaek: Soft-DEP & SFI --> handle disappeared bundle instructions */
+    if (MI->isBundle()) {
+      isBundled = true;
+      MachineBasicBlock::const_instr_iterator I = MI->getIterator();
+      MachineBasicBlock::const_instr_iterator E = MI->getParent()->instr_end();
+      while (++I != E && I->isInsideBundle()) {
+        const MachineInstr &tmpI = *I;
+        EmitInstruction(&tmpI);
+      }
+
+      // Instr before the bundle and the bundle exceeds (32 - 5) bytes
+      if (IC.getCodeSize() > (maxUnitForASLR - jmpInstBytes)) {
+        // if the last instr of the bundle is uncond br and it is fit for 32 bytes
+        if (IC.getCodeSize() <= maxUnitForASLR && isUncondBranch) {
+          for (unsigned i = 0, e = bundledInst.size(); i != e; ++i)
+            EmitAndCountInstruction(bundledInst[i]);
+          IC.setCodeSize(0);
+        } else {
+          // emit jmp
+          MCSymbol *Sym = OutContext.getOrCreateSymbol(MF->getName() + "." + Twine(units++));
+          EmitAndCountInstruction(MCInstBuilder(X86::JMP_4)
+              .addExpr(MCSymbolRefExpr::create(Sym,
+                  MCSymbolRefExpr::VK_None, OutContext)));
+
+          // emit align
+          OutStreamer->EmitCodeAlignment(maxUnitForASLR);
+
+          // emit label
+          OutStreamer->EmitLabel(Sym);
+
+          IC.setCodeSize(bundleSize);
+          for (unsigned i = 0, e = bundledInst.size(); i != e; ++i)
+            EmitAndCountInstruction(bundledInst[i]);
+        }
+      } else {
+        for (unsigned i = 0, e = bundledInst.size(); i != e; ++i)
+          EmitAndCountInstruction(bundledInst[i]);
+      }
+
+      bundledInst.clear();
+      isBundled = false;
+      bundleSize = 0;
+      return;
+    }
+  }
+  //Weijie: end of modification
 
   switch (MI->getOpcode()) {
   case TargetOpcode::DBG_VALUE:
