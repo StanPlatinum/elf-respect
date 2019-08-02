@@ -13,15 +13,13 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 
 LIBCDIR = musl-libc
 LIBC = $(LIBCDIR)/lib/libc.a
-#Weijie: use musl-libc to provide exit.o
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
-SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
+#Weijie: use musl-libc/libc to provide exit.o
+SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 LIBC_DIR = ./libc
 LIBC_PATH = $(LIBC_DIR)/libc.a
-
-
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/

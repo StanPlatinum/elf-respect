@@ -31,7 +31,7 @@ OCALL_LIB_MK = lib/ocall.mk
 
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o
+ASM_OBJS = lib/stack.o lib/start.o lib/rop_gadget.o
 
 all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cp lib/*.o objs
