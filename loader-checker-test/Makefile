@@ -46,7 +46,8 @@ CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_
 #IN_ENCLAVE_PROGRAM = target-program/nw4test
 #IN_ENCLAVE_PROGRAM = target-program/test
 #IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
-IN_ENCLAVE_PROGRAM = program
+#IN_ENCLAVE_PROGRAM = program
+IN_ENCLAVE_PROGRAM = target-program/simple_loop
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 

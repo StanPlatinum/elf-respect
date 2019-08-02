@@ -1,5 +1,6 @@
 #Weijie: must use gcc to compile the ENCLAVE. clang would fail due to some reasons...
-CC = clang -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = clang -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = clang
 #CC = gcc
 CXX = clang++
 
@@ -9,7 +10,6 @@ BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 LIBC_DIR = ./libc
 LIBC_PATH = $(LIBC_DIR)/libc.a
-LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -20,9 +20,9 @@ include $(OCALL_LIB_MK)
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
 
-ASM_OBJS = lib/stack.o lib/start.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o
 
-all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
+all: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS)
 	cp lib/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker $(TARGET_NAME)
@@ -31,7 +31,6 @@ all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 #Weijie: generate _start
 lib/%.o: lib/%.s
 	$(CC) -c -o $@ $<
-	echo "generating lib/*.o"
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^

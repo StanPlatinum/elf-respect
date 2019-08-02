@@ -14,7 +14,14 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 LIBCDIR = musl-libc
 LIBC = $(LIBCDIR)/lib/libc.a
 #Weijie: use musl-libc to provide exit.o
-SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
+#SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
+SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+
+
+LIBC_DIR = ./libc
+LIBC_PATH = $(LIBC_DIR)/libc.a
+
+
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -42,7 +49,9 @@ tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
 #Weijie: prepare whole static linked (with libc_static.a) obj and execute Makefile in Dir objs/
-objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC) 
+#objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC) 
+#Weijie: use libc.a directly
+objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	cp $^ objs/
 	$(MAKE) -C objs
 	cp malloc.o objs/
