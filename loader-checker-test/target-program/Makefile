@@ -3,19 +3,20 @@ CC = clang
 #CC = gcc
 CXX = clang++
 
-#TARGET_NAME = test
-TARGET_NAME = simple_loop
+TARGET_NAME = test
+#TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_simple
+#TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 NOLIBC_FLAG = -nodefaultlibs -nostdlib
 
-LIBCDIR = musl-libc
-LIBC = $(LIBCDIR)/lib/libc.a
+#LIBCDIR = musl-libc
+#LIBC = $(LIBCDIR)/lib/libc.a
 #SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
 
-#Weijie: use musl-libc/libc to provide exit.o
+#Weijie: use libc to provide exit.o
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 LIBC_DIR = ./libc
@@ -26,7 +27,7 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 all: $(LIBC) $(TARGET_NAME)
 

@@ -20,7 +20,7 @@ include $(OCALL_LIB_MK)
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 #Weijie: later the whole libc will be added into this ...
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 all: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS)
 	cp lib/*.o objs
