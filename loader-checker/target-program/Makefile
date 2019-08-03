@@ -4,7 +4,8 @@ CC = clang
 #CC = gcc
 CXX = clang++
 
-TARGET_NAME = simple_loop
+#TARGET_NAME = simple_loop
+TARGET_NAME = bm_malloc_simple
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

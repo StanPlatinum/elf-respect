@@ -31,7 +31,8 @@
 
 #IN_ENCLAVE_PROGRAM=program
 #Weijie: The input should be relocatable, not executable
-IN_ENCLAVE_PROGRAM = target-program/simple_loop
+IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
+#IN_ENCLAVE_PROGRAM = target-program/simple_loop
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 

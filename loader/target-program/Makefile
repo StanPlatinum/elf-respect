@@ -9,15 +9,14 @@ CC = clang
 #CXX = clang++
 
 TARGET_NAME = simple_loop
+#TARGET_NAME = bm_malloc_simple
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 LIBC_DIR = ./TrustedLib
-#LIBC_PATH = $(LIBC_DIR)/libc_static.a
 LIBC_PATH = $(LIBC_DIR)/libc.a
-#LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc_static.a
 LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
 #SGX_CFLAGS = $(BASE_CFLAGS) $(EXTRA_FLAGS1) -fno-stack-protector -fvisibility=hidden

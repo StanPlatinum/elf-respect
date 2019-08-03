@@ -1,26 +1,28 @@
 #CC = clang -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang
-#CC = gcc
+#CC = clang
+#Weijie: add llvm install path
+CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+
 CXX = clang++
 
-TARGET_NAME = test
+#TARGET_NAME = test
 #TARGET_NAME = simple_loop
-#TARGET_NAME = bm_malloc_simple
+TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 NOLIBC_FLAG = -nodefaultlibs -nostdlib
 
-#LIBCDIR = musl-libc
-#LIBC = $(LIBCDIR)/lib/libc.a
-#SGX_CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -fno-stack-protector -fvisibility=hidden
+MUSL_LIBC_DIR = ./musl-libc
+MUSL_LIBC = $(MUSL_LIBC_DIR)/lib/libc.a
+SGX_CFLAGS = $(BASE_CFLAGS) -I$(MUSL_LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
 
 #Weijie: use libc to provide exit.o
-SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
-
-LIBC_DIR = ./libc
-LIBC_PATH = $(LIBC_DIR)/libc.a
+#LIBC_DIR = ./libc
+#LIBC = $(LIBC_DIR)/libc.a
+#SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -31,7 +33,7 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 all: $(LIBC) $(TARGET_NAME)
 
-$(LIBC):
+$(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
 
@@ -48,9 +50,8 @@ tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
 #Weijie: prepare whole static linked (with libc_static.a) obj and execute Makefile in Dir objs/
-#objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC) 
 #Weijie: use libc.a directly
-objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
+objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 	cp $^ objs/
 	$(MAKE) -C objs
 	cp malloc.o objs/
