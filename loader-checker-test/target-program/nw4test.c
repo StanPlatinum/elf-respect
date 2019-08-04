@@ -249,7 +249,6 @@ int nw_align(                  // Needleman-Wunsch algorithm
         return  0 ;
 }
 
-#if 0
 /* entry point function nw */
 void Ecall_nw(
         char *seq_1,          /*  Needleman-Wunsch   */
@@ -286,15 +285,14 @@ void Ecall_nw(
         	print_traceback( traceback, seq_1, seq_2 );
 	}
 }
-#endif
 
 void enclave_main(){
 	char seq_1[] = "AGTACGTC";
         char seq_2[] = "ACGTCGT";
-	//char seq_1_al[50];
-        //char seq_2_al[50];
+	char seq_1_al[50];
+        char seq_2_al[50];
 
-	//Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
+	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
 
 	//Weijie: make it returning
 	enclave_exit();
