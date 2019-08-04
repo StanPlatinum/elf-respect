@@ -365,7 +365,7 @@ static void relocate(void)
 #include <trts_util.h>
 
 void enclave_main()
-{
+{	
 	pr_progress("Hello from enclave_main!");
 	void (*entry)();
 	dlog("program at %p (%lx)", program, program_size);
@@ -389,6 +389,7 @@ void enclave_main()
 	pr_progress("relocating");
 	relocate();
 
+#if 0
 	//Weijie: checker starts here.
 	/*
 	   PrintDebugInfo("-----setting params-----\n");
@@ -434,16 +435,17 @@ void enclave_main()
 	void *this_enclave_base = get_enclave_base();
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
-
 	//Weijie: checker ends here.
+#endif
+
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);
 
 	pr_progress("entering");
 
 	//Weijie: the asm inline commands could be commented
-	//__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
+	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
 	entry();
-	//__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
+	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
 	pr_progress("returning");
 }
