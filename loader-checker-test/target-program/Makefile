@@ -7,9 +7,9 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 CXX = clang++
 
 #TARGET_NAME = test
-#TARGET_NAME = simple_loop
+TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_simple
-TARGET_NAME = nw4test
+#TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -34,9 +34,9 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 #all: $(MUSL_LIBC) $(TARGET_NAME)
 all: $(LIBC) $(TARGET_NAME)
 
-$(MUSL_LIBC):
-	(cd musl-libc; ./configure)
-	make -C musl-libc lib/libc.a
+#$(MUSL_LIBC):
+#	(cd musl-libc; ./configure)
+#	make -C musl-libc lib/libc.a
 
 $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
 	cp malloc.o objs/
@@ -64,9 +64,10 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	$(CC) -c enclave_main.s -o $@
-	#gcc -c new.s -o $@
+	#$(CC) -S -I. -o enclave_main.s $<
+	#$(CC) -c $(SGX_CFLAGS) enclave_main.s -o $@
+	#gcc -c $(SGX_CFLAGS) enclave_main.s -o $@
+	$(CC) -c $(TARGET_NAME).s -o $@
 
 clean:
 	rm -f enclave_main.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
