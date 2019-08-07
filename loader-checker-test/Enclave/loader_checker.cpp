@@ -164,6 +164,9 @@ static void update_reltab(void)
 
 	/* pointers to symbol, string, relocation tables */
 	n_rel = 0;
+	//Weijie: test
+	dlog("pehdr->e_shnum: %u", pehdr->e_shnum);
+
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA) ++n_rel;
 		else if (pshdr[i].sh_type == SHT_SYMTAB) {
@@ -172,6 +175,9 @@ static void update_reltab(void)
 		} else if (pshdr[i].sh_type == SHT_STRTAB)
 			strtab = GET_OBJ(char, pshdr[i].sh_offset);
 	}
+	//Weijie: test
+	dlog("n_rel: %u", n_rel);
+
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
 	n_rel = 0;
@@ -188,6 +194,7 @@ static void update_reltab(void)
 				//Weijie: the following line may crash if the target program is compiled wrongly ...
 				//Weijie: it turns out that ...
 				dlog("%u: ---test---", __LINE__);
+				dlog("j: %u", j);
 				dlog("dst: %u", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);

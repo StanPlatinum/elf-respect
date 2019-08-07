@@ -64,7 +64,7 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -S -I. -o enclave_main.s $<
+	$(CC) -S -I. -o enclave_main.s $<
 	#$(CC) -c $(SGX_CFLAGS) enclave_main.s -o $@
 	#gcc -c $(SGX_CFLAGS) enclave_main.s -o $@
 	$(CC) -c $(TARGET_NAME).s -o $@
