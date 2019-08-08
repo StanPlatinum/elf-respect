@@ -187,7 +187,8 @@ static void update_reltab(void)
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				//Weijie: the following line may crash if the target program is compiled wrongly ...
 				//Weijie: it turns out that ...
-				//dlog("%u: ---test---", __LINE__);
+				dlog("%u: ---test---", __LINE__);
+				dlog("dst: %u", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
@@ -243,8 +244,8 @@ static void load(void)
 
 	//Weijie: ignore filename ABS
 	//Weijie: test if i could start with 2
-	//for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
-	for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
+	for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
+	//for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
 		if (shndx != symtab[i].st_shndx) {
 			last_off = (Elf64_Addr)-1;
 			last_st_value = (Elf64_Addr)-1;
@@ -361,10 +362,11 @@ static void relocate(void)
  * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
  */
 
-//#include <trts_internal.h>
+#include <trts_internal.h>
+#include <trts_util.h>
 
 void enclave_main()
-{
+{	
 	pr_progress("Hello from enclave_main!");
 	void (*entry)();
 	dlog("program at %p (%lx)", program, program_size);
@@ -388,10 +390,9 @@ void enclave_main()
 	pr_progress("relocating");
 	relocate();
 
+#if 0
 	//Weijie: checker starts here.
 	/*
-	   pr_progress("disassembling _start");
-
 	   PrintDebugInfo("-----setting params-----\n");
 	   Elf64_Xword textSize;
 	   textSize = main_sym->st_size;
@@ -431,13 +432,13 @@ void enclave_main()
 	}	
 
 	pr_progress("checking");
-	//PrintDebugInfo("-----getting bounds-----\n");
-	//size_t this_enclave_size = get_enclave_size();
-	//void *this_enclave_base = get_enclave_base();
-	//dlog("base: %u, size: %u", this_enclave_size, this_enclave_base);
-
+	PrintDebugInfo("-----getting bounds-----\n");
+	void *this_enclave_base = get_enclave_base();
+	size_t this_enclave_size = get_enclave_size();
+	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
 	//Weijie: checker ends here.
-	dlog("%u: ---finding entry---", __LINE__);	
+#endif
+
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);
 

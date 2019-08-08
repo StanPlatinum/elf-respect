@@ -147,11 +147,18 @@ void *get_buf(size_t size) {
 /* search (section SE, OFS) from symtab - binary search can be applied */
 static unsigned search(const Elf64_Half se, const Elf64_Addr ofs)
 {
+	//Weijie: debugging
+	dlog("debugging line: %u, entering search()", __LINE__);
+	dlog("se: %u, ofs: %u", se, ofs);
 	// assuming that symbols are already sorted
-	for (unsigned i = 0; i < n_symtab; ++i)
+	for (unsigned int i = 0; i < n_symtab; ++i) {
+		dlog("n_symtab: %u, i: %u", n_symtab, i);
+		dlog("symtab[i].st_shndx: %u, symtab[i].st_value: %u", symtab[i].st_shndx, symtab[i].st_value);
+		dlog("symtab[i+1].st_shndx: %u, symtab[i+1].st_value: %u", symtab[i+1].st_shndx, symtab[i+1].st_value);
 		if (symtab[i].st_shndx == se && symtab[i].st_value <= ofs
 				&& (i+1 >= n_symtab || symtab[i+1].st_value > ofs
 					|| symtab[i+1].st_shndx != se)) return i;
+	}
 	return -1;
 }
 
@@ -165,6 +172,7 @@ static void update_reltab(void)
 	/* pointers to symbol, string, relocation tables */
 	n_rel = 0;
 	//Weijie: test
+	dlog("debugging line: %u, entering update_reltab()", __LINE__);
 	dlog("pehdr->e_shnum: %u", pehdr->e_shnum);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
@@ -175,27 +183,29 @@ static void update_reltab(void)
 		} else if (pshdr[i].sh_type == SHT_STRTAB)
 			strtab = GET_OBJ(char, pshdr[i].sh_offset);
 	}
-	//Weijie: test
-	dlog("n_rel: %u", n_rel);
 
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
 	n_rel = 0;
+
+	dlog("debugging line: %u, symtab n_symtab strtab got", __LINE__);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
 			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
 
+			dlog("reltab[%u] got, n_reltab[%u] got", n_rel, n_rel);
+
 			/* update relocation table: r_offset --> dst + offset */
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
+				//Weijie: debugging
+				dlog("j: %u", j);
+				dlog("n_reltab[n_rel]: %u", n_reltab[n_rel]);
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				//Weijie: the following line may crash if the target program is compiled wrongly ...
-				//Weijie: it turns out that ...
-				dlog("%u: ---test---", __LINE__);
-				dlog("j: %u", j);
-				dlog("dst: %u", dst);
+				dlog("after searching, dst: %u", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
