@@ -66,8 +66,8 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -emit-llvm $< -c -o enclave_main.bc
 	llc enclave_main.bc
-	#$(CC) -S -I. -o enclave_main.s $<
 	$(CC) -c enclave_main.s -o $@
+	#$(CC) -S -I. -o enclave_main.s $<
 	#$(CC) -c $(SGX_CFLAGS) enclave_main.s -o $@
 	#gcc -c $(SGX_CFLAGS) enclave_main.s -o $@
 	#$(CC) -c $(TARGET_NAME).s -o $@
@@ -75,7 +75,7 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	#$(CC) -c $(TARGET_NAME)-pure-clang.s -o $@
 
 clean:
-	rm -f enclave_main.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f enclave_main.bc enclave_main.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
 		lib/*.o
 
 clean-all:
