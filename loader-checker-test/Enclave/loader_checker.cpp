@@ -148,13 +148,13 @@ void *get_buf(size_t size) {
 static unsigned search(const Elf64_Half se, const Elf64_Addr ofs)
 {
 	//Weijie: debugging
-	dlog("debugging line: %u, entering search()", __LINE__);
-	dlog("se: %u, ofs: %u", se, ofs);
+	//dlog("debugging line: %u, entering search()", __LINE__);
+	//dlog("se: %u, ofs: %u", se, ofs);
 	// assuming that symbols are already sorted
 	for (unsigned int i = 0; i < n_symtab; ++i) {
-		dlog("n_symtab: %u, i: %u", n_symtab, i);
-		dlog("symtab[i].st_shndx: %u, symtab[i].st_value: %u", symtab[i].st_shndx, symtab[i].st_value);
-		dlog("symtab[i+1].st_shndx: %u, symtab[i+1].st_value: %u", symtab[i+1].st_shndx, symtab[i+1].st_value);
+		//dlog("n_symtab: %u, i: %u", n_symtab, i);
+		//dlog("symtab[i].st_shndx: %u, symtab[i].st_value: %u", symtab[i].st_shndx, symtab[i].st_value);
+		//dlog("symtab[i+1].st_shndx: %u, symtab[i+1].st_value: %u", symtab[i+1].st_shndx, symtab[i+1].st_value);
 		if (symtab[i].st_shndx == se && symtab[i].st_value <= ofs
 				&& (i+1 >= n_symtab || symtab[i+1].st_value > ofs
 					|| symtab[i+1].st_shndx != se)) return i;
