@@ -1,6 +1,6 @@
 
 CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = clang -fPIC -fno-asynchronous-unwind-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 

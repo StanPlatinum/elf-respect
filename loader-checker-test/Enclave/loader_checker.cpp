@@ -407,7 +407,6 @@ void enclave_main()
 	pr_progress("relocating");
 	relocate();
 
-#if 0
 	//Weijie: checker starts here.
 	/*
 	   PrintDebugInfo("-----setting params-----\n");
@@ -454,7 +453,6 @@ void enclave_main()
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
 	//Weijie: checker ends here.
-#endif
 
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);
