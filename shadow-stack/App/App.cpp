@@ -235,24 +235,15 @@ void Ocall_PrintString(const char *str){
 	printf("%s", str);
 }
 
-#include <fcntl.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 
 #include <signal.h>
 
-#include "libelf.h"
-#include "capstone/capstone.h"
-
-#include "ocall.cpp"
-
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
 {
-	char *  program = *argv ;
-	bool    prm = false;
-
 	/* Initialize the enclave */
 	if(initialize_enclave() < 0){
 		printf("Enter a character before exit ...\n");
@@ -260,132 +251,11 @@ int SGX_CDECL main(int argc, char *argv[])
 		return -1; 
 	}
 
-	/* Weijie: read elf outside... */
-	char *filename = argv[1];
+	try2write_stackbase(global_eid);
 
-	int fd;
-        Elf *e;
-        Elf_Scn *scn = NULL;
-        Elf64_Shdr *shdr64;
-        size_t shstrndx;
-
-        fd = open(filename, O_RDONLY);
-        if (fd < 0) {
-                printf("Cannot open file %s\n", filename);
-                return -1;
-        }
-	if (elf_version(EV_CURRENT) == EV_NONE) {
-                printf("ELF library initialization failed\n");
-                return -1;
-        }
-
-	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-        if (e == NULL) {
-                printf("elf_begin failed\n");
-                return -1;
-        }
-        if (elf_getshdrstrndx(e, &shstrndx) != 0){
-                printf("Cannot get string section\n");
-                return -1;
-        }
-
-	//printf("-----App checking-----\n");
-	/* seems we need put elf analysis outside the enclave... */	
-	/* Start to call... */
-	int* rv;
-	Ecall_elf_entry(global_eid, rv, filename);
-
-	printf("-----get textSize-----\n");
-
-        char* name;
-        Elf64_Off textOff = 0;
-        Elf64_Xword textSize;
-        Elf64_Addr textAddr;
-        while ( (scn = elf_nextscn(e, scn)) != NULL) {
-                shdr64 = elf64_getshdr(scn);
-                name = elf_strptr(e, shstrndx, shdr64->sh_name);
-                if (name == NULL) {
-                        printf("elf_strptr returns NULL\n");
-                        continue;
-                }
-                if (strcmp(name, ".text") == 0) {
-                        textOff = shdr64->sh_offset;
-                        textSize = shdr64->sh_size;
-                        textAddr = shdr64->sh_addr;
-                        break;
-                }
-        }
-        if (textOff == 0) {
-                printf("Cannot find .text section\n");
-        } else {
-                printf("Text sections at %lx with size %ld\n", textOff, textSize);
-        }
-
-        close(fd);
-
-	printf("-----open file: %s, again-----\n", filename);
-
-        fd = open(filename, O_RDONLY);
-        char* buf = (char*)malloc(textSize);
-
-        /* Weijie: use lseek and read instead of pread... */
-        //off_t lseek_result;
-        //lseek_result = lseek(fd, textOff, SEEK_SET);
-        //ssize_t ret = read(fd, buf, textSize);
-        ssize_t ret = pread(fd, buf, textSize, textOff);
-
-        if (ret != textSize) {
-                printf("Error in reading code\n");
-                return -1;
-        }
-        close(fd);
-
-	printf("-----mission completed-----\n");
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
 
-#if 0
-	printf("-----App checking-----\n");
-
-	/* Start to call... */
-	/* ecall's return value should be a pointer...*/
-	int* rv;
-	Ecall_cs_entry(global_eid, rv);
-
-	/* the following: "calling Ecall_cs_disasm version" */
-	/*
-	csh handle;
-        cs_insn *insn;
-	size_t count;
-        size_t *count_p = &count;
-
-        if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
-                printf("ERROR: Failed to initialize engine!\n");
-                return -1;
-        }
-	Ecall_cs_disasm(global_eid, count_p, handle, insn);
-	count = *count_p;
-	printf("-----App checking again-----\n");
-        
-	if (count) {
-                size_t j;
-                for (j = 0; j < count; j++) {
-                        printf("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-                }
-		//printf("-----App checking before cs_freeing-----\n");
-                //cs_free(insn, count);
-        } else
-                printf("ERROR: Failed to disassemble given code!\n");
-
-	printf("-----App checking before cs_closing-----\n");
-        cs_close(&handle);
-	*/
-
-	printf("-----mission completed-----\n");
-	/* Destroy the enclave */
-	sgx_destroy_enclave(global_eid);
-#endif
-	
 	return 0;
 }
 
