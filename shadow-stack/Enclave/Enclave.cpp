@@ -38,6 +38,7 @@ void PrintDebugInfoOutside3(void)
 #include <trts_internal.h>
 #include <trts_util.h>
 
+#include <se_memory.h>
 
 void try2write_stackbase(){
 
@@ -50,13 +51,13 @@ void try2write_stackbase(){
 
 	size_t this_enclave_end = get_enclave_end();
 	PrintDebugInfo("end: 0x%x\n", this_enclave_end);
-
+#if 0
 	size_t maxAddr = (size_t)this_enclave_base + (size_t)this_enclave_size;
 	PrintDebugInfo("maxAddr: 0x%x\n", this_enclave_end);
 	
 	unsigned char *al;
 	PrintDebugInfo("allocating...\n");
-	size_t al_num = (size_t)this_enclave_size / 16;
+	size_t al_num = (size_t)this_enclave_size / (16 + 1);
 	//size_t al_num = 10;
 	PrintDebugInfo("al_num: 0x%lx\n", al_num);
 	al = (unsigned char *)malloc(al_num * (sizeof(unsigned char)));
@@ -72,6 +73,10 @@ void try2write_stackbase(){
 	test = (size_t *)(this_enclave_end);
 	PrintDebugInfo("trying to write end...\n");
 	//*test = 10;
+#endif
+	void* addr;
+	addr = se_virtual_alloc(this_enclave_base, (size_t)(0x1000), MEM_COMMIT);
+	PrintDebugInfo("addr: %0xlx\n", (unsigned long int)addr);
 
 	PrintDebugInfo("ending...\n");
 }
