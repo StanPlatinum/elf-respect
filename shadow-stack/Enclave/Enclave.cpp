@@ -56,19 +56,22 @@ void try2write_stackbase(){
 	
 	unsigned char *al;
 	PrintDebugInfo("allocating...\n");
-	size_t al_num = (size_t)this_enclave_size / 4000;
+	size_t al_num = (size_t)this_enclave_size / 16;
+	//size_t al_num = 10;
 	PrintDebugInfo("al_num: 0x%lx\n", al_num);
 	al = (unsigned char *)malloc(al_num * (sizeof(unsigned char)));
 	PrintDebugInfo("initializing...\n");
 	for (int i = 0; i < al_num; i++){
 		al[i] = '1';
+		//PrintDebugInfo("al[]: %c\n", al[i]);
 	}
-	PrintDebugInfo("al[end - 1]: %c\n", al[this_enclave_size - 1]);
+	PrintDebugInfo("finishing allocation...\n");
+	PrintDebugInfo("al[0x%lx]: %c\n", al_num, al[al_num - 1]);
 	
 	size_t* test;
 	test = (size_t *)(this_enclave_end);
 	PrintDebugInfo("trying to write end...\n");
 	//*test = 10;
 
-	PrintDebugInfo("finishing...\n");
+	PrintDebugInfo("ending...\n");
 }
