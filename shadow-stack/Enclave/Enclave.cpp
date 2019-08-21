@@ -38,7 +38,7 @@ void PrintDebugInfoOutside3(void)
 #include <trts_internal.h>
 #include <trts_util.h>
 
-#include <se_memory.h>
+//#include <se_memory.h>
 
 void try2write_stackbase(){
 
@@ -74,9 +74,9 @@ void try2write_stackbase(){
 	PrintDebugInfo("trying to write end...\n");
 	//*test = 10;
 #endif
-	void* addr;
-	addr = se_virtual_alloc(this_enclave_base, (size_t)(0x1000), MEM_COMMIT);
-	PrintDebugInfo("addr: %0xlx\n", (unsigned long int)addr);
+	//void* addr;
+	//addr = se_virtual_alloc(this_enclave_base, (size_t)(0x1000), MEM_COMMIT);
+	//PrintDebugInfo("addr: %0xlx\n", (unsigned long int)addr);
 
 	PrintDebugInfo("ending...\n");
 }
