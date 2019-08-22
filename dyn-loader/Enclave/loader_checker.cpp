@@ -386,6 +386,10 @@ void enclave_main()
 {	
 	pr_progress("Hello from enclave_main!");
 	void (*entry)();
+	
+	//To-do
+	//Weijie: Here we alloc a heap buffer for target binary
+	
 	dlog("program at %p (%lx)", program, program_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
 	dlog(".sgxdata = %p", _SGXDATA_BASE);
@@ -447,14 +451,14 @@ void enclave_main()
 	if (rv == 0){
 		//Weijie: proceed
 	}	
-
-	pr_progress("checking");
-	PrintDebugInfo("-----getting bounds-----\n");
+#endif
+	pr_progress("getting enclave bounds");
 	void *this_enclave_base = get_enclave_base();
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
-	//Weijie: checker ends here.
-#endif
+
+	//To-do
+	//Weijie: Here we alloc a heap buffer for target binary
 
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);
