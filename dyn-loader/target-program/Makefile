@@ -64,11 +64,11 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -S -I. -o enclave_main.s $<
-	#$(CC) -c enclave_main.s -o $@
+	$(CC) -S -I. -o enclave_main.s $<
+	$(CC) -c enclave_main.s -o $@
 	#$(CC) -c $(TARGET_NAME).s -o $@
 	#gcc -c $(TARGET_NAME).s -o $@
-	gcc -c $(TARGET_NAME)-pure-llc.s -o $@
+	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
 
 clean:
 	rm -f *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
