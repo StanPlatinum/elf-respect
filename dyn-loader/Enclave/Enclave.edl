@@ -36,7 +36,9 @@ enclave {
     /* Weijie: must include the following line, otherwise the compiling won't pass */
     include "libelf_extra_types.h"
 
+    /* Weijie: use an ECALL to receive target binary and load it into the 32M blob */
     trusted {
+	public void receive_binary();
         public void enclave_main();
     };
 

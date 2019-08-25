@@ -372,12 +372,15 @@ static void relocate(void)
 		}
 }
 
-//Weijie: add checker here
 //#include "checker_part.cpp"
 /*
- * Weijie:
+ * Weijie: add checker/disassembler here if necessary
  * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
  */
+
+//Weijie: Enclave starts here
+void receive_binary()
+{}
 
 #include <trts_internal.h>
 #include <trts_util.h>
