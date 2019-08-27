@@ -2,7 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "enclave.h"
+#include <enclave.h>
 
 void enclave_main()
 {

@@ -7,7 +7,8 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables
 CXX = clang++
 
 #TARGET_NAME = test
-TARGET_NAME = simple_loop
+#TARGET_NAME = simple_loop
+TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = nw4test
 
@@ -64,11 +65,12 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -emit-llvm $< -c -o enclave_main.bc
-	llc enclave_main.bc
-	$(CC) -c enclave_main.s -o $@
+	#$(CC) -emit-llvm $< -c -o enclave_main.bc
+	#llc enclave_main.bc
+	#$(CC) -c enclave_main.s -o $@
 	#$(CC) -S -I. -o enclave_main.s $<
 	#$(CC) -c $(SGX_CFLAGS) enclave_main.s -o $@
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 	#gcc -c $(SGX_CFLAGS) enclave_main.s -o $@
 	#$(CC) -c $(TARGET_NAME).s -o $@
 	#$(CC) -c $(TARGET_NAME)-pure-llc.s -o $@

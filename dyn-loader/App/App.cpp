@@ -225,6 +225,8 @@ extern "C" void print_attack_msg(const char **msg) {
     #define log(s)
 #endif
 
+#include <cstdlib>
+
 /* Application entry */
 int main(int argc, char *argv[])
 {
@@ -242,7 +244,24 @@ int main(int argc, char *argv[])
 
     log("call enclave main");
     //base = *(unsigned long *)((unsigned long )sgx_create_enclave+0x212098);
-    enclave_main(eid);
+    //enclave_main(eid);
+    
+    unsigned char *buffer;
+    FILE *fp = fopen("./program", "rb");
+    if (fp == NULL) {
+        perror("[error] file open failed.\n");
+	exit(1);
+    }
+    // get file size
+    fseek(fp, 0L, SEEK_END);
+    size_t sz = ftell(fp);
+    rewind(fp);
+    printf("file size is %ld\n", sz);
+    // read binary file into buffer
+    buffer = (unsigned char *)malloc((sz+10)*sizeof(unsigned char));
+    int n_read = fread(buffer, sizeof(unsigned char), sz, fp);
+    printf("number of bytes read is %d\n", n_read);
+    ecall_receive_binary(eid, buffer, sz);
 
     log("destroy the enclave");
     sgx_destroy_enclave(eid);

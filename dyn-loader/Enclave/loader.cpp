@@ -156,9 +156,9 @@ static unsigned search(const Elf64_Half se, const Elf64_Addr ofs)
 	dlog("se: %u, ofs: %u", se, ofs);
 	// assuming that symbols are already sorted
 	for (unsigned int i = 0; i < n_symtab; ++i) {
-		dlog("n_symtab: %u, i: %u", n_symtab, i);
-		dlog("symtab[i].st_shndx: %u, symtab[i].st_value: %u", symtab[i].st_shndx, symtab[i].st_value);
-		dlog("symtab[i+1].st_shndx: %u, symtab[i+1].st_value: %u", symtab[i+1].st_shndx, symtab[i+1].st_value);
+		//dlog("n_symtab: %u, i: %u", n_symtab, i);
+		//dlog("symtab[i].st_shndx: %u, symtab[i].st_value: %u", symtab[i].st_shndx, symtab[i].st_value);
+		//dlog("symtab[i+1].st_shndx: %u, symtab[i+1].st_value: %u", symtab[i+1].st_shndx, symtab[i+1].st_value);
 		if (symtab[i].st_shndx == se && symtab[i].st_value <= ofs
 				&& (i+1 >= n_symtab || symtab[i+1].st_value > ofs
 					|| symtab[i+1].st_shndx != se)) return i;
@@ -384,12 +384,49 @@ static void relocate(void)
  */
 
 //Weijie: Enclave starts here
-void receive_binary()
-{}
+void ecall_receive_binary(unsigned char *binary, int sz)
+{
+	program = (unsigned char*) binary;
+	void (*entry)();
+	dlog("program at %p (%lx)", program, program_size);
+	dlog(".sgxcode = %p", _SGXCODE_BASE);
+	dlog(".sgxdata = %p", _SGXDATA_BASE);
+	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
+	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
+
+	//dlog("__sgx_start = %p", &__sgx_start);
+	//dlog("__sgx_end = %p", &__sgx_end);
+	dlog("__sgx_code = %p", &__sgx_code);
+	dlog("__elf_end = %p", &__elf_end);
+	dlog("heap base = %lx", _HEAP_BASE);
+
+	validate_ehdr();
+	update_reltab();
+	pr_progress("loading");
+	load();
+
+	//Weijie: cannot simply delete relocation in original sgx-shield demo
+	//Weijie: cannot delete the following lines in current demo
+	pr_progress("relocating");
+	relocate();
+
+	entry = (void (*)())(main_sym->st_value);
+	dlog("main: %p", entry);
+
+	pr_progress("entering");
+
+	//Weijie: the asm inline commands could be commented
+	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
+	entry();
+	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
+	pr_progress("returning");
+	
+}
 
 #include <trts_internal.h>
 #include <trts_util.h>
 
+/* shawn233: enclave_main will not be invoked */
 void enclave_main()
 {	
 	pr_progress("Hello from enclave_main!");

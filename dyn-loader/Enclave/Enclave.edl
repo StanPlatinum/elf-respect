@@ -38,7 +38,7 @@ enclave {
 
     /* Weijie: use an ECALL to receive target binary and load it into the 32M blob */
     trusted {
-	public void receive_binary();
+	public void ecall_receive_binary([in, size=sz] unsigned char *buffer, int sz);
         public void enclave_main();
     };
 

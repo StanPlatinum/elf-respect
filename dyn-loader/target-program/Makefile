@@ -1,6 +1,7 @@
 
 CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
@@ -8,7 +9,9 @@ CXX = clang++
 
 #TARGET_NAME = test
 TARGET_NAME = simple_loop
+#TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
+#TARGET_NAME = bm_hello
 #TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
@@ -22,7 +25,7 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 #Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
 LIBC = $(LIBC_DIR)/libc.a
-SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+/home/liuweijie/newdisk/elf-respect/dyn-loader/target-programSGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -33,6 +36,7 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 #all: $(MUSL_LIBC) $(TARGET_NAME)
 all: $(LIBC) $(TARGET_NAME)
+	mv $(TARGET_NAME) ../program
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
@@ -71,7 +75,7 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
 
 clean:
-	rm -f *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f enclave_main.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
 		lib/*.o
 
 clean-all:
