@@ -1,14 +1,18 @@
 typedef unsigned long addr_t;
 
-extern char __sgx_start;        /* defined in the linker script */
-extern char __sgx_end;          /* defined in the linker script */
+//extern char __sgx_start;        /* defined in the linker script */
+//extern char __sgx_end;          /* defined in the linker script */
+
 extern char __sgx_code;         /* defined in the linker script */
+extern char __elf_end;		/* defined in the linker script */
 #define _SGX_SIZE 0x2000000
 #define _SGXCODE_BASE ((void*)&__sgx_code)
 #define _SGXDATA_BASE ((void*)((addr_t)&__sgx_code + __sgx_data_ofs))
 
-unsigned char *program = (unsigned char *)&__sgx_start;
-size_t program_size = (addr_t)&__sgx_end - (addr_t)&__sgx_start;
+/* shawn233: program start has been changed to __sgx_code,
+ * program_size is set to 0 although it may be useless */
+unsigned char *program = (unsigned char *)&__sgx_code;
+size_t program_size = 0;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
@@ -165,8 +169,9 @@ static unsigned search(const Elf64_Half se, const Elf64_Addr ofs)
 static void update_reltab(void)
 {
 	/* read shdr */
-	if ((pshdr = GET_OBJ(Elf64_Shdr, pehdr->e_shoff)) == NULL
-			|| !CHECK_SIZE(pshdr, pehdr->e_shnum*sizeof(Elf64_Shdr)))
+	/* shawn233: CHECK_SIZE is useless in our project*/
+	if ((pshdr = GET_OBJ(Elf64_Shdr, pehdr->e_shoff)) == NULL)
+			//|| !CHECK_SIZE(pshdr, pehdr->e_shnum*sizeof(Elf64_Shdr)))
 		dlog("%u: Shdr size", __LINE__);
 
 	/* pointers to symbol, string, relocation tables */
@@ -399,8 +404,9 @@ void enclave_main()
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
 
-	dlog("__sgx_start = %p", &__sgx_start);
-	dlog("__sgx_end = %p", &__sgx_end);
+	//dlog("__sgx_start = %p", &__sgx_start);
+	//dlog("__sgx_end = %p", &__sgx_end);
+	dlog("__sgx_code = %p", &__sgx_code);
 	dlog("__elf_end = %p", &__elf_end);
 	dlog("heap base = %lx", _HEAP_BASE);
 
