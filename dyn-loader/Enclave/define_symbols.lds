@@ -3,9 +3,8 @@
  * operations for .sgx.bin and .sgx.code which are inserted using objcopy
  */
 
-SECTIONS
-{
 /*
+ * Weijie: the following is redundant
     .sgx.bin : {
         __sgx_start = .;
         *(.sgx.bin)
@@ -13,7 +12,10 @@ SECTIONS
     }
     . = . + 0x2000000;
 */
-    .sgx.code: {
+
+SECTIONS
+{
+    .sgx.code : {
         __sgx_code = .;
         *(.sgx.code)
     }
