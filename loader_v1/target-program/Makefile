@@ -32,7 +32,7 @@ include $(OCALL_LIB_MK)
 
 ASM_OBJS = lib/stack.o lib/start.o lib/rop_gadget.o lib/ocall.o
 
-all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
+all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS) $(OCALL_OBJS)
 	cp lib/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker $(TARGET_NAME)
