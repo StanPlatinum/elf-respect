@@ -17,7 +17,7 @@ EXTRA_FLAGS1 = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 LIBC_DIR = ./TrustedLib
 LIBC_PATH = $(LIBC_DIR)/libc.a
-LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
+#LIBC_FLAG = -nodefaultlibs -nostdlib -L$(LIBC_PATH) -lc.a
 
 #SGX_CFLAGS = $(BASE_CFLAGS) $(EXTRA_FLAGS1) -fno-stack-protector -fvisibility=hidden
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
@@ -70,6 +70,6 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(LIBC_PATH)
 	#$(CC) -o $(TARGET_NAME) $< $(BASE_CFLAGS) $(EXTRA_FLAGS1) 
 
 clean:
-	rm -f *.o list enclave_main.s lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
+	rm -f *.o list enclave_main.s enclave_main.o lib/*.o objs/*.o objs/*.lo $(TARGET_NAME)
 
 

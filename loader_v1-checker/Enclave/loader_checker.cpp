@@ -403,7 +403,7 @@ void enclave_main()
 	   rv = cs_disasm_entry(buf, textSize, textAddr);
 	   free(buf);
 	 */
-
+#if 0
 	pr_progress("disassembling all parts");
 
 	int j;
@@ -436,6 +436,7 @@ void enclave_main()
 	dlog("base: %u", this_enclave_base);
 
 	//Weijie: checker ends here.
+#endif
 	dlog("%u: ---finding entry---", __LINE__);	
 	entry = (void (*)())(main_sym->st_value);
 	dlog("main: %p", entry);

@@ -8,9 +8,9 @@ CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchron
 CXX = clang++
 
 #TARGET_NAME = test
-TARGET_NAME = simple_loop
+#TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_and_sort
-#TARGET_NAME = bm_malloc_simple
+TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
 #TARGET_NAME = nw4test
 
@@ -68,14 +68,15 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	$(CC) -c enclave_main.s -o $@
+	#$(CC) -S -I. -o enclave_main.s $<
+	#$(CC) -c enclave_main.s -o $@
 	#$(CC) -c $(TARGET_NAME).s -o $@
 	#gcc -c $(TARGET_NAME).s -o $@
 	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
+	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
-	rm -f enclave_main.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
 		lib/*.o
 
 clean-all:
