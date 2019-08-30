@@ -1,7 +1,7 @@
-CC = clang
+#CC = clang
 #CC = gcc
 #Weijie: add llvm install path
-#CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC
 #CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0
 #CC = /opt/llvm/bin/clang
@@ -30,19 +30,20 @@ OCALL_LIB_MK = lib/ocall.mk
 
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/rop_gadget.o
+ASM_OBJS = lib/stack.o lib/start.o lib/rop_gadget.o lib/ocall.o
 
 all: objs/libc_targetprogram.a tools/linker $(ASM_OBJS)
 	cp lib/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"
+	mv $(TARGET_NAME) ../program
 
-#Weijie: generate target obj file: enclave.o
+#Weijie: generate target obj file: enclave_main.o
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S $(SGX_CFLAGS) -I. -o enclave_main.s $< 
-	gcc -c $(SGX_CFLAGS) -I. -o $@ enclave_main.s 
-	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
+	#$(CC) -S $(SGX_CFLAGS) -I. -o enclave_main.s $< 
+	#gcc -c $(SGX_CFLAGS) -I. -o $@ enclave_main.s 
+	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $< 
 
 #Weijie: generate _start
 lib/%.o: lib/%.s

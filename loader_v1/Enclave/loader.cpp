@@ -185,10 +185,10 @@ static void update_reltab(void)
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				//Weijie: the following line may crash if the target program is compiled wrongly. That's mainly because the dst cannot be searched (return -1).
-				dlog("%u: ---test---", __LINE__);
-				dlog("n_rel:\t%u", n_rel);
-				dlog("j:\t%u", j);
-				dlog("dst:\t%u", dst);
+				//dlog("%u: ---test---", __LINE__);
+				//dlog("n_rel:\t%u", n_rel);
+				//dlog("j:\t%u", j);
+				//dlog("dst:\t%u", dst);
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}

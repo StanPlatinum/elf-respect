@@ -1,6 +1,7 @@
 #Weijie: must use gcc to compile the ENCLAVE. clang would fail due to some reasons...
 #CC = clang -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang
+#CC = clang
+CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = gcc
 CXX = clang++
 
@@ -51,9 +52,9 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 #Weijie: generate target obj file: enclave_main.o
 #Weijie: separated compiling
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	gcc -c enclave_main.s -o $@
-	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
+	#$(CC) -S -I. -o enclave_main.s $<
+	#gcc -c enclave_main.s -o $@
+	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $< 
 	#gcc -c -I. -o $@ $<
 	#Weijie: must use clang to compile the source .c file, otherwise _G_O_T_will not be found.
 
