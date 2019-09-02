@@ -196,7 +196,6 @@ static void update_reltab(void)
 	n_rel = 0;
 
 	//dlog("debugging line: %u, symtab n_symtab strtab got", __LINE__);
-	//dlog("xxx3 pehdr e_entry: %lx", pehdr->e_entry);
 
 	dlog("xxx in update_reltab symtab address is 0x%lx, reltab address is 0x%lx, pehdr address is 0x%lx"\
 			, (void *)symtab, (void *)reltab, (void *)pehdr);
@@ -212,27 +211,25 @@ static void update_reltab(void)
 			dlog("xxx after  GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
 			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
-			//dlog("xxxafter n_reltab, i:%u pehdr e_entry: %lx", i, pehdr->e_entry);
-			//dlog("reltab[%u] got, n_reltab[%u] got", n_rel, n_rel);
 
 			/* update relocation table: r_offset --> dst + offset */
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				//Weijie: debugging
-				//dlog("j: %u", j);
-				//dlog("n_reltab[n_rel]: %u", n_reltab[n_rel]);
+				dlog("j: %u", j);
+				
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				
 				//Weijie:
-				//dlog("xxxafter search, j:%u pehdr e_entry: %lx", j, pehdr->e_entry);
+				dlog("xxx after  search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+				
 				
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 				//Weijie:
-				//dlog("xxxafter REL_OFFSET, j:%u pehdr e_entry: %lx", j, pehdr->e_entry);
+				dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			}
 			++n_rel;
-			//dlog("xxx3.5 i:%u pehdr e_entry: %lx", i, pehdr->e_entry);
 
 		}
 	}
@@ -418,7 +415,7 @@ void ecall_receive_binary(unsigned char *binary, int sz)
 	validate_ehdr();
 	//Weijie:
 	//dlog("xxx pehdr e_entry: %lx", pehdr->e_entry);
-
+	dlog("xxx program at %p (%lx)", program, program_size);
 	dlog("xxx initially symtab address is 0x%lx, reltab address is 0x%lx, pehdr address is 0x%lx"\
 			, (void *)symtab, (void *)reltab, (void *)pehdr);
 	update_reltab();
