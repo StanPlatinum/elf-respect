@@ -170,16 +170,15 @@ static unsigned search(const Elf64_Half se, const Elf64_Addr ofs)
 static void update_reltab(void)
 {
 	/* read shdr */
-	/* shawn233: CHECK_SIZE is useless in our project*/
+	/* shawn233: CHECK_SIZE is useless in our project */
+	//Weijie: no sure about the above comment...
+	
 	if ((pshdr = GET_OBJ(Elf64_Shdr, pehdr->e_shoff)) == NULL)
 			//|| !CHECK_SIZE(pshdr, pehdr->e_shnum*sizeof(Elf64_Shdr)))
 		dlog("%u: Shdr size", __LINE__);
 
 	/* pointers to symbol, string, relocation tables */
 	n_rel = 0;
-	//Weijie: test
-	//dlog("debugging line: %u, entering update_reltab()", __LINE__);
-	//dlog("pehdr->e_shnum: %u", pehdr->e_shnum);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA) ++n_rel;
@@ -189,6 +188,9 @@ static void update_reltab(void)
 		} else if (pshdr[i].sh_type == SHT_STRTAB)
 			strtab = GET_OBJ(char, pshdr[i].sh_offset);
 	}
+
+	//Weijie:
+	dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
 
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
 
@@ -202,8 +204,8 @@ static void update_reltab(void)
 
 	//Weijie:
 	//dlog("debugging line: %u, symtab n_symtab strtab got", __LINE__);
-	dlog("xxx in update_reltab pehdr e_entry: %lx", pehdr->e_entry);
 	dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
+	dlog("xxx in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
@@ -421,8 +423,9 @@ void ecall_receive_binary(unsigned char *binary, int sz)
 
 	validate_ehdr();
 	//Weijie:
-	dlog("xxx program at %p (%lx)", program, program_size);
-	dlog("xxx pehdr e_entry: %lx", pehdr->e_entry);
+	dlog("xxx initially program at %p (%lx)", program, program_size);
+	dlog("xxx initially heap base = 0x%lx", _HEAP_BASE);
+	dlog("xxx initially pehdr e_entry: %lx", pehdr->e_entry);
 	dlog("xxx initially symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
 	update_reltab();
 	//Weijie:	
