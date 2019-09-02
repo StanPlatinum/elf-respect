@@ -206,9 +206,9 @@ static void update_reltab(void)
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
 			
 			//Weijie:
+			dlog("xxx n_rel: %u", n_rel);
 			dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
-			
 			dlog("xxx after  GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
 			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
