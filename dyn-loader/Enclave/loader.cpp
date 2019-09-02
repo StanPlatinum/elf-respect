@@ -177,8 +177,9 @@ static void update_reltab(void)
 	/* pointers to symbol, string, relocation tables */
 	n_rel = 0;
 	//Weijie: test
-	dlog("debugging line: %u, entering update_reltab()", __LINE__);
-	dlog("pehdr->e_shnum: %u", pehdr->e_shnum);
+	//dlog("debugging line: %u, entering update_reltab()", __LINE__);
+	//dlog("pehdr->e_shnum: %u", pehdr->e_shnum);
+	//dlog("xxx1 pehdr e_entry: %lx", pehdr->e_entry);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA) ++n_rel;
@@ -189,35 +190,54 @@ static void update_reltab(void)
 			strtab = GET_OBJ(char, pshdr[i].sh_offset);
 	}
 
+	//dlog("xxx2 pehdr e_entry: %lx", pehdr->e_entry);
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
 	n_rel = 0;
 
-	dlog("debugging line: %u, symtab n_symtab strtab got", __LINE__);
+	//dlog("debugging line: %u, symtab n_symtab strtab got", __LINE__);
+	//dlog("xxx3 pehdr e_entry: %lx", pehdr->e_entry);
+
+	dlog("xxx in update_reltab symtab address is 0x%lx, reltab address is 0x%lx, pehdr address is 0x%lx"\
+			, (void *)symtab, (void *)reltab, (void *)pehdr);
+
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
+			
+			//Weijie:
+			dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx", i, (void *)pehdr, pehdr->e_entry);
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
-			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
+			
+			dlog("xxx after GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx", i, (void *)pehdr , pehdr->e_entry);
+			dlog("xxx after GET_OBJ, reltab[n_rel]: 0x%lx", reltab[n_rel]);
 
-			dlog("reltab[%u] got, n_reltab[%u] got", n_rel, n_rel);
+			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
+			//dlog("xxxafter n_reltab, i:%u pehdr e_entry: %lx", i, pehdr->e_entry);
+			//dlog("reltab[%u] got, n_reltab[%u] got", n_rel, n_rel);
 
 			/* update relocation table: r_offset --> dst + offset */
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				//Weijie: debugging
-				dlog("j: %u", j);
-				dlog("n_reltab[n_rel]: %u", n_reltab[n_rel]);
+				//dlog("j: %u", j);
+				//dlog("n_reltab[n_rel]: %u", n_reltab[n_rel]);
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
-				//Weijie: the following line may crash if the target program is compiled wrongly ...
-				dlog("after searching, dst: %u", dst);
+				
+				//Weijie:
+				//dlog("xxxafter search, j:%u pehdr e_entry: %lx", j, pehdr->e_entry);
+				
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
+				//Weijie:
+				//dlog("xxxafter REL_OFFSET, j:%u pehdr e_entry: %lx", j, pehdr->e_entry);
 			}
 			++n_rel;
+			//dlog("xxx3.5 i:%u pehdr e_entry: %lx", i, pehdr->e_entry);
 
 		}
 	}
+	//dlog("xxx4 pehdr e_entry: %lx", pehdr->e_entry);
 }
 
 static void fill_zero(char *ptr, Elf64_Word size) {
@@ -296,7 +316,7 @@ static void load(void)
 
 				//Weijie: checking if loader could find main()...
 				//dlog("%u: finding main...", __LINE__);
-				dlog("symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
+				dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
 					//Weijie: record i
@@ -318,14 +338,6 @@ static void load(void)
 					last_st_value = symtab[i].st_value;
 				}
 
-				/*
-				//Weijie: store main data
-				if (symoff == pehdr->e_entry) {
-				dlog("copy data from symoff: %u, pehdr e_entry: %u", symoff, pehdr->e_entry);
-				//Weijie: copy data, but without reserve, will crash
-				cpy((char *)main_sym, (char *)symtab[i].st_value, symtab[i].st_size);
-				}
-				*/
 
 			}
 		}
@@ -345,6 +357,7 @@ static void relocate(void)
 			unsigned int src_sym = ELF64_R_SYM(reltab[k][i].r_info);
 			const unsigned int type = ELF64_R_TYPE(reltab[k][i].r_info);
 
+			//Weijie:
 			//The following line may crash
 			//dlog("%u: dst_sym", dst_sym);
 			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
@@ -374,6 +387,8 @@ static void relocate(void)
 				dlog("%x", *(uint32_t *)dst);
 			} else
 				dlog("%u: Relocation -- not supported type %u", __LINE__, type);
+			//Weijie:
+			//dlog("i: %u, k: %u, n_reltab[%u]: %u", i, k, k, n_reltab[k]);
 		}
 }
 
@@ -394,6 +409,7 @@ void ecall_receive_binary(unsigned char *binary, int sz)
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
 
+	//Weijie:
 	//dlog("__sgx_start = %p", &__sgx_start);
 	//dlog("__sgx_end = %p", &__sgx_end);
 	dlog("__sgx_code = %p", &__sgx_code);
@@ -401,7 +417,17 @@ void ecall_receive_binary(unsigned char *binary, int sz)
 	dlog("heap base = %lx", _HEAP_BASE);
 
 	validate_ehdr();
+	//Weijie:
+	//dlog("xxx pehdr e_entry: %lx", pehdr->e_entry);
+
+	dlog("xxx initially symtab address is 0x%lx, reltab address is 0x%lx, pehdr address is 0x%lx"\
+			, (void *)symtab, (void *)reltab, (void *)pehdr);
 	update_reltab();
+	//Weijie:	
+	//dlog("xxx pehdr e_entry: %lx", pehdr->e_entry);
+	//Weijie:
+	//void * oldpointer = (void *)main_sym;
+
 	pr_progress("loading");
 	load();
 
@@ -410,7 +436,16 @@ void ecall_receive_binary(unsigned char *binary, int sz)
 	pr_progress("relocating");
 	relocate();
 
+	//Weijie:
+	dlog("%u relocate done.", __LINE__);
+	//Weijie:
+	//dlog("oldpointer: 0x%lx", (unsigned long int)oldpointer);
+	dlog("main_sym: 0x%lx", (unsigned long int)main_sym);
+	dlog("entry: 0x%lx", main_sym->st_value);
+
 	entry = (void (*)())(main_sym->st_value);
+	
+	//Weijie:
 	dlog("main: %p", entry);
 
 	pr_progress("entering");

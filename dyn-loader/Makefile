@@ -47,8 +47,8 @@ TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 #IN_ENCLAVE_PROGRAM = target-program/nw4test
 #IN_ENCLAVE_PROGRAM = target-program/test
 #IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
-#IN_ENCLAVE_PROGRAM = program
-IN_ENCLAVE_PROGRAM = target-program/simple_loop
+IN_ENCLAVE_PROGRAM = program
+#IN_ENCLAVE_PROGRAM = target-program/simple_loop
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds
 
@@ -282,6 +282,6 @@ symtab_test: symtab_test.cpp
 .PHONY: clean
 
 clean:
-	@rm -f program $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
+	@rm -f $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
 		blob gen_def Enclave/ocall_type.h symtab_test
 #		blob App/attack.o gen_def Enclave/ocall_type.h
