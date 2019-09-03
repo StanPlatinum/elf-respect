@@ -19,5 +19,6 @@ SECTIONS
         __sgx_code = .;
         *(.sgx.code)
     }
+    . = . + 0x200000;
 }
 __elf_end = .;

@@ -147,7 +147,7 @@ void *get_buf(size_t size) {
 	void *ret = (void *)heap_end;
 	heap_end = heap_end + size;
 	//Weijie:
-	dlog("heap end after get_buf: %0xlx", heap_end);
+	dlog("xxx heap end after get_buf: 0x%lx", heap_end);
 	return ret;
 }
 
@@ -197,13 +197,15 @@ static void update_reltab(void)
 	
 	//Weijie:
 	dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
-	
+	/*
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
 	}
-	n_rel = 0;
+	*/
 
+	n_rel = 0;
+	
 	//Weijie:
 	dlog("xxx in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
 	dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
