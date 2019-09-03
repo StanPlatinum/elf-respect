@@ -146,6 +146,8 @@ void *get_buf(size_t size) {
 	static addr_t heap_end = _HEAP_BASE;
 	void *ret = (void *)heap_end;
 	heap_end = heap_end + size;
+	//Weijie:
+	dlog("heap end after get_buf: %0xlx", heap_end);
 	return ret;
 }
 
@@ -189,13 +191,13 @@ static void update_reltab(void)
 			strtab = GET_OBJ(char, pshdr[i].sh_offset);
 	}
 
-	//Weijie:
-	dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
-
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
-
 	//Weijie: allocate reltab
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
+	
+	//Weijie:
+	dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
+	
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
@@ -203,9 +205,8 @@ static void update_reltab(void)
 	n_rel = 0;
 
 	//Weijie:
-	//dlog("debugging line: %u, symtab n_symtab strtab got", __LINE__);
-	dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
 	dlog("xxx in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
+	dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
