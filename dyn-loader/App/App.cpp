@@ -258,7 +258,8 @@ int main(int argc, char *argv[])
 	rewind(fp);
 	printf("file size is %ld\n", sz);
 	// read binary file into buffer
-	buffer = (char *)malloc((sz+10)*sizeof(char));
+	//buffer = (char *)malloc((sz+10)*sizeof(char));
+	buffer = (char *)malloc( sz * sizeof(char) );
 	int n_read = fread(buffer, sizeof(char), sz, fp);
 	printf("number of bytes read is %d\n", n_read);
 	

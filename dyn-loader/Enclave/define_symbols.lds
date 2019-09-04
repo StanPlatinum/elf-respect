@@ -20,6 +20,6 @@ SECTIONS
         *(.sgx.code)
     }
     /* Weijie: reserve room for binary received from Ecall */
-    . = . + 0x200000;
+    /* . = . + 0x200000; */
 }
 __elf_end = .;

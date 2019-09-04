@@ -409,9 +409,9 @@ static void relocate(void)
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
-	program = (char*) binary;
-	//Weijie: do not use the following line
-	//cpy(program, binary, (size_t)sz);
+	//Weijie: v1: do not use the following line
+	//program = (char*) binary;
+	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 
 	void (*entry)();
@@ -429,12 +429,15 @@ void ecall_receive_binary(char *binary, int sz)
 	dlog("xxx heap base = %lx", _HEAP_BASE);
 
 	validate_ehdr();
+	
 	//Weijie:
-	dlog("xxx initially program at %p (%lx)", program, program_size);
+	dlog("xxx initially program at %p (%lu)", program, program_size);
 	dlog("xxx initially heap base = 0x%lx", _HEAP_BASE);
 	dlog("xxx initially pehdr e_entry: %lx", pehdr->e_entry);
 	dlog("xxx initially symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
+
 	update_reltab();
+	
 	//Weijie:	
 	dlog("xxx pehdr e_entry: %lx", pehdr->e_entry);
 	//Weijie:
