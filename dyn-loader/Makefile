@@ -256,10 +256,10 @@ Enclave/Enclave_t.o: Enclave/enclave.c Enclave/Enclave_t.c Enclave/ocall_type.h
 #	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 #	@echo "CXX  <=  $<"
 #Weijie: Here starts the new dyn-loader
-#Weijie: Only use objcopy to reserve some memory (32M currently, with alloc, data, code)
+#Xinyu & Weijie: Only use objcopy to reserve some memory (64M currently, with alloc, data, code)
 Enclave/%.o: Enclave/%.cpp
 	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
-	@fallocate -l 32M blob
+	@fallocate -l 64M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 	@echo "CXX  <=  $<"
 

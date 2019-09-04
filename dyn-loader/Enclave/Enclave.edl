@@ -40,7 +40,9 @@ enclave {
     trusted {
 	//Weijie: try "out"
 	//public void ecall_receive_binary([out, size=sz] char *buffer, int sz);
-	public void ecall_receive_binary([in, size=sz] char *buffer, int sz);
+	//public void ecall_receive_binary([in, size=sz] char *buffer, int sz);
+	//Xinyu & Weijie: try "user_check"
+	public void ecall_receive_binary([user_check] char *buffer, int sz);
         //public void enclave_main();
     };
 

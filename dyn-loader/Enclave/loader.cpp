@@ -5,9 +5,9 @@ typedef unsigned long addr_t;
 
 extern char __sgx_code;         /* defined in the linker script */
 extern char __elf_end;		/* defined in the linker script */
-#define _SGX_SIZE 0x2000000
-#define _SGXCODE_BASE ((void*)&__sgx_code)
-#define _SGXDATA_BASE ((void*)((addr_t)&__sgx_code + __sgx_data_ofs))
+
+#define _SGXCODE_BASE ((void*)((addr_t)&__sgx_code + __sgx_code_ofs))
+#define _SGXDATA_BASE ((void*)(_SGXCODE_BASE + __sgx_data_ofs))
 
 /* shawn233: program start has been changed to __sgx_code,
  * program_size is set to 0 although it may be useless 
