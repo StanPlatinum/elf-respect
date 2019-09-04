@@ -10,9 +10,9 @@ CXX = clang++
 #TARGET_NAME = test
 #TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_and_sort
-TARGET_NAME = bm_malloc_simple
+#TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
-#TARGET_NAME = nw4test
+TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

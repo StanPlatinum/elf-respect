@@ -54,116 +54,116 @@ typedef void (*sighandler_t)(int);
 #include "Enclave_u.h"
 
 typedef struct _sgx_errlist_t {
-    sgx_status_t err;
-    const char *msg;
-    const char *sug; /* Suggestion */
+	sgx_status_t err;
+	const char *msg;
+	const char *sug; /* Suggestion */
 } sgx_errlist_t;
 
 /* Error code returned by sgx_create_enclave */
 static sgx_errlist_t sgx_errlist[] = {
-    {
-        SGX_ERROR_UNEXPECTED,
-        "Unexpected error occurred.",
-        NULL
-    },
-    {
-        SGX_ERROR_INVALID_PARAMETER,
-        "Invalid parameter.",
-        NULL
-    },
-    {
-        SGX_ERROR_OUT_OF_MEMORY,
-        "Out of memory.",
-        NULL
-    },
-    {
-        SGX_ERROR_ENCLAVE_LOST,
-        "Power transition occurred.",
-        "Please refer to the sample \"PowerTransition\" for details."
-    },
-    {
-        SGX_ERROR_INVALID_ENCLAVE,
-        "Invalid enclave image.",
-        NULL
-    },
-    {
-        SGX_ERROR_INVALID_ENCLAVE_ID,
-        "Invalid enclave identification.",
-        NULL
-    },
-    {
-        SGX_ERROR_INVALID_SIGNATURE,
-        "Invalid enclave signature.",
-        NULL
-    },
-    {
-        SGX_ERROR_OUT_OF_EPC,
-        "Out of EPC memory.",
-        NULL
-    },
-    {
-        SGX_ERROR_NO_DEVICE,
-        "Invalid SGX device.",
-        "Please make sure SGX module is enabled in the BIOS, and install SGX driver afterwards."
-    },
-    {
-        SGX_ERROR_MEMORY_MAP_CONFLICT,
-        "Memory map conflicted.",
-        NULL
-    },
-    {
-        SGX_ERROR_INVALID_METADATA,
-        "Invalid enclave metadata.",
-        NULL
-    },
-    {
-        SGX_ERROR_DEVICE_BUSY,
-        "SGX device was busy.",
-        NULL
-    },
-    {
-        SGX_ERROR_INVALID_VERSION,
-        "Enclave version was invalid.",
-        NULL
-    },
-    {
-        SGX_ERROR_INVALID_ATTRIBUTE,
-        "Enclave was not authorized.",
-        NULL
-    },
-    {
-        SGX_ERROR_ENCLAVE_FILE_ACCESS,
-        "Can't open enclave file.",
-        NULL
-    },
+	{
+		SGX_ERROR_UNEXPECTED,
+		"Unexpected error occurred.",
+		NULL
+	},
+	{
+		SGX_ERROR_INVALID_PARAMETER,
+		"Invalid parameter.",
+		NULL
+	},
+	{
+		SGX_ERROR_OUT_OF_MEMORY,
+		"Out of memory.",
+		NULL
+	},
+	{
+		SGX_ERROR_ENCLAVE_LOST,
+		"Power transition occurred.",
+		"Please refer to the sample \"PowerTransition\" for details."
+	},
+	{
+		SGX_ERROR_INVALID_ENCLAVE,
+		"Invalid enclave image.",
+		NULL
+	},
+	{
+		SGX_ERROR_INVALID_ENCLAVE_ID,
+		"Invalid enclave identification.",
+		NULL
+	},
+	{
+		SGX_ERROR_INVALID_SIGNATURE,
+		"Invalid enclave signature.",
+		NULL
+	},
+	{
+		SGX_ERROR_OUT_OF_EPC,
+		"Out of EPC memory.",
+		NULL
+	},
+	{
+		SGX_ERROR_NO_DEVICE,
+		"Invalid SGX device.",
+		"Please make sure SGX module is enabled in the BIOS, and install SGX driver afterwards."
+	},
+	{
+		SGX_ERROR_MEMORY_MAP_CONFLICT,
+		"Memory map conflicted.",
+		NULL
+	},
+	{
+		SGX_ERROR_INVALID_METADATA,
+		"Invalid enclave metadata.",
+		NULL
+	},
+	{
+		SGX_ERROR_DEVICE_BUSY,
+		"SGX device was busy.",
+		NULL
+	},
+	{
+		SGX_ERROR_INVALID_VERSION,
+		"Enclave version was invalid.",
+		NULL
+	},
+	{
+		SGX_ERROR_INVALID_ATTRIBUTE,
+		"Enclave was not authorized.",
+		NULL
+	},
+	{
+		SGX_ERROR_ENCLAVE_FILE_ACCESS,
+		"Can't open enclave file.",
+		NULL
+	},
 };
 
 /* Check error conditions for loading enclave */
 void print_error_message(sgx_status_t ret)
 {
-    size_t idx = 0;
-    size_t ttl = sizeof sgx_errlist/sizeof sgx_errlist[0];
+	size_t idx = 0;
+	size_t ttl = sizeof sgx_errlist/sizeof sgx_errlist[0];
 
-    for (idx = 0; idx < ttl; idx++) {
-        if(ret == sgx_errlist[idx].err) {
-            if(NULL != sgx_errlist[idx].sug)
-                printf("Info: %s\n", sgx_errlist[idx].sug);
-            printf("Error: %s\n", sgx_errlist[idx].msg);
-            break;
-        }
-    }
+	for (idx = 0; idx < ttl; idx++) {
+		if(ret == sgx_errlist[idx].err) {
+			if(NULL != sgx_errlist[idx].sug)
+				printf("Info: %s\n", sgx_errlist[idx].sug);
+			printf("Error: %s\n", sgx_errlist[idx].msg);
+			break;
+		}
+	}
 
-    if (idx == ttl)
-        printf("Error: Unexpected error occurred.\n");
+	if (idx == ttl)
+		printf("Error: Unexpected error occurred.\n");
 }
 
 /* Ocall functions */
 void ocall_print_string(const char *str)
 {
-    /* Proxy/Bridge will check the length and null-terminate
-     * the input string to prevent buffer overflow.
-     */
-    printf("%s", str);
+	/* Proxy/Bridge will check the length and null-terminate
+	 * the input string to prevent buffer overflow.
+	 */
+	printf("%s", str);
 }
 
 #if 0
@@ -177,33 +177,33 @@ using namespace std;
 vector<unsigned long> gg;
 void ocall_sgx_push_gadget(unsigned long gadget)
 {
-    gg.push_back(gadget);
+	gg.push_back(gadget);
 }
 #include <time.h>
 #define PAGE_SIZE 4096
 #define UNIT_SIZE 32
 unsigned long guess_in_page(unsigned long addr)
 {
-    addr = (addr & -PAGE_SIZE); // clear lower bits
-    return addr + (((unsigned long)clock()) & ((PAGE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
+	addr = (addr & -PAGE_SIZE); // clear lower bits
+	return addr + (((unsigned long)clock()) & ((PAGE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
 }
 #define SPACE_SIZE 0x2000000
 unsigned long guess_in_space(unsigned long addr)
 {
-    if (addr < gg[1])
-        return gg[0] + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
-    else
-        return gg[1] + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
+	if (addr < gg[1])
+		return gg[0] + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
+	else
+		return gg[1] + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
 }
 unsigned long guess_base(unsigned long addr)
 {
-    unsigned long _base = 0x7f73c0000000;
-    if (addr < gg[1])
-        return (gg[0] - base + _base)
-            + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
-    else
-        return (gg[1] - base + _base)
-            + (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
+	unsigned long _base = 0x7f73c0000000;
+	if (addr < gg[1])
+		return (gg[0] - base + _base)
+			+ (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
+	else
+		return (gg[1] - base + _base)
+			+ (((unsigned long)clock()) & ((SPACE_SIZE/UNIT_SIZE)-1)) * UNIT_SIZE;
 }
 
 #if 0
@@ -212,17 +212,17 @@ char stack_for_attack[0x80000];
 const char *attack_msg = "ROP_EEXIT success";
 extern "C" void attacked();
 extern "C" void print_attack_msg(const char **msg) {
-    puts(*msg);
-    exit(1);
+	puts(*msg);
+	exit(1);
 }
 #endif
 
 #include "ocall.cpp"
 
 #ifdef LD_DEBUG
-    #define log(s) puts("app: " s)
+#define log(s) puts("app: " s)
 #else
-    #define log(s)
+#define log(s)
 #endif
 
 #include <cstdlib>
@@ -230,40 +230,42 @@ extern "C" void print_attack_msg(const char **msg) {
 /* Application entry */
 int main(int argc, char *argv[])
 {
-    sgx_launch_token_t token = {0};
-    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
-    int updated = 0;
-    sgx_enclave_id_t eid = 0;
+	sgx_launch_token_t token = {0};
+	sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+	int updated = 0;
+	sgx_enclave_id_t eid = 0;
 
-    log("initialize the enclave");
-    ret = sgx_create_enclave(ENCLAVE_FILENAME, SGX_DEBUG_FLAG, &token, &updated, &eid, NULL);
-    if (ret != SGX_SUCCESS) {
-        print_error_message(ret);
-        return -1;
-    }
+	log("initialize the enclave");
+	ret = sgx_create_enclave(ENCLAVE_FILENAME, SGX_DEBUG_FLAG, &token, &updated, &eid, NULL);
+	if (ret != SGX_SUCCESS) {
+		print_error_message(ret);
+		return -1;
+	}
 
-    log("call enclave main");
-    //base = *(unsigned long *)((unsigned long )sgx_create_enclave+0x212098);
-    //enclave_main(eid);
-    
-    unsigned char *buffer;
-    FILE *fp = fopen("./program", "rb");
-    if (fp == NULL) {
-        perror("[error] file open failed.\n");
-	exit(1);
-    }
-    // get file size
-    fseek(fp, 0L, SEEK_END);
-    size_t sz = ftell(fp);
-    rewind(fp);
-    printf("file size is %ld\n", sz);
-    // read binary file into buffer
-    buffer = (unsigned char *)malloc((sz+10)*sizeof(unsigned char));
-    int n_read = fread(buffer, sizeof(unsigned char), sz, fp);
-    printf("number of bytes read is %d\n", n_read);
-    ecall_receive_binary(eid, buffer, sz);
+	log("call enclave main");
+	//base = *(unsigned long *)((unsigned long )sgx_create_enclave+0x212098);
+	//enclave_main(eid);
 
-    log("destroy the enclave");
-    sgx_destroy_enclave(eid);
-    return 0;
+	char *buffer;
+	FILE *fp = fopen("./program", "rb");
+	if (fp == NULL) {
+		perror("[error] file open failed.\n");
+		exit(1);
+	}
+	// get file size
+	fseek(fp, 0L, SEEK_END);
+	size_t sz = ftell(fp);
+	rewind(fp);
+	printf("file size is %ld\n", sz);
+	// read binary file into buffer
+	buffer = (char *)malloc((sz+10)*sizeof(char));
+	int n_read = fread(buffer, sizeof(char), sz, fp);
+	printf("number of bytes read is %d\n", n_read);
+	
+	//Weijie: call Ecall
+	ecall_receive_binary(eid, buffer, sz);
+
+	log("destroy the enclave");
+	sgx_destroy_enclave(eid);
+	return 0;
 }

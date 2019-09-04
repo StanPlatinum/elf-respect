@@ -12,7 +12,7 @@ extern char __elf_end;		/* defined in the linker script */
 /* shawn233: program start has been changed to __sgx_code,
  * program_size is set to 0 although it may be useless 
  */
-unsigned char *program = (unsigned char *)&__sgx_code;
+char *program = (char *)&__sgx_code;
 size_t program_size = 0;
 
 #include <endian.h>
@@ -407,11 +407,15 @@ static void relocate(void)
  */
 
 //Weijie: Enclave starts here
-void ecall_receive_binary(unsigned char *binary, int sz)
+void ecall_receive_binary(char *binary, int sz)
 {
-	program = (unsigned char*) binary;
+	program = (char*) binary;
+	//Weijie: do not use the following line
+	//cpy(program, binary, (size_t)sz);
+	program_size = sz;
+
 	void (*entry)();
-	dlog("program at %p (%lx)", program, program_size);
+	dlog("program at %p (%lu)", program, program_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
 	dlog(".sgxdata = %p", _SGXDATA_BASE);
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
@@ -420,9 +424,9 @@ void ecall_receive_binary(unsigned char *binary, int sz)
 	//Weijie:
 	//dlog("__sgx_start = %p", &__sgx_start);
 	//dlog("__sgx_end = %p", &__sgx_end);
-	dlog("__sgx_code = %p", &__sgx_code);
-	dlog("__elf_end = %p", &__elf_end);
-	dlog("heap base = %lx", _HEAP_BASE);
+	dlog("xxx __sgx_code = %p", &__sgx_code);
+	dlog("xxx __elf_end = %p", &__elf_end);
+	dlog("xxx heap base = %lx", _HEAP_BASE);
 
 	validate_ehdr();
 	//Weijie:
