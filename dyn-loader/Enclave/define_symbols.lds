@@ -16,8 +16,7 @@
 SECTIONS
 {
     .sgx.code : {
-        __sgx_start = .;
-        __sgx_code = .;
+        __elf_start = .;
         *(.sgx.code)
     }
     /* Weijie: reserve room for binary received from Ecall */

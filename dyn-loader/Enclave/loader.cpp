@@ -3,17 +3,17 @@ typedef unsigned long addr_t;
 //extern char __sgx_start;        /* defined in the linker script */
 //extern char __sgx_end;          /* defined in the linker script */
 
-extern char __sgx_start;         /* defined in the linker script */
-extern char __sgx_code;         /* defined in the linker script */
+extern char __elf_start;         /* defined in the linker script */
 extern char __elf_end;		/* defined in the linker script */
 
-#define _SGXCODE_BASE ((void*)((addr_t)&__sgx_code + __sgx_code_ofs))
+#define _SGXCODE_BASE ((void*)((addr_t)&__elf_start + __sgx_code_ofs))
 #define _SGXDATA_BASE ((void*)(_SGXCODE_BASE + __sgx_data_ofs))
 
-/* shawn233: program start has been changed to __sgx_code,
+/* 
+ * Weijie & shawn233: program start has been changed to __elf_start,
  * program_size is set to 0 although it may be useless 
  */
-char *program = (char *)&__sgx_code;
+char *program = (char *)&__elf_start;
 size_t program_size = 0;
 
 #include <endian.h>
