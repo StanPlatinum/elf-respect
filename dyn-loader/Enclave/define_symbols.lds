@@ -16,6 +16,7 @@
 SECTIONS
 {
     .sgx.code : {
+        __sgx_start = .;
         __sgx_code = .;
         *(.sgx.code)
     }

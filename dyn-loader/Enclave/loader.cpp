@@ -3,6 +3,7 @@ typedef unsigned long addr_t;
 //extern char __sgx_start;        /* defined in the linker script */
 //extern char __sgx_end;          /* defined in the linker script */
 
+extern char __sgx_start;         /* defined in the linker script */
 extern char __sgx_code;         /* defined in the linker script */
 extern char __elf_end;		/* defined in the linker script */
 
@@ -444,10 +445,6 @@ void enclave_main()
 	dlog(".sgxdata = %p", _SGXDATA_BASE);
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
-
-	//dlog("__sgx_start = %p", &__sgx_start);
-	//dlog("__sgx_end = %p", &__sgx_end);
-	dlog("__sgx_code = %p", &__sgx_code);
 	dlog("__elf_end = %p", &__elf_end);
 	dlog("heap base = %lx", _HEAP_BASE);
 

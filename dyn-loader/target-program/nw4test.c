@@ -292,8 +292,9 @@ void enclave_main(){
 	char seq_1_al[50];
         char seq_2_al[50];
 
+	puts("running NW algorithm...");
 	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
 
-	//Weijie: make it returning
+	puts("exiting...");
 	enclave_exit();
 }
