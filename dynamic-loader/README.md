@@ -12,7 +12,7 @@ cd target-program && make
 
 cd .. && make
 
-### Optional command:
+### Optional commands:
 
 1. generate symtab debugging tool
 
@@ -38,7 +38,7 @@ Memory Layouts:
 
 __elf_start	(Here begins the .sgx.code: 64M)
 
-32M memory space for xxx
+32M memory space for ?
 
 _SGXCODE_BASE
 
