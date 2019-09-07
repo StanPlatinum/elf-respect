@@ -1,13 +1,31 @@
-## Privacy-preserving TEE protoype on a service-oriented environment such as on an MLaaS platform
-
-### Checking if an (malicious) enclave would leak data at runtime 
-
-### Adding noise on an enclave's output
+## Privacy-preserving TEE protoype on a service-oriented environment
 
 ***
 
 # Usage:
 
-## build llvm
+## build llvm/clang
 
-cmake -G 'Unix Makefiles' ../ -DCMAKE_BUILD_TYPE=Debug -DLLVM_ENABLE_ASSERTIONS=On -DLLVM_TARGETS_TO_BUILD="X86" -DCMAKE_INSTALL_PREFIX=/opt/llvm
+cd llvm-project
+
+mkdir build && cd build
+
+cmake -G 'Unix Makefiles' ../llvm -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86"
+
+make
+
+## generate target binary
+
+cd ..
+
+cd dynamic-loader
+
+cd target-program
+
+make
+
+## build loader
+
+cd ..
+
+make
