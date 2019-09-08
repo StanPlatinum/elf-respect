@@ -2,7 +2,7 @@
 
 LLVM_PATH="/home/weijliu/llvm-project"
 LLVM_BIN_PATH=$LLVM_PATH"/build/bin"
-CFIHello_So_PATH=$LLVM_PATH"/build/lib"
+CFIHello_So_PATH=$LLVM_PATH"/build/lib/LLVMCFIHello.so"
 
 TARGET_SOURCE=`pwd`"/foo.c"
 
