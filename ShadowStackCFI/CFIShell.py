@@ -73,8 +73,4 @@ print(subprocess.call(llvmBinDir + "llc " + optPath, shell=True))
 
 mergeEntryName(codeDir + codeName + "/" + codeName +".txt", entryLabelPath)
 
-<<<<<<< HEAD
 print("\nDone.")
-=======
-print("\nDone.")
->>>>>>> 78fc1d0ed4e68d65c55f2f3de04c1537d09cac15
