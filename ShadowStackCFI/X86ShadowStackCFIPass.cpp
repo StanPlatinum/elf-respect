@@ -588,12 +588,6 @@ namespace {
                 for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
                 {
                     MachineInstr &MI = *MII;
-                    if (MI.getOpcode() == CALL64pcrel32)
-                    {
-                        printMachineInstr(MI, 0);
-                    }
-                    
-                    
                     if (MI.getOpcode() == CALL64r)
                     {//call reg1
                         MCPhysReg reg1 = MI.getOperand(0).getReg();
