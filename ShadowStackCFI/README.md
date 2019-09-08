@@ -23,8 +23,9 @@ CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.
 4 Add "add_subdirectory(CFIHello)" to the end of Transform/CMakelist.txt  
 5 Add "FunctionPass *createX86ShadowStackCFIPass();" to llvm/lib/Target/X86/X86.h  
 6 Add "X86ShadowStackCFIPass.cpp" to "set(sources...)" in llvm/lib/Target/X86/CMakeLists.txt  
-7 Make your llvm.  
-8 Execute CFISHell.py (using 1.sh/run.sh)
+7 Replace file llvm/lib/CodeGen/MachineRegisterInfo.cpp with file MachineRegisterInfo.cpp  
+8 Make your llvm  
+9 Execute CFISHell.py (using 1.sh/run.sh)
 
 ### Results:
 There will be an dir in the same path of demo source file(or your source file) and "entryLabel.txt" in the path used in parameter 6.  
