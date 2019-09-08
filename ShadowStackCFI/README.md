@@ -1,6 +1,7 @@
 ### Files:
 CFIHello is an IR pass to insert CFICheck function call in your program.  
 X86ShadowStackCFIPass.cpp is a backend pass to instrument ShadowStack and CFI instructions in your program.  
+MachineRegisterInfo.cpp is used to replace a  llvm-source file of the same name.
 CFICheck.c is the source file of CFICheck function.  
 foo.c and foo1.c are demo source files.  
 CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.  
