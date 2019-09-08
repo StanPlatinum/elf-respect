@@ -72,7 +72,7 @@ void printMachineInstr(MachineInstr &MI, int IorB)
     for (int i = 0; i < MI.getNumOperands(); i++)
     {
         MachineOperand MO = MI.getOperand(i);
-        outs() << " " << MI.getOperand(i) << " isReg: " << MO.isReg() << " isImm: " << MO.isImm() << "\n";
+        outs() << " " << MI.getOperand(i) << " isBlockAddress " << MO.isBlockAddress() << " isCFIIndex " << MO.isCFIIndex() << " isCImm " << MO.isCImm() << " isCPI " << MO.isCPI() << " isFI " << MO.isFI() << " isFPImm " << MO.isFPImm() << " isGlobal " << MO.isGlobal() << " isImm " << MO.isImm() << " isIntrinsicID " << MO.isIntrinsicID() << " isJTI " << MO.isJTI() << " isMBB " << MO.isMBB() << " isMCSymbol " << MO.isMCSymbol() << " isMetadata " << MO.isMetadata() << " isPredicate " << MO.isPredicate() << " isReg " << MO.isReg() << " isRegLiveOut " << MO.isRegLiveOut() << " isRegMask " << MO.isRegMask() << " isSymbol " << MO.isSymbol() << " isTargetIndex " << MO.isTargetIndex()<< "\n";
     }
     outs() << "\n";
 }
@@ -150,7 +150,6 @@ namespace {
         };
         
         map<string, MBBNode> MBBNodeMap;    //保存所有的MBBNode，string为MBBNodeName
-        static const size_t SkipLeafInstructions = 8;
 
     public:
         static char ID;
@@ -304,11 +303,7 @@ namespace {
         bool checkSSMF(MachineFunction &MF)
         {
             if (MF.empty() || !MF.getRegInfo().tracksLiveness())
-                return false;
-            if (MF.getInstructionCount() <= SkipLeafInstructions)
-            {
-                return false;
-            }                
+                return false;               
             if (MF.front().isLiveIn(X86::R10) || MF.front().isLiveIn(X86::R11))
                 return false;
             
@@ -414,7 +409,12 @@ namespace {
                 if (MI.isReturn())
                 {
                     Trap = MF.CreateMachineBasicBlock();
-                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::TRAP));
+                    // mov eax, 60(60为exit的syscall调用号)
+                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EAX).addImm(60);
+                    // mov edi, 0
+                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0);
+                    // syscall
+                    BuildMI(Trap, MI.getDebugLoc(), TII->get(SYSCALL));
                     MF.push_back(Trap);
                     if (SimpleMFRegBool)
                         insertSSRetSimple(TII, MBB, MI, *Trap, SimpleMFReg);
@@ -588,52 +588,44 @@ namespace {
                 for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
                 {
                     MachineInstr &MI = *MII;
+                    if (MI.getOpcode() == CALL64pcrel32)
+                    {
+                        printMachineInstr(MI, 0);
+                    }
+                    
                     
                     if (MI.getOpcode() == CALL64r)
                     {//call reg1
                         MCPhysReg reg1 = MI.getOperand(0).getReg();
-                        printMachineInstr(MI, 0);
                         MII--;MII--;
                         MachineInstr &MI1 = *MII;
                         MCPhysReg reg2 = MI1.getOperand(0).getReg();
-                        printMachineInstr(MI1, 0);
                         const TargetInstrInfo *TII;
                         DebugLoc DL = MI1.getDebugLoc();
                         TII = MF.getSubtarget().getInstrInfo();
 
                         //mov reg2, reg1
                         MachineInstr &tmpMI = *BuildMI(MBB, MII, DL, TII->get(MOV64rr)).addReg(reg2).addReg(reg1);
-                        printMachineInstr(tmpMI, 1);
                         
                         MII++;MII++;
                         MBB.erase(&MI1);
-                        
-                        MachineInstr &MI2 = *MII;
-                        printMachineInstr(MI2, 0);
                     }
                     if (MI.getOpcode() == CALL64m)
                     {//call [reg1]
                         MCPhysReg reg1 = MI.getOperand(0).getReg();
                         int64_t imm = MI.getOperand(3).getImm();
-                        printMachineInstr(MI, 0);
                         MII--;MII--;
                         MachineInstr &MI1 = *MII;
                         MCPhysReg reg2 = MI1.getOperand(0).getReg();
-                        printMachineInstr(MI1, 0);
                         const TargetInstrInfo *TII;
                         DebugLoc DL = MI1.getDebugLoc();
                         TII = MF.getSubtarget().getInstrInfo();
 
                         //mov reg2, [reg1]
                         MachineInstr &tmpMI = *BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addReg(reg2).addReg(reg1).addImm(1).addReg(0).addImm(imm).addReg(0);
-                        printMachineInstr(tmpMI, 1);
 
                         MII++;MII++;
                         MBB.erase(&MI1);
-                        
-                        MachineInstr &MI2 = *MII;
-                        printMachineInstr(MI2, 0);
-                        break;
                     }
                 }
             }
@@ -641,6 +633,13 @@ namespace {
         }
 
         virtual bool runOnMachineFunction(MachineFunction &MF) {
+            outs() << MF.getName() << "\n";
+            vector<const GlobalValue *> v = MF.getTypeInfos();
+            for (int i = 0; i < v.size(); i++)
+            {
+                outs() << v[i]->getName() << "\n";
+                v[i]->print(outs());
+            }
             bool bs =  insertShadowStackInst(MF);
             bool bc = insertCFIFun(MF);
             return bc || bs;

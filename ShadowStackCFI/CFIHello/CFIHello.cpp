@@ -26,7 +26,6 @@ namespace {
         string MName = F.getParent()->getSourceFileName();
         //MName.erase(MName.end() - 3, MName.end());
         file << MName << "_" << F.getName() << "\n";
-        errs() << MName << "_" << F.getName() << "\n";
     }
 
     //插入一个全新的Fun并添加调用
@@ -93,7 +92,7 @@ namespace {
  
     bool runOnModule(Module &M) override {
         std::error_code error;
-        StringRef name(M.getSourceFileName() + ".txt");
+        StringRef name(M.getSourceFileName() + "/" + M.getSourceFileName() + ".txt");
         enum sys::fs::OpenFlags F_None;
         raw_fd_ostream file(name, error, F_None);
         for (auto FI = M.begin(); FI != M.end(); FI++)
