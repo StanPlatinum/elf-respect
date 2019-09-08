@@ -633,13 +633,6 @@ namespace {
         }
 
         virtual bool runOnMachineFunction(MachineFunction &MF) {
-            outs() << MF.getName() << "\n";
-            vector<const GlobalValue *> v = MF.getTypeInfos();
-            for (int i = 0; i < v.size(); i++)
-            {
-                outs() << v[i]->getName() << "\n";
-                v[i]->print(outs());
-            }
             bool bs =  insertShadowStackInst(MF);
             bool bc = insertCFIFun(MF);
             return bc || bs;
