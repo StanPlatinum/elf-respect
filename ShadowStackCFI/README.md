@@ -1,7 +1,8 @@
 ### Files:
 CFIHello is an IR pass to insert CFICheck function call in your program.  
 X86ShadowStackCFIPass.cpp is a backend pass to instrument ShadowStack and CFI instructions in your program.  
-MachineRegisterInfo.cpp is used to replace a  llvm-source file of the same name.
+MachineRegisterInfo.cpp is used to replace llvm/lib/CodeGen/MachineRegisterInfo.cpp.  
+ChangeMachineRegisterInfo.jpg shows the changes of MachineRegisterInfo.cpp.  
 CFICheck.c is the source file of CFICheck function.  
 foo.c and foo1.c are demo source files.  
 CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.  
@@ -24,7 +25,8 @@ CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.
 5 Add "FunctionPass *createX86ShadowStackCFIPass();" to llvm/lib/Target/X86/X86.h  
 6 Add "X86ShadowStackCFIPass.cpp" to "set(sources...)" in llvm/lib/Target/X86/CMakeLists.txt  
 7 If your clang-version is 9.0, you should replace file llvm/lib/CodeGen/MachineRegisterInfo.cpp with file MachineRegisterInfo.cpp  
-  If your clang-version is over 9.0, you shoule change llvm/lib/CodeGen/MachineRegisterInfo.cpp:266 like this:  
+　If your clang-version is over 9.0, you shoule change llvm/lib/CodeGen/MachineRegisterInfo.cpp:266 like this:  
+  ![](https://github.com/StanPlatinum/elf-respect/blob/master/ShadowStackCFI/ChangeMachineRegisterInfo.jpg)  
 8 Make your llvm  
 9 Execute CFISHell.py (using 1.sh/run.sh)
 
