@@ -54,7 +54,7 @@ optPath = codeDir + codeName + "/" + codeName + "_opt.ll"
 print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + codePath + " :\n")
 print(subprocess.call(llvmBinDir + "clang -emit-llvm -S " + codePath + " -o " + firstPath, shell=True))
 
-if os.path.isfile(CFISrcPath):
+if os.path.isfile(CFISrcDir + CFISrcName + ".ll"):
     pass
 else:
     print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + CFISrcPath + " :\n")
