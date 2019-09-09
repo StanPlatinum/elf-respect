@@ -30,23 +30,24 @@
 
 ######## Checker Settings ########
 
-SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
+SGX_SRC_PATH = /root/linux-sgx
+LIBELF_SRC_PATH = /root/elfutils4sgx/elfutils-0.176/libelf 
+CAPSTONE_SRC_PATH = /
 
 CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+CHECKER_Static_INC_PATH = -I$(LIBELF_SRC_PATH) -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
-CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
+CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) 
 CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
 
 ######## Target Settings ########
 
 #Weijie: The input should be relocatable, not executable
 #IN_ENCLAVE_PROGRAM = target-program/nw4test
-#IN_ENCLAVE_PROGRAM = target-program/test
-IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
-#IN_ENCLAVE_PROGRAM = program
+#IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
+IN_ENCLAVE_PROGRAM = program
 #IN_ENCLAVE_PROGRAM = target-program/simple_loop
 
 DEF_SYMBOL_SCRIPT =Enclave/define_symbols.lds

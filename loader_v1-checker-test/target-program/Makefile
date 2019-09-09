@@ -1,24 +1,16 @@
 
-CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang -fPIC -fno-asynchronous-unwind-tables
+CC4OCALL_onmylaptop = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /root/SGX-Shield/llvm/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CXX = clang++
-
-#TARGET_NAME = test
-#TARGET_NAME = simple_loop
-TARGET_NAME = bm_malloc_simple
+TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 NOLIBC_FLAG = -nodefaultlibs -nostdlib
-
-#MUSL_LIBC_DIR = ./musl-libc
-#MUSL_LIBC = $(MUSL_LIBC_DIR)/lib/libc.a
-#SGX_CFLAGS = $(BASE_CFLAGS) -I$(MUSL_LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
 
 #Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
@@ -34,6 +26,7 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 #all: $(MUSL_LIBC) $(TARGET_NAME)
 all: $(LIBC) $(TARGET_NAME)
+	mv $(TARGET_NAME) ../program
 
 #$(MUSL_LIBC):
 #	(cd musl-libc; ./configure)
@@ -47,7 +40,7 @@ $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s
-	$(CC4OCALL) -c -o $@ $<
+	$(CC) -c -o $@ $<
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
@@ -61,7 +54,7 @@ objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 
 #Weijie: add malloc.o 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
