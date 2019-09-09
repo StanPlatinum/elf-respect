@@ -4,6 +4,12 @@
 
 # Usage:
 
+## build linux-sgx and linux-sgx-driver
+
+Please refer to https://github.com/intel/linux-sgx and https://github.com/intel/linux-sgx-driver.
+
+Make sure the SGXSDK version is 2.5 or later.
+
 ## build libelf
 
 We use the libelf from the elfutils (https://sourceware.org/elfutils/). By default it will generate a static library.
