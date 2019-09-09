@@ -30,22 +30,22 @@
 
 ######## Checker Settings ########
 
-SGX_SRC_PATH = /root/linux-sgx
-LIBELF_SRC_PATH = /root/elfutils4sgx/elfutils-0.176/libelf 
-CAPSTONE_SRC_PATH = /
+SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
+TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 
-CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I$(LIBELF_SRC_PATH) -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
-CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
-CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
+#CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
+#CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+#CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
+#CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
-CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) 
-CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
+#CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
+#CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
 
 ######## Target Settings ########
 
 #Weijie: The input should be relocatable, not executable
 #IN_ENCLAVE_PROGRAM = target-program/nw4test
+#IN_ENCLAVE_PROGRAM = target-program/test
 #IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
 IN_ENCLAVE_PROGRAM = program
 #IN_ENCLAVE_PROGRAM = target-program/simple_loop
@@ -151,7 +151,8 @@ Crypto_Library_Name := sgx_tcrypto
 Enclave_Cpp_Files := Enclave/Enclave.cpp
 
 #added by Weijie
-Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
+#Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
+Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(TRTS_INC_PATH)
 
 
 # edited by Weijie
@@ -248,10 +249,17 @@ Enclave/Enclave_t.o: Enclave/enclave.c Enclave/Enclave_t.c Enclave/ocall_type.h
 	@$(CC) $(Enclave_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
-Enclave/%.o: Enclave/%.cpp $(IN_ENCLAVE_PROGRAM)
+#Enclave/%.o: Enclave/%.cpp $(IN_ENCLAVE_PROGRAM)
+#	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
+#	@objcopy --add-section .sgx.bin=$(IN_ENCLAVE_PROGRAM) --set-section-flags .sgx.bin=alloc,data $@
+#	@fallocate -l 32M blob
+#	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
+#	@echo "CXX  <=  $<"
+#Weijie: Here starts the new dyn-loader
+#Xinyu & Weijie: Only use objcopy to reserve some memory (64M currently, with alloc, data, code)
+Enclave/%.o: Enclave/%.cpp
 	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
-	@objcopy --add-section .sgx.bin=$(IN_ENCLAVE_PROGRAM) --set-section-flags .sgx.bin=alloc,data $@
-	@fallocate -l 32M blob
+	@fallocate -l 64M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 	@echo "CXX  <=  $<"
 
