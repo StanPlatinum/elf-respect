@@ -1,18 +1,21 @@
 
-CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+SGX_Shield_PATH = /root/SGX-Shield
+
+CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CXX = clang++
+#CXX = clang++
 
 #TARGET_NAME = test
-#TARGET_NAME = simple_loop
+TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
-TARGET_NAME = nw4test
+#TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

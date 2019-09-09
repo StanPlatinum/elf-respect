@@ -55,6 +55,8 @@ make
 
 ## generate target binary
 
+Please modify $(SGX_Shield_PATH) to where the SGX-Shield is cloned.
+
 ```
 cd ..
 cd dynamic-loader/target-program
@@ -74,6 +76,15 @@ cp elfutils4sgx/elfutils-0.176/libelf/libelf.a Enclave/TrustedLib
 ```
 
 ### set variables in Makefile
+
+```
+cd dynamic-loader-checker
+vi Makefile
+```
+
+Please modify $(SGX_SRC_PATH) to where the SGXSDK is installed.
+
+### build
 
 ```
 make
