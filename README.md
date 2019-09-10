@@ -86,6 +86,7 @@ vi Makefile
 ```
 
 Please modify $(SGX_SRC_PATH) to where the SGXSDK is installed.
+And set $(ELFUTILS_PATH) and $(CAPSTONE_PATH) to where the elfutils and capstone have been installed respectively.
 
 ### build
 
