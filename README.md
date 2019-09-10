@@ -93,3 +93,11 @@ And set $(ELFUTILS_PATH) and $(CAPSTONE_PATH) to where the elfutils and capstone
 ```
 make
 ```
+
+### have a try
+
+```
+./app
+```
+
+GL and HF!
