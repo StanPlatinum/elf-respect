@@ -94,10 +94,16 @@ And set $(ELFUTILS_PATH) and $(CAPSTONE_PATH) to where the elfutils and capstone
 make
 ```
 
-### have a try
+## have a try
+
+### run the simplest demo
 
 ```
 ./app
 ```
+
+### run benchmarks
+
+### how to write a pratical SGX application 
 
 GL and HF!
