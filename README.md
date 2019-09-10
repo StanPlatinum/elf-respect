@@ -73,6 +73,8 @@ cd ..
 
 ```
 cp elfutils4sgx/elfutils-0.176/libelf/libelf.a Enclave/TrustedLib
+cp capstone/install-x86/lib/libcapstone.a Enclave/TrustedLib
+
 ```
 
 ### set variables in Makefile
