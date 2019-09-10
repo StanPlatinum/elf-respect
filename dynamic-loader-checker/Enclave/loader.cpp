@@ -378,18 +378,22 @@ static void relocate(void)
 #include <trts_util.h>
 
 //Weijie: add checker wrap here
-void checker_wrap(char *program, int sz)
-{	
+void checker_wrap(unsigned char *program, int sz)
+{
+	void *this_enclave_base = get_enclave_base();
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
 	
 	pr_progress("disassembling all parts");
 	int j;
 	int rv;
-	Elf64_Xword textSize;
-	textSize = (size_t)sz;
-	Elf64_Addr textAddr;
+
 	PrintDebugInfo("-----setting params-----\n");
+	Elf64_Xword textSize;
+	textSize = (size_t)sz - 1;
+	Elf64_Addr textAddr;
+	textAddr = 0x1000;
+	
 	//Weijie: fill in buf
 	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 	rv = cs_disasm_entry(program, textSize, textAddr);
@@ -408,6 +412,8 @@ void ecall_receive_binary(char *binary, int sz)
 	//program = (char*) binary;
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
+
+    checker_wrap((unsigned char *)program, program_size);
 
 	void (*entry)();
 	dlog("program at %p (%lu)", program, program_size);

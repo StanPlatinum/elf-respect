@@ -38,11 +38,11 @@ ELFUTILS_INC_PATH = $(ELFUTILS_PATH)/libelf
 
 MUSL_LIBC_PATH = /root/musl-1.1.22
 
-CAPSTONE_PATH = /
+CAPSTONE_PATH = /root/capstone
 CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
 
 CHECKER_Dyn_INC_PATH = -I$(CAPSTONE)/install-x86/include -I$(ELFUTILS_INC_PATH) -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I$(ELFUTILS_PATH)/libelf/ -I$(MUSL_LIBC_PATH)/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+CHECKER_Static_INC_PATH = -I$(ELFUTILS_INC_PATH) -I$(MUSL_LIBC_PATH)/install/include $(TRTS_INC_PATH)
 CHECKER_Dyn_LIB_PATH = -L$(CAPSTONE_LIB_PATH)
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
@@ -159,8 +159,7 @@ Crypto_Library_Name := sgx_tcrypto
 Enclave_Cpp_Files := Enclave/Enclave.cpp
 
 #added by Weijie
-#Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
-Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(TRTS_INC_PATH)
+Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
 
 
 # edited by Weijie
