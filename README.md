@@ -69,13 +69,14 @@ make
 cd ..
 ```
 
-~~~### copy dependencies to Enclave/TrustedLib~~~
+### copy dependencies to Enclave/TrustedLib
 
-~~~```~~~
-~~~cp elfutils4sgx/elfutils-0.176/libelf/libelf.a Enclave/TrustedLib~~~
-~~~cp capstone/install-x86/lib/libcapstone.a Enclave/TrustedLib~~~
+```
+cp elfutils4sgx/elfutils-0.176/libelf/libelf.a Enclave/TrustedLib
+cp capstone/install-x86/lib/libcapstone.a Enclave/TrustedLib
+```
 
-~~~```~~~
+Please note that at this time some necessary libs have been copied into the dir Enclave/TrustedLib.
 
 ### set variables in Makefile
 
