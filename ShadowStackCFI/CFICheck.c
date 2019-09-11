@@ -1,9 +1,9 @@
 #include <stdio.h>
-long long *CFICheckAddressPtr;
-int CFICheckAddressNum;
 
 void CFICheck(long long target)
 {
+    long long *CFICheckAddressPtr = 0x1FFFFFFFFFFFFFFF;
+    int CFICheckAddressNum = 0x1FFFFFFF;
     int low = 0, high = CFICheckAddressNum-1, mid;
     while (low <= high)
     {

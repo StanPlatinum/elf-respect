@@ -250,8 +250,8 @@ namespace {
         void insertSSEntry(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL)
         {
             auto MBBI = MBB.begin();
-            // mov r11, 0x20000
-            BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x20000);
+            // mov r11, 0x2fffffffffffffff
+            BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
             // add [r11], 8
             BuildMI(MBB, MBBI, DL, TII->get(X86::ADD64mi8)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addImm(8);
             // mov r10, [r11]
@@ -267,8 +267,8 @@ namespace {
         void insertSSRet(const TargetInstrInfo *TII, MachineBasicBlock &MBB, MachineInstr &MI, MachineBasicBlock &TrapBB)
         {
             const DebugLoc &DL = MI.getDebugLoc();
-            // mov r11, 0x20000
-            BuildMI(MBB, MI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x20000);
+            // mov r11, 0x2fffffffffffffff
+            BuildMI(MBB, MI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
             // mov r10, [r11]
             addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addDef(X86::R10), X86::R11);
             // add r10, r11
@@ -597,7 +597,7 @@ namespace {
                         const TargetInstrInfo *TII;
                         DebugLoc DL = MI1.getDebugLoc();
                         TII = MF.getSubtarget().getInstrInfo();
-
+                        
                         //mov reg2, reg1
                         MachineInstr &tmpMI = *BuildMI(MBB, MII, DL, TII->get(MOV64rr)).addReg(reg2).addReg(reg1);
                         
@@ -617,7 +617,7 @@ namespace {
 
                         //mov reg2, [reg1]
                         MachineInstr &tmpMI = *BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addReg(reg2).addReg(reg1).addImm(1).addReg(0).addImm(imm).addReg(0);
-
+                        
                         MII++;MII++;
                         MBB.erase(&MI1);
                     }
