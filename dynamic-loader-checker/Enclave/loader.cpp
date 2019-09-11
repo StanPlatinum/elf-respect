@@ -192,8 +192,6 @@ static void update_reltab(void)
 	//Weijie: allocate reltab
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
 	
-	//Weijie:
-	//dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
@@ -207,11 +205,6 @@ static void update_reltab(void)
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
-			
-			//Weijie:
-			//dlog("xxx n_rel: %u", n_rel);
-			//dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
 			
 			//Weijie:
@@ -229,9 +222,6 @@ static void update_reltab(void)
 				
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
-				
-				//Weijie:
-				//dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			}
 			++n_rel;
 
@@ -310,8 +300,6 @@ static void load(void)
 			} else {
 				/* find main */
 
-				//Weijie: checking if loader could find main()...
-				//dlog("%u: finding main...", __LINE__);
 				dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
@@ -380,11 +368,42 @@ static void relocate(void)
 		}
 }
 
-//#include "checker_part.cpp"
+#include "checker_part.cpp"
 /*
  * Weijie: add checker/disassembler here if necessary
  * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
  */
+
+#include <trts_internal.h>
+#include <trts_util.h>
+
+//Weijie: add checker wrap here
+void checker_wrap(unsigned char *program, int sz)
+{
+	void *this_enclave_base = get_enclave_base();
+	size_t this_enclave_size = get_enclave_size();
+	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
+	
+	pr_progress("disassembling all parts");
+	int j;
+	int rv;
+
+	PrintDebugInfo("-----setting params-----\n");
+	Elf64_Xword textSize;
+	textSize = (size_t)sz - 1;
+	Elf64_Addr textAddr;
+	textAddr = 0x1000;
+	
+	//Weijie: fill in buf
+	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+	rv = cs_disasm_entry(program, textSize, textAddr);
+
+	//Weijie: TO-DO
+	if (rv == 0){
+		//Weijie: proceed
+	}	
+
+}
 
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
@@ -393,6 +412,8 @@ void ecall_receive_binary(char *binary, int sz)
 	//program = (char*) binary;
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
+
+    checker_wrap((unsigned char *)program, program_size);
 
 	void (*entry)();
 	dlog("program at %p (%lu)", program, program_size);
@@ -428,93 +449,3 @@ void ecall_receive_binary(char *binary, int sz)
 	
 }
 
-#include <trts_internal.h>
-#include <trts_util.h>
-
-/* shawn233: enclave_main will not be invoked */
-void enclave_main()
-{	
-	pr_progress("Hello from enclave_main!");
-	void (*entry)();
-	
-	//To-do
-	//Weijie: Here we alloc a heap buffer for target binary
-	
-	dlog("program at %p (%lx)", program, program_size);
-	dlog(".sgxcode = %p", _SGXCODE_BASE);
-	dlog(".sgxdata = %p", _SGXDATA_BASE);
-	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
-	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
-	dlog("__elf_end = %p", &__elf_end);
-	dlog("heap base = %lx", _HEAP_BASE);
-
-	validate_ehdr();
-	update_reltab();
-	pr_progress("loading");
-	load();
-
-	//Weijie: cannot simply delete relocation in original sgx-shield demo
-	//Weijie: cannot delete the following lines in current demo
-	pr_progress("relocating");
-	relocate();
-
-#if 0
-	//Weijie: checker starts here.
-	/*
-	   PrintDebugInfo("-----setting params-----\n");
-	   Elf64_Xword textSize;
-	   textSize = main_sym->st_size;
-	   Elf64_Addr textAddr;
-	   textAddr = main_sym->st_value;
-	   unsigned char* buf = (unsigned char *)malloc(textSize);
-	   cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
-	   dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-	   int rv;
-	   rv = cs_disasm_entry(buf, textSize, textAddr);
-	   free(buf);
-	 */
-
-	pr_progress("disassembling all parts");
-
-	int j;
-	int rv;
-	Elf64_Xword textSize;
-	Elf64_Addr textAddr;
-	unsigned char* buf;
-	//Weijie: assume j >= 3
-	for (j = 2; j < n_symtab - 1; j++){
-		textSize = symtab[j].st_size;
-		if (textSize > 0){
-			PrintDebugInfo("-----setting params-----\n");
-			textAddr = symtab[j].st_value;
-			buf = (unsigned char *)malloc(textSize);
-			//Weijie: fill in buf
-			cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-			dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-			rv = cs_disasm_entry(buf, textSize, textAddr);
-			free(buf);
-		}
-	}
-	if (rv == 0){
-		//Weijie: proceed
-	}	
-#endif
-	pr_progress("getting enclave bounds");
-	void *this_enclave_base = get_enclave_base();
-	size_t this_enclave_size = get_enclave_size();
-	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
-
-	//To-do
-	//Weijie: Here we alloc a heap buffer for target binary
-
-	entry = (void (*)())(main_sym->st_value);
-	dlog("main: %p", entry);
-
-	pr_progress("entering");
-
-	//Weijie: the asm inline commands could be commented
-	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
-	entry();
-	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
-	pr_progress("returning");
-}

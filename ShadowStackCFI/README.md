@@ -26,7 +26,7 @@ CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.
 6 Add "X86ShadowStackCFIPass.cpp" to "set(sources...)" in llvm/lib/Target/X86/CMakeLists.txt  
 7 If your clang-version is 9.0, you should replace file llvm/lib/CodeGen/MachineRegisterInfo.cpp with file MachineRegisterInfo.cpp  
 　If your clang-version is over 9.0, you shoule change llvm/lib/CodeGen/MachineRegisterInfo.cpp:266 like this:  
-  ![](https://github.com/StanPlatinum/elf-respect/blob/master/ShadowStackCFI/ChangeMachineRegisterInfo.jpg)  
+  ![](https://github.com/StanPlatinum/elf-respect/blob/master/ShadowStackCFI/ChangeMachineRegisterInfo.png)  
 8 Make your llvm  
 9 Execute CFISHell.py (using 1.sh/run.sh)
 
