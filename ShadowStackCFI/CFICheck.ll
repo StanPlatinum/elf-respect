@@ -3,19 +3,20 @@ source_filename = "/home/weijliu/elf-respect/ShadowStackCFI/CFICheck.c"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@CFICheckAddressNum = common dso_local global i32 0, align 4
-@CFICheckAddressPtr = common dso_local global i64* null, align 8
-
 ; Function Attrs: noinline nounwind optnone uwtable
 define dso_local void @CFICheck(i64 %target) #0 {
 entry:
   %target.addr = alloca i64, align 8
+  %CFICheckAddressPtr = alloca i64*, align 8
+  %CFICheckAddressNum = alloca i32, align 4
   %low = alloca i32, align 4
   %high = alloca i32, align 4
   %mid = alloca i32, align 4
   store i64 %target, i64* %target.addr, align 8
+  store i64* inttoptr (i64 2305843009213693951 to i64*), i64** %CFICheckAddressPtr, align 8
+  store i32 536870911, i32* %CFICheckAddressNum, align 4
   store i32 0, i32* %low, align 4
-  %0 = load i32, i32* @CFICheckAddressNum, align 4
+  %0 = load i32, i32* %CFICheckAddressNum, align 4
   %sub = sub nsw i32 %0, 1
   store i32 %sub, i32* %high, align 4
   br label %while.cond
@@ -43,7 +44,7 @@ if.then:                                          ; preds = %while.body
   br label %while.end
 
 if.end:                                           ; preds = %while.body
-  %8 = load i64*, i64** @CFICheckAddressPtr, align 8
+  %8 = load i64*, i64** %CFICheckAddressPtr, align 8
   %9 = load i32, i32* %mid, align 4
   %idxprom = sext i32 %9 to i64
   %arrayidx = getelementptr inbounds i64, i64* %8, i64 %idxprom
@@ -56,7 +57,7 @@ if.then4:                                         ; preds = %if.end
   ret void
 
 if.else:                                          ; preds = %if.end
-  %12 = load i64*, i64** @CFICheckAddressPtr, align 8
+  %12 = load i64*, i64** %CFICheckAddressPtr, align 8
   %13 = load i32, i32* %mid, align 4
   %idxprom5 = sext i32 %13 to i64
   %arrayidx6 = getelementptr inbounds i64, i64* %12, i64 %idxprom5

@@ -18,9 +18,12 @@ CFICheck:                               # @CFICheck
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register %rbp
 	subq	$32, %rsp
-	movq	%rdi, -24(%rbp)
+	movq	%rdi, -32(%rbp)
+	movabsq	$2305843009213693951, %rax # imm = 0x1FFFFFFFFFFFFFFF
+	movq	%rax, -24(%rbp)
+	movl	$536870911, -16(%rbp)   # imm = 0x1FFFFFFF
 	movl	$0, -12(%rbp)
-	movl	CFICheckAddressNum, %eax
+	movl	-16(%rbp), %eax
 	subl	$1, %eax
 	movl	%eax, -8(%rbp)
 .LBB0_1:                                # %while.cond
@@ -45,10 +48,10 @@ CFICheck:                               # @CFICheck
 	jmp	.LBB0_12
 .LBB0_4:                                # %if.end
                                         #   in Loop: Header=BB0_1 Depth=1
-	movq	CFICheckAddressPtr, %rax
+	movq	-24(%rbp), %rax
 	movslq	-4(%rbp), %rcx
 	movq	(%rax,%rcx,8), %rax
-	cmpq	-24(%rbp), %rax
+	cmpq	-32(%rbp), %rax
 	jne	.LBB0_6
 # %bb.5:                                # %if.then4
 	addq	$32, %rsp
@@ -64,10 +67,10 @@ CFICheck:                               # @CFICheck
 .LBB0_6:                                # %if.else
                                         #   in Loop: Header=BB0_1 Depth=1
 	.cfi_def_cfa %rbp, 16
-	movq	CFICheckAddressPtr, %rax
+	movq	-24(%rbp), %rax
 	movslq	-4(%rbp), %rcx
 	movq	(%rax,%rcx,8), %rax
-	cmpq	-24(%rbp), %rax
+	cmpq	-32(%rbp), %rax
 	jle	.LBB0_8
 # %bb.7:                                # %if.then8
                                         #   in Loop: Header=BB0_1 Depth=1
@@ -177,10 +180,6 @@ main:                                   # @main
 	.size	main, .Lfunc_end2-main
 	.cfi_endproc
                                         # -- End function
-	.type	CFICheckAddressNum,@object # @CFICheckAddressNum
-	.comm	CFICheckAddressNum,4,4
-	.type	CFICheckAddressPtr,@object # @CFICheckAddressPtr
-	.comm	CFICheckAddressPtr,8,8
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .L.str:
