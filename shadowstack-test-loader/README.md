@@ -28,7 +28,7 @@ Notes:
 
 1. modifying the Makefile: (already push to my branch)
 
-2. making a soft link like this (on my thinkpad):
+2. making a soft link like this (on my thinkpad, no need to do this step on node0/bio-sgx06):
 
 /lib/ld64.so.1 -> /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
 
@@ -36,9 +36,17 @@ Notes:
 Memory Layouts:
 ------------------------------------
 
-__elf_start	(Here begins the .sgx.code: 64M)
+__ss_start (Here begins the .sgx.ssblob: 4M)
 
-32M memory space for ?
+4M memory space for shadow stack
+
+__cfi_start (Here begins the .sgx.calltg: 4M)
+
+4M memory space for storing indirect jump targets
+
+__elf_start	(Here begins the .sgx.code: 56M)
+
+24M memory space for ?
 
 _SGXCODE_BASE
 
