@@ -30,8 +30,8 @@
 
 ######## Checker Settings ########
 
-SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
-TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+#SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
+#TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 
 #CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
 #CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
@@ -259,12 +259,12 @@ Enclave/Enclave_t.o: Enclave/enclave.c Enclave/Enclave_t.c Enclave/ocall_type.h
 #Xinyu & Weijie: Only use objcopy to reserve some memory (64M currently, with alloc, data, code)
 Enclave/%.o: Enclave/%.cpp
 	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
-	@fallocate -l 64M blob
-	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 	@fallocate -l 4M ssblob
 	@objcopy --add-section .sgx.ssblob=ssblob --set-section-flags .sgx.ssblob=alloc,data,code $@
 	@fallocate -l 4M calltg
 	@objcopy --add-section .sgx.calltg=calltg --set-section-flags .sgx.calltg=alloc,data,code $@
+	@fallocate -l 56M blob
+	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 
 	@echo "CXX  <=  $<"
 
