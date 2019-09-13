@@ -1,4 +1,4 @@
-This version of loader has been tested on bio-sgx06
+This version of loader has been tested on bio-sgx06.
 
 ## Usage
 
@@ -29,10 +29,6 @@ Notes:
 ------------------------------------
 
 1. modifying the Makefile: (already push to my branch)
-
-~~~2. making a soft link like this (on my thinkpad, no need to do this step on node0/bio-sgx06):~~~
-
-~~~/lib/ld64.so.1 -> /lib/x86_64-linux-gnu/ld-linux-x86-64.so.2~~~
 
 ------------------------------------
 Memory Layouts:

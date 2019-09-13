@@ -1,7 +1,7 @@
 typedef unsigned long addr_t;
 
-//extern char __sgx_start;        /* defined in the linker script */
-//extern char __sgx_end;          /* defined in the linker script */
+extern char __ss_start;         /* defined in the linker script */
+extern char __cfi_start;         /* defined in the linker script */
 
 extern char __elf_start;         /* defined in the linker script */
 extern char __elf_end;		/* defined in the linker script */
@@ -385,6 +385,19 @@ static void relocate(void)
  * Weijie: add checker/disassembler here if necessary
  * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
  */
+
+/* Weijie: add shadow stack pointer */
+char *shadow_stack = (char *)&__ss_start;
+
+/* Weijie: add target table pointer */
+char *target_table = (char *)&__cfi_start;
+size_t target_table_size = 0;
+
+void ecall_receive_entrylabel(char *entrylabel, int sz)
+{
+	cpy(target_table, entrylabel, (size_t)sz);
+	target_table_size = sz;
+}
 
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
