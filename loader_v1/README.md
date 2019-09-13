@@ -1,3 +1,5 @@
+This version of loader has been tested on my Thinkpad.
+
 ## Usage
 
 ***
