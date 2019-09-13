@@ -161,10 +161,7 @@ Enclave_Cpp_Files := Enclave/Enclave.cpp
 #added by Weijie
 Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
 
-
-# edited by Weijie
-# Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fPIC -fstack-protector $(Enclave_Include_Paths)
-Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(Enclave_Include_Paths)
+Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fPIC -fstack-protector $(Enclave_Include_Paths)
 
 Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++03 -nostdinc++
 Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
@@ -221,11 +218,6 @@ App/Enclave_u.o: App/enclave.c App/Enclave_u.c
 	@$(CC) $(App_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
-# try not to compile attack
-#App/attack.o: App/attack.s
-#	@$(CC) $(App_C_Flags) -c $< -o $@
-#	@echo "CC   <=  $<"
-
 App/App.o: App/App.cpp App/ocall.cpp
 	@$(CXX) $(App_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
 	@echo "CXX  <=  $<"
@@ -238,7 +230,7 @@ App/App.o: App/App.cpp App/ocall.cpp
 # checker part added by Weijie
 $(App_Name): App/Enclave_u.o App/App.o
 	@echo $(App_Link_Flags)
-	@$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags) $(CHECKER_Link_Outside)
+	@$(CXX) $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags) $(CHECKER_Link_Outside)
 	@echo "LINK =>  $@"
 
 
