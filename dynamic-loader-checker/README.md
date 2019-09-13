@@ -1,3 +1,5 @@
+This version of loader/checker has been tested on node0.
+
 ## Usage
 
 ***

@@ -262,11 +262,11 @@ Enclave/%.o: Enclave/%.cpp
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 	@echo "CXX  <=  $<"
 
+# checker part added by Weijie
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
-	#@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
-	# checker part added by Weijie
 	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static) $(DEF_SYMBOL_SCRIPT)
 	@echo "LINK =>  $@"
+	#@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
 
 $(Signed_Enclave_Name): $(Enclave_Name)
 	@$(SGX_ENCLAVE_SIGNER) sign -key Enclave/Enclave_private.pem -enclave $(Enclave_Name) -out $@ -config $(Enclave_Config_File)
