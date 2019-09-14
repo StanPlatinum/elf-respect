@@ -15,7 +15,11 @@ CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
-TARGET_NAME = nw4test
+#TARGET_NAME = nw4test
+
+# Now the target name will be a dir
+TARGET_NAME = foo2
+
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -38,18 +42,19 @@ include $(OCALL_LIB_MK)
 ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 #all: $(MUSL_LIBC) $(TARGET_NAME)
-all: $(LIBC) $(TARGET_NAME)
-	mv $(TARGET_NAME) ../program
+all: $(LIBC) $(TARGET_NAME).bin
+	mv $(TARGET_NAME).bin ../program
+	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
 
-$(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
 	cp malloc.o objs/
 	cp lib/*.o objs
 	ls objs/*.o > list
-	cat list | ./tools/linker $(TARGET_NAME)
+	cat list | ./tools/linker $(TARGET_NAME).bin
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s
@@ -69,17 +74,17 @@ objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
+$(TARGET_NAME).s: $(TARGET_NAME)/$(TARGET_NAME)_opt.s
+	cp $< $@
+
 #Weijie: generate target obj file
-enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -S -I. -o enclave_main.s $<
-	#$(CC) -c enclave_main.s -o $@
-	#$(CC) -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
-	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
+#enclave_main.o: $(TARGET_NAME).c enclave.h
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
+enclave_main.o: $(TARGET_NAME).s enclave.h
+	$(CC) -c $(SGX_CFLAGS) -o $@ $(LINKERFLAG) $<
 
 clean:
-	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list \
 		lib/*.o
 
 clean-all:

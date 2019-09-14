@@ -6,7 +6,7 @@ LLVM_BIN_PATH=$LLVM_PATH"/build/bin"
 CFIHello_So_PATH=$LLVM_PATH"/build/lib/LLVMCFIHello.so"
 echo $CFIHello_So_PATH
 
-TARGET_SOURCE=`pwd`"/foo.c"
+TARGET_SOURCE=`pwd`"/foo2.c"
 
 CFICheck_Func_PATH=`pwd`"/CFICheck.c"
 echo $CFICheck_Func_PATH
