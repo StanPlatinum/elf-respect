@@ -393,10 +393,59 @@ char *shadow_stack = (char *)&__ss_start;
 char *target_table = (char *)&__cfi_start;
 size_t target_table_size = 0;
 
+/* shawn233: my simple implementation of strncmp(), maybe insecure, please replace it with a trusted version */
+int my_strncmp(char *str1, char *str2, size_t n) {
+	bool flag = true;
+	for (unsigned i = 0; i < n; ++ i) {
+		if (str1[i] != str2[i]) {
+			flag = false;
+			break;
+		}
+	}
+	if (flag) return 0; // return 0 if strings are equal
+	else return -1; // return -1 otherwise 
+}
+
+/* shawn233: my implementation of strlen(), maybe insecure, please replace it with a secure version */
+size_t my_strlen(char *str) {
+	size_t sz = 0;
+	for (; str[sz] != '\0'; ++ sz);
+	return sz;
+}
+
+/* shawn233: given symbol name, search symbol table and return symtab.st_value */
+Elf64_Addr search_symtab_by_name(char *name, size_t l) {
+	for (unsigned i = 1; i < n_symtab; ++ i) {
+		if (my_strncmp(name, &strtab[symtab[i].st_name], l) == 0)
+			return symtab[i].st_value;
+	}
+	return 0;
+}
+
 void ecall_receive_entrylabel(char *entrylabel, int sz)
 {
 	cpy(target_table, entrylabel, (size_t)sz);
 	target_table_size = sz;
+
+	// shawn233: in function load, symtab[i].st_value has been updated to the address of symbols
+	// so we can directly replace symbols to these addresses
+
+	Elf64_Addr *call_target = (Elf64_Addr *)reserve_data(sz*sizeof(Elf64_Addr), 64);
+	unsigned call_target_idx = 0;
+	
+	for (unsigned i = 0; i < sz; ++ i) {
+                if (entrylabel[i] == '\n') entrylabel[i] = '\0';
+        }
+
+        unsigned buffer_idx = 0;
+        for (unsigned i = 0; i < sz; ++ i) {
+                if (entrylabel[i] == '\0') {
+                        dlog("entry label: %s", entrylabel+buffer_idx);
+                        call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, my_strlen(entrylabel+buffer_idx));
+			dlog("call target address: 0x%lx", call_target[call_target_idx-1]);
+			buffer_idx = i+1;
+                }
+        }	
 }
 
 //Weijie: Enclave starts here

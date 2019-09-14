@@ -277,9 +277,9 @@ int main(int argc, char *argv[])
 	size_t entrylabel_sz = ftell(entrylabel_fp);
 	rewind(entrylabel_fp);
 	printf("entrylabel file size is %ld\n", entrylabel_sz);
-	entrylabel_buffer = (char *)malloc( entrylabel_sz * sizeof(char) );
+	entrylabel_buffer = (char *)malloc( (entrylabel_sz) * sizeof(char) );
 	int entrylabel_n_read = fread(entrylabel_buffer, sizeof(char), entrylabel_sz, entrylabel_fp);
-	printf("number of bytes read in entryLabel: %d\n", n_read);
+	printf("number of bytes read in entryLabel: %d\n", entrylabel_n_read);
 
 	ecall_receive_entrylabel(eid, entrylabel_buffer, entrylabel_sz);
 	
