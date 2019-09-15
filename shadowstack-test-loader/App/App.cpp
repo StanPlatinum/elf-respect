@@ -264,6 +264,8 @@ int main(int argc, char *argv[])
 	//Weijie: call Ecall
 	ecall_receive_binary(eid, buffer, sz);
 
+	log("here\n");
+
 	fclose(fp);
 
 	char *entrylabel_buffer;

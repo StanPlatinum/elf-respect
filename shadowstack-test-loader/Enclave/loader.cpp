@@ -146,7 +146,7 @@ void *get_buf(size_t size) {
 	void *ret = (void *)heap_end;
 	heap_end = heap_end + size;
 	//Weijie:
-	//dlog("xxx heap end after get_buf: 0x%lx", heap_end);
+	//dlog("heap end after get_buf: 0x%lx", heap_end);
 	return ret;
 }
 
@@ -192,8 +192,6 @@ static void update_reltab(void)
 	//Weijie: allocate reltab
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
 	
-	//Weijie:
-	//dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
@@ -202,20 +200,20 @@ static void update_reltab(void)
 	n_rel = 0;
 	
 	//Weijie:
-	//dlog("xxx in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
-	//dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
+	//dlog("in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
+	//dlog("in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
 
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
 			
 			//Weijie:
-			//dlog("xxx n_rel: %u", n_rel);
-			//dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+			dlog("xxx n_rel: %u", n_rel);
+			dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
 			
 			//Weijie:
-			//dlog("xxx after  GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+			dlog("xxx after GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
 			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
 
@@ -225,13 +223,14 @@ static void update_reltab(void)
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				
 				//Weijie:
-				//dlog("xxx after  search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+				dlog("xxx after search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 				
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 				
 				//Weijie:
-				//dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+				dlog("xxx after REL_OFF, j: %u pehdr: 0x%lx e_entry: %lx", j, (void *)pehdr, pehdr->e_entry);
+				dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			}
 			++n_rel;
 
@@ -430,12 +429,18 @@ void ecall_receive_entrylabel(char *entrylabel, int sz)
 	// shawn233: in function load, symtab[i].st_value has been updated to the address of symbols
 	// so we can directly replace symbols to these addresses
 
-	Elf64_Addr *call_target = (Elf64_Addr *)reserve_data(sz*sizeof(Elf64_Addr), 64);
+	Elf64_Addr *call_target;
 	unsigned call_target_idx = 0;
 	
 	for (unsigned i = 0; i < sz; ++ i) {
-                if (entrylabel[i] == '\n') entrylabel[i] = '\0';
+                if (entrylabel[i] == '\n') {
+			entrylabel[i] = '\0';
+			call_target_idx ++;
+		}
         }
+
+	call_target = (Elf64_Addr *)get_buf(call_target_idx*sizeof(Elf64_Addr));
+	call_target_idx = 0;
 
         unsigned buffer_idx = 0;
         for (unsigned i = 0; i < sz; ++ i) {
@@ -453,6 +458,7 @@ void ecall_receive_binary(char *binary, int sz)
 {
 	//Weijie: v1: do not use the following line
 	//program = (char*) binary;
+	dlog("line %d start ecall_receive_binary", __LINE__);
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 
@@ -463,8 +469,10 @@ void ecall_receive_binary(char *binary, int sz)
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
 
+	dlog("line %d call validate_ehdr", __LINE__);
 	validate_ehdr();
-	
+
+	dlog("line %d call update_reltab", __LINE__);	
 	update_reltab();
 	
 	pr_progress("loading");
