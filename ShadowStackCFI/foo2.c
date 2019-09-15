@@ -46,8 +46,9 @@ void enclave_main()
     fp = fun;
     int b = fp();
     char i_b[8];
-    i_b = my_itoa(b, i_b, 10);
-    puts(i_b);
+    char *ii_b = &i_b;
+    ii_b = my_itoa(b, ii_b, 10);
+    puts(ii_b);
     puts("success!");
     enclave_exit();
 }
