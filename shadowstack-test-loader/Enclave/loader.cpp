@@ -228,8 +228,7 @@ static void update_reltab(void)
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 				
-				//Weijie:
-				dlog("xxx after REL_OFF, j: %u pehdr: 0x%lx e_entry: %lx", j, (void *)pehdr, pehdr->e_entry);
+				//Weijie & Xinyu:
 				dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			}
 			++n_rel;
@@ -423,6 +422,7 @@ Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 
 void ecall_receive_entrylabel(char *entrylabel, int sz)
 {
+	dlog("target_table at %p (%lu)", target_table, target_table_size);
 	cpy(target_table, entrylabel, (size_t)sz);
 	target_table_size = sz;
 
@@ -464,8 +464,14 @@ void ecall_receive_binary(char *binary, int sz)
 
 	void (*entry)();
 	dlog("program at %p (%lu)", program, program_size);
+	dlog(".sgx.ssblob = %p", (void*)(&__ss_start));
+	dlog(".sgx.calltg = %p", (void*)(&__cfi_start));
+	dlog("target_table at %p (%lu)", target_table, target_table_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
 	dlog(".sgxdata = %p", _SGXDATA_BASE);
+	dlog("elf start = %p", (void*)(&__elf_start));
+	dlog("elf end = %p", (void*)(&__elf_end));
+	dlog("HEAP BASE = %lx", _HEAP_BASE);
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
 

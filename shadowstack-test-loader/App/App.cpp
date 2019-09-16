@@ -263,10 +263,10 @@ int main(int argc, char *argv[])
 	
 	//Weijie: call Ecall
 	ecall_receive_binary(eid, buffer, sz);
-
-	log("here\n");
-
 	fclose(fp);
+
+	//Weijie: 
+	printf("receive binary completed.\n");
 
 	char *entrylabel_buffer;
 	FILE *entrylabel_fp = fopen("./entryLabel.txt", "rb");
@@ -283,6 +283,7 @@ int main(int argc, char *argv[])
 	int entrylabel_n_read = fread(entrylabel_buffer, sizeof(char), entrylabel_sz, entrylabel_fp);
 	printf("number of bytes read in entryLabel: %d\n", entrylabel_n_read);
 
+	//Weijie: call another Ecall
 	ecall_receive_entrylabel(eid, entrylabel_buffer, entrylabel_sz);
 	
 	fclose(entrylabel_fp);
