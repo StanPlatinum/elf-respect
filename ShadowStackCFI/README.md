@@ -15,7 +15,7 @@ CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.
 3 the path of CFIHello.so  
 4 the path of demo source file(or your source file)  
 5 the path of the source file of CFICheck function  
-6 the path of the txt file which save entry lables  
+6 If there is a new CFICheck source file, it should be 'n', otherwise it should be 'o'.  
 
 ### Usage:
 1 Add CFIHello to llvm/lib/Transform  

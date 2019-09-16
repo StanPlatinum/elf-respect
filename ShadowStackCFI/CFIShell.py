@@ -37,40 +37,45 @@ llvmBinDir = sys.argv[1]
 llvmPassPath = sys.argv[2]
 codePath = sys.argv[3]
 CFISrcPath = sys.argv[4]
-entryLabelPath = sys.argv[5]
+#entryLabelPath = sys.argv[5]
+isNewCFISrc = sys.argv[5]
 
 llvmBinDir += "/"
 codeName = codePath.split("/")[-1].split(".")[0]
 CFISrcName = CFISrcPath.split("/")[-1].split(".")[0]
 codeDir = codePath.replace(codePath.split("/")[-1], "")
 CFISrcDir = CFISrcPath.replace(CFISrcPath.split("/")[-1], "")
-print("\nshell: " + "mkdir " + codeDir + codeName + " :\n")
+print("\nshell: " + "mkdir " + codeDir + codeName + " :")
 print(subprocess.call("mkdir " + codeDir + codeName, shell=True))
 firstPath = codeDir + codeName + "/" + codeName + ".ll"
 linkPath = codeDir + codeName + "/" + codeName + "_link.ll"
 optPath = codeDir + codeName + "/" + codeName + "_opt.ll"
 
 #llvm
-print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + codePath + " :\n")
+print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + codePath + " -o " + firstPath + " :")
 print(subprocess.call(llvmBinDir + "clang -emit-llvm -S " + codePath + " -o " + firstPath, shell=True))
 
-if os.path.isfile(CFISrcDir + CFISrcName + ".ll"):
-    pass
-else:
-    print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + CFISrcPath + " :\n")
+if isNewCFISrc == "n":
+    print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + CFISrcPath + " :")
     print(subprocess.call(llvmBinDir + "clang -emit-llvm -S " + CFISrcPath, shell=True))
+elif isNewCFISrc == "o":
+    if os.path.isfile(CFISrcDir + CFISrcName + ".ll"):
+        pass
+    else:
+        print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + CFISrcPath + " :")
+        print(subprocess.call(llvmBinDir + "clang -emit-llvm -S " + CFISrcPath, shell=True))
 
-print("\nshell: " + llvmBinDir + "llvm-link " + CFISrcDir + CFISrcName + ".ll " + firstPath + " -S -o " + linkPath + " :\n")
+print("\nshell: " + llvmBinDir + "llvm-link " + CFISrcDir + CFISrcName + ".ll " + firstPath + " -S -o " + linkPath + " :")
 print(subprocess.call(llvmBinDir + "llvm-link " + CFISrcDir + CFISrcName + ".ll " + firstPath + " -S -o " + linkPath, shell=True))
 
 chanegSrcFileName(linkPath, "llvm-link", codeName)
 
-print("\nshell: " + llvmBinDir + "opt -load " + llvmPassPath + " -cfihello -S <" + linkPath + "> " +optPath + " :\n")
+print("\nshell: " + llvmBinDir + "opt -load " + llvmPassPath + " -cfihello -S <" + linkPath + "> " +optPath + " :")
 print(subprocess.call(llvmBinDir + "opt -load " + llvmPassPath + " -cfihello -S <" + linkPath + "> " +optPath, shell=True))
 
-print("\nshell: " + llvmBinDir + "llc " + optPath + " :\n")
+print("\nshell: " + llvmBinDir + "llc " + optPath + " :")
 print(subprocess.call(llvmBinDir + "llc " + optPath, shell=True))
 
-mergeEntryName(codeDir + codeName + "/" + codeName +".txt", entryLabelPath)
+#mergeEntryName(codeDir + codeName + "/" + codeName +".txt", entryLabelPath)
 
 print("\nDone.")

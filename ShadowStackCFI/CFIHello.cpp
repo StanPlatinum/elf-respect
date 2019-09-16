@@ -23,9 +23,9 @@ namespace {
     //打印每个Fun的entry的label到文件。
     void printEntryLable(Function &F, raw_fd_ostream &file)
     {
-        string MName = F.getParent()->getSourceFileName();
+        //string MName = F.getParent()->getSourceFileName();
         //MName.erase(MName.end() - 3, MName.end());
-        file << MName << "_" << F.getName() << "\n";
+        file << F.getName() << "\n";
     }
 
     //插入一个全新的Fun并添加调用
