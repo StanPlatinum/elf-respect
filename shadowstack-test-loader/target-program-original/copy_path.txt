@@ -1,0 +1,7 @@
+ver1: instrument mov
+ver2: instrument mov and operations on rsp
+
+new.s: instrument nw4test
+
+chenyi@156.56.159.9:/home/chenyi/LLVM/myWorkspace/toWJ/sillySample2.2/test.new.s
+chenyi@156.56.159.9:/home/chenyi/LLVM/myWorkspace/toWJ/nw4test/new.s

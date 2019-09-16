@@ -189,14 +189,14 @@ static void update_reltab(void)
 	}
 
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
-	//Weijie: allocate reltab
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
-	
+	//Weijie: allocate reltab
+	/*
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
 	}
-
+	*/
 	n_rel = 0;
 	
 	//Weijie:
