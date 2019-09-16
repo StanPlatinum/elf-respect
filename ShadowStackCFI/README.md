@@ -38,3 +38,9 @@ xxx_link.ll is the IR file of demo IR(or your source IR) linked CFIFunction.
 xxx_opt.ll is the IR file inserted CFIFunction call.  
 xxx_opt.s is the assmbly file instrumented ShadowStack and CFI instructions.  
 xxx.txt is the txt file which save entry lables of this module.  
+
+### Notes
+## How to write a sample source program
+### The entry should be "void enclave_main()", instead of "int main()"
+### The exit should be "enclave_exit();", instead of "return 0;"
+### Please remember to include the "enclave.h" header.
