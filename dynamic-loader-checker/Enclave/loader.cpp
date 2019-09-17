@@ -378,26 +378,27 @@ static void relocate(void)
 #include <trts_util.h>
 
 //Weijie: add checker wrap here
-void checker_wrap(unsigned char *program, int sz)
+void checker_wrap()
 {
 	void *this_enclave_base = get_enclave_base();
 	size_t this_enclave_size = get_enclave_size();
-	dlog("base: 0x%x, size: 0x%x", this_enclave_base, this_enclave_size);
+	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
 	
-	pr_progress("disassembling all parts");
-	int j;
-	int rv;
+	pr_progress("disassembling parts");
 
 	PrintDebugInfo("-----setting params-----\n");
 	Elf64_Xword textSize;
-	textSize = (size_t)sz - 1;
+	textSize = main_sym->st_size;
 	Elf64_Addr textAddr;
-	textAddr = 0x1000;
-	
-	//Weijie: fill in buf
+	textAddr = main_sym->st_value;
 	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-	rv = cs_disasm_entry(program, textSize, textAddr);
-
+	int rv;
+	//Weijie: fill in buf
+	//Weijie: tried to use malloc
+	unsigned char* buf = (unsigned char *)malloc(textSize);
+	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
+	rv = cs_disasm_entry(buf, textSize, textAddr);
+    free(buf);
 	//Weijie: TO-DO
 	if (rv == 0){
 		//Weijie: proceed
@@ -413,8 +414,6 @@ void ecall_receive_binary(char *binary, int sz)
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 
-    checker_wrap((unsigned char *)program, program_size);
-
 	void (*entry)();
 	dlog("program at %p (%lu)", program, program_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
@@ -424,6 +423,7 @@ void ecall_receive_binary(char *binary, int sz)
 
 	validate_ehdr();
 	
+	pr_progress("updating rela table");
 	update_reltab();
 	
 	pr_progress("loading");
@@ -434,6 +434,10 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("relocating");
 	relocate();
 
+	pr_progress("checking");
+    checker_wrap();
+
+	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
 	
 	//Weijie:
