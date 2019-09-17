@@ -220,11 +220,17 @@ static void update_reltab(void)
 			/* update relocation table: r_offset --> dst + offset */
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
+				dlog("xxx before search, i:%u, pshdr[i].sh_info: 0x%lx, j: %u, reltab[n_rel][j].r_offset: 0x%lx",\
+						i, pshdr[i].sh_info, j, reltab[n_rel][j].r_offset);
+				
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				
 				//Weijie:
 				dlog("xxx after search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-				
+				dlog("xxx before rel_offset, dst: %u", dst);
+				dlog("xxx before rel_offset, reltab[n_rel][j].r_offset: 0x%lx", reltab[n_rel][j].r_offset);
+				dlog("xxx before rel_offset, symtab[dst].st_value: 0x%lx", symtab[dst].st_value);
+			
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 				

@@ -11,9 +11,6 @@ TARGET_SOURCE=`pwd`"/foo2.c"
 CFICheck_Func_PATH=`pwd`"/CFICheck.c"
 echo $CFICheck_Func_PATH
 
-Entry_Label_Table=`pwd`"/entryLabel.txt"
-echo $Entry_Label_Table
-
 echo "start generating compiled binary..."
 
-python3 CFIShell.py $LLVM_BIN_PATH $CFIHello_So_PATH $TARGET_SOURCE $CFICheck_Func_PATH $Entry_Label_Table
+python3 CFIShell.py $LLVM_BIN_PATH $CFIHello_So_PATH $TARGET_SOURCE $CFICheck_Func_PATH o

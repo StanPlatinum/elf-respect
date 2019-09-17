@@ -4,6 +4,8 @@ SGX_Shield_PATH = /home/weijliu/SGX-Shield
 
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = /home/weijliu/llvm-project/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
@@ -32,7 +34,7 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 #Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
 LIBC = $(LIBC_DIR)/libc.a
-/home/liuweijie/newdisk/elf-respect/dyn-loader/target-programSGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/

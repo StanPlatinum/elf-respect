@@ -30,7 +30,7 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 #Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
 LIBC = $(LIBC_DIR)/libc.a
-/home/liuweijie/newdisk/elf-respect/dyn-loader/target-programSGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -73,12 +73,9 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -S -I. -o enclave_main.s $<
-	#$(CC) -c enclave_main.s -o $@
-	#$(CC) -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
-	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
+	$(CC) -S -I. -o enclave_main.s $<
+	$(CC) -c enclave_main.s -o $@
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
 	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
