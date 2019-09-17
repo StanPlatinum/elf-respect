@@ -52,17 +52,17 @@ linkPath = codeDir + codeName + "/" + codeName + "_link.ll"
 optPath = codeDir + codeName + "/" + codeName + "_opt.ll"
 
 #llvm
-print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + codePath + " -o " + firstPath + " :")
+print("\nshell: " + llvmBinDir + "clang -emit-llvm -fno-asynchronous-unwind-tables -S " + codePath + " -o " + firstPath + " :")
 print(subprocess.call(llvmBinDir + "clang -emit-llvm -fno-asynchronous-unwind-tables -S " + codePath + " -o " + firstPath, shell=True))
 
 if isNewCFISrc == "n":
-    print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + CFISrcPath + " :")
+    print("\nshell: " + llvmBinDir + "clang -emit-llvm -fno-asynchronous-unwind-tables -S " + CFISrcPath + " :")
     print(subprocess.call(llvmBinDir + "clang -emit-llvm -fno-asynchronous-unwind-tables -S " + CFISrcPath, shell=True))
 elif isNewCFISrc == "o":
     if os.path.isfile(CFISrcDir + CFISrcName + ".ll"):
         pass
     else:
-        print("\nshell: " + llvmBinDir + "clang -emit-llvm -S " + CFISrcPath + " :")
+        print("\nshell: " + llvmBinDir + "clang -emit-llvm -fno-asynchronous-unwind-tables -S " + CFISrcPath + " :")
         print(subprocess.call(llvmBinDir + "clang -emit-llvm -fno-asynchronous-unwind-tables -S " + CFISrcPath, shell=True))
 
 print("\nshell: " + llvmBinDir + "llvm-link " + CFISrcDir + CFISrcName + ".ll " + firstPath + " -S -o " + linkPath + " :")
