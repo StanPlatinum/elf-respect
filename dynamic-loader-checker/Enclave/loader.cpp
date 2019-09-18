@@ -381,20 +381,52 @@ void disasm_whole()
 {
 	pr_progress("disassembling parts");
 	
+	/*
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	int rv;
-	
-	//Weijie: try to disasm whole binary...
+	//Weijie: try to disasm whole binary once for all...
 	unsigned char* buf = (unsigned char *)malloc(program_size);
 	cpy((char *)buf, (char *)program, program_size);
-	
 	PrintDebugInfo("-----setting params-----\n");
 	textAddr = (Elf64_Addr)program;
 	textSize = program_size;
 	rv = cs_disasm_entry(buf, textSize, textAddr);
-
     free(buf);
+	*/
+	/*
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	int rv;
+	//Weijie: disasm enclave_main firstly...
+	textSize = main_sym->st_size;
+	textAddr = main_sym->st_value;
+	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+	unsigned char* buf = (unsigned char *)malloc(textSize);
+	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
+	rv = cs_disasm_entry(buf, textSize, textAddr);
+	*/
+	
+	int j;
+	int rv;
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	unsigned char* buf;
+	//Weijie: assume j >= 3
+	for (j = 2; j < n_symtab - 1; j++){
+	    textSize = symtab[j].st_size;
+	    if (textSize > 0){
+	        PrintDebugInfo("-----setting params-----\n");
+	        textAddr = symtab[j].st_value;
+	        buf = (unsigned char *)malloc(textSize);
+	        //Weijie: fill in buf
+	        cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+	        dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+	        rv = cs_disasm_entry(buf, textSize, textAddr);
+	        free(buf);
+	    }
+	}
+
 }
 
 
@@ -404,23 +436,7 @@ void checker_wrap()
 	void *this_enclave_base = get_enclave_base();
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
-	
-	Elf64_Xword textSize;
-	Elf64_Addr textAddr;
-	int rv;
-
-	//Weijie: disasm enclave_main firstly...
-	textSize = main_sym->st_size;
-	textAddr = main_sym->st_value;
-	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-	unsigned char* buf = (unsigned char *)malloc(textSize);
-	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
-	rv = cs_disasm_entry(buf, textSize, textAddr);
-
 	//Weijie: TO-DO
-	if (rv == 0){
-		//Weijie: proceed
-	}	
 
 }
 
@@ -432,8 +448,6 @@ void ecall_receive_binary(char *binary, int sz)
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 
-    disasm_whole();
-	
 	void (*entry)();
 	dlog("program at %p (%lu)", program, program_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
@@ -442,24 +456,27 @@ void ecall_receive_binary(char *binary, int sz)
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
 
 	validate_ehdr();
-	
+
 	pr_progress("updating rela table");
 	update_reltab();
-	
+
 	pr_progress("loading");
 	load();
-	
+
 	//Weijie: cannot simply delete relocation in original sgx-shield demo
 	//Weijie: cannot delete the following lines in current demo
 	pr_progress("relocating");
 	relocate();
 
+	pr_progress("disassembling");
+	disasm_whole();
+
 	pr_progress("checking");
-    checker_wrap();
+	checker_wrap();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
-	
+
 	//Weijie:
 	dlog("main: %p", entry);
 
@@ -470,6 +487,6 @@ void ecall_receive_binary(char *binary, int sz)
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
 	pr_progress("returning");
-	
+
 }
 
