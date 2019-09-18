@@ -377,6 +377,27 @@ static void relocate(void)
 #include <trts_internal.h>
 #include <trts_util.h>
 
+void disasm_whole()
+{
+	pr_progress("disassembling parts");
+	
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	int rv;
+	
+	//Weijie: try to disasm whole binary...
+	unsigned char* buf = (unsigned char *)malloc(program_size);
+	cpy((char *)buf, (char *)program, program_size);
+	
+	PrintDebugInfo("-----setting params-----\n");
+	textAddr = (Elf64_Addr)program;
+	textSize = program_size;
+	rv = cs_disasm_entry(buf, textSize, textAddr);
+
+    free(buf);
+}
+
+
 //Weijie: add checker wrap here
 void checker_wrap()
 {
@@ -384,21 +405,18 @@ void checker_wrap()
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
 	
-	pr_progress("disassembling parts");
-
-	PrintDebugInfo("-----setting params-----\n");
 	Elf64_Xword textSize;
-	textSize = main_sym->st_size;
 	Elf64_Addr textAddr;
+	int rv;
+
+	//Weijie: disasm enclave_main firstly...
+	textSize = main_sym->st_size;
 	textAddr = main_sym->st_value;
 	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-	int rv;
-	//Weijie: fill in buf
-	//Weijie: tried to use malloc
 	unsigned char* buf = (unsigned char *)malloc(textSize);
 	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
 	rv = cs_disasm_entry(buf, textSize, textAddr);
-    free(buf);
+
 	//Weijie: TO-DO
 	if (rv == 0){
 		//Weijie: proceed
@@ -414,6 +432,8 @@ void ecall_receive_binary(char *binary, int sz)
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 
+    disasm_whole();
+	
 	void (*entry)();
 	dlog("program at %p (%lu)", program, program_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
@@ -428,7 +448,7 @@ void ecall_receive_binary(char *binary, int sz)
 	
 	pr_progress("loading");
 	load();
-
+	
 	//Weijie: cannot simply delete relocation in original sgx-shield demo
 	//Weijie: cannot delete the following lines in current demo
 	pr_progress("relocating");
