@@ -4,13 +4,9 @@
 	.p2align	4, 0x90
 	.type	max,@function
 max:                                    # @max
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	leaq	-16(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -79,23 +75,17 @@ max:                                    # @max
 .LBB0_6:
 	movl	-4(%rbp), %eax
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end0:
 	.size	max, .Lfunc_end0-max
-	.cfi_endproc
                                         # -- End function
 	.globl	dpm_init                # -- Begin function dpm_init
 	.p2align	4, 0x90
 	.type	dpm_init,@function
 dpm_init:                               # @dpm_init
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	leaq	-40(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -198,23 +188,17 @@ dpm_init:                               # @dpm_init
 	jmp	.LBB1_4
 .LBB1_6:
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end1:
 	.size	dpm_init, .Lfunc_end1-dpm_init
-	.cfi_endproc
                                         # -- End function
 	.globl	my_strlen               # -- Begin function my_strlen
 	.p2align	4, 0x90
 	.type	my_strlen,@function
 my_strlen:                              # @my_strlen
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	leaq	-16(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -238,23 +222,17 @@ my_strlen:                              # @my_strlen
 	movq	-8(%rbp), %rax
 	subq	-16(%rbp), %rax
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end2:
 	.size	my_strlen, .Lfunc_end2-my_strlen
-	.cfi_endproc
                                         # -- End function
 	.globl	print_matrix            # -- Begin function print_matrix
 	.p2align	4, 0x90
 	.type	print_matrix,@function
 print_matrix:                           # @print_matrix
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	subq	$48, %rsp
 	leaq	-48(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -332,23 +310,17 @@ print_matrix:                           # @print_matrix
 .LBB3_9:
 	addq	$48, %rsp
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end3:
 	.size	print_matrix, .Lfunc_end3-print_matrix
-	.cfi_endproc
                                         # -- End function
 	.globl	print_traceback         # -- Begin function print_traceback
 	.p2align	4, 0x90
 	.type	print_traceback,@function
 print_traceback:                        # @print_traceback
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	subq	$48, %rsp
 	leaq	-48(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -426,26 +398,19 @@ print_traceback:                        # @print_traceback
 .LBB4_9:
 	addq	$48, %rsp
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end4:
 	.size	print_traceback, .Lfunc_end4-print_traceback
-	.cfi_endproc
                                         # -- End function
 	.globl	strrev                  # -- Begin function strrev
 	.p2align	4, 0x90
 	.type	strrev,@function
 strrev:                                 # @strrev
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	pushq	%rbx
 	subq	$40, %rsp
-	.cfi_offset %rbx, -24
 	leaq	-32(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -522,23 +487,17 @@ strrev:                                 # @strrev
 	addq	$40, %rsp
 	popq	%rbx
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end5:
 	.size	strrev, .Lfunc_end5-strrev
-	.cfi_endproc
                                         # -- End function
 	.globl	strncat                 # -- Begin function strncat
 	.p2align	4, 0x90
 	.type	strncat,@function
 strncat:                                # @strncat
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	leaq	-24(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -610,28 +569,20 @@ strncat:                                # @strncat
 .LBB6_7:
 	movq	-24(%rbp), %rax
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end6:
 	.size	strncat, .Lfunc_end6-strncat
-	.cfi_endproc
                                         # -- End function
 	.globl	nw_align                # -- Begin function nw_align
 	.p2align	4, 0x90
 	.type	nw_align,@function
 nw_align:                               # @nw_align
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	pushq	%r14
 	pushq	%rbx
 	subq	$128, %rsp
-	.cfi_offset %rbx, -32
-	.cfi_offset %r14, -24
 	leaq	-104(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -1000,11 +951,9 @@ nw_align:                               # @nw_align
 	popq	%rbx
 	popq	%r14
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end7:
 	.size	nw_align, .Lfunc_end7-nw_align
-	.cfi_endproc
 	.section	.rodata,"a",@progbits
 	.p2align	3
 .LJTI7_0:
@@ -1055,13 +1004,9 @@ nw_align:                               # @nw_align
 	.p2align	4, 0x90
 	.type	Ecall_nw,@function
 Ecall_nw:                               # @Ecall_nw
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	subq	$96, %rsp
 	leaq	-56(%rbp), %rax
 	cmpq	$12121, %rax            # imm = 0x2F59
@@ -1203,23 +1148,17 @@ Ecall_nw:                               # @Ecall_nw
 .LBB8_8:
 	addq	$96, %rsp
 	popq	%rbp
-	.cfi_def_cfa %rsp, 8
 	retq
 .Lfunc_end8:
 	.size	Ecall_nw, .Lfunc_end8-Ecall_nw
-	.cfi_endproc
                                         # -- End function
 	.globl	enclave_main            # -- Begin function enclave_main
 	.p2align	4, 0x90
 	.type	enclave_main,@function
 enclave_main:                           # @enclave_main
-	.cfi_startproc
 # %bb.0:
 	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register %rbp
 	subq	$144, %rsp
 	movabsq	$4851581052769290049, %rax # imm = 0x4354474341544741
 	leaq	-16(%rbp), %rax
@@ -1244,7 +1183,6 @@ enclave_main:                           # @enclave_main
 	callq	exit
 .Lfunc_end9:
 	.size	enclave_main, .Lfunc_end9-enclave_main
-	.cfi_endproc
                                         # -- End function
 	.type	nw_align.s,@object      # @nw_align.s
 	.section	.rodata,"a",@progbits
