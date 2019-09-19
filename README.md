@@ -27,7 +27,7 @@ make
 
 ## build capstone
 
-Capstone can be cloned at https://github.com/aquynh/capstone. Capstone by default will generate a static library (capstone.a). To reduce program size, you can configure Capstone to only build x86 instruction decoding support.
+Capstone can be cloned at https://github.com/aquynh/capstone. But it is suggested that users can build capstone using our modified version. Capstone by default will generate a static library (capstone.a). To reduce program size, you can configure capstone to only build x86 instruction decoding support.
 
 ```
 git clone https://github.com/StanPlatinum/capstone.git
@@ -74,6 +74,7 @@ cd ..
 ```
 cp elfutils4sgx/elfutils-0.176/libelf/libelf.a Enclave/TrustedLib
 cp capstone/install-x86/lib/libcapstone.a Enclave/TrustedLib
+cp /usr/lib/x86_64-linux-gnu/libz.a Enclave/TrustedLib
 ```
 
 Please note that at this time some necessary libs have been copied into the dir Enclave/TrustedLib.

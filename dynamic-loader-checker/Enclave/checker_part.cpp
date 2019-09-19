@@ -45,7 +45,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	cs_insn *insn;
 	size_t count;
 
-	//Weijie: test
+	//Xiaozhu & Weijie: test
 	/*
 	unsigned char buf_test[] =
 	{
@@ -81,7 +81,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 		return -1;
 	}
 
-	PrintDebugInfo("-----disassembling-----\n");
+	//PrintDebugInfo("-----disassembling-----\n");
 	//count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, textAddr, 0, &insn);
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
 	PrintDebugInfo("-----printing-----\n");

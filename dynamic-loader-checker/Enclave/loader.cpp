@@ -173,7 +173,7 @@ static void update_reltab(void)
 	/* read shdr */
 	/* shawn233: CHECK_SIZE is useless in our project */
 	if ((pshdr = GET_OBJ(Elf64_Shdr, pehdr->e_shoff)) == NULL)
-			//|| !CHECK_SIZE(pshdr, pehdr->e_shnum*sizeof(Elf64_Shdr)))
+		//|| !CHECK_SIZE(pshdr, pehdr->e_shnum*sizeof(Elf64_Shdr)))
 		dlog("%u: Shdr size", __LINE__);
 
 	/* pointers to symbol, string, relocation tables */
@@ -191,14 +191,14 @@ static void update_reltab(void)
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
 	//Weijie: allocate reltab
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
-	
+
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
 	}
 
 	n_rel = 0;
-	
+
 	//Weijie:
 	//dlog("xxx in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
 	//dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
@@ -206,7 +206,7 @@ static void update_reltab(void)
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
-			
+
 			//Weijie:
 			//dlog("xxx after  GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
@@ -216,10 +216,10 @@ static void update_reltab(void)
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
-				
+
 				//Weijie:
 				//dlog("xxx after  search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-				
+
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 			}
@@ -379,12 +379,12 @@ static void relocate(void)
 
 void disasm_whole()
 {
-	pr_progress("disassembling parts");
-	
+	pr_progress("disassembling all executable parts");
+
 	/*
-	Elf64_Xword textSize;
-	Elf64_Addr textAddr;
-	int rv;
+	   Elf64_Xword textSize;
+	   Elf64_Addr textAddr;
+	   int rv;
 	//Weijie: try to disasm whole binary once for all...
 	unsigned char* buf = (unsigned char *)malloc(program_size);
 	cpy((char *)buf, (char *)program, program_size);
@@ -392,12 +392,12 @@ void disasm_whole()
 	textAddr = (Elf64_Addr)program;
 	textSize = program_size;
 	rv = cs_disasm_entry(buf, textSize, textAddr);
-    free(buf);
-	*/
+	free(buf);
+	 */
 	/*
-	Elf64_Xword textSize;
-	Elf64_Addr textAddr;
-	int rv;
+	   Elf64_Xword textSize;
+	   Elf64_Addr textAddr;
+	   int rv;
 	//Weijie: disasm enclave_main firstly...
 	textSize = main_sym->st_size;
 	textAddr = main_sym->st_value;
@@ -405,26 +405,31 @@ void disasm_whole()
 	unsigned char* buf = (unsigned char *)malloc(textSize);
 	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
 	rv = cs_disasm_entry(buf, textSize, textAddr);
-	*/
-	
+	 */
+
 	int j;
 	int rv;
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	unsigned char* buf;
-	//Weijie: assume j >= 3
-	for (j = 2; j < n_symtab - 1; j++){
-	    textSize = symtab[j].st_size;
-	    if (textSize > 0){
-	        PrintDebugInfo("-----setting params-----\n");
-	        textAddr = symtab[j].st_value;
-	        buf = (unsigned char *)malloc(textSize);
-	        //Weijie: fill in buf
-	        cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-	        dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-	        rv = cs_disasm_entry(buf, textSize, textAddr);
-	        free(buf);
-	    }
+	//Weijie: the first symbol is UND  ...
+	for (j = 0; j < n_symtab; j++){
+		//Weijie: only disassemble .text section
+		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
+			//Weijie: print symbol name
+			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+			textSize = symtab[j].st_size;
+			if (textSize > 0){
+				//PrintDebugInfo("-----setting params-----\n");
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+		}
 	}
 
 }
