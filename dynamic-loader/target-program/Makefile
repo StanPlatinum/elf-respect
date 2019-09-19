@@ -25,7 +25,7 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 #Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
 LIBC = $(LIBC_DIR)/libc.a
-/home/liuweijie/newdisk/elf-respect/dyn-loader/target-programSGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
