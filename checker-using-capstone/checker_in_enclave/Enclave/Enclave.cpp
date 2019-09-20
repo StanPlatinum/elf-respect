@@ -53,7 +53,7 @@ int Ecall_x86access_entry()
   if (count > 0) {
     for (j = 0; j < count; j++) {
       // Print assembly
-      printf("%s\t%s\n", insn[j].mnemonic, insn[j].op_str);
+      PrintDebugInfo("%s\t%s\n", insn[j].mnemonic, insn[j].op_str);
 
       // Print all registers accessed by this instruction.
       if (cs_regs_access(handle, &insn[j],
