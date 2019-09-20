@@ -345,7 +345,9 @@ int SGX_CDECL main(int argc, char *argv[])
 	/* Start to call... */
 	/* ecall's return value should be a pointer...*/
 	int* rv;
-	Ecall_cs_entry(global_eid, rv);
+	//Ecall_cs_entry(global_eid, rv);
+	
+	Ecall_x86access_entry(global_eid, rv);
 
 	//The following is Ecall_cs_disasm version
 	/*
