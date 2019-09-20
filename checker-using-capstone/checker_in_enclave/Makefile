@@ -31,10 +31,13 @@
 
 ######## Checker Settings ########
 
-CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu 
-CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include 
-#CHECKER_Static_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/home/liuweijie/musl-1.1.22/install/include 
-CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
+CAPSTONE_DYN = /home/liuweijie/newdisk/capstone/install-x86
+
+FEATURES_H = -I/usr/include -I/usr/include/x86_64-linux-gnu
+
+CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include $(FEATURES_H)
+CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_DYN)/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include $(FEATURES_H)
+CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L$(CAPSTONE_DYN)/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
 CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
@@ -142,7 +145,7 @@ Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++03 -nostdinc++
 # Otherwise, you may get some undesirable errors.
 Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
 	-Wl,--whole-archive -l$(Trts_Library_Name) -Wl,--no-whole-archive \
-	-Wl,--start-group -lsgx_tstdc -lsgx_tstdcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
+	-Wl,--start-group -lsgx_tstdc -lsgx_tcxx -l$(Crypto_Library_Name) -l$(Service_Library_Name) -Wl,--end-group \
 	-Wl,-Bstatic -Wl,-Bsymbolic -Wl,--no-undefined \
 	-Wl,-pie,-eenclave_entry -Wl,--export-dynamic  \
 	-Wl,--defsym,__ImageBase=0 \
