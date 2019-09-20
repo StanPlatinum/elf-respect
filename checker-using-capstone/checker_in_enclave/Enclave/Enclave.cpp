@@ -39,51 +39,51 @@ void PrintDebugInfoOutside3(void)
 int Ecall_x86access_entry()
 {
 	csh handle;
-  cs_insn *insn;
-  size_t count, j;
-  cs_regs regs_read, regs_write;
-  uint8_t read_count, write_count, i;
-  
-  if (cs_open(CS_ARCH_X86, CS_MODE_32, &handle) != CS_ERR_OK)
-    return -1;
-  
-  cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
-  
-  count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
-  if (count > 0) {
-    for (j = 0; j < count; j++) {
-      // Print assembly
-      PrintDebugInfo("%s\t%s\n", insn[j].mnemonic, insn[j].op_str);
+	cs_insn *insn;
+	size_t count, j;
+	cs_regs regs_read, regs_write;
+	uint8_t read_count, write_count, i;
 
-      // Print all registers accessed by this instruction.
-      if (cs_regs_access(handle, &insn[j],
-            regs_read, &read_count,
-            regs_write, &write_count) == 0) {
-        if (read_count > 0) {
-          PrintDebugInfo("\n\tRegisters read:");
-          for (i = 0; i < read_count; i++) {
-          	PrintDebugInfo(" %s", cs_reg_name(handle, regs_read[i]));
-          }
-          PrintDebugInfo("\n");
-        }
+	if (cs_open(CS_ARCH_X86, CS_MODE_32, &handle) != CS_ERR_OK)
+		return -1;
 
-        if (write_count > 0) {
-          PrintDebugInfo("\n\tRegisters modified:");
-          for (i = 0; i < write_count; i++) {
-            PrintDebugInfo(" %s", cs_reg_name(handle, regs_write[i]));
-          }
-          PrintDebugInfo("\n");
-        }
-      }
-    }
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
-    cs_free(insn, count);
-  } else
-  	PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+	count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
+	if (count > 0) {
+		for (j = 0; j < count; j++) {
+			// Print assembly
+			PrintDebugInfo("%s\t%s\n", insn[j].mnemonic, insn[j].op_str);
 
-  cs_close(&handle);
+			// Print all registers accessed by this instruction.
+			if (cs_regs_access(handle, &insn[j],
+						regs_read, &read_count,
+						regs_write, &write_count) == 0) {
+				if (read_count > 0) {
+					PrintDebugInfo("\n\tRegisters read:");
+					for (i = 0; i < read_count; i++) {
+						PrintDebugInfo(" %s", cs_reg_name(handle, regs_read[i]));
+					}
+					PrintDebugInfo("\n");
+				}
 
-  return 0;
+				if (write_count > 0) {
+					PrintDebugInfo("\n\tRegisters modified:");
+					for (i = 0; i < write_count; i++) {
+						PrintDebugInfo(" %s", cs_reg_name(handle, regs_write[i]));
+					}
+					PrintDebugInfo("\n");
+				}
+			}
+		}
+
+		cs_free(insn, count);
+	} else
+		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+
+	cs_close(&handle);
+
+	return 0;
 }
 
 #include "my_stdio.c"
@@ -94,34 +94,34 @@ int Ecall_elf_entry(char *filename) {
 
 	int fd;
 	Elf *e;
-        size_t shstrndx;
+	size_t shstrndx;
 
-        fd = open(filename, O_RDONLY);
+	fd = open(filename, O_RDONLY);
 
-        if (fd < 0) {
-                PrintDebugInfo("Cannot open file %s\n", filename);
-                return -1;
-        }
+	if (fd < 0) {
+		PrintDebugInfo("Cannot open file %s\n", filename);
+		return -1;
+	}
 
-        if (elf_version(EV_CURRENT) == EV_NONE) {
-                PrintDebugInfo("ELF library initialization failed\n");
-                return -1;
-        }
+	if (elf_version(EV_CURRENT) == EV_NONE) {
+		PrintDebugInfo("ELF library initialization failed\n");
+		return -1;
+	}
 
 	PrintDebugInfo("-----checking elf_begin-----\n");
 	//e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
 	//Weijie: test
 	e = elf_begin_dbg(fd, ELF_C_READ_MMAP, NULL, PrintDebugInfoOutside3);
-        
+
 	if (e == NULL) {
-                PrintDebugInfo("elf_begin failed\n");
-                return -1;
-        }
+		PrintDebugInfo("elf_begin failed\n");
+		return -1;
+	}
 	PrintDebugInfo("-----checking elf_getshdrstrndx-----\n");
-        if (elf_getshdrstrndx(e, &shstrndx) != 0){
-                PrintDebugInfo("Cannot get string section\n");
-                return -1;
-        }
+	if (elf_getshdrstrndx(e, &shstrndx) != 0){
+		PrintDebugInfo("Cannot get string section\n");
+		return -1;
+	}
 	return 0;
 }
 

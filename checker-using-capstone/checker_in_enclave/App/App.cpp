@@ -257,6 +257,7 @@ int SGX_CDECL main(int argc, char *argv[])
 		return -1; 
 	}
 
+#if 0
 	/* Weijie: read elf outside... */
 	char *filename = argv[1];
 	int fd;
@@ -282,6 +283,7 @@ int SGX_CDECL main(int argc, char *argv[])
                 printf("Cannot get string section\n");
                 return -1;
         }
+#endif
 
 #if 0
 	//printf("-----App checking-----\n");
