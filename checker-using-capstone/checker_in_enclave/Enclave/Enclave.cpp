@@ -34,6 +34,58 @@ void PrintDebugInfoOutside3(void)
 }
 
 #include "libelf.h"
+
+#define CODE "\x8d\x4c\x32\x08\x01\xd8"
+int Ecall_x86access_entry()
+{
+	csh handle;
+  cs_insn *insn;
+  size_t count, j;
+  cs_regs regs_read, regs_write;
+  uint8_t read_count, write_count, i;
+  
+  if (cs_open(CS_ARCH_X86, CS_MODE_32, &handle) != CS_ERR_OK)
+    return -1;
+  
+  cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+  
+  count = cs_disasm(handle, CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
+  if (count > 0) {
+    for (j = 0; j < count; j++) {
+      // Print assembly
+      printf("%s\t%s\n", insn[j].mnemonic, insn[j].op_str);
+
+      // Print all registers accessed by this instruction.
+      if (cs_regs_access(handle, &insn[j],
+            regs_read, &read_count,
+            regs_write, &write_count) == 0) {
+        if (read_count > 0) {
+          printf("\n\tRegisters read:");
+          for (i = 0; i < read_count; i++) {
+          	printf(" %s", cs_reg_name(handle, regs_read[i]));
+          }
+          printf("\n");
+        }
+
+        if (write_count > 0) {
+          printf("\n\tRegisters modified:");
+          for (i = 0; i < write_count; i++) {
+            printf(" %s", cs_reg_name(handle, regs_write[i]));
+          }
+          printf("\n");
+        }
+      }
+    }
+
+    cs_free(insn, count);
+  } else
+  	printf("ERROR: Failed to disassemble given code!\n");
+
+  cs_close(&handle);
+
+  return 0;
+}
+
 #include "my_stdio.c"
 
 /* Weijie: ecall of whole elf operations */
