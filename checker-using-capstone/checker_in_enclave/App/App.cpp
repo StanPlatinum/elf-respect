@@ -289,6 +289,7 @@ int SGX_CDECL main(int argc, char *argv[])
                 return -1;
         }
 
+#if 0
 	//printf("-----App checking-----\n");
 	/* seems we need put elf analysis outside the enclave... */	
 	/* Start to call... */
@@ -343,8 +344,8 @@ int SGX_CDECL main(int argc, char *argv[])
 	printf("-----mission completed-----\n");
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
+#endif
 
-#if 0
 	printf("-----App checking-----\n");
 
 	/* Start to call... */
@@ -384,7 +385,6 @@ int SGX_CDECL main(int argc, char *argv[])
 	printf("-----mission completed-----\n");
 	/* Destroy the enclave */
 	sgx_destroy_enclave(global_eid);
-#endif
 	
 	return 0;
 }
