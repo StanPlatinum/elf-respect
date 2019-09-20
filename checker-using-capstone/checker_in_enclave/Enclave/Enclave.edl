@@ -50,6 +50,9 @@ enclave {
 	public void PrintDebugInfoOutside(
 	);
 
+	public int Ecall_x86access_entry(
+	);
+
 	public int Ecall_elf_entry(
 		[in, string] char *filename
 	);
