@@ -49,7 +49,7 @@ int Ecall_x86access_entry()
   
   cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
   
-  count = cs_disasm(handle, CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
+  count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
   if (count > 0) {
     for (j = 0; j < count; j++) {
       // Print assembly
@@ -60,26 +60,26 @@ int Ecall_x86access_entry()
             regs_read, &read_count,
             regs_write, &write_count) == 0) {
         if (read_count > 0) {
-          printf("\n\tRegisters read:");
+          PrintDebugInfo("\n\tRegisters read:");
           for (i = 0; i < read_count; i++) {
-          	printf(" %s", cs_reg_name(handle, regs_read[i]));
+          	PrintDebugInfo(" %s", cs_reg_name(handle, regs_read[i]));
           }
-          printf("\n");
+          PrintDebugInfo("\n");
         }
 
         if (write_count > 0) {
-          printf("\n\tRegisters modified:");
+          PrintDebugInfo("\n\tRegisters modified:");
           for (i = 0; i < write_count; i++) {
-            printf(" %s", cs_reg_name(handle, regs_write[i]));
+            PrintDebugInfo(" %s", cs_reg_name(handle, regs_write[i]));
           }
-          printf("\n");
+          PrintDebugInfo("\n");
         }
       }
     }
 
     cs_free(insn, count);
   } else
-  	printf("ERROR: Failed to disassemble given code!\n");
+  	PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
 
   cs_close(&handle);
 
