@@ -250,9 +250,6 @@ void Ocall_PrintString(const char *str){
 /* Application entry */
 int SGX_CDECL main(int argc, char *argv[])
 {
-	char *  program = *argv ;
-	bool    prm = false;
-
 	/* Initialize the enclave */
 	if(initialize_enclave() < 0){
 		printf("Enter a character before exit ...\n");
@@ -262,13 +259,11 @@ int SGX_CDECL main(int argc, char *argv[])
 
 	/* Weijie: read elf outside... */
 	char *filename = argv[1];
-
 	int fd;
         Elf *e;
         Elf_Scn *scn = NULL;
         Elf64_Shdr *shdr64;
         size_t shstrndx;
-
         fd = open(filename, O_RDONLY);
         if (fd < 0) {
                 printf("Cannot open file %s\n", filename);
@@ -278,7 +273,6 @@ int SGX_CDECL main(int argc, char *argv[])
                 printf("ELF library initialization failed\n");
                 return -1;
         }
-
 	e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
         if (e == NULL) {
                 printf("elf_begin failed\n");
@@ -353,7 +347,7 @@ int SGX_CDECL main(int argc, char *argv[])
 	int* rv;
 	Ecall_cs_entry(global_eid, rv);
 
-	/* the following: "calling Ecall_cs_disasm version" */
+	//The following is Ecall_cs_disasm version
 	/*
 	csh handle;
         cs_insn *insn;
