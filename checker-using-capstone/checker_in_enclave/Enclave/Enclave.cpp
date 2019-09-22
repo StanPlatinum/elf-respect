@@ -246,7 +246,7 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 
 	// SIB is not available in 16-bit mode
 	if ((mode & CS_MODE_16) == 0) {
-		printf("\tsib: 0x%x\n", x86->sib);
+		PrintDebugInfo("\tsib: 0x%x\n", x86->sib);
 		if (x86->sib_base != X86_REG_INVALID)
 			PrintDebugInfo("\t\tsib_base: %s\n", cs_reg_name(handle, x86->sib_base));
 		if (x86->sib_index != X86_REG_INVALID)
@@ -283,7 +283,7 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 	// Print out all immediate operands
 	count = cs_op_count(ud, ins, X86_OP_IMM);
 	if (count) {
-		printf("\timm_count: %u\n", count);
+		PrintDebugInfo("\timm_count: %u\n", count);
 		for (i = 1; i < count + 1; i++) {
 			int index = cs_op_index(ud, ins, X86_OP_IMM, i);
 			PrintDebugInfo("\t\timms[%u]: 0x%" PRIx64 "\n", i, x86->operands[index].imm);
@@ -401,6 +401,8 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 }
 
 #define CODE "\x8d\x4c\x32\x08\x01\xd8"
+#define X86_CODE64 "\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
+
 int Ecall_x86access_entry()
 {
 	//Weijie: comment the following line
@@ -411,7 +413,8 @@ int Ecall_x86access_entry()
 	cs_regs regs_read, regs_write;
 	uint8_t read_count, write_count, i;
 
-	if (cs_open(CS_ARCH_X86, CS_MODE_32, &handle) != CS_ERR_OK)
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle) != CS_ERR_OK)
+	//if (cs_open(CS_ARCH_X86, CS_MODE_32, &handle) != CS_ERR_OK)
 		return -1;
 
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
@@ -451,12 +454,15 @@ int Ecall_x86access_entry()
 		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
 
 	/* test 2 */	
+	
+	count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
+	
 	if (count) {
-		size_t j;
+		//size_t j;
 
 		PrintDebugInfo("****************\n");
-		PrintDebugInfo("Platform: %s\n", platforms[i].comment);
-		print_string_hex("Code:", platforms[i].code, platforms[i].size);
+		//PrintDebugInfo("Platform: %s\n", platforms[i].comment);
+		print_string_hex("Code:", (unsigned char *)CODE, sizeof(CODE)-1);
 		PrintDebugInfo("Disasm:\n");
 
 		for (j = 0; j < count; j++) {
@@ -469,8 +475,8 @@ int Ecall_x86access_entry()
 		cs_free(insn, count);
 	} else {
 		PrintDebugInfo("****************\n");
-		PrintDebugInfo("Platform: %s\n", platforms[i].comment);
-		print_string_hex("Code:", platforms[i].code, platforms[i].size);
+		//PrintDebugInfo("Platform: %s\n", platforms[i].comment);
+		print_string_hex("Code:", (unsigned char *)CODE, sizeof(CODE)-1);
 		PrintDebugInfo("ERROR: Failed to disasm given code!\n");
 		abort();
 	}
