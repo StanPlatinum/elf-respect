@@ -2,7 +2,7 @@ This version of checker has been tested on my Thinkpad.
 
 # Usage:
 
-~~~./app ../checker~~~
+~~./app ../checker~~
 
 ./app
 
