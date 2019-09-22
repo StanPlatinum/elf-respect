@@ -33,6 +33,7 @@ void PrintDebugInfoOutside3(void)
 	Ocall_PrintString("PDIO test in elf_begin ...\n");
 }
 
+/* for debugging */
 #include "libelf.h"
 
 static void print_string_hex(const char *comment, unsigned char *str, size_t len)
@@ -220,7 +221,7 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 		PrintDebugInfo("\tmodrm_offset: 0x%x\n", x86->encoding.modrm_offset);
 	}
 	
-	printf("\tdisp: 0x%" PRIx64 "\n", x86->disp);
+	PrintDebugInfo("\tdisp: 0x%" PRIx64 "\n", x86->disp);
 	if (x86->encoding.disp_offset != 0) {
 		PrintDebugInfo("\tdisp_offset: 0x%x\n", x86->encoding.disp_offset);
 	}
@@ -436,45 +437,6 @@ int Ecall_x86access_entry()
 	return 0;
 }
 
-#include "my_stdio.c"
-
-/* Weijie: ecall of whole elf operations */
-//Weijie: would cause illegal instruction signal, cause the libelf is not modified ...
-int Ecall_elf_entry(char *filename) {
-
-	int fd;
-	Elf *e;
-	size_t shstrndx;
-
-	fd = open(filename, O_RDONLY);
-
-	if (fd < 0) {
-		PrintDebugInfo("Cannot open file %s\n", filename);
-		return -1;
-	}
-
-	if (elf_version(EV_CURRENT) == EV_NONE) {
-		PrintDebugInfo("ELF library initialization failed\n");
-		return -1;
-	}
-
-	PrintDebugInfo("-----checking elf_begin-----\n");
-	//e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
-	//Weijie: test
-	e = elf_begin_dbg(fd, ELF_C_READ_MMAP, NULL, PrintDebugInfoOutside3);
-
-	if (e == NULL) {
-		PrintDebugInfo("elf_begin failed\n");
-		return -1;
-	}
-	PrintDebugInfo("-----checking elf_getshdrstrndx-----\n");
-	if (elf_getshdrstrndx(e, &shstrndx) != 0){
-		PrintDebugInfo("Cannot get string section\n");
-		return -1;
-	}
-	return 0;
-}
-
 /* Weijie: ecall of whole cs_open/disasm/close */
 int Ecall_cs_entry(void) {
 	/* Weijie: new enclave starts here. */
@@ -532,7 +494,46 @@ int Ecall_cs_entry(void) {
 
 /*******************************************************/
 /* for debugging */
+#include "my_stdio.c"
 
+/* Weijie: ecall of whole elf operations */
+//Weijie: would cause illegal instruction signal, cause the libelf is not modified ...
+int Ecall_elf_entry(char *filename) {
+
+	int fd;
+	Elf *e;
+	size_t shstrndx;
+
+	fd = open(filename, O_RDONLY);
+
+	if (fd < 0) {
+		PrintDebugInfo("Cannot open file %s\n", filename);
+		return -1;
+	}
+
+	if (elf_version(EV_CURRENT) == EV_NONE) {
+		PrintDebugInfo("ELF library initialization failed\n");
+		return -1;
+	}
+
+	PrintDebugInfo("-----checking elf_begin-----\n");
+	//e = elf_begin(fd, ELF_C_READ_MMAP, NULL);
+	//Weijie: test
+	e = elf_begin_dbg(fd, ELF_C_READ_MMAP, NULL, PrintDebugInfoOutside3);
+
+	if (e == NULL) {
+		PrintDebugInfo("elf_begin failed\n");
+		return -1;
+	}
+	PrintDebugInfo("-----checking elf_getshdrstrndx-----\n");
+	if (elf_getshdrstrndx(e, &shstrndx) != 0){
+		PrintDebugInfo("Cannot get string section\n");
+		return -1;
+	}
+	return 0;
+}
+
+/* for debugging */
 #include "sgx_trts_exception.h"
 
 /* Weijie: add signal handler */
@@ -579,6 +580,7 @@ int add_hooks_for_exception()
 	}
 }
 
+/* for debugging */
 size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 	//cs_insn *insn;
 	size_t count;
@@ -619,7 +621,7 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 	count = cs_disasm_dbg(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn, PrintDebugInfoOutside, PrintDebugInfoOutside2);
 	//count = cs_disasm(handle, buf_test, sizeof(buf_test)-1, 0x1000, 0, &insn);
 
-#if 0
+	/*
 	//Weijie: test
 	count = 1;
 	insn[0].id = 1;
@@ -633,7 +635,7 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 	char b[160] = "op_srt";
 	strncpy(insn[0].op_str, b, sizeof(insn[0].op_str));
 	insn[0].detail = NULL;
-#endif
+	*/
 	return count;
 }
 
