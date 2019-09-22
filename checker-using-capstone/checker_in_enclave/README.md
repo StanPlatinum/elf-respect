@@ -2,7 +2,9 @@ This version of checker has been tested on my Thinkpad.
 
 # Usage:
 
-./app ../checker
+~~~./app ../checker~~~
+
+./app
 
 ### Before doing make, remember to build a soft link:
 
