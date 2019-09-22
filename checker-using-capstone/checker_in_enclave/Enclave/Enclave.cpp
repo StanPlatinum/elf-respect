@@ -33,8 +33,22 @@ void PrintDebugInfoOutside3(void)
 	Ocall_PrintString("PDIO test in elf_begin ...\n");
 }
 
+/*******************************************************/
 /* for debugging */
-#include "libelf.h"
+#include <capstone/platform.h>
+#include <capstone/capstone.h>
+
+static csh handle;
+
+struct platform {
+	cs_arch arch;
+	cs_mode mode;
+	unsigned char *code;
+	size_t size;
+	const char *comment;
+	cs_opt_type opt_type;
+	cs_opt_value opt_value;
+};
 
 static void print_string_hex(const char *comment, unsigned char *str, size_t len)
 {
@@ -389,7 +403,9 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 #define CODE "\x8d\x4c\x32\x08\x01\xd8"
 int Ecall_x86access_entry()
 {
-	csh handle;
+	//Weijie: comment the following line
+	//csh handle;
+	
 	cs_insn *insn;
 	size_t count, j;
 	cs_regs regs_read, regs_write;
@@ -438,28 +454,28 @@ int Ecall_x86access_entry()
 			if (count) {
 			size_t j;
 
-			printf("****************\n");
-			printf("Platform: %s\n", platforms[i].comment);
+			PrintDebugInfo("****************\n");
+			PrintDebugInfo("Platform: %s\n", platforms[i].comment);
 			print_string_hex("Code:", platforms[i].code, platforms[i].size);
-			printf("Disasm:\n");
+			PrintDebugInfo("Disasm:\n");
 
 			for (j = 0; j < count; j++) {
-				printf("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+				PrintDebugInfo("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 				print_insn_detail(handle, platforms[i].mode, &insn[j]);
 			}
-			printf("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
+			PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
 
 			// free memory allocated by cs_disasm()
 			cs_free(insn, count);
 		} else {
-			printf("****************\n");
-			printf("Platform: %s\n", platforms[i].comment);
+			PrintDebugInfo("****************\n");
+			PrintDebugInfo("Platform: %s\n", platforms[i].comment);
 			print_string_hex("Code:", platforms[i].code, platforms[i].size);
-			printf("ERROR: Failed to disasm given code!\n");
+			PrintDebugInfo("ERROR: Failed to disasm given code!\n");
 			abort();
 		}
 
-		printf("\n");
+		PrintDebugInfo("\n");
 	
 	
 	
@@ -471,7 +487,10 @@ int Ecall_x86access_entry()
 /* Weijie: ecall of whole cs_open/disasm/close */
 int Ecall_cs_entry(void) {
 	/* Weijie: new enclave starts here. */
-	csh handle;
+	
+	//Weijie:
+	//csh handle;
+	
 	cs_insn *insn;
 	size_t count;
 	unsigned char buf_test[] =
@@ -526,6 +545,8 @@ int Ecall_cs_entry(void) {
 /*******************************************************/
 /* for debugging */
 #include "my_stdio.c"
+
+#include "libelf.h"
 
 /* Weijie: ecall of whole elf operations */
 //Weijie: would cause illegal instruction signal, cause the libelf is not modified ...
