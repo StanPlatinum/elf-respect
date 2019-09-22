@@ -31,12 +31,12 @@
 
 ######## Checker Settings ########
 
-CAPSTONE_DYN = /home/liuweijie/newdisk/capstone/install-x86
+CAPSTONE_INC = /home/liuweijie/newdisk/capstone/install-x86
 
 FEATURES_H = -I/usr/include -I/usr/include/x86_64-linux-gnu
 
-CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include $(FEATURES_H)
-CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_DYN)/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include $(FEATURES_H)
+CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_INC)/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include $(FEATURES_H)
+CHECKER_Static_INC_PATH = -I$(CAPSTONE_INC)/include -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include $(FEATURES_H)
 CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L$(CAPSTONE_DYN)/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 

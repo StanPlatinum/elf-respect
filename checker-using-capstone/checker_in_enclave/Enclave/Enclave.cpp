@@ -234,16 +234,16 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 	if (x86->encoding.modrm_offset != 0) {
 		PrintDebugInfo("\tmodrm_offset: 0x%x\n", x86->encoding.modrm_offset);
 	}
-	
+
 	PrintDebugInfo("\tdisp: 0x%" PRIx64 "\n", x86->disp);
 	if (x86->encoding.disp_offset != 0) {
 		PrintDebugInfo("\tdisp_offset: 0x%x\n", x86->encoding.disp_offset);
 	}
-	
+
 	if (x86->encoding.disp_size != 0) {
 		PrintDebugInfo("\tdisp_size: 0x%x\n", x86->encoding.disp_size);
 	}
-	
+
 	// SIB is not available in 16-bit mode
 	if ((mode & CS_MODE_16) == 0) {
 		printf("\tsib: 0x%x\n", x86->sib);
@@ -290,7 +290,7 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 			if (x86->encoding.imm_offset != 0) {
 				PrintDebugInfo("\timm_offset: 0x%x\n", x86->encoding.imm_offset);
 			}
-			
+
 			if (x86->encoding.imm_size != 0) {
 				PrintDebugInfo("\timm_size: 0x%x\n", x86->encoding.imm_size);
 			}
@@ -405,7 +405,7 @@ int Ecall_x86access_entry()
 {
 	//Weijie: comment the following line
 	//csh handle;
-	
+
 	cs_insn *insn;
 	size_t count, j;
 	cs_regs regs_read, regs_write;
@@ -417,7 +417,7 @@ int Ecall_x86access_entry()
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
-	
+
 	/* test 1 */
 	if (count > 0) {
 		for (j = 0; j < count; j++) {
@@ -451,34 +451,34 @@ int Ecall_x86access_entry()
 		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
 
 	/* test 2 */	
-			if (count) {
-			size_t j;
+	if (count) {
+		size_t j;
 
-			PrintDebugInfo("****************\n");
-			PrintDebugInfo("Platform: %s\n", platforms[i].comment);
-			print_string_hex("Code:", platforms[i].code, platforms[i].size);
-			PrintDebugInfo("Disasm:\n");
+		PrintDebugInfo("****************\n");
+		PrintDebugInfo("Platform: %s\n", platforms[i].comment);
+		print_string_hex("Code:", platforms[i].code, platforms[i].size);
+		PrintDebugInfo("Disasm:\n");
 
-			for (j = 0; j < count; j++) {
-				PrintDebugInfo("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-				print_insn_detail(handle, platforms[i].mode, &insn[j]);
-			}
-			PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
-
-			// free memory allocated by cs_disasm()
-			cs_free(insn, count);
-		} else {
-			PrintDebugInfo("****************\n");
-			PrintDebugInfo("Platform: %s\n", platforms[i].comment);
-			print_string_hex("Code:", platforms[i].code, platforms[i].size);
-			PrintDebugInfo("ERROR: Failed to disasm given code!\n");
-			abort();
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			print_insn_detail(handle, platforms[i].mode, &insn[j]);
 		}
+		PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
 
-		PrintDebugInfo("\n");
-	
-	
-	
+		// free memory allocated by cs_disasm()
+		cs_free(insn, count);
+	} else {
+		PrintDebugInfo("****************\n");
+		PrintDebugInfo("Platform: %s\n", platforms[i].comment);
+		print_string_hex("Code:", platforms[i].code, platforms[i].size);
+		PrintDebugInfo("ERROR: Failed to disasm given code!\n");
+		abort();
+	}
+
+	PrintDebugInfo("\n");
+
+
+
 	cs_close(&handle);
 
 	return 0;
@@ -487,10 +487,10 @@ int Ecall_x86access_entry()
 /* Weijie: ecall of whole cs_open/disasm/close */
 int Ecall_cs_entry(void) {
 	/* Weijie: new enclave starts here. */
-	
+
 	//Weijie:
 	//csh handle;
-	
+
 	cs_insn *insn;
 	size_t count;
 	unsigned char buf_test[] =
@@ -681,7 +681,7 @@ size_t Ecall_cs_disasm(csh handle, cs_insn *insn){
 	insn[0].size = 1;
 	// 24 zeros
 	for (int l = 0; l < 24; l++)
-		(insn[0].bytes)[l] = 0;
+	(insn[0].bytes)[l] = 0;
 	char a[32] = "mnemonic";
 	strncpy(insn[0].mnemonic, a, sizeof(insn[0].mnemonic));
 	char b[160] = "op_srt";
