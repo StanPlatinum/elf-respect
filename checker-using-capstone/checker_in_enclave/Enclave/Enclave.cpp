@@ -467,7 +467,8 @@ int Ecall_x86access_entry()
 
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			print_insn_detail(handle, platforms[i].mode, &insn[j]);
+			//print_insn_detail(handle, platforms[i].mode, &insn[j]);
+			print_insn_detail(handle, CS_MODE_64, &insn[j]);
 		}
 		PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
 
