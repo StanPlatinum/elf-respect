@@ -401,6 +401,8 @@ int Ecall_x86access_entry()
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
+	
+	/* test 1 */
 	if (count > 0) {
 		for (j = 0; j < count; j++) {
 			// Print assembly
@@ -432,6 +434,35 @@ int Ecall_x86access_entry()
 	} else
 		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
 
+	/* test 2 */	
+			if (count) {
+			size_t j;
+
+			printf("****************\n");
+			printf("Platform: %s\n", platforms[i].comment);
+			print_string_hex("Code:", platforms[i].code, platforms[i].size);
+			printf("Disasm:\n");
+
+			for (j = 0; j < count; j++) {
+				printf("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+				print_insn_detail(handle, platforms[i].mode, &insn[j]);
+			}
+			printf("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
+
+			// free memory allocated by cs_disasm()
+			cs_free(insn, count);
+		} else {
+			printf("****************\n");
+			printf("Platform: %s\n", platforms[i].comment);
+			print_string_hex("Code:", platforms[i].code, platforms[i].size);
+			printf("ERROR: Failed to disasm given code!\n");
+			abort();
+		}
+
+		printf("\n");
+	
+	
+	
 	cs_close(&handle);
 
 	return 0;
