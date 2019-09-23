@@ -11,6 +11,7 @@ This version of checker has been tested on my Thinkpad.
 ```
 sudo ln -s /usr/include/x86_64-linux-gnu/gnu /usr/include/gnu
 ```
+Please noted that the above-mentioned config won't be useful after a right suitable configuration.
 
 ### As for INC Path:
 
