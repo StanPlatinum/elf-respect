@@ -400,8 +400,8 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 	PrintDebugInfo("\n");
 }
 
-#define CODE "\x8d\x4c\x32\x08\x01\xd8"
-#define X86_CODE64 "\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
+#define CODE_TEST "\x8d\x4c\x32\x08\x01\xd8"
+#define CODE "\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
 
 int Ecall_x86access_entry()
 {
@@ -422,6 +422,7 @@ int Ecall_x86access_entry()
 	count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
 
 	/* test 1 */
+	PrintDebugInfo("Test 1:\n");
 	if (count > 0) {
 		for (j = 0; j < count; j++) {
 			// Print assembly
@@ -454,7 +455,7 @@ int Ecall_x86access_entry()
 		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
 
 	/* test 2 */	
-	
+	PrintDebugInfo("Test 2:\n");
 	count = cs_disasm(handle, (unsigned char *)CODE, sizeof(CODE)-1, 0x1000, 0, &insn);
 	
 	if (count) {
