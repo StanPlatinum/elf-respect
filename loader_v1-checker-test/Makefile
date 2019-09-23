@@ -32,11 +32,11 @@
 
 SGX_SRC_PATH = /root/linux-sgx
 LIBELF_SRC_PATH = /root/elfutils4sgx/elfutils-0.176/libelf 
-CAPSTONE_SRC_PATH = /
+CAPSTONE_DYN = /root/capstone/install-x86
 
-CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I$(LIBELF_SRC_PATH) -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
-CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
+CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_DYN)/include -I$(LIBELF_SRC_PATH) -I/usr/include -I/usr/include/x86_64-linux-gnu
+CHECKER_Static_INC_PATH = -I$(LIBELF_SRC_PATH) -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+CHECKER_Dyn_LIB_PATH = -L$(CAPSTONE_DYN)/lib
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
 CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) 

@@ -71,6 +71,7 @@ clean:
 		lib/*.o
 
 clean-all:
-	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list \
                 tools/linker lib/*.o
+	rm -rf $(TARGET_NAME)
 
