@@ -45,7 +45,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	cs_insn *insn;
 	size_t count;
 
-	//Weijie: test
+	//Xiaozhu & Weijie: test
 	/*
 	unsigned char buf_test[] =
 	{
