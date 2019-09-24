@@ -403,6 +403,20 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 #define CODE_TEST "\x8d\x4c\x32\x08\x01\xd8"
 #define CODE "\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
 
+/* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
+static int find_memory_write(csh ud, cs_mode, cs_insn *ins)
+{
+	cs_x86 *x86;
+
+	if (ins->detail == NULL)	return -1;
+	//Weijie: returning -1 means this insn[j] is kind of "data" instruction
+
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return 0;
+	//Weijie: returning 0 means this insn[j] has no oprand
+		
+}
+
 int Ecall_x86access_entry()
 {
 	//Weijie: comment the following line
