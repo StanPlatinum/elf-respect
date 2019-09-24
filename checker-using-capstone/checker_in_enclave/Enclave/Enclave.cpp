@@ -403,6 +403,29 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 #define CODE_TEST "\x8d\x4c\x32\x08\x01\xd8"
 #define CODE "\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
 
+static int find_cmp_imm(csh ud, cs_mode, cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
+
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	
+	// traverse all operands
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		//Weijie: returning 1 means this insn[j] has accessing imm
+		if ((int)op->type == X86_OP_IMM){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+}
 /* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
 static int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 {
@@ -422,6 +445,31 @@ static int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 		//Weijie: returning 0 means this insn[j] has no memory writting
 		//Weijie: returning 1 means this insn[j] has memory writting
 		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_WRITE)){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+}
+/* Weijie: if the return value is 1, then it means that this insn[j] is reading memory */
+static int find_memory_read(csh ud, cs_mode, cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
+
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	
+	// traverse all operands
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		//Weijie: returning 0 means this insn[j] has no memory writting
+		//Weijie: returning 1 means this insn[j] has memory writting
+		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_READ)){
 			exist++;
 			return 1;
 		}
@@ -486,7 +534,10 @@ int Ecall_x86access_entry()
 	
 	if (count) {
 		//size_t j;
-		int if_memwt;
+		int if_memwt = 0;
+		int if_cmp_imm = 0;
+		int if_memrd = 0;
+
 
 		PrintDebugInfo("****************\n");
 		//PrintDebugInfo("Platform: %s\n", platforms[i].comment);
@@ -498,8 +549,14 @@ int Ecall_x86access_entry()
 			//print_insn_detail(handle, platforms[i].mode, &insn[j]);
 			print_insn_detail(handle, CS_MODE_64, &insn[j]);
 			//Weijie:
+			if_cmp_imm = find_cmp_imm(handle, CS_MODE_64, &insn[j]);
 			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
+			if_memrd = find_memory_read(handle, CS_MODE_64, &insn[j]);
+
 			if (if_memwt > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
+			if (if_cmp_imm > 0)	PrintDebugInfo("\tThe above insn is accessing imm!\n");
+			if (if_memrd > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
+
 		}
 		PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
 
