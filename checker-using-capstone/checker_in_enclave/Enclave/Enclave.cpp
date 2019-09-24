@@ -467,8 +467,8 @@ static int find_memory_read(csh ud, cs_mode, cs_insn *ins)
 	// traverse all operands
 	for (i = 0; i < x86->op_count; i++) {
 		cs_x86_op *op = &(x86->operands[i]);
-		//Weijie: returning 0 means this insn[j] has no memory writting
-		//Weijie: returning 1 means this insn[j] has memory writting
+		//Weijie: returning 0 means this insn[j] has no memory reading
+		//Weijie: returning 1 means this insn[j] has memory reading
 		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_READ)){
 			exist++;
 			return 1;
@@ -555,7 +555,7 @@ int Ecall_x86access_entry()
 
 			if (if_memwt > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
 			if (if_cmp_imm > 0)	PrintDebugInfo("\tThe above insn is accessing imm!\n");
-			if (if_memrd > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
+			if (if_memrd > 0)	PrintDebugInfo("\tThe above insn is reading memory!\n");
 
 		}
 		PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
