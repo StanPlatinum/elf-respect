@@ -116,8 +116,13 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	PrintDebugInfo("-----printing-----\n");
 	if (count) {
 		size_t j;
+		//Weijie: test
+		int if_memwt;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//Weijie: test
+			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
+			if (if_memwt > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
 		}
 		cs_free(insn, count);
 	} else
