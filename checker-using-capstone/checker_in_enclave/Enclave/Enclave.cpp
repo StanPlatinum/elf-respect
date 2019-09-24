@@ -414,6 +414,59 @@ static int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 	x86 = &(ins->detail->x86);
 	if (x86->op_count == 0)		return 0;
 	//Weijie: returning 0 means this insn[j] has no oprand
+	
+		// Print out all operands
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+
+		switch((int)op->type) {
+			case X86_OP_REG:
+				PrintDebugInfo("\t\toperands[%u].type: REG = %s\n", i, cs_reg_name(handle, op->reg));
+				break;
+			case X86_OP_IMM:
+				PrintDebugInfo("\t\toperands[%u].type: IMM = 0x%" PRIx64 "\n", i, op->imm);
+				break;
+			case X86_OP_MEM:
+				PrintDebugInfo("\t\toperands[%u].type: MEM\n", i);
+				if (op->mem.segment != X86_REG_INVALID)
+					PrintDebugInfo("\t\t\toperands[%u].mem.segment: REG = %s\n", i, cs_reg_name(handle, op->mem.segment));
+				if (op->mem.base != X86_REG_INVALID)
+					PrintDebugInfo("\t\t\toperands[%u].mem.base: REG = %s\n", i, cs_reg_name(handle, op->mem.base));
+				if (op->mem.index != X86_REG_INVALID)
+					PrintDebugInfo("\t\t\toperands[%u].mem.index: REG = %s\n", i, cs_reg_name(handle, op->mem.index));
+				if (op->mem.scale != 1)
+					PrintDebugInfo("\t\t\toperands[%u].mem.scale: %u\n", i, op->mem.scale);
+				if (op->mem.disp != 0)
+					PrintDebugInfo("\t\t\toperands[%u].mem.disp: 0x%" PRIx64 "\n", i, op->mem.disp);
+				break;
+			default:
+				break;
+		}
+
+		// AVX broadcast type
+		if (op->avx_bcast != X86_AVX_BCAST_INVALID)
+			PrintDebugInfo("\t\toperands[%u].avx_bcast: %u\n", i, op->avx_bcast);
+
+		// AVX zero opmask {z}
+		if (op->avx_zero_opmask != false)
+			PrintDebugInfo("\t\toperands[%u].avx_zero_opmask: TRUE\n", i);
+
+		PrintDebugInfo("\t\toperands[%u].size: %u\n", i, op->size);
+
+		switch(op->access) {
+			default:
+				break;
+			case CS_AC_READ:
+				PrintDebugInfo("\t\toperands[%u].access: READ\n", i);
+				break;
+			case CS_AC_WRITE:
+				PrintDebugInfo("\t\toperands[%u].access: WRITE\n", i);
+				break;
+			case CS_AC_READ | CS_AC_WRITE:
+				PrintDebugInfo("\t\toperands[%u].access: READ | WRITE\n", i);
+				break;
+		}
+	}
 		
 }
 
