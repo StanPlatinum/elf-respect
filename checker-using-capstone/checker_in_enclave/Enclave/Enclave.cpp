@@ -407,67 +407,26 @@ static void print_insn_detail(csh ud, cs_mode mode, cs_insn *ins)
 static int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 {
 	cs_x86 *x86;
+	int i, exist = 0;
 
-	if (ins->detail == NULL)	return -1;
-	//Weijie: returning -1 means this insn[j] is kind of "data" instruction
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
 
 	x86 = &(ins->detail->x86);
-	if (x86->op_count == 0)		return 0;
-	//Weijie: returning 0 means this insn[j] has no oprand
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
 	
-		// Print out all operands
+	// traverse all operands
 	for (i = 0; i < x86->op_count; i++) {
 		cs_x86_op *op = &(x86->operands[i]);
-
-		switch((int)op->type) {
-			case X86_OP_REG:
-				PrintDebugInfo("\t\toperands[%u].type: REG = %s\n", i, cs_reg_name(handle, op->reg));
-				break;
-			case X86_OP_IMM:
-				PrintDebugInfo("\t\toperands[%u].type: IMM = 0x%" PRIx64 "\n", i, op->imm);
-				break;
-			case X86_OP_MEM:
-				PrintDebugInfo("\t\toperands[%u].type: MEM\n", i);
-				if (op->mem.segment != X86_REG_INVALID)
-					PrintDebugInfo("\t\t\toperands[%u].mem.segment: REG = %s\n", i, cs_reg_name(handle, op->mem.segment));
-				if (op->mem.base != X86_REG_INVALID)
-					PrintDebugInfo("\t\t\toperands[%u].mem.base: REG = %s\n", i, cs_reg_name(handle, op->mem.base));
-				if (op->mem.index != X86_REG_INVALID)
-					PrintDebugInfo("\t\t\toperands[%u].mem.index: REG = %s\n", i, cs_reg_name(handle, op->mem.index));
-				if (op->mem.scale != 1)
-					PrintDebugInfo("\t\t\toperands[%u].mem.scale: %u\n", i, op->mem.scale);
-				if (op->mem.disp != 0)
-					PrintDebugInfo("\t\t\toperands[%u].mem.disp: 0x%" PRIx64 "\n", i, op->mem.disp);
-				break;
-			default:
-				break;
-		}
-
-		// AVX broadcast type
-		if (op->avx_bcast != X86_AVX_BCAST_INVALID)
-			PrintDebugInfo("\t\toperands[%u].avx_bcast: %u\n", i, op->avx_bcast);
-
-		// AVX zero opmask {z}
-		if (op->avx_zero_opmask != false)
-			PrintDebugInfo("\t\toperands[%u].avx_zero_opmask: TRUE\n", i);
-
-		PrintDebugInfo("\t\toperands[%u].size: %u\n", i, op->size);
-
-		switch(op->access) {
-			default:
-				break;
-			case CS_AC_READ:
-				PrintDebugInfo("\t\toperands[%u].access: READ\n", i);
-				break;
-			case CS_AC_WRITE:
-				PrintDebugInfo("\t\toperands[%u].access: WRITE\n", i);
-				break;
-			case CS_AC_READ | CS_AC_WRITE:
-				PrintDebugInfo("\t\toperands[%u].access: READ | WRITE\n", i);
-				break;
+		//Weijie: returning 0 means this insn[j] has no memory writting
+		//Weijie: returning 1 means this insn[j] has memory writting
+		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_WRITE)){
+			exist++;
+			return 1;
 		}
 	}
-		
+	return exist;
 }
 
 int Ecall_x86access_entry()
@@ -527,6 +486,7 @@ int Ecall_x86access_entry()
 	
 	if (count) {
 		//size_t j;
+		int if_memwt;
 
 		PrintDebugInfo("****************\n");
 		//PrintDebugInfo("Platform: %s\n", platforms[i].comment);
@@ -537,6 +497,9 @@ int Ecall_x86access_entry()
 			PrintDebugInfo("0x%" PRIx64 ":\t%s\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//print_insn_detail(handle, platforms[i].mode, &insn[j]);
 			print_insn_detail(handle, CS_MODE_64, &insn[j]);
+			//Weijie:
+			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
+			if (if_memwt > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
 		}
 		PrintDebugInfo("0x%" PRIx64 ":\n", insn[j-1].address + insn[j-1].size);
 
