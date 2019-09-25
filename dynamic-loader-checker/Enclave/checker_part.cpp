@@ -54,26 +54,16 @@ int find_cmp_imm(csh ud, cs_mode, cs_insn *ins)
 {
 	cs_x86 *x86;
 	int i, exist = 0;
-
-	//Weijie: debug
-	PrintDebugInfo("-exist-: %d\n", exist);
 	
 	if (ins->detail == NULL)	return -2;
 	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
-
-	PrintDebugInfo("--exist--: %d\n", exist);
 	
 	x86 = &(ins->detail->x86);
 	if (x86->op_count == 0)		return -1;
 	//Weijie: returning -1 means this insn[j] has no oprand
 	
-	PrintDebugInfo("---exist---: %d\n", exist);
-	
 	// traverse all operands
 	for (i = 0; i < x86->op_count; i++) {
-
-		//Weijie: debug
-		PrintDebugInfo("exist: %d\n", exist);
 		cs_x86_op *op = &(x86->operands[i]);
 		
 		//Weijie: returning 1 means this insn[j] has accessing imm
@@ -108,11 +98,30 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 		int if_cmp_imm = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			//Weijie: test
+			//Weijie: start checking...
 			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
-			if_cmp_imm = find_cmp_imm(handle, CS_MODE_64, &insn[j]);
-			if (if_memwt > 0)	PrintDebugInfo("\tThe above insn is writting memory!\n");
-			if (if_cmp_imm > 0)	PrintDebugInfo("\tThe above insn is accessing imm!\n");
+			if (if_memwt > 0){
+				PrintDebugInfo("\nThe above insn is writting memory!\n");
+				//Weijie: search the previous 2 insns
+				//Weijie: currently it only search the previous 2 insns inside 'this symbol' ...
+				if (j >= 2) {
+					PrintDebugInfo("checking previous 2 insns...\n");
+					//Weijie: checking if they are 'cmp rax, 0ximm'
+					if (strncmp("cmp", insn[j-2].op_str, 3) == 0) {
+						//Weijie: continue checking...
+						PrintDebugInfo("checking first insn...\n");
+
+						if (strncmp("cmp", insn[j-1].op_str, 3) == 0) {
+							//Weijie: continue checking...
+							PrintDebugInfo("checking second insn...\n");
+
+							//Weijie: replace 2 imms
+							PrintDebugInfo("set bounds...\n");
+						}
+						
+					}
+				}
+			}
 
 		}
 		cs_free(insn, count);
