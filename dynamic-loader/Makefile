@@ -30,6 +30,7 @@
 
 ######## Checker Settings ########
 
+#SGX_SRC_PATH = /root/linux-sgx
 SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
 TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 
