@@ -422,8 +422,10 @@ void ecall_receive_binary(char *binary, int sz)
 
 	//Weijie: the asm inline commands could be commented
 	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
+	pr_progress("r13/14/15 pushed");
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
+	pr_progress("r13/14/15 popped");
 	pr_progress("returning");
 	
 }
@@ -514,7 +516,10 @@ void enclave_main()
 
 	//Weijie: the asm inline commands could be commented
 	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
+	pr_progress("r13/14/15 pushed");
+
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
+	pr_progress("r13/14/15 popped");
 	pr_progress("returning");
 }

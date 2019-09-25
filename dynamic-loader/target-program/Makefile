@@ -1,7 +1,7 @@
 
 CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
@@ -68,12 +68,9 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -S -I. -o enclave_main.s $<
-	#$(CC) -c enclave_main.s -o $@
-	#$(CC) -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
-	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
+	$(CC) -S -I. -o enclave_main.s $<
+	$(CC) -c enclave_main.s -o $@
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
 	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
