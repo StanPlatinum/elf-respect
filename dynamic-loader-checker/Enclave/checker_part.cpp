@@ -96,6 +96,9 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 		return -1;
 	}
 
+	//Weijie: add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
 	PrintDebugInfo("-----printing-----\n");
 	if (count) {
