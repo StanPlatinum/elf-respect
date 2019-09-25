@@ -50,28 +50,9 @@ int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 }
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
-int find_cmp_imm(csh ud, cs_mode, cs_insn *ins)
+int find_cmp_imm(cs_insn *ins)
 {
-	cs_x86 *x86;
-	int i, exist = 0;
-	
-	if (ins->detail == NULL)	return -2;
-	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
-	
-	x86 = &(ins->detail->x86);
-	if (x86->op_count == 0)		return -1;
-	//Weijie: returning -1 means this insn[j] has no oprand
-	
-	// traverse all operands
-	for (i = 0; i < x86->op_count; i++) {
-		cs_x86_op *op = &(x86->operands[i]);
-		
-		//Weijie: returning 1 means this insn[j] has accessing imm
-		if ((int)op->type == X86_OP_IMM){
-			exist++;
-			return 1;
-		}
-	}
+	int exist = 0;
 	return exist;
 }
 
@@ -93,30 +74,20 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	PrintDebugInfo("-----printing-----\n");
 	if (count) {
 		size_t j;
-		//Weijie: test
 		int if_memwt = 0;
-		int if_cmp_imm = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: start checking...
 			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
 			if (if_memwt > 0){
-				PrintDebugInfo("\nThe above insn is writting memory!\n");
-				//Weijie: search the previous 2 insns
 				//Weijie: currently it only search the previous 2 insns inside 'this symbol' ...
 				if (j >= 2) {
-					PrintDebugInfo("checking previous 2 insns...\n");
 					//Weijie: checking if they are 'cmp rax, 0ximm'
-					if (strncmp("cmp", insn[j-2].op_str, 3) == 0) {
-						//Weijie: continue checking...
-						PrintDebugInfo("checking first insn...\n");
-
-						if (strncmp("cmp", insn[j-1].op_str, 3) == 0) {
-							//Weijie: continue checking...
-							PrintDebugInfo("checking second insn...\n");
-
+					if (strncmp("cmp", insn[j-2].mnemonic, 3) == 0) {
+						if (strncmp("cmp", insn[j-1].mnemonic, 3) == 0) {
 							//Weijie: replace 2 imms
 							PrintDebugInfo("set bounds...\n");
+							//Weijie: To-Do
 						}
 						
 					}
