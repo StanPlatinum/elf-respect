@@ -438,7 +438,6 @@ Elf64_Addr get_immAddr(cs_insn single_insn)
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
 int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
-	//PrintDebugInfo("Weijie: new enclave starts here.\n");
 	csh handle;
 	cs_insn *insn;
 	size_t count;
@@ -446,7 +445,6 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
 	}
-
 	//Weijie: add option
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
@@ -468,6 +466,11 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 							//Weijie: replace 2 imms
 							PrintDebugInfo("setting bounds...\n");
 							//Weijie: To-Do
+							Elf64_Addr imm_offset = 0;
+							Elf64_Addr imm1 =  get_immAddr(insn[j-2]) + imm_offset;
+							Elf64_Addr imm2 =  get_immAddr(insn[j-1]) + imm_offset;
+							dlog("imm1: %p, imm2: %p", imm1, imm2);
+
 						}
 						
 					}
