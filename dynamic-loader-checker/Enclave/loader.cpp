@@ -427,15 +427,14 @@ int find_cmp_imm(cs_insn *ins)
 	return exist;
 }
 
-rewrite_imm(unsigned long int imm_Addr, unsigned long int needed_imm)
+void rewrite_imm(Elf64_Addr imm_Addr, unsigned long int imm_after)
 {}
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
-void get_upperBoundAddr(unsigned long int upper_bound)
-{}
-
-void get_lowerBoundAddr(unsigned long int lower_bound)
-{}
+Elf64_Addr get_immAddr(cs_insn single_insn)
+{
+	return single_insn.address;
+}
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
 int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
@@ -469,7 +468,6 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 							//Weijie: replace 2 imms
 							PrintDebugInfo("setting bounds...\n");
 							//Weijie: To-Do
-							get_upperBoundAddr(unsigned long int upper_bound);
 						}
 						
 					}
