@@ -380,33 +380,6 @@ static void relocate(void)
 void disasm_whole()
 {
 	pr_progress("disassembling all executable parts");
-
-	/*
-	   Elf64_Xword textSize;
-	   Elf64_Addr textAddr;
-	   int rv;
-	//Weijie: try to disasm whole binary once for all...
-	unsigned char* buf = (unsigned char *)malloc(program_size);
-	cpy((char *)buf, (char *)program, program_size);
-	PrintDebugInfo("-----setting params-----\n");
-	textAddr = (Elf64_Addr)program;
-	textSize = program_size;
-	rv = cs_disasm_entry(buf, textSize, textAddr);
-	free(buf);
-	 */
-	/*
-	   Elf64_Xword textSize;
-	   Elf64_Addr textAddr;
-	   int rv;
-	//Weijie: disasm enclave_main firstly...
-	textSize = main_sym->st_size;
-	textAddr = main_sym->st_value;
-	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-	unsigned char* buf = (unsigned char *)malloc(textSize);
-	cpy((char *)buf, (char *)symtab[main_index].st_value, symtab[main_index].st_size);
-	rv = cs_disasm_entry(buf, textSize, textAddr);
-	 */
-
 	int j;
 	int rv;
 	Elf64_Xword textSize;
@@ -435,7 +408,7 @@ void disasm_whole()
 }
 
 
-//Weijie: add checker wrap here
+//Weijie: add checker here
 void checker_wrap()
 {
 	void *this_enclave_base = get_enclave_base();
@@ -448,8 +421,6 @@ void checker_wrap()
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
-	//Weijie: v1: do not use the following line
-	//program = (char*) binary;
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 

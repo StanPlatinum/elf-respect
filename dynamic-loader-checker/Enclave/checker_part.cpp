@@ -1,3 +1,5 @@
+#include "rewrite_part.cpp"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -56,6 +58,14 @@ int find_cmp_imm(cs_insn *ins)
 	return exist;
 }
 
+
+//Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
+void get_upperBoundAddr(unsigned long int upper_bound)
+{}
+
+void get_lowerBoundAddr(unsigned long int lower_bound)
+{}
+
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
 int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
 	//PrintDebugInfo("Weijie: new enclave starts here.\n");
@@ -86,8 +96,9 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 					if (strncmp("cmp", insn[j-2].mnemonic, 3) == 0) {
 						if (strncmp("cmp", insn[j-1].mnemonic, 3) == 0) {
 							//Weijie: replace 2 imms
-							PrintDebugInfo("set bounds...\n");
+							PrintDebugInfo("setting bounds...\n");
 							//Weijie: To-Do
+							get_upperBoundAddr(unsigned long int upper_bound);
 						}
 						
 					}
