@@ -1,4 +1,3 @@
-#include "rewrite_part.cpp"
 
 #include <stdio.h>
 #include <string.h>
@@ -58,6 +57,8 @@ int find_cmp_imm(cs_insn *ins)
 	return exist;
 }
 
+rewrite_imm(unsigned long int imm_Addr, unsigned long int needed_imm)
+{}
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
 void get_upperBoundAddr(unsigned long int upper_bound)
