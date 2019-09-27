@@ -62,12 +62,13 @@ objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
-$(TARGET_NAME).s: $(TARGET_NAME)/$(TARGET_NAME).s
+#$(TARGET_NAME).s: $(TARGET_NAME)/$(TARGET_NAME).s
+$(TARGET_NAME)_new.s: $(TARGET_NAME)/$(TARGET_NAME)_new.s
 	cp $< $@
 
 #Weijie: generate target obj file
 #enclave_main.o: $(TARGET_NAME).c enclave.h
-enclave_main.o: $(TARGET_NAME).s enclave.h
+enclave_main.o: $(TARGET_NAME)_new.s enclave.h
 	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
