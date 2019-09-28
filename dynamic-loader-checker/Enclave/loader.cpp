@@ -369,13 +369,7 @@ static void relocate(void)
 }
 
 /****************************** checker part ******************************/
-#include <stdio.h>
 #include <string.h>
-#include <stdarg.h>
-#include <unistd.h>
-
-#include "Enclave.h"
-#include "Enclave_t.h"
 
 //Weijie: debug
 /* My private Enclave function */
@@ -523,12 +517,13 @@ void disasm_whole()
 
 
 //Weijie: add checker here
-void checker_wrap()
+void get_bounds()
 {
 	void *this_enclave_base = get_enclave_base();
 	size_t this_enclave_size = get_enclave_size();
 	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
 	//Weijie: TO-DO
+	//Weijie: deciding data section bounds
 
 }
 
@@ -558,11 +553,10 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("relocating");
 	relocate();
 
-	pr_progress("disassembling");
+	pr_progress("getting boundaries");
+	get_bounds();
+	pr_progress("disassembling and checking");
 	disasm_whole();
-
-	pr_progress("checking");
-	checker_wrap();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
