@@ -438,9 +438,16 @@ int find_cmp_imm(cs_insn *ins)
 
 /* Given the imm_Addr and the value should be filled in, do the rewritting */
 void rewrite_imm(Elf64_Addr imm_Addr, unsigned long int imm_after)
-{}
+{
+	//Weijie: get the *program's address
+
+	//Weijie: assume the size of imm_after is exactly the size of value needed to be replaced.
+	int oprand_size = sizeof(imm_after);
+	//Weijie: using cpy
+}
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
+//Weijie: the offset is the imm oprand offset: (the address of imm subtracts the address of the instruction)
 Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 {
 	return single_insn.address + imm_offset;
@@ -455,7 +462,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
 	}
-	//Weijie: add option
+	//Weijie: must add option
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
