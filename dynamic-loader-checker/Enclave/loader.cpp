@@ -443,7 +443,10 @@ void rewrite_imm(Elf64_Addr imm_Addr, unsigned long int imm_after)
 
 	//Weijie: assume the size of imm_after is exactly the size of value needed to be replaced.
 	int oprand_size = sizeof(imm_after);
-	//Weijie: using cpy
+	//Weijie: transform imm_after into binary
+	char* imm_after2char;
+	//Weijie: using cpy to cover the imm_Addr space
+	cpy((char *)imm_Addr, imm_after2char, oprand_size);
 }
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
