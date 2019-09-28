@@ -372,7 +372,6 @@ static void relocate(void)
 #include <string.h>
 
 //Weijie: debug
-/* My private Enclave function */
 void PrintDebugInfo(const char *fmt, ...)
 {
 	char buf[BUFSIZ] = {'\0'};
@@ -385,8 +384,24 @@ void PrintDebugInfo(const char *fmt, ...)
 
 #include "libelf.h"
 #include "libelf_extra_types.h"
-
 #include "capstone_x86.h"
+
+#include <trts_internal.h>
+#include <trts_util.h>
+
+Elf64_Addr data_upper_bound;
+Elf64_Addr data_lower_bound;
+
+//Weijie: add checker here
+void get_bounds()
+{
+	void *this_enclave_base = get_enclave_base();
+	size_t this_enclave_size = get_enclave_size();
+	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
+	//Weijie: TO-DO
+	//Weijie: deciding data section bounds
+
+}
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
 int find_memory_write(csh ud, cs_mode, cs_insn *ins)
@@ -421,13 +436,14 @@ int find_cmp_imm(cs_insn *ins)
 	return exist;
 }
 
+/* Given the imm_Addr and the value should be filled in, do the rewritting */
 void rewrite_imm(Elf64_Addr imm_Addr, unsigned long int imm_after)
 {}
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
-Elf64_Addr get_immAddr(cs_insn single_insn)
+Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 {
-	return single_insn.address;
+	return single_insn.address + imm_offset;
 }
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
@@ -459,11 +475,15 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 						if (strncmp("cmp", insn[j-1].mnemonic, 3) == 0) {
 							//Weijie: replace 2 imms
 							PrintDebugInfo("setting bounds...\n");
-							//Weijie: To-Do
-							Elf64_Addr imm_offset = 0;
-							Elf64_Addr imm1 =  get_immAddr(insn[j-2]) + imm_offset;
-							Elf64_Addr imm2 =  get_immAddr(insn[j-1]) + imm_offset;
+							//Weijie: getting the address
+							Elf64_Addr cmp_imm_offset = 0;
+							Elf64_Addr imm1 =  get_immAddr(insn[j-2], cmp_imm_offset);
+							Elf64_Addr imm2 =  get_immAddr(insn[j-1], cmp_imm_offset);
 							dlog("imm1: %p, imm2: %p", imm1, imm2);
+							//Weijie: rewritting
+							rewrite_imm(imm1, data_upper_bound);
+							rewrite_imm(imm2, data_lower_bound);
+							PrintDebugInfo("rewritting done.\n");
 
 						}
 						
@@ -479,11 +499,6 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 
 	return 0;
 }
-
-/****************************** checker part ******************************/
-
-#include <trts_internal.h>
-#include <trts_util.h>
 
 void disasm_whole()
 {
@@ -512,20 +527,9 @@ void disasm_whole()
 			}
 		}
 	}
-
 }
 
-
-//Weijie: add checker here
-void get_bounds()
-{
-	void *this_enclave_base = get_enclave_base();
-	size_t this_enclave_size = get_enclave_size();
-	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
-	//Weijie: TO-DO
-	//Weijie: deciding data section bounds
-
-}
+/****************************** checker part ******************************/
 
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
