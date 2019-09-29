@@ -389,8 +389,9 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <trts_internal.h>
 #include <trts_util.h>
 
-Elf64_Addr data_upper_bound;
-Elf64_Addr data_lower_bound = _SGXDATA_BASE;
+//Weijie: not sure with the upper bound
+Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
+Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
 
 //Weijie: add checker here
 void get_bounds()
@@ -471,7 +472,7 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 }
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
-int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
+int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
 	csh handle;
 	cs_insn *insn;
 	size_t count;
@@ -524,7 +525,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	return 0;
 }
 
-void disasm_whole()
+void rewrite_whole()
 {
 	pr_progress("disassembling all executable parts");
 	int j;
@@ -546,7 +547,7 @@ void disasm_whole()
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_disasm_entry(buf, textSize, textAddr);
+				rv = cs_rewrite_entry(buf, textSize, textAddr);
 				free(buf);
 			}
 		}
@@ -581,10 +582,10 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("relocating");
 	relocate();
 
-	pr_progress("getting boundaries");
-	get_bounds();
+	//pr_progress("getting boundaries");
+	//get_bounds();
 	pr_progress("disassembling and checking");
-	disasm_whole();
+	rewrite_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
