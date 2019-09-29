@@ -430,8 +430,15 @@ int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 	return exist;
 }
 
-/* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
-int find_cmp_imm(cs_insn *ins)
+/* Weijie: if the return value is 1, then it means that this insn[j] is calling */
+int find_call(cs_insn *ins)
+{
+	int exist = 0;
+	return exist;
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is a return */
+int find_ret(cs_insn *ins)
 {
 	int exist = 0;
 	return exist;
