@@ -437,17 +437,13 @@ int find_cmp_imm(cs_insn *ins)
 	return exist;
 }
 
-//Xinyu:
-void cpy_addr_direct(Elf64_Addr *src, Elf64_Addr *dest) {
-	*src = *dest;
-}
- 
-void cpy_addr(Elf64_Addr *src, char *dest, int n) {
+//Xinyu & Weijie:
+void cpy_imm2addr(Elf64_Addr *dest, uint32_t src, int n) {
 	// n is the number of bits to copy
 	// n is expected to be divided by 8 without remainder
      
 	for (int i = 0; i < n/8; ++ i) {
-		dest[i] = (char)(((*src) >> (i*8)) & 0b11111111);
+		((*dest) >> (i*8)) & 0b11111111 = (char)(src[i]);
 	}
 }
 
@@ -458,10 +454,8 @@ void rewrite_imm(Elf64_Addr imm_Addr, unsigned long int imm_after)
 
 	//Weijie: assume the size of imm_after is exactly the size of value needed to be replaced.
 	int oprand_size = sizeof(imm_after);
-	//Weijie: transform imm_after into binary
-	char* imm_after2char;
-	//Weijie: using cpy to cover the imm_Addr space
-	cpy((char *)imm_Addr, imm_after2char, oprand_size);
+	//Weijie: using cpy to cover the imm_Addr space with imm_after
+	cpy_imm2addr((char *)imm_Addr, imm_after, oprand_size*8);
 }
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
