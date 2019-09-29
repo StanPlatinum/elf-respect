@@ -390,7 +390,7 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <trts_util.h>
 
 Elf64_Addr data_upper_bound;
-Elf64_Addr data_lower_bound;
+Elf64_Addr data_lower_bound = _SGXDATA_BASE;
 
 //Weijie: add checker here
 void get_bounds()
@@ -434,6 +434,20 @@ int find_cmp_imm(cs_insn *ins)
 {
 	int exist = 0;
 	return exist;
+}
+
+//Xinyu:
+void cpy_addr_direct(Elf64_Addr *src, Elf64_Addr *dest) {
+	*src = *dest;
+}
+ 
+void cpy_addr(Elf64_Addr *src, char *dest, int n) {
+	// n is the number of bits to copy
+	// n is expected to be divided by 8 without remainder
+     
+	for (int i = 0; i < n/8; ++ i) {
+		dest[i] = (char)(((*src) >> (i*8)) & 0b11111111);
+	}
 }
 
 /* Given the imm_Addr and the value should be filled in, do the rewritting */
