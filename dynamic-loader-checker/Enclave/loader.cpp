@@ -525,6 +525,33 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 	return 0;
 }
 
+/* Weijie: used be an ecall of whole cs_open/disasm/close */
+int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+	PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+		}
+		cs_free(insn, count);
+	} else
+		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+	cs_close(&handle);
+
+	return 0;
+}
+
 void rewrite_whole()
 {
 	pr_progress("disassembling all executable parts");
@@ -548,6 +575,35 @@ void rewrite_whole()
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 				rv = cs_rewrite_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+		}
+	}
+}
+
+void disasm_whole()
+{
+	pr_progress("disassembling all executable parts");
+	int j;
+	int rv;
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	unsigned char* buf;
+	//Weijie: the first symbol is UND  ...
+	for (j = 0; j < n_symtab; j++){
+		//Weijie: only disassemble .text section
+		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
+			//Weijie: print symbol name
+			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+			textSize = symtab[j].st_size;
+			if (textSize > 0){
+				//PrintDebugInfo("-----setting params-----\n");
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
 		}
@@ -586,7 +642,9 @@ void ecall_receive_binary(char *binary, int sz)
 	//get_bounds();
 	pr_progress("disassembling and checking");
 	rewrite_whole();
-
+	pr_progress("debugging: validate if rewrites fine")
+	disasm_whole();
+	
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
 
