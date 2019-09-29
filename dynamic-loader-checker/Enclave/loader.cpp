@@ -642,7 +642,7 @@ void ecall_receive_binary(char *binary, int sz)
 	//get_bounds();
 	pr_progress("disassembling and checking");
 	rewrite_whole();
-	pr_progress("debugging: validate if rewrites fine")
+	pr_progress("debugging: validate if rewrites fine");
 	disasm_whole();
 	
 	pr_progress("executing input binary");
