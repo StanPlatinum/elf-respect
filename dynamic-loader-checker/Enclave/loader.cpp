@@ -18,12 +18,12 @@ size_t program_size = 0;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
-# define byteorder ELFDATA2MSB
+	#define byteorder ELFDATA2MSB
 #elif BYTE_ORDER == LITTLE_ENDIAN
-# define byteorder ELFDATA2LSB
+	#define byteorder ELFDATA2LSB
 #else
-# error "Unknown BYTE_ORDER " BYTE_ORDER
-# define byteorder ELFDATANONE
+	#error "Unknown BYTE_ORDER " BYTE_ORDER
+	#define byteorder ELFDATANONE
 #endif
 
 #define GET_OBJ(type, offset) \
@@ -500,7 +500,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 							Elf64_Addr cmp_imm_offset = 0;
 							Elf64_Addr imm1_addr =  get_immAddr(insn[j-2], cmp_imm_offset);
 							Elf64_Addr imm2_addr =  get_immAddr(insn[j-1], cmp_imm_offset);
-							dlog("imm1: %p, imm2: %p", imm1, imm2);
+							dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 							//Weijie: rewritting
 							rewrite_imm(imm1_addr, data_upper_bound);
 							rewrite_imm(imm2_addr, data_lower_bound);
