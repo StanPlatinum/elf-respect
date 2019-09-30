@@ -453,12 +453,11 @@ void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 /* Given the imm_Addr and the value should be filled in, do the rewritting */
 void rewrite_imm(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
-	//Weijie: get the *program's address
-
+	//Weijie: imm_Addr should be in program's address space
 	//Weijie: assume the size of imm_after is exactly the size of value needed to be replaced.
 	int oprand_size = sizeof(imm_after);
 	//Weijie: using cpy to cover the imm_Addr space with imm_after
-	cpy_imm2addr64((char *)imm_Addr, imm_after);
+	cpy_imm2addr64(imm_Addr, imm_after);
 }
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
@@ -499,12 +498,12 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 							PrintDebugInfo("setting bounds...\n");
 							//Weijie: getting the address
 							Elf64_Addr cmp_imm_offset = 0;
-							Elf64_Addr imm1 =  get_immAddr(insn[j-2], cmp_imm_offset);
-							Elf64_Addr imm2 =  get_immAddr(insn[j-1], cmp_imm_offset);
+							Elf64_Addr imm1_addr =  get_immAddr(insn[j-2], cmp_imm_offset);
+							Elf64_Addr imm2_addr =  get_immAddr(insn[j-1], cmp_imm_offset);
 							dlog("imm1: %p, imm2: %p", imm1, imm2);
 							//Weijie: rewritting
-							rewrite_imm(imm1, data_upper_bound);
-							rewrite_imm(imm2, data_lower_bound);
+							rewrite_imm(imm1_addr, data_upper_bound);
+							rewrite_imm(imm2_addr, data_lower_bound);
 							PrintDebugInfo("rewritting done.\n");
 
 						}
