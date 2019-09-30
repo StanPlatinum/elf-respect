@@ -444,25 +444,21 @@ int find_ret(cs_insn *ins)
 	return exist;
 }
 
-//Xinyu & Weijie:
-void cpy_imm2addr(Elf64_Addr *dest, uint32_t src, int n) {
-	// n is the number of bits to copy
-	// n is expected to be divided by 8 without remainder
-     
-	for (int i = 0; i < n/8; ++ i) {
-		((*dest) >> (i*8)) & 0b11111111 = (char)(src[i]);
-	}
+//Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
+//Weijie: Canthe oprand of cmp be 64 bit? Or we should instrument cmpq?
+void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
+	dst[0] = src;
 }
 
 /* Given the imm_Addr and the value should be filled in, do the rewritting */
-void rewrite_imm(Elf64_Addr imm_Addr, unsigned long int imm_after)
+void rewrite_imm(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
 	//Weijie: get the *program's address
 
 	//Weijie: assume the size of imm_after is exactly the size of value needed to be replaced.
 	int oprand_size = sizeof(imm_after);
 	//Weijie: using cpy to cover the imm_Addr space with imm_after
-	cpy_imm2addr((char *)imm_Addr, imm_after, oprand_size*8);
+	cpy_imm2addr64((char *)imm_Addr, imm_after);
 }
 
 //Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
