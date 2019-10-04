@@ -444,10 +444,22 @@ int find_ret(cs_insn *ins)
 	return exist;
 }
 
+void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
+{
+	//Weijie: write 32 bits
+
+}
+
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
 //Weijie: Canthe oprand of cmp be 64 bit? Or we should instrument cmpq?
 void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 	dst[0] = src;
+}
+
+void rewrite_imm32(Elf64_Addr immAddr, Elf64_Addr imm_after)
+{
+	//Weijie: convert imm_after to 32 bit format
+
 }
 
 /* Given the imm_Addr and the value should be filled in, do the rewritting */
@@ -496,13 +508,15 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 							//Weijie: replace 2 imms
 							PrintDebugInfo("setting bounds...\n");
 							//Weijie: getting the address
-							Elf64_Addr cmp_imm_offset = 0;
+							Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
 							Elf64_Addr imm1_addr =  get_immAddr(insn[j-2], cmp_imm_offset);
 							Elf64_Addr imm2_addr =  get_immAddr(insn[j-1], cmp_imm_offset);
 							dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 							//Weijie: rewritting
-							rewrite_imm(imm1_addr, data_upper_bound);
-							rewrite_imm(imm2_addr, data_lower_bound);
+							//rewrite_imm(imm1_addr, data_upper_bound);
+							//rewrite_imm(imm2_addr, data_lower_bound);
+							rewrite_imm32(imm2_addr, data_lower_bound);
+							rewrite_imm32(imm2_addr, data_lower_bound);
 							PrintDebugInfo("rewritting done.\n");
 
 						}
