@@ -1,5 +1,6 @@
 
 SGX_Shield_PATH = /home/weijliu/SGX-Shield
+#SGX_Shield_PATH = /root/SGX-Shield
 #SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
 
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
@@ -13,6 +14,7 @@ CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-
 #CXX = clang++
 
 #TARGET_NAME = test
+#TARGET_NAME = test-movInstr
 #TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
@@ -43,7 +45,6 @@ include $(OCALL_LIB_MK)
 
 ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
-#all: $(MUSL_LIBC) $(TARGET_NAME)
 all: $(LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
 	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
@@ -76,12 +77,16 @@ objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
+#Weijie: generate movInstr obj file
+#$(TARGET_NAME)_new.s: $(TARGET_NAME)/$(TARGET_NAME)_new.s
 $(TARGET_NAME).s: $(TARGET_NAME)/$(TARGET_NAME)_opt.s
 	cp $< $@
 
 #Weijie: generate target obj file
 #enclave_main.o: $(TARGET_NAME).c enclave.h
 	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
+#Weijie: generate movInstr obj file
+#enclave_main.o: $(TARGET_NAME)_new.s enclave.h
 enclave_main.o: $(TARGET_NAME).s enclave.h
 	$(CC) -c $(SGX_CFLAGS) -o $@ $(LINKERFLAG) $<
 
