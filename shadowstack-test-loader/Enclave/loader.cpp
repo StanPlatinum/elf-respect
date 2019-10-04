@@ -412,9 +412,10 @@ Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
 //Weijie: add checker here
 void get_bounds()
 {
-	void *this_enclave_base = get_enclave_base();
-	size_t this_enclave_size = get_enclave_size();
-	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
+	//Weijie: get_enclave_base currently not suits for ss-test-enclave
+	//void *this_enclave_base = get_enclave_base();
+	//size_t this_enclave_size = get_enclave_size();
+	//dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
 	//Weijie: TO-DO
 	//Weijie: deciding data section bounds
 
