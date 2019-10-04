@@ -384,13 +384,261 @@ static void relocate(void)
 		}
 }
 
-/****************************** checker part *******i***********************/
+/****************************** checker part ******************************/
+#include <string.h>
 
-//#include "checker_part.cpp"
-/*
- * Weijie: add checker/disassembler here if necessary
- * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
- */
+//Weijie: for debuging
+void PrintDebugInfo(const char *fmt, ...)
+{
+	char buf[BUFSIZ] = {'\0'};
+	va_list ap;
+	va_start(ap, fmt);
+	vsnprintf(buf, BUFSIZ, fmt, ap);
+	va_end(ap);
+	ocall_print_string(buf);
+}
+
+#include "libelf.h"
+#include "libelf_extra_types.h"
+#include "capstone_x86.h"
+
+#include <trts_internal.h>
+#include <trts_util.h>
+
+//Weijie: not sure with the upper bound
+Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
+Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
+
+//Weijie: add checker here
+void get_bounds()
+{
+	void *this_enclave_base = get_enclave_base();
+	size_t this_enclave_size = get_enclave_size();
+	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
+	//Weijie: TO-DO
+	//Weijie: deciding data section bounds
+
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
+int find_memory_write(csh ud, cs_mode, cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
+
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	
+	// traverse all operands
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		//Weijie: returning 0 means this insn[j] has no memory writting
+		//Weijie: returning 1 means this insn[j] has memory writting
+		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_WRITE)){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is calling */
+int find_call(cs_insn *ins)
+{
+	int exist = 0;
+	return exist;
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is a return */
+int find_ret(cs_insn *ins)
+{
+	int exist = 0;
+	return exist;
+}
+
+void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
+{
+	//Weijie: write 32 bits
+	//Weijie:
+	dlog("writting: %lx", src);
+	uint32_t *dst32 = (uint32_t *)dst;
+	dst32[0] = src;
+}
+
+//Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
+//Weijie: Canthe oprand of cmp be 64 bit? Or we should instrument cmpq?
+void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
+	dst[0] = src;
+}
+
+void rewrite_imm32(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
+{
+	//Weijie: convert imm_after to 32 bit format (trunk down to lower 32 bits if needed)
+	uint32_t imm_after32 = imm_after & 0xffff;
+	//Weijie: using cpy_imm2addr32
+	cpy_imm2addr32((Elf64_Addr *)imm_Addr, imm_after32);
+}
+
+/* Given the imm_Addr and the value should be filled in, do the rewritting */
+void rewrite_imm(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
+{
+	//Weijie: imm_Addr should be in program's address space
+	//Weijie: using cpy to cover the imm_Addr space with imm_after
+	cpy_imm2addr64((Elf64_Addr *)imm_Addr, imm_after);
+}
+
+//Weijie: we assume that the instrumented cmp is like 'cmp rax, 0x2f59'.
+//Weijie: the offset is the imm oprand offset: (the address of imm subtracts the address of the instruction)
+Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
+{
+	return single_insn.address + imm_offset;
+}
+
+/* Weijie: used be an ecall of whole cs_open/disasm/close */
+int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+	PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		int if_memwt = 0;
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//Weijie: start checking...
+			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
+			if (if_memwt > 0){
+				//Weijie: currently it only search the previous 2 insns inside 'this symbol' ...
+				if (j >= 2) {
+					//Weijie: checking if they are 'cmp rax, 0ximm'
+					if (strncmp("cmp", insn[j-2].mnemonic, 3) == 0) {
+						if (strncmp("cmp", insn[j-1].mnemonic, 3) == 0) {
+							//Weijie: replace 2 imms
+							PrintDebugInfo("setting bounds...\n");
+							//Weijie: getting the address
+							Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
+							Elf64_Addr imm1_addr =  get_immAddr(insn[j-2], cmp_imm_offset);
+							Elf64_Addr imm2_addr =  get_immAddr(insn[j-1], cmp_imm_offset);
+							dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+							//Weijie: rewritting
+							//rewrite_imm(imm1_addr, data_upper_bound);
+							//rewrite_imm(imm2_addr, data_lower_bound);
+							rewrite_imm32(imm1_addr, data_upper_bound);
+							rewrite_imm32(imm2_addr, data_lower_bound);
+							PrintDebugInfo("rewritting done.\n");
+
+						}
+						
+					}
+				}
+			}
+
+		}
+		cs_free(insn, count);
+	} else
+		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+	cs_close(&handle);
+
+	return 0;
+}
+
+/* Weijie: used be an ecall of whole cs_open/disasm/close */
+int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+	PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+		}
+		cs_free(insn, count);
+	} else
+		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+	cs_close(&handle);
+
+	return 0;
+}
+
+void rewrite_whole()
+{
+	pr_progress("disassembling all executable parts");
+	int j;
+	int rv;
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	unsigned char* buf;
+	//Weijie: the first symbol is UND  ...
+	for (j = 0; j < n_symtab; j++){
+		//Weijie: only disassemble .text section
+		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
+			//Weijie: print symbol name
+			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+			textSize = symtab[j].st_size;
+			if (textSize > 0){
+				//PrintDebugInfo("-----setting params-----\n");
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_rewrite_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+		}
+	}
+}
+
+void disasm_whole()
+{
+	pr_progress("disassembling all executable parts");
+	int j;
+	int rv;
+	Elf64_Xword textSize;
+	Elf64_Addr textAddr;
+	unsigned char* buf;
+	//Weijie: the first symbol is UND  ...
+	for (j = 0; j < n_symtab; j++){
+		//Weijie: only disassemble .text section
+		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
+			//Weijie: print symbol name
+			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+			textSize = symtab[j].st_size;
+			if (textSize > 0){
+				//PrintDebugInfo("-----setting params-----\n");
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+		}
+	}
+}
+/****************************** checker part ******************************/
 
 /* Weijie: add shadow stack pointer */
 char *shadow_stack = (char *)&__ss_start;
@@ -496,14 +744,19 @@ void ecall_receive_binary(char *binary, int sz)
 	//Weijie: cannot delete the following lines in current demo
 	pr_progress("relocating");
 	relocate();
-
+	
+	pr_progress("disassembling and checking");
+	rewrite_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
+	
+	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
 	
 	//Weijie:
 	dlog("main: %p", entry);
 
 	pr_progress("entering");
-
 	//Weijie: the asm inline commands could be commented
 	__asm__ __volatile__( "push %%r13\n" "push %%r14\n" "push %%r15\n" ::);
 	entry();
