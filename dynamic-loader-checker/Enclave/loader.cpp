@@ -371,7 +371,7 @@ static void relocate(void)
 /****************************** checker part ******************************/
 #include <string.h>
 
-//Weijie: debug
+//Weijie: for debuging
 void PrintDebugInfo(const char *fmt, ...)
 {
 	char buf[BUFSIZ] = {'\0'};
@@ -447,6 +447,8 @@ int find_ret(cs_insn *ins)
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
+	//Weijie:
+	dlog("writting: %lx", src);
 	uint32_t *dst32 = (uint32_t *)dst;
 	dst32[0] = src;
 }
@@ -517,7 +519,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 							//Weijie: rewritting
 							//rewrite_imm(imm1_addr, data_upper_bound);
 							//rewrite_imm(imm2_addr, data_lower_bound);
-							rewrite_imm32(imm2_addr, data_lower_bound);
+							rewrite_imm32(imm1_addr, data_upper_bound);
 							rewrite_imm32(imm2_addr, data_lower_bound);
 							PrintDebugInfo("rewritting done.\n");
 

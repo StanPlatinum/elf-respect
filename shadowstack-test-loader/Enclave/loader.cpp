@@ -384,6 +384,8 @@ static void relocate(void)
 		}
 }
 
+/****************************** checker part *******i***********************/
+
 //#include "checker_part.cpp"
 /*
  * Weijie: add checker/disassembler here if necessary
