@@ -40,7 +40,7 @@ mkdir build
 mkdir install-x86
 cd build
 cmake .. -DCMAKE_INSTALL_PREFIX=../install-x86 -DCAPSTONE_ARCHITECTURE_DEFAULT=OFF -DCAPSTONE_X86_SUPPORT=1
-make & make install
+make
 ```
 
 ## Build libz
