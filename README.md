@@ -8,6 +8,11 @@
 
  - Please refer to https://github.com/intel/linux-sgx and https://github.com/intel/linux-sgx-driver.
  - Make sure the SGXSDK version is 2.5 or later.
+ - In case the current directory structure of SGXSDK changes, you can use the forked 2.6 version (intact) from my Github.
+ 
+```
+git clone https://github.com/StanPlatinum/linux-sgx.git
+```
 
 ## Build libelf
 
