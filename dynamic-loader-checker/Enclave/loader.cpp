@@ -447,7 +447,8 @@ int find_ret(cs_insn *ins)
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
-
+	uint32_t *dst32 = (uint32_t *)dst;
+	dst32[0] = src;
 }
 
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
@@ -456,17 +457,18 @@ void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 	dst[0] = src;
 }
 
-void rewrite_imm32(Elf64_Addr immAddr, Elf64_Addr imm_after)
+void rewrite_imm32(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
-	//Weijie: convert imm_after to 32 bit format
-
+	//Weijie: convert imm_after to 32 bit format (trunk down to lower 32 bits if needed)
+	uint32_t imm_after32 = imm_after & 0xffff;
+	//Weijie: using cpy_imm2addr32
+	cpy_imm2addr32((Elf64_Addr *)imm_Addr, imm_after32);
 }
 
 /* Given the imm_Addr and the value should be filled in, do the rewritting */
 void rewrite_imm(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
 	//Weijie: imm_Addr should be in program's address space
-
 	//Weijie: using cpy to cover the imm_Addr space with imm_after
 	cpy_imm2addr64((Elf64_Addr *)imm_Addr, imm_after);
 }
