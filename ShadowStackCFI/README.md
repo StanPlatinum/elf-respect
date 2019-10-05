@@ -25,7 +25,7 @@
  - 5 Add "FunctionPass *createX86ShadowStackCFIPass();" to llvm/lib/Target/X86/X86.h  
  - 6 Add "X86ShadowStackCFIPass.cpp" to "set(sources...)" in llvm/lib/Target/X86/CMakeLists.txt  
  - 7 If your clang-version is 9.0, you should replace file llvm/lib/CodeGen/MachineRegisterInfo.cpp with file MachineRegisterInfo.cpp  
-　If your clang-version is over 9.0, you shoule change llvm/lib/CodeGen/MachineRegisterInfo.cpp:266 like this:  
+　If your clang-version is over 9.0, you shoule change the function "MachineRegisterInfo::addRegOperandToUseList(MachineOperand *MO)" in llvm/lib/CodeGen/MachineRegisterInfo.cpp like this:  
   ![](https://github.com/StanPlatinum/elf-respect/blob/master/ShadowStackCFI/ChangeMachineRegisterInfo.png)  
  - 8 Make your llvm  
  - 9 Execute CFISHell.py (using 1.sh/run.sh)
