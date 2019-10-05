@@ -277,10 +277,12 @@ $(Signed_Enclave_Name): $(Enclave_Name)
 symtab_test: symtab_test.cpp
 	$(CXX) $^ -o $@
 
+cpy32_test: cpy32_test.cpp
+	$(CXX) $^ -o $@
 
 .PHONY: clean
 
 clean:
 	@rm -f $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
-		blob gen_def Enclave/ocall_type.h symtab_test
+		blob gen_def Enclave/ocall_type.h symtab_test cpy32_test
 #		blob App/attack.o gen_def Enclave/ocall_type.h

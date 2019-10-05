@@ -447,6 +447,11 @@ int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 	return exist;
 }
 
+//Weijie: given the symbol 'CFICheck', rewrite the movabs insn
+void rewrite_CFICheck()
+{
+}
+
 /* Weijie: if the return value is 1, then it means that this insn[j] is calling */
 int find_call(cs_insn *ins)
 {
