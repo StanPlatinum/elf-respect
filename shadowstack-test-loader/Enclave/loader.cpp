@@ -398,6 +398,8 @@ void PrintDebugInfo(const char *fmt, ...)
 	ocall_print_string(buf);
 }
 
+int my_strncmp(const char *str1, char *str2, size_t n);
+
 #include "libelf.h"
 #include "libelf_extra_types.h"
 #include "capstone_x86.h"
@@ -604,6 +606,14 @@ void rewrite_whole()
 			textSize = symtab[j].st_size;
 			if (textSize > 0){
 				//PrintDebugInfo("-----setting params-----\n");
+
+				//Weijie: rewrite CFI
+				int ifcfi_rv = my_strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
+				if (ifcfi_rv == 0) {
+				
+				}
+
+				//Weijie: rewrite Memory write
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
@@ -654,7 +664,8 @@ char *target_table = (char *)&__cfi_start;
 size_t target_table_size = 0;
 
 /* shawn233: my simple implementation of strncmp(), maybe insecure, please replace it with a trusted version */
-int my_strncmp(char *str1, char *str2, size_t n) {
+//Weijie: add const
+int my_strncmp(const char *str1, char *str2, size_t n) {
 	bool flag = true;
 	for (unsigned i = 0; i < n; ++ i) {
 		if (str1[i] != str2[i]) {
@@ -676,7 +687,7 @@ size_t my_strlen(char *str) {
 /* shawn233: given symbol name, search symbol table and return symtab.st_value */
 Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 	for (unsigned i = 1; i < n_symtab; ++ i) {
-		if (my_strncmp(name, &strtab[symtab[i].st_name], l) == 0)
+		if (my_strncmp((const char *)name, &strtab[symtab[i].st_name], l) == 0)
 			return symtab[i].st_value;
 	}
 	return 0;
