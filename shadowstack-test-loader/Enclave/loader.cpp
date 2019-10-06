@@ -16,14 +16,22 @@ extern char __elf_end;		/* defined in the linker script */
 char *program = (char *)&__elf_start;
 size_t program_size = 0;
 
+
+/* Weijie: add shadow stack pointer */
+char *shadow_stack = (char *)&__ss_start;
+
+/* Weijie: add target table pointer */
+char *target_table = (char *)&__cfi_start;
+size_t target_table_size = 0;
+
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
-# define byteorder ELFDATA2MSB
+	#define byteorder ELFDATA2MSB
 #elif BYTE_ORDER == LITTLE_ENDIAN
-# define byteorder ELFDATA2LSB
+	#define byteorder ELFDATA2LSB
 #else
-# error "Unknown BYTE_ORDER " BYTE_ORDER
-# define byteorder ELFDATANONE
+	#error "Unknown BYTE_ORDER " BYTE_ORDER
+	#define byteorder ELFDATANONE
 #endif
 
 #define GET_OBJ(type, offset) \
@@ -384,7 +392,7 @@ static void relocate(void)
 		}
 }
 
-/****************************** checker part ******************************/
+/****************************** checker & rewriter part ******************************/
 #include <string.h>
 
 //Weijie: for debuging
@@ -461,6 +469,8 @@ int find_ret(cs_insn *ins)
 	return exist;
 }
 
+/****************************** rewriter part ******************************/
+
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
@@ -512,10 +522,10 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	//Weijie: must add option
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 	
-	//Weijie: rewrite CFICheckAddressNum
-	//Weijie: rewrite CFICheckAddressPtr
+	//Weijie: rewrite CFICheckAddressNum, replace with value of 'call_target_idx'
+	//Weijie: rewrite CFICheckAddressPtr, replace with value of '(char *)&__cfi_start'
 	
-	//Weijie: rewrite shadow stack base pointer
+	//Weijie: rewrite shadow stack base pointer, replace with value of '(char *)&__ss_start'
 	//Weijie: start with the insn, usually: movabs
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
@@ -531,8 +541,11 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: start checking...
 			if ((strncmp("movabs", insn[j].mnemonic, 6) == 0) && (strncmp("0x2fffffffffffffff", insn[j].op_str, 16) == 0)) {
-				//Weijie: do the rewrite
+				//Weijie: do the rewritting of shadow stack base pointer
 				if_ssbase = 1;
+				Elf64_Addr movabs_imm_offset = 6; //10-4=6;
+				Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset)
+				rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
 			}
 		}
 	}
@@ -692,14 +705,7 @@ void disasm_whole()
 		}
 	}
 }
-/****************************** checker part ******************************/
-
-/* Weijie: add shadow stack pointer */
-char *shadow_stack = (char *)&__ss_start;
-
-/* Weijie: add target table pointer */
-char *target_table = (char *)&__cfi_start;
-size_t target_table_size = 0;
+/****************************** checker & rewriter part ******************************/
 
 /* shawn233: given symbol name, search symbol table and return symtab.st_value */
 Elf64_Addr search_symtab_by_name(char *name, size_t l) {
@@ -710,6 +716,7 @@ Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 	return 0;
 }
 
+//Weijie: we should do ecall_receive_entrylabel first.
 void ecall_receive_entrylabel(char *entrylabel, int sz)
 {
 	dlog("target_table at %p (%lu)", target_table, target_table_size);
