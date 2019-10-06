@@ -483,6 +483,7 @@ void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
 //Weijie: Canthe oprand of cmp be 64 bit? Or we should instrument cmpq?
 void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
+	dlog("writting: %llx", src);
 	dst[0] = src;
 }
 
@@ -515,6 +516,10 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	csh handle;
 	cs_insn *insn;
 	size_t count;
+	
+	//Weijie:
+	PrintDebugInfo("rewritting symbol CFICheck...\n");
+
 	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
 		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
@@ -544,7 +549,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 				//Weijie: do the rewritting of shadow stack base pointer
 				if_ssbase = 1;
 				Elf64_Addr movabs_imm_offset = 6; //10-4=6;
-				Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset)
+				Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
 				rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
 			}
 		}
