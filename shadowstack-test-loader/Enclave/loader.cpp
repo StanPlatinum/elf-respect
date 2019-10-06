@@ -449,11 +449,6 @@ int find_memory_write(csh ud, cs_mode, cs_insn *ins)
 	return exist;
 }
 
-//Weijie: given the symbol 'CFICheck', rewrite the movabs insn
-void rewrite_CFICheck()
-{
-}
-
 /* Weijie: if the return value is 1, then it means that this insn[j] is calling */
 int find_call(cs_insn *ins)
 {
@@ -506,7 +501,45 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 	return single_insn.address + imm_offset;
 }
 
-/* Weijie: used be an ecall of whole cs_open/disasm/close */
+//Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
+void cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
+{
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+	
+	//Weijie: rewrite CFICheckAddressNum
+	//Weijie: rewrite CFICheckAddressPtr
+	
+	//Weijie: rewrite shadow stack base pointer
+	//Weijie: start with the insn, usually: movabs
+
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+	
+	//Weijie: for later
+	Elf64_Addr CFICheck_sym_addr = textAddr;
+	
+	PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		int if_ssbase = 0;
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//Weijie: start checking...
+			if ((strncmp("movabs", insn[j].mnemonic, 6) == 0) && (strncmp("0x2fffffffffffffff", insn[j].op_str, 16) == 0)) {
+				//Weijie: do the rewrite
+				if_ssbase = 1;
+			}
+		}
+	}
+}
+
 int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
 	csh handle;
 	cs_insn *insn;
@@ -606,21 +639,27 @@ void rewrite_whole()
 			textSize = symtab[j].st_size;
 			if (textSize > 0){
 				//PrintDebugInfo("-----setting params-----\n");
-
-				//Weijie: rewrite CFI
+				//Weijie: get CFI info
 				int ifcfi_rv = my_strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
 				if (ifcfi_rv == 0) {
-				
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					//Weijie: fill in buf
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					rv = cs_rewrite_CFICheck(buf, textSize, textAddr)
+					free(buf);
 				}
-
-				//Weijie: rewrite Memory write
-				textAddr = symtab[j].st_value;
-				buf = (unsigned char *)malloc(textSize);
-				//Weijie: fill in buf
-				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_rewrite_entry(buf, textSize, textAddr);
-				free(buf);
+				else {
+					//Weijie: rewrite Memory write, now not including CFICheck
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					//Weijie: fill in buf
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					rv = cs_rewrite_entry(buf, textSize, textAddr);
+					free(buf);
+				}
 			}
 		}
 	}
