@@ -517,9 +517,6 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	cs_insn *insn;
 	size_t count;
 	
-	//Weijie:
-	PrintDebugInfo("rewritting symbol CFICheck...\n");
-
 	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
 		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
@@ -545,7 +542,9 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: start checking...
-			if ((strncmp("movabs", insn[j].mnemonic, 6) == 0) && (strncmp("0x2fffffffffffffff", insn[j].op_str, 16) == 0)) {
+			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
+				//Weijie: getting the second oprand and see if it is 0x2fffffffffffffff
+
 				//Weijie: do the rewritting of shadow stack base pointer
 				if_ssbase = 1;
 				Elf64_Addr movabs_imm_offset = 6; //10-4=6;
