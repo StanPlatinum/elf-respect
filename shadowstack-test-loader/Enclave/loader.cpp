@@ -398,8 +398,6 @@ void PrintDebugInfo(const char *fmt, ...)
 	ocall_print_string(buf);
 }
 
-int my_strncmp(const char *str1, char *str2, size_t n);
-
 #include "libelf.h"
 #include "libelf_extra_types.h"
 #include "capstone_x86.h"
@@ -502,7 +500,7 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 }
 
 //Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
-void cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
+int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
 {
 	csh handle;
 	cs_insn *insn;
@@ -538,6 +536,7 @@ void cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Ad
 			}
 		}
 	}
+	return 0;
 }
 
 int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
@@ -640,14 +639,14 @@ void rewrite_whole()
 			if (textSize > 0){
 				//PrintDebugInfo("-----setting params-----\n");
 				//Weijie: get CFI info
-				int ifcfi_rv = my_strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
+				int ifcfi_rv = strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
 				if (ifcfi_rv == 0) {
 					textAddr = symtab[j].st_value;
 					buf = (unsigned char *)malloc(textSize);
 					//Weijie: fill in buf
 					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-					rv = cs_rewrite_CFICheck(buf, textSize, textAddr)
+					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
 				else {
@@ -702,31 +701,10 @@ char *shadow_stack = (char *)&__ss_start;
 char *target_table = (char *)&__cfi_start;
 size_t target_table_size = 0;
 
-/* shawn233: my simple implementation of strncmp(), maybe insecure, please replace it with a trusted version */
-//Weijie: add const
-int my_strncmp(const char *str1, char *str2, size_t n) {
-	bool flag = true;
-	for (unsigned i = 0; i < n; ++ i) {
-		if (str1[i] != str2[i]) {
-			flag = false;
-			break;
-		}
-	}
-	if (flag) return 0; // return 0 if strings are equal
-	else return -1; // return -1 otherwise 
-}
-
-/* shawn233: my implementation of strlen(), maybe insecure, please replace it with a secure version */
-size_t my_strlen(char *str) {
-	size_t sz = 0;
-	for (; str[sz] != '\0'; ++ sz);
-	return sz;
-}
-
 /* shawn233: given symbol name, search symbol table and return symtab.st_value */
 Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 	for (unsigned i = 1; i < n_symtab; ++ i) {
-		if (my_strncmp((const char *)name, &strtab[symtab[i].st_name], l) == 0)
+		if (strncmp((const char *)name, &strtab[symtab[i].st_name], l) == 0)
 			return symtab[i].st_value;
 	}
 	return 0;
@@ -758,7 +736,7 @@ void ecall_receive_entrylabel(char *entrylabel, int sz)
         for (unsigned i = 0; i < sz; ++ i) {
                 if (entrylabel[i] == '\0') {
                         dlog("entry label: %s", entrylabel+buffer_idx);
-                        call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, my_strlen(entrylabel+buffer_idx));
+                        call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, strlen(entrylabel+buffer_idx));
 			dlog("call target address: 0x%lx", call_target[call_target_idx-1]);
 			buffer_idx = i+1;
                 }
