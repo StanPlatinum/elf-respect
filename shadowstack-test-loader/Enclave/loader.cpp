@@ -215,35 +215,34 @@ static void update_reltab(void)
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
 			
 			//Weijie:
-			dlog("xxx n_rel: %u", n_rel);
-			dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+			//dlog("xxx n_rel: %u", n_rel);
+			//dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
 			
 			//Weijie:
-			dlog("xxx after GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+			//dlog("xxx after GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 
 			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
 
 			/* update relocation table: r_offset --> dst + offset */
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
-				dlog("xxx before search, i:%u, pshdr[i].sh_info: 0x%lx, j: %u, reltab[n_rel][j].r_offset: 0x%lx",\
-						i, pshdr[i].sh_info, j, reltab[n_rel][j].r_offset);
+				//dlog("xxx before search, i:%u, pshdr[i].sh_info: 0x%lx, j: %u, reltab[n_rel][j].r_offset: 0x%lx", i, pshdr[i].sh_info, j, reltab[n_rel][j].r_offset);
 				
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				
 				//Weijie:
-				dlog("xxx after search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-				dlog("xxx before rel_offset, dst: %u", dst);
-				dlog("xxx before rel_offset, reltab[n_rel][j].r_offset: 0x%lx", reltab[n_rel][j].r_offset);
-				dlog("xxx before rel_offset, symtab[dst].st_value: 0x%lx", symtab[dst].st_value);
+				//dlog("xxx after search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+				//dlog("xxx before rel_offset, dst: %u", dst);
+				//dlog("xxx before rel_offset, reltab[n_rel][j].r_offset: 0x%lx", reltab[n_rel][j].r_offset);
+				//dlog("xxx before rel_offset, symtab[dst].st_value: 0x%lx", symtab[dst].st_value);
 			
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
 				
 				//Weijie & Xinyu:
-				dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
+				//dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			}
 			++n_rel;
 
@@ -324,7 +323,7 @@ static void load(void)
 
 				//Weijie: checking if loader could find main()...
 				//dlog("%u: finding main...", __LINE__);
-				dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
+				//dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
 					//Weijie: record i
@@ -510,6 +509,8 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 	return single_insn.address + imm_offset;
 }
 
+unsigned call_target_idx_global = 0;
+
 //Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
 int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
 {
@@ -539,17 +540,46 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	if (count) {
 		size_t j;
 		int if_ssbase = 0;
+		int if_calltg = 0;
+		int if_setnum = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: start checking...
 			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
-				//Weijie: getting the second oprand and see if it is 0x2fffffffffffffff
-
-				//Weijie: do the rewritting of shadow stack base pointer
-				if_ssbase = 1;
-				Elf64_Addr movabs_imm_offset = 6; //10-4=6;
-				Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
-				rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
+				if ((int)op2.type == X86_OP_IMM) {
+					PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
+					//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+					if (op2.imm == 0x2fffffffffffffff) {
+						//Weijie: do the rewritting of shadow stack base pointer
+						if_ssbase = 1;
+						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
+						rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+					}
+					//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+					if (op2.imm == 0x1fffffffffffffff) {
+						//Weijie: do the rewritting of call target section base pointer
+						if_calltg = 1;
+						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
+						rewrite_imm(imm_addr, (Elf64_Addr)&__cfi_start);
+					}
+				}
+			}
+			if (strncmp("mov", insn[j].mnemonic, 3) == 0) {
+				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
+				if ((int)op2.type == X86_OP_IMM) {
+					PrintDebugInfo("\tsecond op:%llx\n", op2.imm);
+					//Weijie: getting the second oprand and see if it is 0x1fffffff
+					if (op2.imm == 0x1fffffff) {
+						//Weijie: do the rewritting of CFICheckAddressNum
+						if_setnum = 1;
+						Elf64_Addr mov_imm_offset = 3; //7-4=3;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm_offset);
+						rewrite_imm32(imm_addr, call_target_idx_global);
+					}
+				}
 			}
 		}
 	}
@@ -738,7 +768,9 @@ void ecall_receive_entrylabel(char *entrylabel, int sz)
 			entrylabel[i] = '\0';
 			call_target_idx ++;
 		}
-        }
+    }
+
+	call_target_idx_global = call_target_idx;
 
 	call_target = (Elf64_Addr *)get_buf(call_target_idx*sizeof(Elf64_Addr));
 	call_target_idx = 0;

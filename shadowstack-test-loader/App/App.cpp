@@ -243,30 +243,6 @@ int main(int argc, char *argv[])
 	}
 
 	log("call enclave main");
-	//base = *(unsigned long *)((unsigned long )sgx_create_enclave+0x212098);
-	char *buffer;
-	FILE *fp = fopen("./program", "rb");
-	if (fp == NULL) {
-		perror("[error] file open failed.\n");
-		exit(1);
-	}
-	// get file size
-	fseek(fp, 0L, SEEK_END);
-	size_t sz = ftell(fp);
-	rewind(fp);
-	printf("file size is %ld\n", sz);
-	// read binary file into buffer
-	//buffer = (char *)malloc((sz+10)*sizeof(char));
-	buffer = (char *)malloc( sz * sizeof(char) );
-	int n_read = fread(buffer, sizeof(char), sz, fp);
-	printf("number of bytes read is %d\n", n_read);
-	
-	//Weijie: call Ecall
-	ecall_receive_binary(eid, buffer, sz);
-	fclose(fp);
-
-	//Weijie: 
-	printf("receive binary completed.\n");
 
 	char *entrylabel_buffer;
 	FILE *entrylabel_fp = fopen("./entryLabel.txt", "rb");
@@ -287,6 +263,31 @@ int main(int argc, char *argv[])
 	ecall_receive_entrylabel(eid, entrylabel_buffer, entrylabel_sz);
 	
 	fclose(entrylabel_fp);
+	printf("receive entrylabel completed.\n");
+
+	//base = *(unsigned long *)((unsigned long )sgx_create_enclave+0x212098);
+	char *buffer;
+	FILE *fp = fopen("./program", "rb");
+	if (fp == NULL) {
+		perror("[error] file open failed.\n");
+		exit(1);
+	}
+	// get file size
+	fseek(fp, 0L, SEEK_END);
+	size_t sz = ftell(fp);
+	rewind(fp);
+	printf("file size is %ld\n", sz);
+	// read binary file into buffer
+	//buffer = (char *)malloc((sz+10)*sizeof(char));
+	buffer = (char *)malloc( sz * sizeof(char) );
+	int n_read = fread(buffer, sizeof(char), sz, fp);
+	printf("number of bytes read is %d\n", n_read);
+	
+	//Weijie: call Ecall
+	ecall_receive_binary(eid, buffer, sz);
+
+	fclose(fp);
+	printf("receive binary completed.\n");
 
 	log("destroy the enclave");
 	sgx_destroy_enclave(eid);
