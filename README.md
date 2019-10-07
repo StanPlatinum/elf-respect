@@ -53,7 +53,7 @@ make
 git clone https://github.com/StanPlatinum/llvm-project.git
 cd llvm-project
 mkdir build && cd build
-cmake -G 'Unix Makefiles' ../llvm -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86"
+cmake -DLLVM_ENABLE_PROJECTS=clang -G "Unix Makefiles" ../llvm
 make
 ```
 
