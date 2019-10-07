@@ -18,10 +18,10 @@
  - 6 If there is a new CFICheck source file, it should be 'n', otherwise it should be 'o'.  
 
 ### Usage:
- - 1 Add CFIHello to llvm/lib/Transform  
- - 2 Add X86ShadowStackCFIPass.cpp to llvm/lib/Target/X86  
- - 3 Add "addPass(createX86ShadowStackCFIPass());" to the end of the function "addPreEmitPass()" in llvm/lib/Target/X86/X86TargetMachine.cpp  
- - 4 Add "add_subdirectory(CFIHello)" to the end of llvm/lib/Transform/CMakelist.txt  
+ - 1 Add CFIHello to llvm/lib/Transform 
+ - 2 Add "add_subdirectory(CFIHello)" to the end of llvm/lib/Transform/CMakelist.txt  
+ - 3 Add X86ShadowStackCFIPass.cpp to llvm/lib/Target/X86  
+ - 4 Add "addPass(createX86ShadowStackCFIPass());" to the end of the function "addPreEmitPass()" in llvm/lib/Target/X86/X86TargetMachine.cpp  
  - 5 Add "FunctionPass *createX86ShadowStackCFIPass();" to llvm/lib/Target/X86/X86.h  
  - 6 Add "X86ShadowStackCFIPass.cpp" to "set(sources...)" in llvm/lib/Target/X86/CMakeLists.txt  
  - 7 If your clang-version is 9.0, you should replace file llvm/lib/CodeGen/MachineRegisterInfo.cpp with file MachineRegisterInfo.cpp  
