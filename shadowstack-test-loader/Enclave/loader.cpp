@@ -500,7 +500,7 @@ int find_memory_write(cs_insn *ins)
 /* Weijie: if the return value is 1, then it means that this insn[j] is writting memory and it's safe */
 int check_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	int memwt_intact = 0;
+	//int memwt_intact = 0;
 	int if_memwt = find_memory_write(ins);
 	if (if_memwt > 0){
 		//Weijie: checking if they are 'cmp rax, 0ximm'
@@ -524,6 +524,7 @@ int check_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			else
 			{
 				PrintDebugInfo("Check on the second imm failed.\n");
+				return -1;
 			}
 		}
 		else
