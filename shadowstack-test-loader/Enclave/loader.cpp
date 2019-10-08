@@ -498,7 +498,7 @@ int find_memory_write(cs_insn *ins)
 }
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is writting memory and it's safe */
-int check_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
 	//int memwt_intact = 0;
 	int if_memwt = find_memory_write(ins);
@@ -520,6 +520,8 @@ int check_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 				rewrite_imm32(imm1_addr, data_upper_bound);
 				rewrite_imm32(imm2_addr, data_lower_bound);
 				PrintDebugInfo("rewritting done.\n");
+				PrintDebugInfo("memory write check done.\n");
+				return 1;
 			}
 			else
 			{
@@ -532,27 +534,52 @@ int check_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			PrintDebugInfo("Check on the first imm failed.\n");
 			return -1;
 		}
-		PrintDebugInfo("memory write check done.\n");
-		return 1;
 	}
 	else
 		return 0;
 }
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is calling and it's safe */
-int check_call(csh ud, cs_mode, cs_insn *ins)
+int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
 	int exist, call_safe = 0;
+	//Weijie: to-do: check if this insn is a long func's indirect call...
 	if (strncmp("call", ins->mnemonic, 4) == 0)
 	{
-		exist = 1;
-		//Weijie: todo
+		exist = 1;		
+		//Weijie: start checking...
+		if (strncmp("movabs", forward_ins[0].mnemonic, 6) == 0) {
+			cs_x86_op op2 = (forward_ins[0]).detail->x86.operands[1];
+			if ((int)op2.type == X86_OP_IMM) {
+				PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
+				//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+				if (op2.imm == 0x2fffffffffffffff) {
+					//Weijie: do the rewritting of shadow stack base pointer
+					Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+					Elf64_Addr imm_addr = get_immAddr(forward_ins[0], movabs_imm_offset);
+					rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+					dlog("imm address: %p", imm_addr);
+				}
+				else return -1;
+			}
+			else	return -1;
+
+			if (1){
+				//Weijie: to-do: check other 7 insns...
+				PrintDebugInfo("memory write check done.\n");
+			}
+			else	return -1;
+		}
+		else {
+			PrintDebugInfo("Check on the movabs failed.\n");
+			return -1;
+		}
 	}
-	return call_safe;
+	return 0;
 }
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is a return and it's safe */
-int check_ret(csh ud, cs_mode, cs_insn *ins)
+int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
 	int exist, ret_safe = 0;
 	if (strncmp("ret", ins->mnemonic, 3) == 0)
@@ -664,17 +691,50 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				forward_insn[0] = insn[j-2];
 				forward_insn[1] = insn[j-1];
 				//Weijie: checking mem write
-				memwt_intact = check_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
+				memwt_intact = check_rewrite_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
 			}
 			else{
 				//Weijie: to-do
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
-			//Weijie: checking call
-			call_safe = check_call(handle, CS_MODE_64, &insn[j]);
+
+			if (j >= 8){
+				cs_insn forward_insn[8];
+				forward_insn[0] = insn[j-8];
+				forward_insn[1] = insn[j-7];
+				forward_insn[2] = insn[j-6];
+				forward_insn[3] = insn[j-5];
+				forward_insn[4] = insn[j-4];
+				forward_insn[5] = insn[j-3];
+				forward_insn[6] = insn[j-2];
+				forward_insn[7] = insn[j-1];
+				//Weijie: checking long function's indirect call
+				if (1){
+					//Weijie: to-do: check if a callq is a long function's indirect call
+				}
+				else {
+					call_safe = check_rewrite_longfunc_call(handle, CS_MODE_64, &insn[j], forward_insn);
+				}
+			}
 			if (call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
-			//Weijie: checking call
-			ret_safe = check_ret(handle, CS_MODE_64, &insn[j]);
+			
+
+			if (j >= 6){
+				cs_insn forward_insn[6];
+				forward_insn[0] = insn[j-6];
+				forward_insn[1] = insn[j-5];
+				forward_insn[2] = insn[j-4];
+				forward_insn[3] = insn[j-3];
+				forward_insn[4] = insn[j-2];
+				forward_insn[5] = insn[j-1];
+				//Weijie: checking call
+				if (1){
+					//Weijie: to-do: check if a callq is a long function's indirect call
+				}
+				else {
+					ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
+				}
+			}
 			if (ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret!\n");
 
 		}
