@@ -1,7 +1,0 @@
-CFICheck
-abort
-fun
-my_itoa
-enclave_main
-puts
-exit
