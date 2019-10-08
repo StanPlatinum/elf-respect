@@ -86,7 +86,8 @@ CFICheck:                               # @CFICheck
 .LBB0_11:                               # %while.end.loopexit
 	jmp	.LBB0_12
 .LBB0_12:                               # %while.end
-	callq	abort
+	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
+	callq	exit
 .LBB0_13:
 	movl	$60, %eax
 	movl	$0, %edi

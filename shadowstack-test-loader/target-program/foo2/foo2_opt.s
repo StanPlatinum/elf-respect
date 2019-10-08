@@ -86,11 +86,10 @@ CFICheck:                               # @CFICheck
 .LBB0_11:                               # %while.end.loopexit
 	jmp	.LBB0_12
 .LBB0_12:                               # %while.end
-	callq	abort
+	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
+	callq	exit
 .LBB0_13:
-	movl	$60, %eax
-	movl	$0, %edi
-	syscall
+	callq	exit
 .Lfunc_end0:
 	.size	CFICheck, .Lfunc_end0-CFICheck
                                         # -- End function
@@ -108,9 +107,7 @@ fun:                                    # @fun
 	jne	.LBB1_1
 	retq
 .LBB1_1:
-	movl	$60, %eax
-	movl	$0, %edi
-	syscall
+	callq	exit
 .Lfunc_end1:
 	.size	fun, .Lfunc_end1-fun
                                         # -- End function
@@ -218,9 +215,7 @@ my_itoa:                                # @my_itoa
 	jne	.LBB2_12
 	retq
 .LBB2_12:
-	movl	$60, %eax
-	movl	$0, %edi
-	syscall
+	callq	exit
 .Lfunc_end2:
 	.size	my_itoa, .Lfunc_end2-my_itoa
                                         # -- End function
