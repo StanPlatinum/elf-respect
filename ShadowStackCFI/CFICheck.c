@@ -25,5 +25,6 @@ void CFICheck(long long target)
             low = mid + 1;
         }
     }
-    abort();
+    //abort();
+    exit(-1);
 }
