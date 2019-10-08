@@ -1,6 +1,6 @@
-foo2_CFICheck
-foo2_abort
-foo2_fun
-foo2_enclave_main
-foo2_puts
-foo2_exit
+CFICheck
+exit
+fun
+my_itoa
+enclave_main
+puts
