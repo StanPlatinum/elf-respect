@@ -5,24 +5,22 @@
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineOperand.h"
 #include "llvm/CodeGen/MachineInstr.h"
-#include "llvm/Support/raw_ostream.h"
-#include "X86InstrInfo.h"
-#include "X86Subtarget.h"
-#include "llvm/ADT/Statistic.h"
 #include "llvm/CodeGen/LiveVariables.h"
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/CodeGen/Passes.h"
-#include "llvm/Support/Debug.h"
-#include "llvm/MC/MCContext.h"
 #include "llvm/CodeGen/MachineInstrBuilder.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
 #include "llvm/CodeGen/MachineRegisterInfo.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
-#include "llvm/Pass.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/ADT/Statistic.h"
+#include "llvm/Support/Debug.h"
+#include "llvm/MC/MCContext.h"
 #include "X86InstrBuilder.h"
+#include "X86InstrInfo.h"
+#include "X86Subtarget.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -150,6 +148,7 @@ namespace {
         };
         
         map<string, MBBNode> MBBNodeMap;    //保存所有的MBBNode，string为MBBNodeName
+        const GlobalValue* exitGV;
 
     public:
         static char ID;
@@ -335,8 +334,24 @@ namespace {
         //检查函数能否进行简易ss插桩
         MCPhysReg checkSimpleMF(MachineFunction &MF)
         {
-            //Detect if there is an unused caller-saved register we can reserve to hold the return address instead of writing/reading it from the shadow call stack.
             MCPhysReg SimpleMFReg = X86::NoRegister;
+            unsigned callInst[20] = {CALLpcrel32, CALLpcrel16, CALL16r, CALL16m, CALL32r, CALL32m, CALL16r_NT, CALL16m_NT, CALL32r_NT, CALL32m_NT, FARCALL16i, FARCALL32i, FARCALL16m, FARCALL32m, CALL64pcrel32, CALL64r, CALL64m, CALL64r_NT, CALL64m_NT, FARCALL64};
+            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
+            {
+                MachineBasicBlock &MBB = *MBBI;
+                for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
+                {
+                    MachineInstr &MI = *MII;
+                    for (int i = 0; i < 20; i++)
+                    {
+                        if (MI.getOpcode() == callInst[i])
+                        {
+                            return SimpleMFReg;
+                        }
+                    }
+                }
+            }
+            
             if (!MF.getFrameInfo().adjustsStack())
             {
                 std::bitset<X86::NUM_TARGET_REGS> UsedRegs;
@@ -409,12 +424,15 @@ namespace {
                 if (MI.isReturn())
                 {
                     Trap = MF.CreateMachineBasicBlock();
-                    // mov eax, 60(60为exit的syscall调用号)
-                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EAX).addImm(60);
-                    // mov edi, 0
-                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0);
-                    // syscall
-                    BuildMI(Trap, MI.getDebugLoc(), TII->get(SYSCALL));
+                    // // mov eax, 60(60为exit的syscall调用号)
+                    // BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EAX).addImm(60);
+                    // // mov edi, 0
+                    // BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0);
+                    // // syscall
+                    // BuildMI(Trap, MI.getDebugLoc(), TII->get(SYSCALL));
+                    // callq exit(-1)
+                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
+                    BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
                     MF.push_back(Trap);
                     if (SimpleMFRegBool)
                         insertSSRetSimple(TII, MBB, MI, *Trap, SimpleMFReg);
@@ -584,10 +602,10 @@ namespace {
             for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
             {
                 MachineBasicBlock &MBB = *MBBI;
-                //遍历MBB的指令，如果有callq，则分割MBB，并记录调用关系
                 for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
                 {
                     MachineInstr &MI = *MII;
+                        
                     if (MI.getOpcode() == CALL64r)
                     {//call reg1
                         MCPhysReg reg1 = MI.getOperand(0).getReg();
@@ -626,8 +644,35 @@ namespace {
             return true;
         }
 
+        //获取exit函数的GlobaValue指针
+        void getExitGV(MachineFunction &MF)
+        {
+            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
+            {
+                MachineBasicBlock &MBB = *MBBI;
+                for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
+                {
+                    MachineInstr &MI = *MII;
+                    if (MI.getOpcode() == CALL64pcrel32)
+                    {
+                        MachineOperand MO = MI.getOperand(0);
+                        const GlobalValue* GV = MO.getGlobal();
+                        
+                        if (GV->getName() == "exit")
+                        {
+                            exitGV = MO.getGlobal();
+                        }
+                    }
+                }
+            }
+        }
+
         virtual bool runOnMachineFunction(MachineFunction &MF) {
-            bool bs =  insertShadowStackInst(MF);
+            if (MF.getName() == "CFICheck")
+            {
+                getExitGV(MF);
+            }
+            bool bs = insertShadowStackInst(MF);
             bool bc = insertCFIFun(MF);
             return bc || bs;
         }
