@@ -375,7 +375,7 @@ static void relocate(void)
 		}
 }
 
-/****************************** checker part ******************************/
+/****************************** checker & rewriter part ******************************/
 #include <string.h>
 
 //Weijie: for debuging
@@ -396,60 +396,7 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <trts_internal.h>
 #include <trts_util.h>
 
-//Weijie: not sure with the upper bound
-Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
-Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
-
-//Weijie: add checker here
-void get_bounds()
-{
-	void *this_enclave_base = get_enclave_base();
-	size_t this_enclave_size = get_enclave_size();
-	dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
-	//Weijie: TO-DO
-	//Weijie: deciding data section bounds
-
-}
-
-/* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
-int find_memory_write(csh ud, cs_mode, cs_insn *ins)
-{
-	cs_x86 *x86;
-	int i, exist = 0;
-
-	if (ins->detail == NULL)	return -2;
-	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
-
-	x86 = &(ins->detail->x86);
-	if (x86->op_count == 0)		return -1;
-	//Weijie: returning -1 means this insn[j] has no oprand
-	
-	// traverse all operands
-	for (i = 0; i < x86->op_count; i++) {
-		cs_x86_op *op = &(x86->operands[i]);
-		//Weijie: returning 0 means this insn[j] has no memory writting
-		//Weijie: returning 1 means this insn[j] has memory writting
-		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_WRITE)){
-			exist++;
-			return 1;
-		}
-	}
-	return exist;
-}
-
-/* Weijie: if the return value is 1, then it means that this insn[j] is calling */
-int find_call(cs_insn *ins)
-{
-	int exist = 0;
-	return exist;
-}
-
-/* Weijie: if the return value is 1, then it means that this insn[j] is a return */
-int find_ret(cs_insn *ins)
-{
-	int exist = 0;
-	return exist;
-}
+/****************************** rewriter part ******************************/
 
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
@@ -463,6 +410,7 @@ void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
 //Weijie: Canthe oprand of cmp be 64 bit? Or we should instrument cmpq?
 void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
+	dlog("writting: %llx", src);
 	dst[0] = src;
 }
 
@@ -488,8 +436,258 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 {
 	return single_insn.address + imm_offset;
 }
+//Weijie: not sure with the upper bound
+Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
+Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
 
-/* Weijie: used be an ecall of whole cs_open/disasm/close */
+unsigned call_target_idx_global = 0;
+
+void get_bounds()
+{
+	//Weijie: get_enclave_base currently not suits for ss-test-enclave
+	//void *this_enclave_base = get_enclave_base();
+	//size_t this_enclave_size = get_enclave_size();
+	//dlog("base: %p, size: 0x%x", this_enclave_base, this_enclave_size);
+	//Weijie: TO-DO
+	//Weijie: deciding data section bounds
+	//Weijie: data_upper/lower_bound should be two global variables.
+}
+
+/****************************** checker part ******************************/
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
+int find_memory_write(cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	// traverse all operands
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		//Weijie: returning 0 means this insn[j] has no memory writting
+		//Weijie: returning 1 means this insn[j] has memory writting
+		if ((int)op->type == X86_OP_MEM && (op->access & CS_AC_WRITE)){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is writting memory and it's safe */
+int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+{
+	//int memwt_intact = 0;
+	int if_memwt = find_memory_write(ins);
+	if (if_memwt > 0){
+		//Weijie: checking if they are 'cmp rax, 0ximm'
+		if (strncmp("cmp", forward_ins[0].mnemonic, 3) == 0) {
+			if (strncmp("cmp", forward_ins[1].mnemonic, 3) == 0) {
+				//Weijie: replace 2 imms
+				PrintDebugInfo("setting bounds...\n");
+				//Weijie: getting the address
+				Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
+				Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
+				Elf64_Addr imm2_addr =  get_immAddr(forward_ins[1], cmp_imm_offset);
+				//Weijie:
+				dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+				//Weijie: rewritting
+				//rewrite_imm(imm1_addr, data_upper_bound);
+				//rewrite_imm(imm2_addr, data_lower_bound);
+				rewrite_imm32(imm1_addr, data_upper_bound);
+				rewrite_imm32(imm2_addr, data_lower_bound);
+				PrintDebugInfo("rewritting done.\n");
+				PrintDebugInfo("memory write check done.\n");
+				return 1;
+			}
+			else
+			{
+				PrintDebugInfo("Check on the second imm failed.\n");
+				return -1;
+			}
+		}
+		else
+		{
+			PrintDebugInfo("Check on the first imm failed.\n");
+			return -1;
+		}
+	}
+	else
+		return 0;
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is calling and it's safe */
+int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+{
+	int exist = 0;
+	//Weijie: to-do: check if this insn is a long func's indirect call...
+	if (strncmp("call", ins->mnemonic, 4) == 0)
+	{
+		exist = 1;		
+		//Weijie: start checking...
+		if (strncmp("movabs", forward_ins[0].mnemonic, 6) == 0) {
+			cs_x86_op op2 = (forward_ins[0]).detail->x86.operands[1];
+			if ((int)op2.type == X86_OP_IMM) {
+				PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
+				//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+				if (op2.imm == 0x2fffffffffffffff) {
+					//Weijie: do the rewritting of shadow stack base pointer
+					Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+					Elf64_Addr imm_addr = get_immAddr(forward_ins[0], movabs_imm_offset);
+					rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+					dlog("imm address: %p", imm_addr);
+				}
+				else return -1;
+			}
+			else	return -1;
+
+			if (1){
+				//Weijie: to-do: check other 7 insns...
+				PrintDebugInfo("call check done.\n");
+			}
+			else	return -1;
+		}
+		else {
+			PrintDebugInfo("Check on the movabs failed.\n");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+/* Weijie: if the return value is 1, then it means that this insn[j] is a return and it's safe */
+int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+{
+	int exist = 0;
+	//Weijie: to-do: check if this insn is a long func's indirect call...
+	if (strncmp("ret", ins->mnemonic, 3) == 0)
+	{
+		exist = 1;		
+		//Weijie: start checking...
+		if (strncmp("movabs", forward_ins[0].mnemonic, 6) == 0) {
+			cs_x86_op op2 = (forward_ins[0]).detail->x86.operands[1];
+			if ((int)op2.type == X86_OP_IMM) {
+				PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
+				//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+				if (op2.imm == 0x2fffffffffffffff) {
+					//Weijie: do the rewritting of shadow stack base pointer
+					Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+					Elf64_Addr imm_addr = get_immAddr(forward_ins[0], movabs_imm_offset);
+					rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+					dlog("imm address: %p", imm_addr);
+				}
+				else return -1;
+			}
+			else	return -1;
+
+			if (
+				//Weijie: to-do: check other 5 insns...
+				(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
+				(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
+				(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
+				(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
+			){
+				PrintDebugInfo("ret check done.\n");
+			}
+			else	return -1;
+		}
+		else {
+			PrintDebugInfo("Check on the movabs failed.\n");
+			return -1;
+		}
+	}
+	return 0;
+}
+
+int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+{
+	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0) {
+		//Weijie: check if the oprand is the address of CFICheck
+		return 1;
+	}
+	else	return -1;
+	return 0;
+}
+
+//Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
+int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
+{
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+
+	//Weijie: rewrite CFICheckAddressNum, replace with value of 'call_target_idx'
+	//Weijie: rewrite CFICheckAddressPtr, replace with value of '(char *)&__cfi_start'
+	//Weijie: rewrite shadow stack base pointer, replace with value of '(char *)&__ss_start'
+
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+
+	//Weijie: for later
+	Elf64_Addr CFICheck_sym_addr = textAddr;
+
+	PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		int if_ssbase = 0;
+		int if_calltg = 0;
+		int if_setnum = 0;
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//Weijie: start checking...
+			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
+				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
+				if ((int)op2.type == X86_OP_IMM) {
+					PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
+					//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+					if (op2.imm == 0x2fffffffffffffff) {
+						//Weijie: do the rewritting of shadow stack base pointer
+						if_ssbase = 1;
+						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
+						rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+					}
+					//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+					if (op2.imm == 0x1fffffffffffffff) {
+						//Weijie: do the rewritting of call target section base pointer
+						if_calltg = 1;
+						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
+						rewrite_imm(imm_addr, (Elf64_Addr)&__cfi_start);
+					}
+				}
+			}
+			if (strncmp("mov", insn[j].mnemonic, 3) == 0) {
+				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
+				if ((int)op2.type == X86_OP_IMM) {
+					PrintDebugInfo("\tsecond op:%llx\n", op2.imm);
+					//Weijie: getting the second oprand and see if it is 0x1fffffff
+					if (op2.imm == 0x1fffffff) {
+						//Weijie: do the rewritting of CFICheckAddressNum
+						if_setnum = 1;
+						Elf64_Addr mov_imm_offset = 3; //7-4=3;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm_offset);
+						rewrite_imm32(imm_addr, call_target_idx_global);
+					}
+				}
+			}
+		}
+	}
+	return 0;
+}
+
 int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
 	csh handle;
 	cs_insn *insn;
@@ -502,40 +700,84 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
-	PrintDebugInfo("-----printing-----\n");
+
+	PrintDebugInfo("-----checking and re-writting each insn if needed-----\n");
 	if (count) {
 		size_t j;
-		int if_memwt = 0;
+		int memwt_intact = 0;
+		int longfunc_call_safe = 0;
+		int longfunc_ret_safe = 0;
+		int indirect_call_safe = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			//Weijie: start checking...
-			if_memwt = find_memory_write(handle, CS_MODE_64, &insn[j]);
-			if (if_memwt > 0){
-				//Weijie: currently it only search the previous 2 insns inside 'this symbol' ...
-				if (j >= 2) {
-					//Weijie: checking if they are 'cmp rax, 0ximm'
-					if (strncmp("cmp", insn[j-2].mnemonic, 3) == 0) {
-						if (strncmp("cmp", insn[j-1].mnemonic, 3) == 0) {
-							//Weijie: replace 2 imms
-							PrintDebugInfo("setting bounds...\n");
-							//Weijie: getting the address
-							Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
-							Elf64_Addr imm1_addr =  get_immAddr(insn[j-2], cmp_imm_offset);
-							Elf64_Addr imm2_addr =  get_immAddr(insn[j-1], cmp_imm_offset);
-							dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
-							//Weijie: rewritting
-							//rewrite_imm(imm1_addr, data_upper_bound);
-							//rewrite_imm(imm2_addr, data_lower_bound);
-							rewrite_imm32(imm1_addr, data_upper_bound);
-							rewrite_imm32(imm2_addr, data_lower_bound);
-							PrintDebugInfo("rewritting done.\n");
+			//Weijie: maintain a insn set including 4 insns right before the current disasmed insn
+			//Weijie: maintain a insn set including 2 insns right before the current disasmed insn
+			if (j >= 2){
+				cs_insn forward_insn[2];
+				forward_insn[0] = insn[j-2];
+				forward_insn[1] = insn[j-1];
+				//Weijie: checking mem write
+				memwt_intact = check_rewrite_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
+			}
+			else{
+				//Weijie: to-do
+			}
+			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
 
-						}
-						
-					}
+			if (j >= 8){
+				cs_insn forward_insn[8];
+				forward_insn[0] = insn[j-8];
+				forward_insn[1] = insn[j-7];
+				forward_insn[2] = insn[j-6];
+				forward_insn[3] = insn[j-5];
+				forward_insn[4] = insn[j-4];
+				forward_insn[5] = insn[j-3];
+				forward_insn[6] = insn[j-2];
+				forward_insn[7] = insn[j-1];
+				//Weijie: checking long function's indirect call
+				if (1){
+					//Weijie: to-do: check if a callq is a long function's indirect call
+				}
+				else {
+					longfunc_call_safe = check_rewrite_longfunc_call(handle, CS_MODE_64, &insn[j], forward_insn);
 				}
 			}
+			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
+			
 
+			if (j >= 6){
+				cs_insn forward_insn[6];
+				forward_insn[0] = insn[j-6];
+				forward_insn[1] = insn[j-5];
+				forward_insn[2] = insn[j-4];
+				forward_insn[3] = insn[j-3];
+				forward_insn[4] = insn[j-2];
+				forward_insn[5] = insn[j-1];
+				//Weijie: checking call
+				if (1){
+					//Weijie: to-do: check if a callq is a long function's indirect call
+				}
+				else {
+					longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
+				}
+			}
+			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret!\n");
+
+			if (j >= 1){
+				cs_insn forward_insn[1];
+				forward_insn[0] = insn[j-1];
+				//Weijie: checking indirect call
+				if (
+					(strncmp("call", insn[j].mnemonic, 4) == 0) &&
+					(strncmp("rbx", insn[j].op_str, 3) == 0)
+						){
+					//Weijie: to-do: check if a callq is a long function's indirect call
+					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
+				}
+				else {
+				}
+			}
+			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call!\n");
 		}
 		cs_free(insn, count);
 	} else
@@ -544,6 +786,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 
 	return 0;
 }
+
+/***************************** disasm part ******************************/
 
 /* Weijie: used be an ecall of whole cs_open/disasm/close */
 int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
@@ -589,13 +833,27 @@ void rewrite_whole()
 			textSize = symtab[j].st_size;
 			if (textSize > 0){
 				//PrintDebugInfo("-----setting params-----\n");
-				textAddr = symtab[j].st_value;
-				buf = (unsigned char *)malloc(textSize);
-				//Weijie: fill in buf
-				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_rewrite_entry(buf, textSize, textAddr);
-				free(buf);
+				//Weijie: get CFI info
+				int ifcfi_rv = strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
+				if (ifcfi_rv == 0) {
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					//Weijie: fill in buf
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
+					free(buf);
+				}
+				else {
+					//Weijie: rewrite Memory write, now not including CFICheck
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					//Weijie: fill in buf
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					rv = cs_rewrite_entry(buf, textSize, textAddr);
+					free(buf);
+				}
 			}
 		}
 	}
@@ -629,8 +887,7 @@ void disasm_whole()
 		}
 	}
 }
-
-/****************************** checker part ******************************/
+/****************************** checker & rewriter part ******************************/
 
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
