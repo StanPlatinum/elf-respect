@@ -521,6 +521,13 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		return 0;
 }
 
+
+int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
+{
+	int if_rsp = find_rsp(ins);
+	return 0;
+}
+
 int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
 	csh handle;
 	cs_insn *insn;
@@ -538,6 +545,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 	if (count) {
 		size_t j;
 		int memwt_intact = 0;
+		int register_intact = 0;
 		//int longfunc_call_safe = 0;
 		//int longfunc_ret_safe = 0;
 		//int indirect_call_safe = 0;
@@ -557,8 +565,17 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			else{
 				//Weijie: to-do
+				//Weijie: or try to use cs_disasm_iter
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
+			//Weijie: check register 'rsp'
+			if (count - j - 1 >= 6){
+				register_intact = check_register(handle, CS_MODE_64, &insn[j], backward_insn);
+			}
+			else{
+				//Weijie: to-do
+			}
+			
 			/*
 			   if (j >= 8){
 			   cs_insn forward_insn[8];
