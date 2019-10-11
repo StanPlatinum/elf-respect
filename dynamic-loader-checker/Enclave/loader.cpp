@@ -485,15 +485,20 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	//int memwt_intact = 0;
 	int if_memwt = find_memory_write(ins);
 	if (if_memwt > 0){
-		//Weijie: checking if they are 'cmp rax, 0ximm'
-		if (strncmp("cmp", forward_ins[0].mnemonic, 3) == 0) {
-			if (strncmp("cmp", forward_ins[1].mnemonic, 3) == 0) {
+		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
+		if (
+			(strncmp("cmp", forward_ins[0].mnemonic, 3) == 0)	&&
+			(strncmp("ja", forward_ins[1].mnemonic, 2) == 0)	&&
+			(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
+			(strncmp("jl", forward_ins[3].mnemonic, 2) == 0)	&&
+			(strncmp("pop", forward_ins[4].mnemonic, 3) == 0)
+			){
 				//Weijie: replace 2 imms
 				PrintDebugInfo("setting bounds...\n");
 				//Weijie: getting the address
 				Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
 				Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
-				Elf64_Addr imm2_addr =  get_immAddr(forward_ins[1], cmp_imm_offset);
+				Elf64_Addr imm2_addr =  get_immAddr(forward_ins[2], cmp_imm_offset);
 				//Weijie:
 				dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 				//Weijie: rewritting
@@ -504,16 +509,10 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 				PrintDebugInfo("rewritting done.\n");
 				PrintDebugInfo("memory write check done.\n");
 				return 1;
-			}
-			else
-			{
-				PrintDebugInfo("Check on the second imm failed.\n");
-				return -1;
-			}
 		}
 		else
 		{
-			PrintDebugInfo("Check on the first imm failed.\n");
+			PrintDebugInfo("Check failed.\n");
 			return -1;
 		}
 	}
@@ -545,10 +544,13 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: maintain a insn set including 4 insns right before the current disasmed insn
 			//Weijie: maintain a insn set including 2 insns right before the current disasmed insn
-			if (j >= 2){
-				cs_insn forward_insn[2];
-				forward_insn[0] = insn[j-2];
-				forward_insn[1] = insn[j-1];
+			if (j >= 5){
+				cs_insn forward_insn[5];
+				forward_insn[0] = insn[j-5];
+				forward_insn[1] = insn[j-4];
+				forward_insn[2] = insn[j-3];
+				forward_insn[3] = insn[j-2];
+				forward_insn[4] = insn[j-1];
 				//Weijie: checking mem write
 				memwt_intact = check_rewrite_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
 			}
