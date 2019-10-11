@@ -18,12 +18,12 @@ size_t program_size = 0;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
-	#define byteorder ELFDATA2MSB
+#define byteorder ELFDATA2MSB
 #elif BYTE_ORDER == LITTLE_ENDIAN
-	#define byteorder ELFDATA2LSB
+#define byteorder ELFDATA2LSB
 #else
-	#error "Unknown BYTE_ORDER " BYTE_ORDER
-	#define byteorder ELFDATANONE
+#error "Unknown BYTE_ORDER " BYTE_ORDER
+#define byteorder ELFDATANONE
 #endif
 
 #define GET_OBJ(type, offset) \
@@ -188,8 +188,8 @@ static void update_reltab(void)
 			strtab = GET_OBJ(char, pshdr[i].sh_offset);
 	}
 
-    /* shawn233 */
-    //dlog("xxx n_symtab: %u, sizeof(Elf64_Sym): %u", n_symtab, sizeof(Elf64_Sym));
+	/* shawn233 */
+	//dlog("xxx n_symtab: %u, sizeof(Elf64_Sym): %u", n_symtab, sizeof(Elf64_Sym));
 
 	n_reltab = (size_t *)get_buf(n_rel * sizeof(size_t));
 	//Weijie: allocate reltab
@@ -219,7 +219,7 @@ static void update_reltab(void)
 			// assert(GET_OBJ(pshdr[pshdr[i].sh_link].sh_offset) == symtab);
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
-                //unsigned dst = (reltab[n_rel][j].r_info >> 32);
+				//unsigned dst = (reltab[n_rel][j].r_info >> 32);
 
 				//Weijie:
 				//dlog("xxx after  search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx, dst: %u", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel], dst);
@@ -337,13 +337,14 @@ static void relocate(void)
 {
 	for (unsigned k = 0; k < n_rel; ++k)
 		for (unsigned i = 0; i < n_reltab[k]; ++i) {
-            		//Xinyu:
+			//Xinyu:
 			//dlog("xxx round k: %u i: %u", k, i);
 			unsigned int ofs = REL_DST_OFS(reltab[k][i].r_offset);
 			unsigned int dst_sym = REL_DST_NDX(reltab[k][i].r_offset);
 			unsigned int src_sym = ELF64_R_SYM(reltab[k][i].r_info);
 			const unsigned int type = ELF64_R_TYPE(reltab[k][i].r_info);
-            //dlog("xxx round2 ofs: %u, dst_sym: %u, src_sym: %u", ofs, dst_sym, src_sym);
+			//Xinyu:
+			//dlog("xxx round2 ofs: %u, dst_sym: %u, src_sym: %u", ofs, dst_sym, src_sym);
 
 			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
 
@@ -487,28 +488,28 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	if (if_memwt > 0){
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
-			(strncmp("cmp", forward_ins[0].mnemonic, 3) == 0)	&&
-			(strncmp("ja", forward_ins[1].mnemonic, 2) == 0)	&&
-			(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
-			(strncmp("jl", forward_ins[3].mnemonic, 2) == 0)	&&
-			(strncmp("pop", forward_ins[4].mnemonic, 3) == 0)
-			){
-				//Weijie: replace 2 imms
-				PrintDebugInfo("setting bounds...\n");
-				//Weijie: getting the address
-				Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
-				Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
-				Elf64_Addr imm2_addr =  get_immAddr(forward_ins[2], cmp_imm_offset);
-				//Weijie:
-				dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
-				//Weijie: rewritting
-				//rewrite_imm(imm1_addr, data_upper_bound);
-				//rewrite_imm(imm2_addr, data_lower_bound);
-				rewrite_imm32(imm1_addr, data_upper_bound);
-				rewrite_imm32(imm2_addr, data_lower_bound);
-				PrintDebugInfo("rewritting done.\n");
-				PrintDebugInfo("memory write check done.\n");
-				return 1;
+				(strncmp("cmp", forward_ins[0].mnemonic, 3) == 0)	&&
+				(strncmp("ja", forward_ins[1].mnemonic, 2) == 0)	&&
+				(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
+				(strncmp("jl", forward_ins[3].mnemonic, 2) == 0)	&&
+				(strncmp("pop", forward_ins[4].mnemonic, 3) == 0)
+		   ){
+			//Weijie: replace 2 imms
+			PrintDebugInfo("setting bounds...\n");
+			//Weijie: getting the address
+			Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
+			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[2], cmp_imm_offset);
+			//Weijie:
+			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//Weijie: rewritting
+			//rewrite_imm(imm1_addr, data_upper_bound);
+			//rewrite_imm(imm2_addr, data_lower_bound);
+			rewrite_imm32(imm1_addr, data_upper_bound);
+			rewrite_imm32(imm2_addr, data_lower_bound);
+			PrintDebugInfo("rewritting done.\n");
+			PrintDebugInfo("memory write check done.\n");
+			return 1;
 		}
 		else
 		{
@@ -559,60 +560,60 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
 			/*
-			if (j >= 8){
-				cs_insn forward_insn[8];
-				forward_insn[0] = insn[j-8];
-				forward_insn[1] = insn[j-7];
-				forward_insn[2] = insn[j-6];
-				forward_insn[3] = insn[j-5];
-				forward_insn[4] = insn[j-4];
-				forward_insn[5] = insn[j-3];
-				forward_insn[6] = insn[j-2];
-				forward_insn[7] = insn[j-1];
-				//Weijie: checking long function's indirect call
-				if (1){
-					//Weijie: to-do: check if a callq is a long function's indirect call
-				}
-				else {
-					longfunc_call_safe = check_rewrite_longfunc_call(handle, CS_MODE_64, &insn[j], forward_insn);
-				}
+			   if (j >= 8){
+			   cs_insn forward_insn[8];
+			   forward_insn[0] = insn[j-8];
+			   forward_insn[1] = insn[j-7];
+			   forward_insn[2] = insn[j-6];
+			   forward_insn[3] = insn[j-5];
+			   forward_insn[4] = insn[j-4];
+			   forward_insn[5] = insn[j-3];
+			   forward_insn[6] = insn[j-2];
+			   forward_insn[7] = insn[j-1];
+			//Weijie: checking long function's indirect call
+			if (1){
+			//Weijie: to-do: check if a callq is a long function's indirect call
+			}
+			else {
+			longfunc_call_safe = check_rewrite_longfunc_call(handle, CS_MODE_64, &insn[j], forward_insn);
+			}
 			}
 			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
-			
+
 			if (j >= 6){
-				cs_insn forward_insn[6];
-				forward_insn[0] = insn[j-6];
-				forward_insn[1] = insn[j-5];
-				forward_insn[2] = insn[j-4];
-				forward_insn[3] = insn[j-3];
-				forward_insn[4] = insn[j-2];
-				forward_insn[5] = insn[j-1];
-				//Weijie: checking call
-				if (1){
-					//Weijie: to-do: check if a callq is a long function's indirect call
-				}
-				else {
-					longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
-				}
+			cs_insn forward_insn[6];
+			forward_insn[0] = insn[j-6];
+			forward_insn[1] = insn[j-5];
+			forward_insn[2] = insn[j-4];
+			forward_insn[3] = insn[j-3];
+			forward_insn[4] = insn[j-2];
+			forward_insn[5] = insn[j-1];
+			//Weijie: checking call
+			if (1){
+			//Weijie: to-do: check if a callq is a long function's indirect call
+			}
+			else {
+			longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
+			}
 			}
 			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret!\n");
 
 			if (j >= 1){
-				cs_insn forward_insn[1];
-				forward_insn[0] = insn[j-1];
-				//Weijie: checking indirect call
-				if (
-					(strncmp("call", insn[j].mnemonic, 4) == 0) &&
-					(strncmp("rbx", insn[j].op_str, 3) == 0)
-						){
-					//Weijie: to-do: check if a callq is a long function's indirect call
-					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
-				}
-				else {
-				}
+			cs_insn forward_insn[1];
+			forward_insn[0] = insn[j-1];
+			//Weijie: checking indirect call
+			if (
+			(strncmp("call", insn[j].mnemonic, 4) == 0) &&
+			(strncmp("rbx", insn[j].op_str, 3) == 0)
+			){
+			//Weijie: to-do: check if a callq is a long function's indirect call
+			indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
+			}
+			else {
+			}
 			}
 			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call!\n");
-			*/
+			 */
 		}
 		cs_free(insn, count);
 	} else
@@ -669,6 +670,7 @@ void rewrite_whole()
 			if (textSize > 0){
 				//PrintDebugInfo("-----setting params-----\n");
 				//Weijie: get CFI info
+				/*
 				int ifcfi_rv = strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
 				if (ifcfi_rv == 0) {
 					textAddr = symtab[j].st_value;
@@ -679,15 +681,16 @@ void rewrite_whole()
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
-					//Weijie: rewrite Memory write, including CFICheck
-					textAddr = symtab[j].st_value;
-					buf = (unsigned char *)malloc(textSize);
-					//Weijie: fill in buf
-					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-					rv = cs_rewrite_entry(buf, textSize, textAddr);
-					free(buf);
-				
+				*/
+				//Weijie: rewrite Memory write, including CFICheck
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_rewrite_entry(buf, textSize, textAddr);
+				free(buf);
+
 			}
 		}
 	}
@@ -755,7 +758,7 @@ void ecall_receive_binary(char *binary, int sz)
 	rewrite_whole();
 	pr_progress("debugging: validate if rewrites fine");
 	disasm_whole();
-	
+
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
 
