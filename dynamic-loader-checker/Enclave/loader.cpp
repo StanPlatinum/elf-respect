@@ -303,8 +303,9 @@ static void load(void)
 				symtab[i].st_value = last_st_value + symoff - last_off;
 			} else {
 				/* find main */
-
-				dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
+				//Weijie:
+				//dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
+				
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
 					//Weijie: record i
@@ -403,7 +404,7 @@ void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
 	//Weijie:
-	dlog("writting: %lx", src);
+	dlog("writting: %llx", src);
 	uint32_t *dst32 = (uint32_t *)dst;
 	dst32[0] = src;
 }
@@ -418,7 +419,7 @@ void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 void rewrite_imm32(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
 	//Weijie: convert imm_after to 32 bit format (trunk down to lower 32 bits if needed)
-	uint32_t imm_after32 = imm_after & 0xffff;
+	uint32_t imm_after32 = imm_after & 0xffffffff;
 	//Weijie: using cpy_imm2addr32
 	cpy_imm2addr32((Elf64_Addr *)imm_Addr, imm_after32);
 }
@@ -452,6 +453,7 @@ void get_bounds()
 	//Weijie: TO-DO
 	//Weijie: deciding data section bounds
 	//Weijie: data_upper/lower_bound should be two global variables.
+	dlog("upper bound: %p, lower bound: %p", data_upper_bound, data_lower_bound);
 }
 
 /****************************** checker part ******************************/
@@ -503,8 +505,6 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//Weijie:
 			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			//rewrite_imm(imm1_addr, data_upper_bound);
-			//rewrite_imm(imm2_addr, data_lower_bound);
 			rewrite_imm32(imm1_addr, data_upper_bound);
 			rewrite_imm32(imm2_addr, data_lower_bound);
 			PrintDebugInfo("rewritting done.\n");
@@ -756,7 +756,7 @@ void ecall_receive_binary(char *binary, int sz)
 	//get_bounds();
 	pr_progress("disassembling and checking");
 	rewrite_whole();
-	pr_progress("debugging: validate if rewrites fine");
+	pr_progress("debugging: validate if rewritting works well");
 	disasm_whole();
 
 	pr_progress("executing input binary");
