@@ -41,7 +41,6 @@ if __name__ == '__main__':
             
             newFileContent.append(function_exit_label + ':')
             newFileContent.append("popq %rax")
-            newFileContent.append('.cfi_def_cfa %rbp, 16')
             newFileContent.append('movl $1, %edi')
             newFileContent.append('callq exit')
             
