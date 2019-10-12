@@ -419,6 +419,7 @@ void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 void rewrite_imm32(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
 	//Weijie: convert imm_after to 32 bit format (trunk down to lower 32 bits if needed)
+	//Weijie: must take the sign bit into consideration...
 	uint32_t imm_after32 = imm_after & 0xffffffff;
 	//Weijie: using cpy_imm2addr32
 	cpy_imm2addr32((Elf64_Addr *)imm_Addr, imm_after32);
@@ -564,15 +565,15 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 			//Weijie: replace 2 imms
 			PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
-			Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
-			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], cmp_imm_offset);
-			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[3], cmp_imm_offset);
+			Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
+			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], cmp_rsp_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[3], cmp_rsp_imm_offset);
 			//Weijie:
 			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
 			rewrite_imm32(imm1_addr, data_upper_bound);
 			rewrite_imm32(imm2_addr, data_lower_bound);
-			PrintDebugInfo("rewritting done.\n");
+			PrintDebugInfo("rewritting the following insns done.\n");
 			PrintDebugInfo("register check done.\n");
 			return 1;
 		}
