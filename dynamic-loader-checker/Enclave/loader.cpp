@@ -474,7 +474,7 @@ int find_rsp(cs_insn *ins)
 		cs_x86_op *op = &(x86->operands[i]);
 		//Weijie: returning 0 means this insn[j] has no operations on rsp
 		//Weijie: returning 1 means this insn[j] does have operations on rsp
-		if ((int)op->type == X86_OP_MEM && (int)op->reg == X86_REG_RSP){
+		if ((int)op->type == X86_OP_REG && (int)op->reg == X86_REG_RSP && (op->access & CS_AC_WRITE)){
 			exist++;
 			return 1;
 		}
@@ -551,7 +551,7 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 {
 	int if_rsp = find_rsp(ins);
 	if (if_rsp > 0){
-		PrintDebugInfo("found rsp.\n");
+		PrintDebugInfo("found rsp writes.\n");
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
 				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
@@ -599,7 +599,6 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
 	PrintDebugInfo("Symbol insn count: %d\n", count);
-	PrintDebugInfo("-----checking and re-writting each insn if needed-----\n");
 	if (count) {
 		size_t j;
 		int memwt_intact = 0;
