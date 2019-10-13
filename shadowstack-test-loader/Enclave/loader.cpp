@@ -687,11 +687,17 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0) {
+	if (
+			strncmp("call", forward_ins[1].mnemonic, 4) == 0 &&	strncmp("*%", forward_ins[1].op_str, 2) == 0 &&
+			) {
 		//Weijie: check if the oprand is the address of CFICheck
-		return 1;
+			if (
+					strncmp("call", forward_ins[0].mnemonic, 4) == 0 &&	strncmp("CFICheck", forward_ins[1].op_str, 8) == 0
+			   )
+			return 1;
+			else	return -1;
 	}
-	else	return -1;
+	//else	PrintDebugInfo("Not a indirect call\n");
 	return 0;
 }
 
@@ -1070,7 +1076,7 @@ void ecall_receive_binary(char *binary, int sz)
 	rewrite_whole();
 	pr_progress("debugging: validate if rewrites fine");
 	//Weijie: no we don't need this disasm
-	//disasm_whole();
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
