@@ -35,12 +35,6 @@ pushq	%rbp
 movq	%rsp, %rbp
 pushq	%rbx
 subq	$24, %rsp
-pushq %rax
-cmp $21212, %rsp
-ja .chenyi_sgx_enclave_main
-cmp $21212, %rsp
-jl .chenyi_sgx_enclave_main
-popq %rax
 leaq	-20(%rbp), %rax
 pushq %rax
 leaq	-16(%rbp), %rax
