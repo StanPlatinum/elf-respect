@@ -714,13 +714,20 @@ int is_op_reg(cs_insn *ins)
 	return exist;
 }
 
+//Weijie:
+Elf64_Addr CFICheck_sym_addr;
+
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	if (
-		strncmp("call", forward_ins[0].mnemonic, 4) == 0
+	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0) {
 		//Weijie: check if the oprand is the address of CFICheck
-	   )
-		return 1;
+		cs_x86 x86 = (&forward_ins[0])->detail->x86;
+		cs_x86_op op = x86.operands[0];
+		if ((int)op.type == X86_OP_IMM && op.imm == CFICheck_sym_addr)	return 1;
+		else {
+			PrintDebugInfo("don't know what it is if it's not an imm...\n");
+		};
+	}
 	else {
 		//PrintDebugInfo("no instrumentations on this indirect call\n");
 		return -1;
@@ -747,8 +754,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
 
-	//Weijie: for later
-	Elf64_Addr CFICheck_sym_addr = textAddr;
+	CFICheck_sym_addr = textAddr;
 
 	PrintDebugInfo("-----printing-----\n");
 	if (count) {
@@ -872,7 +878,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call instrumentation!\n");
+			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal long func instrumentation!\n");
 
 
 			if (j >= 6){
@@ -888,7 +894,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret instrumentation!\n");
+			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal long ret instrumentation!\n");
 
 			//Weijie: the logic of checking indirect call is a little bit different.
 			if (j >= 1){
@@ -899,7 +905,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 					(strncmp("call", insn[j].mnemonic, 4) == 0) &&
 					(is_op_reg(&insn[j]))
 				   ){
-					//Weijie: to-do: check if a callq is a long function's indirect call
+					PrintDebugInfo("checking indirect call\n");
 					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
 				}
 				else {
