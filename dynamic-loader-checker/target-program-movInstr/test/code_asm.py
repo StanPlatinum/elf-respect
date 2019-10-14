@@ -41,26 +41,11 @@ if __name__ == '__main__':
             
             newFileContent.append(function_exit_label + ':')
             newFileContent.append("popq %rax")
-            newFileContent.append('.cfi_def_cfa %rbp, 16')
             newFileContent.append('movl $1, %edi')
             newFileContent.append('callq exit')
             
             newFileContent.append(fileContent[i])
             i = i + 1
-            
-        elif '%rsp' in fileContent[i]:
-            
-            newFileContent.append(fileContent[i])
-            
-            newFileContent.append("pushq %rax")
-            newFileContent.append("cmp " + rsp_address + ", %rsp")
-            newFileContent.append("ja " + function_exit_label)
-            newFileContent.append("cmp " + rsp_address + ", %rsp")
-            newFileContent.append("jl " + function_exit_label)
-            newFileContent.append("popq %rax")
-            
-            i = i + 1
-            
         else:
             newFileContent.append(fileContent[i])
             i = i + 1

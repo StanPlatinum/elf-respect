@@ -26,12 +26,12 @@ size_t target_table_size = 0;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
-#define byteorder ELFDATA2MSB
+	#define byteorder ELFDATA2MSB
 #elif BYTE_ORDER == LITTLE_ENDIAN
-#define byteorder ELFDATA2LSB
+	#define byteorder ELFDATA2LSB
 #else
-#error "Unknown BYTE_ORDER " BYTE_ORDER
-#define byteorder ELFDATANONE
+	#error "Unknown BYTE_ORDER " BYTE_ORDER
+	#define byteorder ELFDATANONE
 #endif
 
 #define GET_OBJ(type, offset) \
@@ -418,13 +418,13 @@ void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
 	//Weijie:
-	dlog("writting: %lx", src);
+	dlog("writting: %llx", src);
 	uint32_t *dst32 = (uint32_t *)dst;
 	dst32[0] = src;
 }
 
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
-//Weijie: Canthe oprand of cmp be 64 bit? Or we should instrument cmpq?
+//Weijie: Can 2nd oprand of cmp be 64 bit? Or should we instrument cmpq?
 void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 	dlog("writting: %llx", src);
 	dst[0] = src;
@@ -433,7 +433,8 @@ void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
 void rewrite_imm32(Elf64_Addr imm_Addr, Elf64_Addr imm_after)
 {
 	//Weijie: convert imm_after to 32 bit format (trunk down to lower 32 bits if needed)
-	uint32_t imm_after32 = imm_after & 0xffff;
+	//Weijie: must take the sign bit into consideration...
+	uint32_t imm_after32 = imm_after & 0xffffffff;
 	//Weijie: using cpy_imm2addr32
 	cpy_imm2addr32((Elf64_Addr *)imm_Addr, imm_after32);
 }
@@ -467,9 +468,35 @@ void get_bounds()
 	//Weijie: TO-DO
 	//Weijie: deciding data section bounds
 	//Weijie: data_upper/lower_bound should be two global variables.
+	dlog("upper bound: %p, lower bound: %p", data_upper_bound, data_lower_bound);
 }
 
 /****************************** checker part ******************************/
+
+/* Weijie: if the return value is 1, then it means that one of the oprands of insn[j] is rsp */
+int find_rsp(cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is "data" instruction
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	// traverse all operands
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		//Weijie: returning 0 means this insn[j] has no operations on rsp
+		//Weijie: returning 1 means this insn[j] does have operations on rsp
+		if ((int)op->type == X86_OP_REG && (int)op->reg == X86_REG_RSP && (op->access & CS_AC_WRITE)){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+
+}
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is writting memory */
 int find_memory_write(cs_insn *ins)
@@ -478,7 +505,7 @@ int find_memory_write(cs_insn *ins)
 	int i, exist = 0;
 
 	if (ins->detail == NULL)	return -2;
-	//Weijie: returning -2 means this insn[j] is kind of "data" instruction
+	//Weijie: returning -2 means this insn[j] is "data" instruction
 	x86 = &(ins->detail->x86);
 	if (x86->op_count == 0)		return -1;
 	//Weijie: returning -1 means this insn[j] has no oprand
@@ -501,35 +528,72 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	//int memwt_intact = 0;
 	int if_memwt = find_memory_write(ins);
 	if (if_memwt > 0){
-		//Weijie: checking if they are 'cmp rax, 0ximm'
-		if (strncmp("cmp", forward_ins[0].mnemonic, 3) == 0) {
-			if (strncmp("cmp", forward_ins[1].mnemonic, 3) == 0) {
-				//Weijie: replace 2 imms
-				PrintDebugInfo("setting bounds...\n");
-				//Weijie: getting the address
-				Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
-				Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
-				Elf64_Addr imm2_addr =  get_immAddr(forward_ins[1], cmp_imm_offset);
-				//Weijie:
-				dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
-				//Weijie: rewritting
-				//rewrite_imm(imm1_addr, data_upper_bound);
-				//rewrite_imm(imm2_addr, data_lower_bound);
-				rewrite_imm32(imm1_addr, data_upper_bound);
-				rewrite_imm32(imm2_addr, data_lower_bound);
-				PrintDebugInfo("rewritting done.\n");
-				PrintDebugInfo("memory write check done.\n");
-				return 1;
-			}
-			else
-			{
-				PrintDebugInfo("Check on the second imm failed.\n");
-				return -1;
-			}
+		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
+		if (
+				(strncmp("cmp", forward_ins[0].mnemonic, 3) == 0)	&&
+				(strncmp("ja", forward_ins[1].mnemonic, 2) == 0)	&&
+				(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
+				(strncmp("jl", forward_ins[3].mnemonic, 2) == 0)	&&
+				(strncmp("pop", forward_ins[4].mnemonic, 3) == 0)
+		   ){
+			//Weijie: replace 2 imms
+			PrintDebugInfo("setting bounds...\n");
+			//Weijie: getting the address
+			Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
+			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[2], cmp_imm_offset);
+			//Weijie:
+			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//Weijie: rewritting
+			rewrite_imm32(imm1_addr, data_upper_bound);
+			rewrite_imm32(imm2_addr, data_lower_bound);
+			PrintDebugInfo("rewritting done.\n");
+			PrintDebugInfo("memory write check done.\n");
+			return 1;
 		}
 		else
 		{
-			PrintDebugInfo("Check on the first imm failed.\n");
+			PrintDebugInfo("Check failed.\n");
+			return -1;
+		}
+	}
+	else
+		return 0;
+}
+
+
+int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
+{
+	int if_rsp = find_rsp(ins);
+	if (if_rsp > 0){
+		PrintDebugInfo("found rsp writes.\n");
+		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
+		if (
+				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
+				(strncmp("cmp", backward_ins[1].mnemonic, 3) == 0)	&&
+				(strncmp("ja", backward_ins[2].mnemonic, 2) == 0)	&&
+				(strncmp("cmp", backward_ins[3].mnemonic, 3) == 0)	&&
+				(strncmp("jl", backward_ins[4].mnemonic, 2) == 0)	&&
+				(strncmp("pop", backward_ins[5].mnemonic, 3) == 0)
+		   ){
+			//Weijie: replace 2 imms
+			PrintDebugInfo("setting bounds...\n");
+			//Weijie: getting the address
+			Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
+			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], cmp_rsp_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[3], cmp_rsp_imm_offset);
+			//Weijie:
+			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//Weijie: rewritting
+			rewrite_imm32(imm1_addr, data_upper_bound);
+			rewrite_imm32(imm2_addr, data_lower_bound);
+			PrintDebugInfo("rewritting the following insns done.\n");
+			PrintDebugInfo("register check done.\n");
+			return 1;
+		}
+		else
+		{
+			PrintDebugInfo("Check failed.\n");
 			return -1;
 		}
 	}
@@ -602,13 +666,13 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 			else	return -1;
 
 			if (
-				//Weijie: to-do: check other 5 insns...
-				(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
-				(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
-				(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
-				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
-				(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
-			){
+					//Weijie: to-do: check other 5 insns...
+					(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
+					(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
+					(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
+					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
+			   ){
 				PrintDebugInfo("ret check done.\n");
 			}
 			else	return -1;
@@ -621,14 +685,34 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 	return 0;
 }
 
+int is_op_reg(cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		if ((int)op->type == X86_OP_REG){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+}
+
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0) {
-		//Weijie: check if the oprand is the address of CFICheck
+	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0
+			//Weijie: check if the oprand is the address of CFICheck
+	   )
 		return 1;
+	else {
+		PrintDebugInfo("no instrumentations on this indirect call\n");
+		return -1;
 	}
-	else	return -1;
-	return 0;
 }
 
 //Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
@@ -716,11 +800,11 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
-
-	PrintDebugInfo("-----checking and re-writting each insn if needed-----\n");
+	PrintDebugInfo("Symbol insn count: %d\n", count);
 	if (count) {
 		size_t j;
 		int memwt_intact = 0;
+		int register_intact = 0;
 		int longfunc_call_safe = 0;
 		int longfunc_ret_safe = 0;
 		int indirect_call_safe = 0;
@@ -728,17 +812,35 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: maintain a insn set including 4 insns right before the current disasmed insn
 			//Weijie: maintain a insn set including 2 insns right before the current disasmed insn
-			if (j >= 2){
-				cs_insn forward_insn[2];
-				forward_insn[0] = insn[j-2];
-				forward_insn[1] = insn[j-1];
+			if (j >= 5){
+				cs_insn forward_insn[5];
+				forward_insn[0] = insn[j-5];
+				forward_insn[1] = insn[j-4];
+				forward_insn[2] = insn[j-3];
+				forward_insn[3] = insn[j-2];
+				forward_insn[4] = insn[j-1];
 				//Weijie: checking mem write
 				memwt_intact = check_rewrite_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
 			}
 			else{
 				//Weijie: to-do
+				//Weijie: or try to use cs_disasm_iter
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
+			//Weijie: check register 'rsp'
+			if (count - j - 1 >= 6){
+				cs_insn backward_insn[6];
+				backward_insn[0] = insn[j+1];
+				backward_insn[1] = insn[j+2];
+				backward_insn[2] = insn[j+3];
+				backward_insn[3] = insn[j+4];
+				backward_insn[4] = insn[j+5];
+				backward_insn[5] = insn[j+6];
+				register_intact = check_register(handle, CS_MODE_64, &insn[j], backward_insn);
+			}
+			else{
+				//Weijie: to-do
+			}
 
 			if (j >= 8){
 				cs_insn forward_insn[8];
@@ -759,7 +861,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				}
 			}
 			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
-			
+
 
 			if (j >= 6){
 				cs_insn forward_insn[6];
@@ -784,13 +886,14 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				forward_insn[0] = insn[j-1];
 				//Weijie: checking indirect call
 				if (
-					(strncmp("call", insn[j].mnemonic, 4) == 0) &&
-					(strncmp("rbx", insn[j].op_str, 3) == 0)
-						){
+						(strncmp("call", insn[j].mnemonic, 4) == 0) &&
+						(is_op_reg(&insn[j]))
+				   ){
 					//Weijie: to-do: check if a callq is a long function's indirect call
 					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
 				}
 				else {
+					//PrintDebugInfo("not an indirect call\n");
 				}
 			}
 			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call!\n");
@@ -860,16 +963,14 @@ void rewrite_whole()
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
-				else {
-					//Weijie: rewrite Memory write, now not including CFICheck
-					textAddr = symtab[j].st_value;
-					buf = (unsigned char *)malloc(textSize);
-					//Weijie: fill in buf
-					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-					rv = cs_rewrite_entry(buf, textSize, textAddr);
-					free(buf);
-				}
+				//Weijie: rewrite Memory write, including CFICheck
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_rewrite_entry(buf, textSize, textAddr);
+				free(buf);
 			}
 		}
 	}
@@ -990,7 +1091,7 @@ void ecall_receive_binary(char *binary, int sz)
 	rewrite_whole();
 	pr_progress("debugging: validate if rewrites fine");
 	//Weijie: no we don't need this disasm
-	//disasm_whole();
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);

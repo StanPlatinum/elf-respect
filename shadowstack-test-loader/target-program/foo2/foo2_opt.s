@@ -89,6 +89,7 @@ CFICheck:                               # @CFICheck
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .LBB0_13:
+	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end0:
 	.size	CFICheck, .Lfunc_end0-CFICheck
@@ -107,6 +108,7 @@ fun:                                    # @fun
 	jne	.LBB1_1
 	retq
 .LBB1_1:
+	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end1:
 	.size	fun, .Lfunc_end1-fun
@@ -215,6 +217,7 @@ my_itoa:                                # @my_itoa
 	jne	.LBB2_12
 	retq
 .LBB2_12:
+	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end2:
 	.size	my_itoa, .Lfunc_end2-my_itoa
@@ -259,5 +262,5 @@ enclave_main:                           # @enclave_main
 
 
 	.ident	"clang version 9.0.0 "
-	.ident	"clang version 9.0.0 "
+	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 0df2fb224f009079f2d73c426d3658d32c18af95)"
 	.section	".note.GNU-stack","",@progbits
