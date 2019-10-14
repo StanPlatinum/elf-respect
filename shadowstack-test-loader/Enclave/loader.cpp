@@ -547,13 +547,13 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//Weijie: rewritting
 			rewrite_imm32(imm1_addr, data_upper_bound);
 			rewrite_imm32(imm2_addr, data_lower_bound);
-			PrintDebugInfo("rewritting done.\n");
+			PrintDebugInfo("memory rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;
 		}
 		else
 		{
-			PrintDebugInfo("Check failed.\n");
+			PrintDebugInfo("memory check failed.\n");
 			return -1;
 		}
 	}
@@ -587,13 +587,13 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 			//Weijie: rewritting
 			rewrite_imm32(imm1_addr, data_upper_bound);
 			rewrite_imm32(imm2_addr, data_lower_bound);
-			PrintDebugInfo("rewritting the following insns done.\n");
+			PrintDebugInfo("register rewritting done.\n");
 			PrintDebugInfo("register check done.\n");
 			return 1;
 		}
 		else
 		{
-			PrintDebugInfo("Check failed.\n");
+			PrintDebugInfo("register check failed.\n");
 			return -1;
 		}
 	}
@@ -608,8 +608,8 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 	//Weijie: to-do: check if this insn is a long func's indirect call...
 	if (
 		(strncmp("mov", ins->mnemonic, 3) == 0)	&&
-		(strncmp("rsp", ins->op_str, 3) == 0)	&&
-		(strncmp("push", forward_ins[6]->mnemonic, 4) == 0)
+		(strncmp("rbp, rsp", ins->op_str, 7) == 0)	&&
+		(strncmp("push", forward_ins[6].mnemonic, 4) == 0)
 	   )
 	{
 		exist = 1;		
@@ -617,14 +617,15 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 		if (strncmp("movabs", forward_ins[0].mnemonic, 6) == 0) {
 			cs_x86_op op2 = (forward_ins[0]).detail->x86.operands[1];
 			if ((int)op2.type == X86_OP_IMM) {
-				PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
 				//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+				//PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
 				if (op2.imm == 0x2fffffffffffffff) {
 					//Weijie: do the rewritting of shadow stack base pointer
 					Elf64_Addr movabs_imm_offset = 2; //10-8=2;
 					Elf64_Addr imm_addr = get_immAddr(forward_ins[0], movabs_imm_offset);
 					rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
 					dlog("imm address: %p", imm_addr);
+					PrintDebugInfo("long call rewritting done.\n");
 				}
 				else return -1;
 			}
@@ -637,12 +638,12 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 				(strncmp("mov", forward_ins[4].mnemonic, 3) == 0)	&&
 				(strncmp("mov", forward_ins[5].mnemonic, 3) == 0)	
 				){
-				PrintDebugInfo("call check done.\n");
+				PrintDebugInfo("long call check done.\n");
 			}
 			else	return -1;
 		}
 		else {
-			PrintDebugInfo("Check on the movabs failed.\n");
+			//PrintDebugInfo("Check on the movabs failed.\n");
 			return -1;
 		}
 	}
@@ -661,14 +662,15 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 		if (strncmp("movabs", forward_ins[0].mnemonic, 6) == 0) {
 			cs_x86_op op2 = (forward_ins[0]).detail->x86.operands[1];
 			if ((int)op2.type == X86_OP_IMM) {
-				PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
 				//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+				//PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
 				if (op2.imm == 0x2fffffffffffffff) {
 					//Weijie: do the rewritting of shadow stack base pointer
 					Elf64_Addr movabs_imm_offset = 2; //10-8=2;
 					Elf64_Addr imm_addr = get_immAddr(forward_ins[0], movabs_imm_offset);
 					rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
 					dlog("imm address: %p", imm_addr);
+					PrintDebugInfo("long call rewritting done.\n");
 				}
 				else return -1;
 			}
@@ -682,12 +684,12 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
 					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
 			   ){
-				PrintDebugInfo("ret check done.\n");
+				PrintDebugInfo("long ret check done.\n");
 			}
 			else	return -1;
 		}
 		else {
-			PrintDebugInfo("Check on the movabs failed.\n");
+			//PrintDebugInfo("Check on the movabs failed.\n");
 			return -1;
 		}
 	}
@@ -720,7 +722,7 @@ int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	   )
 		return 1;
 	else {
-		PrintDebugInfo("no instrumentations on this indirect call\n");
+		//PrintDebugInfo("no instrumentations on this indirect call\n");
 		return -1;
 	}
 }
@@ -762,8 +764,8 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
 				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
 				if ((int)op2.type == X86_OP_IMM) {
-					PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
 					//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+					//PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
 					if (op2.imm == 0x2fffffffffffffff) {
 						//Weijie: do the rewritting of shadow stack base pointer
 						if_ssbase = 1;
@@ -785,8 +787,8 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 			if (strncmp("mov", insn[j].mnemonic, 3) == 0) {
 				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
 				if ((int)op2.type == X86_OP_IMM) {
-					PrintDebugInfo("\tsecond op:%llx\n", op2.imm);
 					//Weijie: getting the second oprand and see if it is 0x1fffffff
+					//PrintDebugInfo("\tsecond op:%llx\n", op2.imm);
 					if (op2.imm == 0x1fffffff) {
 						//Weijie: do the rewritting of CFICheckAddressNum
 						if_setnum = 1;
@@ -823,8 +825,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int indirect_call_safe = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			//Weijie: maintain a insn set including 4 insns right before the current disasmed insn
-			//Weijie: maintain a insn set including 2 insns right before the current disasmed insn
+			//Weijie: maintain a insn set including more than 7? insns right before the current disasmed insn
 			if (j >= 5){
 				cs_insn forward_insn[5];
 				forward_insn[0] = insn[j-5];
@@ -839,7 +840,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				//Weijie: to-do
 				//Weijie: try to use cs_disasm_iter
 			}
-			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
+			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes instrumentation!\n");
 			
 			//Weijie: checking register 'rsp'
 			if (count - j - 1 >= 6){
@@ -855,9 +856,9 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes!\n");
+			if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
 
-			if (j >= 8){
+			if (j >= 7){
 				cs_insn forward_insn[7];
 				forward_insn[0] = insn[j-7];
 				forward_insn[1] = insn[j-6];
@@ -871,7 +872,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
+			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call instrumentation!\n");
 
 
 			if (j >= 6){
@@ -887,7 +888,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret!\n");
+			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret instrumentation!\n");
 
 			//Weijie: the logic of checking indirect call is a little bit different.
 			if (j >= 1){
@@ -905,7 +906,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 					//PrintDebugInfo("not an indirect call\n");
 				}
 			}
-			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call!\n");
+			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call instrumentation!\n");
 		}
 		cs_free(insn, count);
 	} else
@@ -1098,9 +1099,10 @@ void ecall_receive_binary(char *binary, int sz)
 
 	pr_progress("disassembling and checking");
 	rewrite_whole();
-	pr_progress("debugging: validate if rewrites fine");
+	
 	//Weijie: no we don't need this disasm
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);

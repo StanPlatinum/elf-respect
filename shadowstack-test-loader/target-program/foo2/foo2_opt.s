@@ -99,12 +99,21 @@ CFICheck:                               # @CFICheck
 	.type	fun,@function
 fun:                                    # @fun
 # %bb.0:                                # %entry
-	movq	(%rsp), %rcx
+	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
+	addq	$8, (%r11)
+	movq	(%r11), %r10
+	addq	%r10, %r11
+	movq	(%rsp), %r10
+	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
 	movl	$1, %eax
 	popq	%rbp
-	cmpq	%rcx, (%rsp)
+	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
+	movq	(%r11), %r10
+	addq	%r11, %r10
+	subq	$8, (%r11)
+	cmpq	%r10, (%rsp)
 	jne	.LBB1_1
 	retq
 .LBB1_1:
@@ -118,7 +127,12 @@ fun:                                    # @fun
 	.type	my_itoa,@function
 my_itoa:                                # @my_itoa
 # %bb.0:                                # %entry
-	movq	(%rsp), %r8
+	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
+	addq	$8, (%r11)
+	movq	(%r11), %r10
+	addq	%r10, %r11
+	movq	(%rsp), %r10
+	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
 	movl	%edi, -4(%rbp)
@@ -213,7 +227,11 @@ my_itoa:                                # @my_itoa
 # %bb.11:                               # %do.end21
 	movq	-48(%rbp), %rax
 	popq	%rbp
-	cmpq	%r8, (%rsp)
+	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
+	movq	(%r11), %r10
+	addq	%r11, %r10
+	subq	$8, (%r11)
+	cmpq	%r10, (%rsp)
 	jne	.LBB2_12
 	retq
 .LBB2_12:
@@ -262,5 +280,5 @@ enclave_main:                           # @enclave_main
 
 
 	.ident	"clang version 9.0.0 "
-	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 0df2fb224f009079f2d73c426d3658d32c18af95)"
+	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 21a12bc0acbe507888c600eb319c220245757ba0)"
 	.section	".note.GNU-stack","",@progbits
