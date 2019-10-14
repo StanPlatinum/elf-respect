@@ -26,12 +26,12 @@ size_t target_table_size = 0;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
-#define byteorder ELFDATA2MSB
+	#define byteorder ELFDATA2MSB
 #elif BYTE_ORDER == LITTLE_ENDIAN
-#define byteorder ELFDATA2LSB
+	#define byteorder ELFDATA2LSB
 #else
-#error "Unknown BYTE_ORDER " BYTE_ORDER
-#define byteorder ELFDATANONE
+	#error "Unknown BYTE_ORDER " BYTE_ORDER
+	#define byteorder ELFDATANONE
 #endif
 
 #define GET_OBJ(type, offset) \
@@ -666,13 +666,13 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 			else	return -1;
 
 			if (
-				//Weijie: to-do: check other 5 insns...
-				(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
-				(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
-				(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
-				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
-				(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
-			){
+					//Weijie: to-do: check other 5 insns...
+					(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
+					(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
+					(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
+					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
+			   ){
 				PrintDebugInfo("ret check done.\n");
 			}
 			else	return -1;
@@ -685,19 +685,39 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 	return 0;
 }
 
+int is_op_reg(cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	for (i = 0; i < x86->op_count; i++) {
+		cs_x86_op *op = &(x86->operands[i]);
+		if ((int)op->type == X86_OP_REG){
+			exist++;
+			return 1;
+		}
+	}
+	return exist;
+}
+
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	if (
-			strncmp("call", forward_ins[1].mnemonic, 4) == 0 &&	strncmp("*%", forward_ins[1].op_str, 2) == 0 &&
-			) {
-		//Weijie: check if the oprand is the address of CFICheck
-			if (
-					strncmp("call", forward_ins[0].mnemonic, 4) == 0 &&	strncmp("CFICheck", forward_ins[1].op_str, 8) == 0
+	if (strncmp("call", ins->mnemonic, 4) == 0) {
+		if (is_op_reg(ins)){
+			if (strncmp("call", forward_ins[0].mnemonic, 4) == 0
+					//Weijie: check if the oprand is the address of CFICheck
 			   )
-			return 1;
-			else	return -1;
+				return 1;
+			else {
+				PrintDebugInfo("no instrumentations on this indirect call\n");
+				return -1;
+			}
+		}
+		else	PrintDebugInfo("not an indirect call\n");
 	}
-	//else	PrintDebugInfo("Not a indirect call\n");
 	return 0;
 }
 
@@ -827,7 +847,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			
+
 			if (j >= 8){
 				cs_insn forward_insn[8];
 				forward_insn[0] = insn[j-8];
@@ -847,7 +867,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				}
 			}
 			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
-			
+
 
 			if (j >= 6){
 				cs_insn forward_insn[6];
@@ -872,9 +892,9 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				forward_insn[0] = insn[j-1];
 				//Weijie: checking indirect call
 				if (
-					(strncmp("call", insn[j].mnemonic, 4) == 0) &&
-					(strncmp("rbx", insn[j].op_str, 3) == 0)
-						){
+						(strncmp("call", insn[j].mnemonic, 4) == 0) &&
+						(strncmp("rbx", insn[j].op_str, 3) == 0)
+				   ){
 					//Weijie: to-do: check if a callq is a long function's indirect call
 					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
 				}
