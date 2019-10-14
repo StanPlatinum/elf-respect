@@ -399,20 +399,20 @@ namespace {
             if (!checkSSMF(MF))
                 return false;
             
-            MCPhysReg SimpleMFReg = checkSimpleMF(MF);
-            const bool SimpleMFRegBool = (SimpleMFReg != X86::NoRegister);
-            if (SimpleMFRegBool)
-                for (auto I = ++MF.begin(), E = MF.end(); I != E; ++I)
-                    I->addLiveIn(SimpleMFReg);
+            // MCPhysReg SimpleMFReg = checkSimpleMF(MF);
+            // const bool SimpleMFRegBool = (SimpleMFReg != X86::NoRegister);
+            // if (SimpleMFRegBool)
+            //     for (auto I = ++MF.begin(), E = MF.end(); I != E; ++I)
+            //         I->addLiveIn(SimpleMFReg);
 
             MachineBasicBlock &MBB = MF.front();
             const MachineBasicBlock *NonEmpty = MBB.empty() ? MBB.getFallThrough() : &MBB;
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
 
             const TargetInstrInfo *TII = MF.getSubtarget().getInstrInfo();
-            if (SimpleMFRegBool)
-                insertSSEntrySimple(TII, MBB, DL, SimpleMFReg);
-            else
+            // if (SimpleMFRegBool)
+            //     insertSSEntrySimple(TII, MBB, DL, SimpleMFReg);
+            // else
                 insertSSEntry(TII, MBB, DL);
 
             MachineBasicBlock *Trap = nullptr;
@@ -434,9 +434,9 @@ namespace {
                     BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
                     BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
                     MF.push_back(Trap);
-                    if (SimpleMFRegBool)
-                        insertSSRetSimple(TII, MBB, MI, *Trap, SimpleMFReg);
-                    else
+                    // if (SimpleMFRegBool)
+                    //     insertSSRetSimple(TII, MBB, MI, *Trap, SimpleMFReg);
+                    // else
                         insertSSRet(TII, MBB, MI, *Trap);
                     return true;
                 }
