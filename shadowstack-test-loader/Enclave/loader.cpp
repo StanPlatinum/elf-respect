@@ -606,7 +606,11 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 {
 	int exist = 0;
 	//Weijie: to-do: check if this insn is a long func's indirect call...
-	if (strncmp("call", ins->mnemonic, 4) == 0)
+	if (
+		(strncmp("mov", ins->mnemonic, 3) == 0)	&&
+		(strncmp("rsp", ins->op_str, 3) == 0)	&&
+		(strncmp("push", forward_ins[6]->mnemonic, 4) == 0)
+	   )
 	{
 		exist = 1;		
 		//Weijie: start checking...
@@ -626,8 +630,13 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 			}
 			else	return -1;
 
-			if (1){
-				//Weijie: to-do: check other 7 insns...
+			if (
+				(strncmp("add", forward_ins[1].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[2].mnemonic, 3) == 0)	&&
+				(strncmp("add", forward_ins[3].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[4].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[5].mnemonic, 3) == 0)	
+				){
 				PrintDebugInfo("call check done.\n");
 			}
 			else	return -1;
@@ -644,7 +653,7 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
 	int exist = 0;
-	//Weijie: to-do: check if this insn is a long func's indirect call...
+	//Weijie: to-do: check if this insn is a long func's indirect ret...
 	if (strncmp("ret", ins->mnemonic, 3) == 0)
 	{
 		exist = 1;		
@@ -705,8 +714,9 @@ int is_op_reg(cs_insn *ins)
 
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0
-			//Weijie: check if the oprand is the address of CFICheck
+	if (
+		strncmp("call", forward_ins[0].mnemonic, 4) == 0
+		//Weijie: check if the oprand is the address of CFICheck
 	   )
 		return 1;
 	else {
@@ -746,7 +756,9 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		int if_setnum = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			
 			//Weijie: start checking...
+			
 			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
 				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
 				if ((int)op2.type == X86_OP_IMM) {
@@ -769,6 +781,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 					}
 				}
 			}
+			
 			if (strncmp("mov", insn[j].mnemonic, 3) == 0) {
 				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
 				if ((int)op2.type == X86_OP_IMM) {
@@ -824,10 +837,11 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			else{
 				//Weijie: to-do
-				//Weijie: or try to use cs_disasm_iter
+				//Weijie: try to use cs_disasm_iter
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes!\n");
-			//Weijie: check register 'rsp'
+			
+			//Weijie: checking register 'rsp'
 			if (count - j - 1 >= 6){
 				cs_insn backward_insn[6];
 				backward_insn[0] = insn[j+1];
@@ -841,24 +855,21 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
+			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes!\n");
 
 			if (j >= 8){
-				cs_insn forward_insn[8];
-				forward_insn[0] = insn[j-8];
-				forward_insn[1] = insn[j-7];
-				forward_insn[2] = insn[j-6];
-				forward_insn[3] = insn[j-5];
-				forward_insn[4] = insn[j-4];
-				forward_insn[5] = insn[j-3];
-				forward_insn[6] = insn[j-2];
-				forward_insn[7] = insn[j-1];
-				//Weijie: checking long function's indirect call
-				if (1){
-					//Weijie: to-do: check if a callq is a long function's indirect call
-				}
-				else {
-					longfunc_call_safe = check_rewrite_longfunc_call(handle, CS_MODE_64, &insn[j], forward_insn);
-				}
+				cs_insn forward_insn[7];
+				forward_insn[0] = insn[j-7];
+				forward_insn[1] = insn[j-6];
+				forward_insn[2] = insn[j-5];
+				forward_insn[3] = insn[j-4];
+				forward_insn[4] = insn[j-3];
+				forward_insn[5] = insn[j-2];
+				forward_insn[6] = insn[j-1];
+				longfunc_call_safe = check_rewrite_longfunc_call(handle, CS_MODE_64, &insn[j], forward_insn);
+			}
+			else{
+				//Weijie: to-do
 			}
 			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal call!\n");
 
@@ -871,23 +882,21 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				forward_insn[3] = insn[j-3];
 				forward_insn[4] = insn[j-2];
 				forward_insn[5] = insn[j-1];
-				//Weijie: checking call
-				if (1){
-					//Weijie: to-do: check if a callq is a long function's indirect call
-				}
-				else {
-					longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
-				}
+				longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
+			}
+			else{
+				//Weijie: to-do
 			}
 			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal ret!\n");
 
+			//Weijie: the logic of checking indirect call is a little bit different.
 			if (j >= 1){
 				cs_insn forward_insn[1];
 				forward_insn[0] = insn[j-1];
 				//Weijie: checking indirect call
 				if (
-						(strncmp("call", insn[j].mnemonic, 4) == 0) &&
-						(is_op_reg(&insn[j]))
+					(strncmp("call", insn[j].mnemonic, 4) == 0) &&
+					(is_op_reg(&insn[j]))
 				   ){
 					//Weijie: to-do: check if a callq is a long function's indirect call
 					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
@@ -963,7 +972,7 @@ void rewrite_whole()
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
-				//Weijie: rewrite Memory write, including CFICheck
+				//Weijie: rewrite Memory write and long call/ret, including CFICheck
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
