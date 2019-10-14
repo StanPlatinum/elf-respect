@@ -705,20 +705,14 @@ int is_op_reg(cs_insn *ins)
 
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
-	if (strncmp("call", ins->mnemonic, 4) == 0) {
-		if (is_op_reg(ins)){
-			if (strncmp("call", forward_ins[0].mnemonic, 4) == 0
-					//Weijie: check if the oprand is the address of CFICheck
-			   )
-				return 1;
-			else {
-				PrintDebugInfo("no instrumentations on this indirect call\n");
-				return -1;
-			}
-		}
-		else	PrintDebugInfo("not an indirect call\n");
+	if (strncmp("call", forward_ins[0].mnemonic, 4) == 0
+			//Weijie: check if the oprand is the address of CFICheck
+	   )
+		return 1;
+	else {
+		PrintDebugInfo("no instrumentations on this indirect call\n");
+		return -1;
 	}
-	return 0;
 }
 
 //Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
@@ -893,12 +887,13 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				//Weijie: checking indirect call
 				if (
 						(strncmp("call", insn[j].mnemonic, 4) == 0) &&
-						(strncmp("rbx", insn[j].op_str, 3) == 0)
+						(is_op_reg(&insn[j]))
 				   ){
 					//Weijie: to-do: check if a callq is a long function's indirect call
 					indirect_call_safe = check_indirect_call(handle, CS_MODE_64, &insn[j], forward_insn);
 				}
 				else {
+					//PrintDebugInfo("not an indirect call\n");
 				}
 			}
 			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call!\n");
