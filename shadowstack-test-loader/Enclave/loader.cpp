@@ -723,7 +723,10 @@ int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		//Weijie: check if the oprand is the address of CFICheck
 		cs_x86 x86 = (&forward_ins[0])->detail->x86;
 		cs_x86_op op = x86.operands[0];
-		if ((int)op.type == X86_OP_IMM && op.imm == CFICheck_sym_addr)	return 1;
+		if ((int)op.type == X86_OP_IMM && op.imm == CFICheck_sym_addr){
+			PrintDebugInfo("indirect call check done.\n");
+			return 1;
+		}
 		else {
 			PrintDebugInfo("don't know what it is if it's not an imm...\n");
 		};
@@ -966,6 +969,7 @@ void rewrite_whole()
 			//Weijie: print symbol name
 			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 			textSize = symtab[j].st_size;
+			//Weijie: it is very strange the size of those LBB symbols is 0
 			if (textSize > 0){
 				//PrintDebugInfo("-----setting params-----\n");
 				//Weijie: get CFI info
