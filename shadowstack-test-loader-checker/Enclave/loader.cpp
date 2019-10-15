@@ -957,16 +957,25 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 void rewrite_whole()
 {
 	pr_progress("disassembling all executable parts");
-	int i, rv, text_index;
+	int i, j, rv, text_index;
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	unsigned char* buf;
 	
 	//Weijie: rewrite CFICheck
-	
-	
-	
-	
+	for (j = 0; j < n_symtab; j++){
+		//Weijie: get CFI info
+		if (strncmp("CFICheck", &strtab[symtab[j].st_name], 8) == 0) {
+			textSize = symtab[j].st_size;
+			textAddr = symtab[j].st_value;
+			buf = (unsigned char *)malloc(textSize);
+			//Weijie: fill in buf
+			cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+			dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+			rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
+			free(buf);
+		}
+	}
 	
 	//Weijie: get .text offset
 	PrintDebugInfo("# of section: %d\n", pehdr->e_shnum);
