@@ -1002,19 +1002,23 @@ char* text_seg;
 void disasm_whole()
 {
 	pr_progress("disassembling .text");
-	int rv, text_index;
+	int i, rv, text_index;
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	unsigned char* buf;
 	//Weijie: get .text offset
-	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
+	PrintDebugInfo("# of section: %d\n", pehdr->e_shnum);
+	//Weijie: computer metaphysics?
+	for (i = 0; i < pehdr->e_shnum; i++) {
 		if (pshdr[i].sh_type == SHT_PROGBITS && (pshdr[i].sh_flags & SHF_EXECINSTR)) {
 			PrintDebugInfo("found .text\n");
 			textSize = pshdr[i].sh_size;
-			i = text_index;
-			PrintDebugInfo(".text index: %d\n", text_index);
+			text_index = i;
+			PrintDebugInfo(".text index: %ld\n", text_index);
 		}
 	}
+	//text_index = 18;
+	textSize = pshdr[text_index].sh_size;
 	textAddr = (Elf64_Addr)GET_OBJ(char, pshdr[text_index].sh_offset);
 	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 
@@ -1025,6 +1029,7 @@ void disasm_whole()
 	rv = cs_disasm_entry(buf, textSize, textAddr);
 	free(buf);
 }
+
 /****************************** checker & rewriter part ******************************/
 
 /* shawn233: given symbol name, search symbol table and return symtab.st_value */
