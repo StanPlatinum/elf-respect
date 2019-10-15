@@ -957,43 +957,38 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 void rewrite_whole()
 {
 	pr_progress("disassembling all executable parts");
-	int j;
-	int rv;
+	int i, rv, text_index;
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	unsigned char* buf;
-	//Weijie: the first symbol is UND  ...
-	for (j = 0; j < n_symtab; j++){
-		//Weijie: only disassemble .text section
-		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
-			//Weijie: print symbol name
-			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
-			textSize = symtab[j].st_size;
-			//Weijie: it is very strange the size of those LBB symbols is 0
-			if (textSize > 0){
-				//PrintDebugInfo("-----setting params-----\n");
-				//Weijie: get CFI info
-				int ifcfi_rv = strncmp("CFICheck", &strtab[symtab[j].st_name], 8);
-				if (ifcfi_rv == 0) {
-					textAddr = symtab[j].st_value;
-					buf = (unsigned char *)malloc(textSize);
-					//Weijie: fill in buf
-					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
-					free(buf);
-				}
-				//Weijie: rewrite Memory write and long call/ret, including CFICheck
-				textAddr = symtab[j].st_value;
-				buf = (unsigned char *)malloc(textSize);
-				//Weijie: fill in buf
-				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_rewrite_entry(buf, textSize, textAddr);
-				free(buf);
-			}
+	
+	//Weijie: rewrite CFICheck
+	
+	
+	
+	
+	
+	//Weijie: get .text offset
+	PrintDebugInfo("# of section: %d\n", pehdr->e_shnum);
+	for (i = 0; i < pehdr->e_shnum; i++) {
+		if (pshdr[i].sh_type == SHT_PROGBITS && (pshdr[i].sh_flags & SHF_EXECINSTR)) {
+			PrintDebugInfo("found .text\n");
+			textSize = pshdr[i].sh_size;
+			text_index = i;
+			PrintDebugInfo(".text index: %ld\n", text_index);
 		}
 	}
+	textSize = pshdr[text_index].sh_size;
+	textAddr = (Elf64_Addr)GET_OBJ(char, pshdr[text_index].sh_offset);
+	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+
+	buf = (unsigned char *)malloc(textSize);
+	//Weijie: fill in buf
+	cpy((char *)buf, (char *)textAddr, textSize);
+	PrintDebugInfo("cpy .text to buf\n");
+	//Weijie: rewrite all .text
+	rv = cs_rewrite_entry(buf, textSize, textAddr);
+	free(buf);
 }
 
 //Weijie: save .text
