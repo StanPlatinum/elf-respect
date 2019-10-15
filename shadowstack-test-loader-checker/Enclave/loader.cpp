@@ -418,7 +418,7 @@ void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
 	//Weijie:
-	dlog("writting: %llx", src);
+	//dlog("writting: %llx", src);
 	uint32_t *dst32 = (uint32_t *)dst;
 	dst32[0] = src;
 }
@@ -426,7 +426,7 @@ void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
 //Weijie: Can 2nd oprand of cmp be 64 bit? Or should we instrument cmpq?
 void cpy_imm2addr64(Elf64_Addr *dst, Elf64_Addr src) {
-	dlog("writting: %llx", src);
+	//dlog("writting: %llx", src);
 	dst[0] = src;
 }
 
@@ -553,7 +553,7 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		}
 		else
 		{
-			PrintDebugInfo("memory check failed.\n");
+			//PrintDebugInfo("memory check failed.\n");
 			return -1;
 		}
 	}
@@ -566,7 +566,7 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 {
 	int if_rsp = find_rsp(ins);
 	if (if_rsp > 0){
-		PrintDebugInfo("found rsp writes.\n");
+		//PrintDebugInfo("found rsp writes.\n");
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
 				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
@@ -593,7 +593,7 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 		}
 		else
 		{
-			PrintDebugInfo("register check failed.\n");
+			//PrintDebugInfo("register check failed.\n");
 			return -1;
 		}
 	}
@@ -670,7 +670,7 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 					Elf64_Addr imm_addr = get_immAddr(forward_ins[0], movabs_imm_offset);
 					rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
 					dlog("imm address: %p", imm_addr);
-					PrintDebugInfo("long call rewritting done.\n");
+					PrintDebugInfo("long ret rewritting done.\n");
 				}
 				else return -1;
 			}
@@ -781,6 +781,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
 						rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+						dlog("rewrite %llx at %p", (Elf64_Addr)&__ss_start, imm_addr);
 					}
 					//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
 					if (op2.imm == 0x1fffffffffffffff) {
@@ -789,6 +790,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
 						rewrite_imm(imm_addr, (Elf64_Addr)&__cfi_start);
+						dlog("rewrite %llx at %p", (Elf64_Addr)&__cfi_start, imm_addr);
 					}
 				}
 			}
@@ -804,6 +806,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						Elf64_Addr mov_imm_offset = 3; //7-4=3;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm_offset);
 						rewrite_imm32(imm_addr, call_target_idx_global);
+						dlog("rewrite %llx at %p", call_target_idx_global, imm_addr);
 					}
 				}
 			}
@@ -834,6 +837,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int indirect_call_safe = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			if( strncmp("nop", insn[j].mnemonic, 3) == 0 )	continue;
 			//Weijie: maintain a insn set including more than 7? insns right before the current disasmed insn
 			if (j >= 5){
 				cs_insn forward_insn[5];
@@ -849,7 +853,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				//Weijie: to-do
 				//Weijie: try to use cs_disasm_iter
 			}
-			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes instrumentation!\n");
+			//Weijie: comment for now
+			//if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes instrumentation!\n");
 			
 			//Weijie: checking register 'rsp'
 			if (count - j - 1 >= 6){
@@ -865,7 +870,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
+			//Weijie: comment for now
+			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
 
 			if (j >= 7){
 				cs_insn forward_insn[7];
@@ -881,7 +887,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal long func instrumentation!\n");
+			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal long call instrumentation!\n");
 
 
 			if (j >= 6){
@@ -966,14 +972,17 @@ void rewrite_whole()
 	for (j = 0; j < n_symtab; j++){
 		//Weijie: get CFI info
 		if (strncmp("CFICheck", &strtab[symtab[j].st_name], 8) == 0) {
+			PrintDebugInfo("found sym CFICheck\n");
 			textSize = symtab[j].st_size;
 			textAddr = symtab[j].st_value;
 			buf = (unsigned char *)malloc(textSize);
 			//Weijie: fill in buf
-			cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+			cpy((char *)buf, (char *)textAddr, textSize);
+			//cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 			dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 			rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 			free(buf);
+			break;
 		}
 	}
 	
@@ -981,7 +990,7 @@ void rewrite_whole()
 	PrintDebugInfo("# of section: %d\n", pehdr->e_shnum);
 	for (i = 0; i < pehdr->e_shnum; i++) {
 		if (pshdr[i].sh_type == SHT_PROGBITS && (pshdr[i].sh_flags & SHF_EXECINSTR)) {
-			PrintDebugInfo("found .text\n");
+			PrintDebugInfo("found sec .text\n");
 			textSize = pshdr[i].sh_size;
 			text_index = i;
 			PrintDebugInfo(".text index: %ld\n", text_index);
@@ -990,7 +999,6 @@ void rewrite_whole()
 	textSize = pshdr[text_index].sh_size;
 	textAddr = (Elf64_Addr)GET_OBJ(char, pshdr[text_index].sh_offset);
 	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-
 	buf = (unsigned char *)malloc(textSize);
 	//Weijie: fill in buf
 	cpy((char *)buf, (char *)textAddr, textSize);
