@@ -748,7 +748,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
 	}
-	//Weijie: must add option
+	//Weijie: cs option must be indicated
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	//Weijie: rewrite CFICheckAddressNum, replace with value of 'call_target_idx'
@@ -996,33 +996,34 @@ void rewrite_whole()
 	}
 }
 
+//Weijie: save .text
+char* text_seg;
+
 void disasm_whole()
 {
-	pr_progress("disassembling all executable parts");
-	int j;
-	int rv;
+	pr_progress("disassembling .text");
+	int rv, text_index;
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	unsigned char* buf;
-	//Weijie: the first symbol is UND  ...
-	for (j = 0; j < n_symtab; j++){
-		//Weijie: only disassemble .text section
-		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
-			//Weijie: print symbol name
-			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
-			textSize = symtab[j].st_size;
-			if (textSize > 0){
-				//PrintDebugInfo("-----setting params-----\n");
-				textAddr = symtab[j].st_value;
-				buf = (unsigned char *)malloc(textSize);
-				//Weijie: fill in buf
-				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_disasm_entry(buf, textSize, textAddr);
-				free(buf);
-			}
+	//Weijie: get .text offset
+	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
+		if (pshdr[i].sh_type == SHT_PROGBITS && (pshdr[i].sh_flags & SHF_EXECINSTR)) {
+			PrintDebugInfo("found .text\n");
+			textSize = pshdr[i].sh_size;
+			i = text_index;
+			PrintDebugInfo(".text index: %d\n", text_index);
 		}
 	}
+	textAddr = (Elf64_Addr)GET_OBJ(char, pshdr[text_index].sh_offset);
+	dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+
+	buf = (unsigned char *)malloc(textSize);
+	//Weijie: fill in buf
+	cpy((char *)buf, (char *)textAddr, textSize);
+	PrintDebugInfo("cpy .text to buf\n");
+	rv = cs_disasm_entry(buf, textSize, textAddr);
+	free(buf);
 }
 /****************************** checker & rewriter part ******************************/
 
@@ -1111,8 +1112,8 @@ void ecall_receive_binary(char *binary, int sz)
 	rewrite_whole();
 	
 	//Weijie: no we don't need this disasm
-	//pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
