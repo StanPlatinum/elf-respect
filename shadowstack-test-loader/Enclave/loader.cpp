@@ -1004,6 +1004,9 @@ void disasm_whole()
 	Elf64_Xword textSize;
 	Elf64_Addr textAddr;
 	unsigned char* buf;
+	//Weijie:
+	//Elf64_Xword textSizemax = 160;
+
 	//Weijie: the first symbol is UND  ...
 	for (j = 0; j < n_symtab; j++){
 		//Weijie: only disassemble .text section
@@ -1021,9 +1024,22 @@ void disasm_whole()
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
+			/*
+			else {
+				textSize = textSizemax;
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+			*/
 		}
 	}
 }
+
 /****************************** checker & rewriter part ******************************/
 
 /* shawn233: given symbol name, search symbol table and return symtab.st_value */
@@ -1111,8 +1127,8 @@ void ecall_receive_binary(char *binary, int sz)
 	rewrite_whole();
 	
 	//Weijie: no we don't need this disasm
-	//pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
