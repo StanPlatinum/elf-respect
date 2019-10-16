@@ -56,19 +56,20 @@ mkdir build && cd build
 cmake -DLLVM_ENABLE_PROJECTS=clang -G "Unix Makefiles" ../llvm
 make
 ```
+ - This step may take some time...
 
 ## Generate target binary
 
 ### Build SGX-Shield
 
  - SGX-Shield is a brilliant work which we have taken advantage of in our project. It can be cloned at https://github.com/jaebaek/SGX-Shield. Also, it is suggested that you can cloned a modified version at https://github.com/StanPlatinum/SGX-Shield.
- - Please modify $(SGX_Shield_PATH) to where the SGX-Shield is cloned.
+ - Please modify $(SGX_Shield_PATH) in `dynamic-checker/target-program/Makefile` to where the SGX-Shield is cloned.
 
 ### Prepare and pre-link the binary
 
 ```
 cd ..
-cd dynamic-loader/target-program
+cd dynamic-checker/target-program
 make
 ```
 
@@ -98,7 +99,7 @@ cp /usr/lib/x86_64-linux-gnu/libz.a Enclave/TrustedLib
 ### Set variables in Makefile
 
 ```
-cd dynamic-loader-checker
+cd dynamic-checker
 vi Makefile
 ```
 
