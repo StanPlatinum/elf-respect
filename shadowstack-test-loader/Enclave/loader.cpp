@@ -294,9 +294,27 @@ static void load(void)
 	Elf64_Xword last_size = 0;
 	unsigned shndx = -1;
 
+
+	for (unsigned h = 1; h < n_symtab; ++h) {		
+		//Weijie: record original st_value in .text
+		Elf64_Addr last_original_st_value;
+		Elf64_Addr this_original_st_value;
+		//Weijie: process .text section
+		if ( pshdr[symtab[h].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[h].st_shndx].sh_flags & SHF_EXECINSTR) ) {
+			
+			this_original_st_value = symtab[h].st_value;
+			if ( (symtab[h-1].st_info & 0xf) == STT_NOTYPE && symtab[h-1].st_size == 0 && pshdr[symtab[h-1].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[h-1].st_shndx].sh_flags & SHF_EXECINSTR) ) {
+				//Weijie: process NOTYPE symbol
+				dlog("processing NOTYPE symbol[%d] in .text...", h-1);
+				symtab[h-1].st_size = this_original_st_value - last_original_st_value;
+				dlog("symbol[%d] real st size: 0x%lx", h-1, symtab[h-1].st_size);
+				
+			}
+			last_original_st_value = this_original_st_value;
+		}
+	}
+
 	//Weijie: ignore filename ABS
-	//Weijie: test if i could start with 2
-	//for (unsigned i = 2; i < n_symtab; ++i, ++_n_symtab) {
 	for (unsigned i = 1; i < n_symtab; ++i, ++_n_symtab) {
 		if (shndx != symtab[i].st_shndx) {
 			last_off = (Elf64_Addr)-1;
@@ -307,20 +325,19 @@ static void load(void)
 
 		unsigned char found = symtab[i].st_name ?
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
-
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
-
 			symtab[i].st_value = (Elf64_Addr)reserve(0, symtab[i].st_size, symtab[i].st_value);
 			fill_zero((char *)symtab[i].st_value, symtab[i].st_size);
 		} else if (!found) {
+			//Weijie:
+			//dlog("processing symbol[%d]...", i);
+
 			Elf64_Addr symoff = pshdr[symtab[i].st_shndx].sh_offset + symtab[i].st_value;
 			/* potentially WEAK bind */
 			if (last_off <= symoff && symoff < (last_off + last_size)) {
 				symtab[i].st_value = last_st_value + symoff - last_off;
 			} else {
-				/* find main */
-
 				//Weijie: checking if loader could find main()...
 				//dlog("%u: finding main...", __LINE__);
 				//dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
@@ -329,26 +346,22 @@ static void load(void)
 					//Weijie: record i
 					main_index = i;
 				}
-
 				symtab[i].st_value = (Elf64_Addr)reserve(pshdr[symtab[i].st_shndx].sh_flags,
 						symtab[i].st_size, pshdr[symtab[i].st_shndx].sh_addralign);
-
 				/* fill zeros for .bss section .. otherwise, copy from file */
 				if (pshdr[symtab[i].st_shndx].sh_type == SHT_NOBITS) {
 					fill_zero((char *)symtab[i].st_value, symtab[i].st_size);
 				} else {
 					cpy((char *)symtab[i].st_value, GET_OBJ(char, symoff), symtab[i].st_size);
-
 					/* update last values */
 					last_size = symtab[i].st_size;
 					last_off = symoff;
 					last_st_value = symtab[i].st_value;
 				}
-
-
 			}
 		}
-		dlog("sym %04u/%d %08lx", i, n_symtab, (unsigned long)symtab[i].st_value);
+		//Weijie:
+		dlog("sym %04u/%d %08lx, final st_size: %ld", i, n_symtab, (unsigned long)symtab[i].st_value, (unsigned long)symtab[i].st_size);
 	}
 }
 
@@ -956,7 +969,6 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 
 void rewrite_whole()
 {
-	pr_progress("disassembling all executable parts");
 	int j;
 	int rv;
 	Elf64_Xword textSize;
@@ -998,7 +1010,6 @@ void rewrite_whole()
 
 void disasm_whole()
 {
-	pr_progress("disassembling all executable parts");
 	int j;
 	int rv;
 	Elf64_Xword textSize;
