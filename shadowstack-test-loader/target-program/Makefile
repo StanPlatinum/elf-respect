@@ -2,9 +2,10 @@
 SGX_Shield_PATH = /home/weijliu/SGX-Shield
 #SGX_Shield_PATH = /root/SGX-Shield
 #SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
+Our_LLVM_PATH = /home/weijliu/llvm-project
 
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = /home/weijliu/llvm-project/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
@@ -23,6 +24,7 @@ CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-
 
 # Now the target name will be a dir
 TARGET_NAME = foo2
+#TARGET_NAME = foo2-bak
 
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
