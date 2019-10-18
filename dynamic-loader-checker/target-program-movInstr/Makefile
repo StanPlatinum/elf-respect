@@ -14,7 +14,8 @@ CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-
 
 #CXX = clang++
 
-TARGET_NAME = test
+TARGET_NAME = foo2
+#TARGET_NAME = test
 #TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
@@ -63,12 +64,12 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
 #$(TARGET_NAME).s: $(TARGET_NAME)/$(TARGET_NAME).s
-$(TARGET_NAME)_new.s: $(TARGET_NAME)/$(TARGET_NAME)_new.s
+$(TARGET_NAME)_opt.s: $(TARGET_NAME)/$(TARGET_NAME)_opt.s
 	cp $< $@
 
 #Weijie: generate target obj file
 #enclave_main.o: $(TARGET_NAME).c enclave.h
-enclave_main.o: $(TARGET_NAME)_new.s enclave.h
+enclave_main.o: $(TARGET_NAME)_opt.s enclave.h
 	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
