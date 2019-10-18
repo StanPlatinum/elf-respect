@@ -273,7 +273,6 @@ Enclave/%.o: Enclave/%.cpp
 	@objcopy --add-section .sgx.calltg=calltg --set-section-flags .sgx.calltg=alloc,data,code $@
 	@fallocate -l 56M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
-
 	@echo "CXX  <=  $<"
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)

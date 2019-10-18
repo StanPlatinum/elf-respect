@@ -248,17 +248,14 @@ Enclave/Enclave_t.o: Enclave/enclave.c Enclave/Enclave_t.c Enclave/ocall_type.h
 	@$(CC) $(Enclave_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"
 
-#Enclave/%.o: Enclave/%.cpp $(IN_ENCLAVE_PROGRAM)
-#	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
-#	@objcopy --add-section .sgx.bin=$(IN_ENCLAVE_PROGRAM) --set-section-flags .sgx.bin=alloc,data $@
-#	@fallocate -l 32M blob
-#	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
-#	@echo "CXX  <=  $<"
-#Weijie: Here starts the new dyn-loader
-#Xinyu & Weijie: Only use objcopy to reserve some memory (64M currently, with alloc, data, code)
+
 Enclave/%.o: Enclave/%.cpp
 	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
-	@fallocate -l 64M blob
+	@fallocate -l 4M ssblob
+	@objcopy --add-section .sgx.ssblob=ssblob --set-section-flags .sgx.ssblob=alloc,data,code $@
+	@fallocate -l 4M calltg
+	@objcopy --add-section .sgx.calltg=calltg --set-section-flags .sgx.calltg=alloc,data,code $@
+	@fallocate -l 56M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 	@echo "CXX  <=  $<"
 

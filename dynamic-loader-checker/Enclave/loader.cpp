@@ -541,32 +541,38 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	//int memwt_intact = 0;
 	int if_memwt = find_memory_write(ins);
 	if (if_memwt > 0){
-		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
+		//Weijie: checking if they are 'movabs rbx, 0ximm', 'cmp rax, rbx' and so on
 		if (
-				(strncmp("cmp", forward_ins[0].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[1].mnemonic, 2) == 0)	&&
-				(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("jl", forward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("pop", forward_ins[4].mnemonic, 3) == 0)
+				(strncmp("movabs", forward_ins[0].mnemonic, 6) == 0)	&&
+				(strncmp("cmp", forward_ins[1].mnemonic, 3) == 0)	&&
+				(strncmp("ja", forward_ins[2].mnemonic, 2) == 0)	&&
+				(strncmp("movabs", forward_ins[3].mnemonic, 6) == 0)	&&
+				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0)	&&
+				(strncmp("jb", forward_ins[5].mnemonic, 2) == 0)	&&
+				(strncmp("pop", forward_ins[6].mnemonic, 3) == 0)	&&
+				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
-			Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
-			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], cmp_imm_offset);
-			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[2], cmp_imm_offset);
+			//Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
+			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
+			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], movabs_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[3], movabs_imm_offset);
 			//Weijie:
 			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			rewrite_imm32(imm1_addr, data_upper_bound);
-			rewrite_imm32(imm2_addr, data_lower_bound);
+			//rewrite_imm32(imm1_addr, data_upper_bound);
+			//rewrite_imm32(imm1_addr, data_lower_bound);
+			rewrite_imm(imm1_addr, data_lower_bound);
+			rewrite_imm(imm2_addr, data_upper_bound);
 			PrintDebugInfo("memory rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;
 		}
 		else
 		{
-			PrintDebugInfo("memory check failed.\n");
+			PrintDebugInfo("memory write check failed.\n");
 			return -1;
 		}
 	}
@@ -847,14 +853,17 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int indirect_call_safe = 0;
 		for (j = 0; j < count; j++) {
 			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			//Weijie: maintain a insn set including more than 7? insns right before the current disasmed insn
-			if (j >= 5){
-				cs_insn forward_insn[5];
-				forward_insn[0] = insn[j-5];
-				forward_insn[1] = insn[j-4];
-				forward_insn[2] = insn[j-3];
-				forward_insn[3] = insn[j-2];
-				forward_insn[4] = insn[j-1];
+			//Weijie: maintain a insn set including more than 8? insns right before the current disasmed insn
+			if (j >= 8){
+				cs_insn forward_insn[8];
+				forward_insn[0] = insn[j-8];
+				forward_insn[1] = insn[j-7];
+				forward_insn[2] = insn[j-6];
+				forward_insn[3] = insn[j-5];
+				forward_insn[4] = insn[j-4];
+				forward_insn[5] = insn[j-3];
+				forward_insn[6] = insn[j-2];
+				forward_insn[7] = insn[j-1];
 				//Weijie: checking mem write
 				memwt_intact = check_rewrite_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
 			}
