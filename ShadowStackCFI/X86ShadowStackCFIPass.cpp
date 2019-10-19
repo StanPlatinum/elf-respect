@@ -757,10 +757,10 @@ namespace {
                 getExitGV(MF);
             }
             
-            
+            bool bm = movInsert(MF);
             bool bs = insertShadowStackInst(MF);
             bool bc = insertCFIFun(MF);
-            bool bm = movInsert(MF);
+            
             return bm || bc || bs;
         }
     };
