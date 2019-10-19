@@ -566,9 +566,17 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//rewrite_imm32(imm1_addr, data_lower_bound);
 			rewrite_imm(imm1_addr, data_lower_bound);
 			rewrite_imm(imm2_addr, data_upper_bound);
-			PrintDebugInfo("memory rewritting done.\n");
+			PrintDebugInfo("memory write rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;
+		}
+		else if (
+				(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
+				(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
+				(strncmp("add", forward_ins[7].mnemonic, 3) == 0)
+			) {
+			PrintDebugInfo("memory write by shadow stack.\n");
+			PrintDebugInfo("memory write check done.\n");
 		}
 		else
 		{
@@ -612,7 +620,7 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 		}
 		else
 		{
-			PrintDebugInfo("register check failed.\n");
+			//PrintDebugInfo("register check failed.\n");
 			return -1;
 		}
 	}
@@ -1005,14 +1013,16 @@ void rewrite_whole()
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
-				//Weijie: rewrite Memory write and long call/ret, including CFICheck
-				textAddr = symtab[j].st_value;
-				buf = (unsigned char *)malloc(textSize);
-				//Weijie: fill in buf
-				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_rewrite_entry(buf, textSize, textAddr);
-				free(buf);
+				else {
+					//Weijie: rewrite Memory write and long call/ret, not including CFICheck
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					//Weijie: fill in buf
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					rv = cs_rewrite_entry(buf, textSize, textAddr);
+					free(buf);
+				}
 			}
 		}
 	}

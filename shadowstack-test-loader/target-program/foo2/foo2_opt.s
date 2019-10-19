@@ -6,32 +6,10 @@
 CFICheck:                               # @CFICheck
 # %bb.0:                                # %entry
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_14
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_14
-	popq	%rbx
-	popq	%rax
 	addq	$8, (%r11)
 	movq	(%r11), %r10
 	addq	%r10, %r11
 	movq	(%rsp), %r10
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_14
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_14
-	popq	%rbx
-	popq	%rax
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
@@ -41,10 +19,10 @@ CFICheck:                               # @CFICheck
 	leaq	-32(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movq	%rdi, -32(%rbp)
@@ -54,10 +32,10 @@ CFICheck:                               # @CFICheck
 	leaq	-24(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -24(%rbp)
@@ -66,10 +44,10 @@ CFICheck:                               # @CFICheck
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movl	$536870911, -16(%rbp)   # imm = 0x1FFFFFFF
@@ -78,10 +56,10 @@ CFICheck:                               # @CFICheck
 	leaq	-12(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movl	$0, -12(%rbp)
@@ -92,10 +70,10 @@ CFICheck:                               # @CFICheck
 	leaq	-8(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movl	%eax, -8(%rbp)
@@ -118,10 +96,10 @@ CFICheck:                               # @CFICheck
 	leaq	-4(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movl	%ecx, -4(%rbp)
@@ -143,20 +121,9 @@ CFICheck:                               # @CFICheck
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
 	movq	(%r11), %r10
 	addq	%r11, %r10
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_14
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_14
-	popq	%rbx
-	popq	%rax
 	subq	$8, (%r11)
 	cmpq	%r10, (%rsp)
-	jne	.LBB0_13
+	jne	.LBB0_14
 	retq
 .LBB0_6:                                # %if.else
                                         #   in Loop: Header=BB0_1 Depth=1
@@ -174,10 +141,10 @@ CFICheck:                               # @CFICheck
 	leaq	-8(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movl	%eax, -8(%rbp)
@@ -191,10 +158,10 @@ CFICheck:                               # @CFICheck
 	leaq	-12(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_14
+	ja	.LBB0_13
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_14
+	jb	.LBB0_13
 	popq	%rbx
 	popq	%rax
 	movl	%eax, -12(%rbp)
@@ -210,11 +177,11 @@ CFICheck:                               # @CFICheck
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .LBB0_13:
+	popq	%rbx
+	popq	%rax
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .LBB0_14:
-	popq	%rbx
-	popq	%rax
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end0:
@@ -226,32 +193,10 @@ CFICheck:                               # @CFICheck
 fun:                                    # @fun
 # %bb.0:                                # %entry
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB1_2
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB1_2
-	popq	%rbx
-	popq	%rax
 	addq	$8, (%r11)
 	movq	(%r11), %r10
 	addq	%r10, %r11
 	movq	(%rsp), %r10
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB1_2
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB1_2
-	popq	%rbx
-	popq	%rax
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
@@ -260,27 +205,16 @@ fun:                                    # @fun
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
 	movq	(%r11), %r10
 	addq	%r11, %r10
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB1_2
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB1_2
-	popq	%rbx
-	popq	%rax
 	subq	$8, (%r11)
 	cmpq	%r10, (%rsp)
-	jne	.LBB1_1
+	jne	.LBB1_2
 	retq
-.LBB1_1:
+# %bb.1:
+	popq	%rbx
+	popq	%rax
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .LBB1_2:
-	popq	%rbx
-	popq	%rax
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end1:
@@ -292,32 +226,10 @@ fun:                                    # @fun
 my_itoa:                                # @my_itoa
 # %bb.0:                                # %entry
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB2_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB2_13
-	popq	%rbx
-	popq	%rax
 	addq	$8, (%r11)
 	movq	(%r11), %r10
 	addq	%r10, %r11
 	movq	(%rsp), %r10
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB2_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB2_13
-	popq	%rbx
-	popq	%rax
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
@@ -326,10 +238,10 @@ my_itoa:                                # @my_itoa
 	leaq	-4(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movl	%edi, -4(%rbp)
@@ -338,10 +250,10 @@ my_itoa:                                # @my_itoa
 	leaq	-48(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rsi, -48(%rbp)
@@ -350,10 +262,10 @@ my_itoa:                                # @my_itoa
 	leaq	-36(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movl	%edx, -36(%rbp)
@@ -363,10 +275,10 @@ my_itoa:                                # @my_itoa
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -16(%rbp)
@@ -382,10 +294,10 @@ my_itoa:                                # @my_itoa
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rdx, -16(%rbp)
@@ -394,10 +306,10 @@ my_itoa:                                # @my_itoa
 	leaq	(%rcx), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	$45, (%rcx)
@@ -408,10 +320,10 @@ my_itoa:                                # @my_itoa
 	leaq	-4(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movl	%eax, -4(%rbp)
@@ -422,10 +334,10 @@ my_itoa:                                # @my_itoa
 	leaq	-32(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -32(%rbp)
@@ -439,10 +351,10 @@ my_itoa:                                # @my_itoa
 	leaq	-20(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movl	%edx, -20(%rbp)
@@ -455,10 +367,10 @@ my_itoa:                                # @my_itoa
 	leaq	-4(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movl	%eax, -4(%rbp)
@@ -477,10 +389,10 @@ my_itoa:                                # @my_itoa
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rdx, -16(%rbp)
@@ -489,10 +401,10 @@ my_itoa:                                # @my_itoa
 	leaq	(%rcx), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	%al, (%rcx)
@@ -509,10 +421,10 @@ my_itoa:                                # @my_itoa
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rdx, -16(%rbp)
@@ -521,10 +433,10 @@ my_itoa:                                # @my_itoa
 	leaq	(%rcx), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	%al, (%rcx)
@@ -544,10 +456,10 @@ my_itoa:                                # @my_itoa
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rcx, -16(%rbp)
@@ -556,10 +468,10 @@ my_itoa:                                # @my_itoa
 	leaq	(%rax), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	$32, (%rax)
@@ -572,10 +484,10 @@ my_itoa:                                # @my_itoa
 	leaq	-5(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	%al, -5(%rbp)
@@ -587,10 +499,10 @@ my_itoa:                                # @my_itoa
 	leaq	(%rcx), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	%al, (%rcx)
@@ -601,10 +513,10 @@ my_itoa:                                # @my_itoa
 	leaq	(%rcx), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movb	%al, (%rcx)
@@ -615,10 +527,10 @@ my_itoa:                                # @my_itoa
 	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -16(%rbp)
@@ -629,10 +541,10 @@ my_itoa:                                # @my_itoa
 	leaq	-32(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB2_13
+	ja	.LBB2_12
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB2_13
+	jb	.LBB2_12
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -32(%rbp)
@@ -647,27 +559,16 @@ my_itoa:                                # @my_itoa
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
 	movq	(%r11), %r10
 	addq	%r11, %r10
-	pushq	%rbx
-	pushq	%rax
-	leaq	(%r11), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB2_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB2_13
-	popq	%rbx
-	popq	%rax
 	subq	$8, (%r11)
 	cmpq	%r10, (%rsp)
-	jne	.LBB2_12
+	jne	.LBB2_13
 	retq
 .LBB2_12:
+	popq	%rbx
+	popq	%rax
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .LBB2_13:
-	popq	%rbx
-	popq	%rax
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end2:
@@ -762,5 +663,5 @@ enclave_main:                           # @enclave_main
 
 
 	.ident	"clang version 9.0.0 "
-	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 21a12bc0acbe507888c600eb319c220245757ba0)"
+	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 41c485f27ba224ec40425f132ab05438015fa3a6)"
 	.section	".note.GNU-stack","",@progbits
