@@ -3,7 +3,11 @@ source_filename = "foo2"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@.str = private unnamed_addr constant [9 x i8] c"success!\00", align 1
+@.str = private unnamed_addr constant [22 x i8] c"----------1----------\00", align 1
+@.str.1 = private unnamed_addr constant [22 x i8] c"----------2----------\00", align 1
+@.str.2 = private unnamed_addr constant [22 x i8] c"----------3----------\00", align 1
+@.str.3 = private unnamed_addr constant [22 x i8] c"----------4----------\00", align 1
+@.str.4 = private unnamed_addr constant [9 x i8] c"success!\00", align 1
 
 ; Function Attrs: noinline nounwind optnone
 define dso_local void @CFICheck(i64 %target) #0 {
@@ -223,18 +227,22 @@ entry:
   %i_b = alloca [8 x i8], align 1
   %ii_b = alloca i8*, align 8
   store i32 ()* @fun, i32 ()** %fp, align 8
+  %call = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str, i64 0, i64 0))
   %0 = load i32 ()*, i32 ()** %fp, align 8
-  %call = call i32 %0()
-  store i32 %call, i32* %b, align 4
+  %call1 = call i32 %0()
+  store i32 %call1, i32* %b, align 4
+  %call2 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.1, i64 0, i64 0))
   %1 = bitcast [8 x i8]* %i_b to i8*
   store i8* %1, i8** %ii_b, align 8
+  %call3 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.2, i64 0, i64 0))
   %2 = load i32, i32* %b, align 4
   %3 = load i8*, i8** %ii_b, align 8
-  %call1 = call i8* @my_itoa(i32 %2, i8* %3, i32 10)
-  store i8* %call1, i8** %ii_b, align 8
+  %call4 = call i8* @my_itoa(i32 %2, i8* %3, i32 10)
+  store i8* %call4, i8** %ii_b, align 8
+  %call5 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.3, i64 0, i64 0))
   %4 = load i8*, i8** %ii_b, align 8
-  %call2 = call i32 @puts(i8* %4)
-  %call3 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str, i64 0, i64 0))
+  %call6 = call i32 @puts(i8* %4)
+  %call7 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.4, i64 0, i64 0))
   call void @exit(i32 0) #4
   unreachable
 }

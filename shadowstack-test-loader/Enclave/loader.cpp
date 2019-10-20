@@ -997,7 +997,6 @@ void rewrite_whole()
 		//Weijie: only disassemble .text section
 		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
 			//Weijie: print symbol name
-			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 			textSize = symtab[j].st_size;
 			//Weijie: it is very strange the size of those LBB symbols is 0
 			if (textSize > 0){
@@ -1009,7 +1008,7 @@ void rewrite_whole()
 					buf = (unsigned char *)malloc(textSize);
 					//Weijie: fill in buf
 					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					dlog("disassembling CFICheck: textAddr: %p, textSize: %u", textAddr, textSize);
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
@@ -1019,7 +1018,7 @@ void rewrite_whole()
 					buf = (unsigned char *)malloc(textSize);
 					//Weijie: fill in buf
 					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					dlog("disassembling symbol '%s': textAddr: %p, textSize: %u", &strtab[symtab[j].st_name], textAddr, textSize);
 					rv = cs_rewrite_entry(buf, textSize, textAddr);
 					free(buf);
 				}

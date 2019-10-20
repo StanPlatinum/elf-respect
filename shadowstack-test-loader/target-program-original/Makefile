@@ -2,8 +2,10 @@
 #SGX_Shield_PATH = /root/SGX-Shield
 SGX_Shield_PATH = /home/weijliu/SGX-Shield
 
+Our_LLVM_PATH = /home/weijliu/llvm-project
+
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path

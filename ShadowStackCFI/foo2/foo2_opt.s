@@ -596,6 +596,8 @@ enclave_main:                           # @enclave_main
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -32(%rbp)
+	movabsq	$.L.str, %rdi
+	callq	puts
 	movq	-32(%rbp), %rbx
 	movq	%rbx, %rdi
 	callq	CFICheck
@@ -612,6 +614,8 @@ enclave_main:                           # @enclave_main
 	popq	%rbx
 	popq	%rax
 	movl	%eax, -20(%rbp)
+	movabsq	$.L.str.1, %rdi
+	callq	puts
 	leaq	-40(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
@@ -625,6 +629,8 @@ enclave_main:                           # @enclave_main
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -16(%rbp)
+	movabsq	$.L.str.2, %rdi
+	callq	puts
 	movl	-20(%rbp), %edi
 	movq	-16(%rbp), %rsi
 	movl	$10, %edx
@@ -641,9 +647,11 @@ enclave_main:                           # @enclave_main
 	popq	%rbx
 	popq	%rax
 	movq	%rax, -16(%rbp)
+	movabsq	$.L.str.3, %rdi
+	callq	puts
 	movq	-16(%rbp), %rdi
 	callq	puts
-	movabsq	$.L.str, %rdi
+	movabsq	$.L.str.4, %rdi
 	callq	puts
 	xorl	%edi, %edi
 	callq	exit
@@ -658,8 +666,28 @@ enclave_main:                           # @enclave_main
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .L.str:
+	.asciz	"----------1----------"
+	.size	.L.str, 22
+
+	.type	.L.str.1,@object        # @.str.1
+.L.str.1:
+	.asciz	"----------2----------"
+	.size	.L.str.1, 22
+
+	.type	.L.str.2,@object        # @.str.2
+.L.str.2:
+	.asciz	"----------3----------"
+	.size	.L.str.2, 22
+
+	.type	.L.str.3,@object        # @.str.3
+.L.str.3:
+	.asciz	"----------4----------"
+	.size	.L.str.3, 22
+
+	.type	.L.str.4,@object        # @.str.4
+.L.str.4:
 	.asciz	"success!"
-	.size	.L.str, 9
+	.size	.L.str.4, 9
 
 
 	.ident	"clang version 9.0.0 "
