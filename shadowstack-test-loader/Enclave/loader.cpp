@@ -1085,36 +1085,50 @@ Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 	return 0;
 }
 
-//Weijie: we should do ecall_receive_entrylabel first.
+
+//Weijie: remember to do ecall_receive_entrylabel first. And do relocate_entrylabel until relocate() is done.
 void ecall_receive_entrylabel(char *entrylabel, int sz)
 {
 	dlog("target_table at %p (%lu)", target_table, target_table_size);
 	cpy(target_table, entrylabel, (size_t)sz);
 	target_table_size = sz;
+}
 
+void relocate_entrylabel()
+{
 	// shawn233: in function load, symtab[i].st_value has been updated to the address of symbols
 	// so we can directly replace symbols to these addresses
 
-	Elf64_Addr *call_target;
+	//Weijie: redirect call target to the new section: calltg
+	//Elf64_Addr *call_target;
+	//Weijie: use the global variable: target_table
+	Elf64_Addr *call_target = (Elf64_Addr *)target_table;
+
 	unsigned call_target_idx = 0;
 
-	for (unsigned i = 0; i < sz; ++ i) {
-		if (entrylabel[i] == '\n') {
-			entrylabel[i] = '\0';
+	for (unsigned i = 0; i < target_table_size; ++ i) {
+		//if (entrylabel[i] == '\n') {
+		if (target_table[i] == '\n') {
+			//entrylabel[i] = '\0';
+			target_table[i] = '\0';
 			call_target_idx ++;
 		}
 	}
 
 	call_target_idx_global = call_target_idx;
 
-	call_target = (Elf64_Addr *)get_buf(call_target_idx*sizeof(Elf64_Addr));
+	//call_target = (Elf64_Addr *)get_buf(call_target_idx*sizeof(Elf64_Addr));
 	call_target_idx = 0;
 
 	unsigned buffer_idx = 0;
-	for (unsigned i = 0; i < sz; ++ i) {
-		if (entrylabel[i] == '\0') {
-			dlog("entry label: %s", entrylabel+buffer_idx);
-			call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, strlen(entrylabel+buffer_idx));
+	for (unsigned i = 0; i < target_table_size; ++ i) {
+		//if (entrylabel[i] == '\0') {
+		if (target_table[i] == '\0') {
+			//dlog("entry label: %s", entrylabel+buffer_idx);
+			dlog("entry label: %s", target_table + buffer_idx);
+			//Weijie: rewrite the labels with their addresses
+			//call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, strlen(entrylabel+buffer_idx));
+			call_target[call_target_idx ++] = search_symtab_by_name(target_table + buffer_idx, strlen(target_table + buffer_idx));
 			dlog("call target address: 0x%lx", call_target[call_target_idx-1]);
 			buffer_idx = i+1;
 		}
@@ -1156,6 +1170,9 @@ void ecall_receive_binary(char *binary, int sz)
 	//Weijie: cannot delete the following lines in current demo
 	pr_progress("relocating");
 	relocate();
+
+	pr_progress("relocating entrylabels");
+	relocate_entrylabel();
 
 	pr_progress("disassembling and checking");
 	rewrite_whole();
