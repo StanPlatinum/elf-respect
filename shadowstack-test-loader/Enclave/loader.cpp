@@ -564,11 +564,10 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//Weijie:
 			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			rewrite_imm(imm1_addr, data_lower_bound);
-			//Weijie:
-			//rewrite_imm(imm1_addr, data_upper_bound);
-			rewrite_imm(imm2_addr, data_upper_bound);
-			//rewrite_imm(imm2_addr, data_lower_bound);
+			//0x3fffffffffffffff <---> upper bound
+			//0x4fffffffffffffff <---> lower bound
+			rewrite_imm(imm1_addr, data_upper_bound);
+			rewrite_imm(imm2_addr, data_lower_bound);
 			PrintDebugInfo("memory write rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;

@@ -40,6 +40,7 @@ char *my_itoa(int val, char *buf, unsigned radix)
         --p;
         ++firstdig;        
     }while(firstdig < p);  
+    puts("----------3 in my_itoa----------");
     return buf;
 }
 

@@ -204,12 +204,6 @@ fun:                                    # @fun
 	callq	puts
 	movl	$1, %eax
 	popq	%rbp
-	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	movq	(%r11), %r10
-	addq	%r11, %r10
-	subq	$8, (%r11)
-	cmpq	%r10, (%rsp)
-	jne	.LBB1_2
 	retq
 # %bb.1:
 	popq	%rax
@@ -564,12 +558,6 @@ my_itoa:                                # @my_itoa
 	movq	-48(%rbp), %rax
 	addq	$48, %rsp
 	popq	%rbp
-	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	movq	(%r11), %r10
-	addq	%r11, %r10
-	subq	$8, (%r11)
-	cmpq	%r10, (%rsp)
-	jne	.LBB2_13
 	retq
 .LBB2_12:
 	popq	%rax
@@ -595,10 +583,10 @@ enclave_main:                           # @enclave_main
 	pushq	%rbx
 	pushq	%rax
 	leaq	-32(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	movabsq	$9223372036854776000, %rbx # imm = 0x7FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB3_1
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	movabsq	$1, %rbx # imm = 0x1
 	cmpq	%rbx, %rax
 	jb	.LBB3_1
 	popq	%rax
@@ -608,7 +596,6 @@ enclave_main:                           # @enclave_main
 	callq	puts
 	movq	-32(%rbp), %rbx
 	movq	%rbx, %rdi
-	callq	CFICheck
 	callq	*%rbx
 	pushq	%rbx
 	pushq	%rax
