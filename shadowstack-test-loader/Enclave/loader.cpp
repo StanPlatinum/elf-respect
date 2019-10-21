@@ -564,8 +564,10 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//Weijie: rewritting
 			//rewrite_imm32(imm1_addr, data_upper_bound);
 			//rewrite_imm32(imm1_addr, data_lower_bound);
-			rewrite_imm(imm1_addr, data_lower_bound);
-			rewrite_imm(imm2_addr, data_upper_bound);
+			//rewrite_imm(imm1_addr, data_lower_bound);
+			rewrite_imm(imm1_addr, data_upper_bound);
+			//rewrite_imm(imm2_addr, data_upper_bound);
+			rewrite_imm(imm2_addr, data_lower_bound);
 			PrintDebugInfo("memory write rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;
@@ -881,6 +883,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes instrumentation!\n");
 			
+			/*
+			//Weijie: comment for now
 			//Weijie: checking register 'rsp'
 			if (count - j - 1 >= 6){
 				cs_insn backward_insn[6];
@@ -895,8 +899,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			//Weijie: comment for now
-			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
+			if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
+			*/
 
 			if (j >= 7){
 				cs_insn forward_insn[7];

@@ -584,6 +584,17 @@ enclave_main:                           # @enclave_main
 	pushq	%rbx
 	subq	$40, %rsp
 	movabsq	$fun, %rax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-32(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB3_1
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB3_1
+	popq	%rbx
+	popq	%rax
 	movq	%rax, -32(%rbp)
 	movabsq	$.L.str, %rdi
 	callq	puts
@@ -647,7 +658,7 @@ enclave_main:                           # @enclave_main
 .LBB3_1:
 	popq	%rbx
 	popq	%rax
-	movl	$4294967295, %edi	# imm = 0xFFFFFFFF
+	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end3:
 	.size	enclave_main, .Lfunc_end3-enclave_main
