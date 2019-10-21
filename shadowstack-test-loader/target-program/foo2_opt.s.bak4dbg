@@ -14,68 +14,13 @@ CFICheck:                               # @CFICheck
 	pushq	%rbp
 	movq	%rsp, %rbp
 	subq	$32, %rsp
-	pushq	%rbx
-	pushq	%rax
-	leaq	-32(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movq	%rdi, -32(%rbp)
 	movabsq	$2305843009213693951, %rax # imm = 0x1FFFFFFFFFFFFFFF
-	pushq	%rbx
-	pushq	%rax
-	leaq	-24(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movq	%rax, -24(%rbp)
-	pushq	%rbx
-	pushq	%rax
-	leaq	-16(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movl	$536870911, -16(%rbp)   # imm = 0x1FFFFFFF
-	pushq	%rbx
-	pushq	%rax
-	leaq	-12(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movl	$0, -12(%rbp)
 	movl	-16(%rbp), %eax
 	subl	$1, %eax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-8(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movl	%eax, -8(%rbp)
 .LBB0_1:                                # %while.cond
                                         # =>This Inner Loop Header: Depth=1
@@ -91,17 +36,6 @@ CFICheck:                               # @CFICheck
 	movl	$2, %esi
 	idivl	%esi
 	addl	%eax, %ecx
-	pushq	%rbx
-	pushq	%rax
-	leaq	-4(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movl	%ecx, -4(%rbp)
 	movl	-4(%rbp), %eax
 	cmpl	-8(%rbp), %eax
@@ -136,34 +70,12 @@ CFICheck:                               # @CFICheck
                                         #   in Loop: Header=BB0_1 Depth=1
 	movl	-4(%rbp), %eax
 	subl	$1, %eax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-8(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movl	%eax, -8(%rbp)
 	jmp	.LBB0_9
 .LBB0_8:                                # %if.else10
                                         #   in Loop: Header=BB0_1 Depth=1
 	movl	-4(%rbp), %eax
 	addl	$1, %eax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-12(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rbx
-	popq	%rax
 	movl	%eax, -12(%rbp)
 .LBB0_9:                                # %if.end12
                                         #   in Loop: Header=BB0_1 Depth=1
@@ -202,12 +114,6 @@ fun:                                    # @fun
 	movq	%rsp, %rbp
 	movl	$1, %eax
 	popq	%rbp
-	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	movq	(%r11), %r10
-	addq	%r11, %r10
-	subq	$8, (%r11)
-	cmpq	%r10, (%rsp)
-	jne	.LBB1_2
 	retq
 # %bb.1:
 	popq	%rbx
@@ -584,35 +490,11 @@ enclave_main:                           # @enclave_main
 	pushq	%rbx
 	subq	$40, %rsp
 	movabsq	$fun, %rax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-32(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB3_1
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB3_1
-	popq	%rbx
-	popq	%rax
 	movq	%rax, -32(%rbp)
 	movabsq	$.L.str, %rdi
 	callq	puts
 	movq	-32(%rbp), %rbx
-	movq	%rbx, %rdi
-	callq	CFICheck
 	callq	*%rbx
-	pushq	%rbx
-	pushq	%rax
-	leaq	-20(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB3_1
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB3_1
-	popq	%rbx
-	popq	%rax
 	movl	%eax, -20(%rbp)
 	movabsq	$.L.str.1, %rdi
 	callq	puts
@@ -658,7 +540,7 @@ enclave_main:                           # @enclave_main
 .LBB3_1:
 	popq	%rbx
 	popq	%rax
-	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
+	movl	$4294967295, %edi	# imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end3:
 	.size	enclave_main, .Lfunc_end3-enclave_main
