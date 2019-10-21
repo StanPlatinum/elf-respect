@@ -700,8 +700,8 @@ namespace {
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
 
             MachineBasicBlock* Trap = Func.CreateMachineBasicBlock();
-            BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RBX);
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RAX);
+            BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RBX);
             BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
             BuildMI(Trap, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
             Func.push_back(Trap);
@@ -742,8 +742,8 @@ namespace {
 
                             MBB->addSuccessor(Trap);
 
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RBX);
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RAX);
+                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RBX);
                         }
                     }
                 }
