@@ -467,8 +467,10 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 	return single_insn.address + imm_offset;
 }
 //Weijie: not sure with the upper bound
-Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
-Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
+//Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
+Elf64_Addr data_upper_bound = 0xffffffffffffffff;
+//Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
+Elf64_Addr data_lower_bound = 0x0000000000000001;
 
 unsigned call_target_idx_global = 0;
 
@@ -562,12 +564,11 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//Weijie:
 			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			//rewrite_imm32(imm1_addr, data_upper_bound);
-			//rewrite_imm32(imm1_addr, data_lower_bound);
-			//rewrite_imm(imm1_addr, data_lower_bound);
-			rewrite_imm(imm1_addr, data_upper_bound);
-			//rewrite_imm(imm2_addr, data_upper_bound);
-			rewrite_imm(imm2_addr, data_lower_bound);
+			rewrite_imm(imm1_addr, data_lower_bound);
+			//Weijie:
+			//rewrite_imm(imm1_addr, data_upper_bound);
+			rewrite_imm(imm2_addr, data_upper_bound);
+			//rewrite_imm(imm2_addr, data_lower_bound);
 			PrintDebugInfo("memory write rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;
