@@ -47,9 +47,20 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 all: $(LIBC) $(TARGET_NAME)
 	mv $(TARGET_NAME) ../program
 
+LIBNBENCH = nbench/nbench.a
+
+nben: $(LIBNBENCH) $(TARGET_NAME)
+	cp nbench/*.o objs
+	rm objs/enclave_main.o
+	ls objs/*.o > list
+	cat list | ./tools/linker nben
+
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
+
+$(LIBNBENCH):
+	$(MAKE) -C nbench nbench.a
 
 $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
 	cp malloc.o objs/
@@ -82,11 +93,12 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
-	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list nben $(TARGET_NAME) \
 		lib/*.o
 
 clean-all:
 	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
                 tools/linker lib/*.o
 	$(MAKE) -C musl-libc clean
+	$(MAKE) -C nbench clean
 
