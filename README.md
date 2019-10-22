@@ -69,7 +69,7 @@ make
 
 ```
 cd ..
-cd dynamic-checker/target-program
+cd shadowstack-test-loader/target-program
 make
 ```
 
