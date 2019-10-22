@@ -99,7 +99,7 @@ cp /usr/lib/x86_64-linux-gnu/libz.a Enclave/TrustedLib
 ### Set variables in Makefile
 
 ```
-cd dynamic-checker
+cd shadowstack-test-loader
 vi Makefile
 ```
 
