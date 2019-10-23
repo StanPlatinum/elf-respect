@@ -7,7 +7,7 @@ int fun()
     return 1;
 }
 
-char *my_itoa(int val, char *buf, unsigned radix)
+char *my_itoa(unsigned long long val, char *buf, unsigned radix)
 {
     char   *p;             
     char   *firstdig;      
@@ -15,11 +15,14 @@ char *my_itoa(int val, char *buf, unsigned radix)
     unsigned   digval;     
     //puts("----------1 in my_itoa----------");
     p = buf;
+    /*
+     * Weijie: use an unsigned 64 bit int as input
     if(val <0)
     {
         *p++ = '-';
         val = (unsigned long)(-(long)val);
     }
+    */
     firstdig = p; 
     //puts("----------2 in my_itoa----------");
     do{
