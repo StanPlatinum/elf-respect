@@ -1,0 +1,6 @@
+CFICheck
+exit
+fun
+puts
+my_itoa
+enclave_main
