@@ -109,118 +109,104 @@ entry:
 declare dso_local i32 @puts(i8*) #2
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i8* @my_itoa(i32 %val, i8* %buf, i32 %radix) #0 {
+define dso_local i8* @my_itoa(i64 %val, i8* %buf, i32 %radix) #0 {
 entry:
-  %val.addr = alloca i32, align 4
+  %val.addr = alloca i64, align 8
   %buf.addr = alloca i8*, align 8
   %radix.addr = alloca i32, align 4
   %p = alloca i8*, align 8
   %firstdig = alloca i8*, align 8
   %temp = alloca i8, align 1
   %digval = alloca i32, align 4
-  store i32 %val, i32* %val.addr, align 4
+  store i64 %val, i64* %val.addr, align 8
   store i8* %buf, i8** %buf.addr, align 8
   store i32 %radix, i32* %radix.addr, align 4
   %0 = load i8*, i8** %buf.addr, align 8
   store i8* %0, i8** %p, align 8
-  %1 = load i32, i32* %val.addr, align 4
-  %cmp = icmp slt i32 %1, 0
-  br i1 %cmp, label %if.then, label %if.end
-
-if.then:                                          ; preds = %entry
-  %2 = load i8*, i8** %p, align 8
-  %incdec.ptr = getelementptr inbounds i8, i8* %2, i32 1
-  store i8* %incdec.ptr, i8** %p, align 8
-  store i8 45, i8* %2, align 1
-  %3 = load i32, i32* %val.addr, align 4
-  %conv = sext i32 %3 to i64
-  %sub = sub nsw i64 0, %conv
-  %conv1 = trunc i64 %sub to i32
-  store i32 %conv1, i32* %val.addr, align 4
-  br label %if.end
-
-if.end:                                           ; preds = %if.then, %entry
-  %4 = load i8*, i8** %p, align 8
-  store i8* %4, i8** %firstdig, align 8
+  %1 = load i8*, i8** %p, align 8
+  store i8* %1, i8** %firstdig, align 8
   br label %do.body
 
-do.body:                                          ; preds = %do.cond, %if.end
-  %5 = load i32, i32* %val.addr, align 4
-  %6 = load i32, i32* %radix.addr, align 4
-  %rem = urem i32 %5, %6
-  store i32 %rem, i32* %digval, align 4
-  %7 = load i32, i32* %radix.addr, align 4
-  %8 = load i32, i32* %val.addr, align 4
-  %div = udiv i32 %8, %7
-  store i32 %div, i32* %val.addr, align 4
-  %9 = load i32, i32* %digval, align 4
-  %cmp2 = icmp ugt i32 %9, 9
-  br i1 %cmp2, label %if.then4, label %if.else
+do.body:                                          ; preds = %do.cond, %entry
+  %2 = load i64, i64* %val.addr, align 8
+  %3 = load i32, i32* %radix.addr, align 4
+  %conv = zext i32 %3 to i64
+  %rem = urem i64 %2, %conv
+  %conv1 = trunc i64 %rem to i32
+  store i32 %conv1, i32* %digval, align 4
+  %4 = load i32, i32* %radix.addr, align 4
+  %conv2 = zext i32 %4 to i64
+  %5 = load i64, i64* %val.addr, align 8
+  %div = udiv i64 %5, %conv2
+  store i64 %div, i64* %val.addr, align 8
+  %6 = load i32, i32* %digval, align 4
+  %cmp = icmp ugt i32 %6, 9
+  br i1 %cmp, label %if.then, label %if.else
 
-if.then4:                                         ; preds = %do.body
-  %10 = load i32, i32* %digval, align 4
-  %sub5 = sub i32 %10, 10
-  %add = add i32 %sub5, 97
-  %conv6 = trunc i32 %add to i8
-  %11 = load i8*, i8** %p, align 8
-  %incdec.ptr7 = getelementptr inbounds i8, i8* %11, i32 1
-  store i8* %incdec.ptr7, i8** %p, align 8
-  store i8 %conv6, i8* %11, align 1
-  br label %if.end11
+if.then:                                          ; preds = %do.body
+  %7 = load i32, i32* %digval, align 4
+  %sub = sub i32 %7, 10
+  %add = add i32 %sub, 97
+  %conv4 = trunc i32 %add to i8
+  %8 = load i8*, i8** %p, align 8
+  %incdec.ptr = getelementptr inbounds i8, i8* %8, i32 1
+  store i8* %incdec.ptr, i8** %p, align 8
+  store i8 %conv4, i8* %8, align 1
+  br label %if.end
 
 if.else:                                          ; preds = %do.body
-  %12 = load i32, i32* %digval, align 4
-  %add8 = add i32 %12, 48
-  %conv9 = trunc i32 %add8 to i8
-  %13 = load i8*, i8** %p, align 8
-  %incdec.ptr10 = getelementptr inbounds i8, i8* %13, i32 1
-  store i8* %incdec.ptr10, i8** %p, align 8
-  store i8 %conv9, i8* %13, align 1
-  br label %if.end11
+  %9 = load i32, i32* %digval, align 4
+  %add5 = add i32 %9, 48
+  %conv6 = trunc i32 %add5 to i8
+  %10 = load i8*, i8** %p, align 8
+  %incdec.ptr7 = getelementptr inbounds i8, i8* %10, i32 1
+  store i8* %incdec.ptr7, i8** %p, align 8
+  store i8 %conv6, i8* %10, align 1
+  br label %if.end
 
-if.end11:                                         ; preds = %if.else, %if.then4
+if.end:                                           ; preds = %if.else, %if.then
   br label %do.cond
 
-do.cond:                                          ; preds = %if.end11
-  %14 = load i32, i32* %val.addr, align 4
-  %cmp12 = icmp sgt i32 %14, 0
-  br i1 %cmp12, label %do.body, label %do.end
+do.cond:                                          ; preds = %if.end
+  %11 = load i64, i64* %val.addr, align 8
+  %cmp8 = icmp ugt i64 %11, 0
+  br i1 %cmp8, label %do.body, label %do.end
 
 do.end:                                           ; preds = %do.cond
-  %15 = load i8*, i8** %p, align 8
-  %incdec.ptr14 = getelementptr inbounds i8, i8* %15, i32 -1
-  store i8* %incdec.ptr14, i8** %p, align 8
-  store i8 32, i8* %15, align 1
-  br label %do.body15
+  %12 = load i8*, i8** %p, align 8
+  %incdec.ptr10 = getelementptr inbounds i8, i8* %12, i32 -1
+  store i8* %incdec.ptr10, i8** %p, align 8
+  store i8 32, i8* %12, align 1
+  br label %do.body11
 
-do.body15:                                        ; preds = %do.cond18, %do.end
-  %16 = load i8*, i8** %p, align 8
-  %17 = load i8, i8* %16, align 1
-  store i8 %17, i8* %temp, align 1
-  %18 = load i8*, i8** %firstdig, align 8
-  %19 = load i8, i8* %18, align 1
+do.body11:                                        ; preds = %do.cond14, %do.end
+  %13 = load i8*, i8** %p, align 8
+  %14 = load i8, i8* %13, align 1
+  store i8 %14, i8* %temp, align 1
+  %15 = load i8*, i8** %firstdig, align 8
+  %16 = load i8, i8* %15, align 1
+  %17 = load i8*, i8** %p, align 8
+  store i8 %16, i8* %17, align 1
+  %18 = load i8, i8* %temp, align 1
+  %19 = load i8*, i8** %firstdig, align 8
+  store i8 %18, i8* %19, align 1
   %20 = load i8*, i8** %p, align 8
-  store i8 %19, i8* %20, align 1
-  %21 = load i8, i8* %temp, align 1
+  %incdec.ptr12 = getelementptr inbounds i8, i8* %20, i32 -1
+  store i8* %incdec.ptr12, i8** %p, align 8
+  %21 = load i8*, i8** %firstdig, align 8
+  %incdec.ptr13 = getelementptr inbounds i8, i8* %21, i32 1
+  store i8* %incdec.ptr13, i8** %firstdig, align 8
+  br label %do.cond14
+
+do.cond14:                                        ; preds = %do.body11
   %22 = load i8*, i8** %firstdig, align 8
-  store i8 %21, i8* %22, align 1
   %23 = load i8*, i8** %p, align 8
-  %incdec.ptr16 = getelementptr inbounds i8, i8* %23, i32 -1
-  store i8* %incdec.ptr16, i8** %p, align 8
-  %24 = load i8*, i8** %firstdig, align 8
-  %incdec.ptr17 = getelementptr inbounds i8, i8* %24, i32 1
-  store i8* %incdec.ptr17, i8** %firstdig, align 8
-  br label %do.cond18
+  %cmp15 = icmp ult i8* %22, %23
+  br i1 %cmp15, label %do.body11, label %do.end17
 
-do.cond18:                                        ; preds = %do.body15
-  %25 = load i8*, i8** %firstdig, align 8
-  %26 = load i8*, i8** %p, align 8
-  %cmp19 = icmp ult i8* %25, %26
-  br i1 %cmp19, label %do.body15, label %do.end21
-
-do.end21:                                         ; preds = %do.cond18
-  %27 = load i8*, i8** %buf.addr, align 8
-  ret i8* %27
+do.end17:                                         ; preds = %do.cond14
+  %24 = load i8*, i8** %buf.addr, align 8
+  ret i8* %24
 }
 
 ; Function Attrs: noinline nounwind optnone
@@ -240,8 +226,9 @@ entry:
   store i8* %1, i8** %ii_b, align 8
   %call3 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.3, i64 0, i64 0))
   %2 = load i32, i32* %b, align 4
+  %conv = sext i32 %2 to i64
   %3 = load i8*, i8** %ii_b, align 8
-  %call4 = call i8* @my_itoa(i32 %2, i8* %3, i32 10)
+  %call4 = call i8* @my_itoa(i64 %conv, i8* %3, i32 10)
   store i8* %call4, i8** %ii_b, align 8
   %call5 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.4, i64 0, i64 0))
   %4 = load i8*, i8** %ii_b, align 8
