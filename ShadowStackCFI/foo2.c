@@ -13,7 +13,7 @@ char *my_itoa(int val, char *buf, unsigned radix)
     char   *firstdig;      
     char   temp;           
     unsigned   digval;     
-    puts("----------1 in my_itoa----------");
+    //puts("----------1 in my_itoa----------");
     p = buf;
     if(val <0)
     {
@@ -21,7 +21,7 @@ char *my_itoa(int val, char *buf, unsigned radix)
         val = (unsigned long)(-(long)val);
     }
     firstdig = p; 
-    puts("----------2 in my_itoa----------");
+    //puts("----------2 in my_itoa----------");
     do{
         digval = (unsigned)(val % radix);
         val /= radix;
@@ -40,7 +40,7 @@ char *my_itoa(int val, char *buf, unsigned radix)
         --p;
         ++firstdig;        
     }while(firstdig < p);  
-    puts("----------3 in my_itoa----------");
+    //puts("----------3 in my_itoa----------");
     return buf;
 }
 
