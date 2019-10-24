@@ -23,6 +23,7 @@ char *shadow_stack = (char *)&__ss_start;
 /* Weijie: add target table pointer */
 char *target_table = (char *)&__cfi_start;
 size_t target_table_size = 0;
+Elf64_Addr *call_target;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
@@ -555,14 +556,14 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
-			PrintDebugInfo("setting bounds...\n");
+			//PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
 			//Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
 			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
 			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], movabs_imm_offset);
 			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[3], movabs_imm_offset);
 			//Weijie:
-			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
 			//0x3fffffffffffffff <---> upper bound
 			//0x4fffffffffffffff <---> lower bound
@@ -606,13 +607,13 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 				(strncmp("pop", backward_ins[5].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
-			PrintDebugInfo("setting bounds...\n");
+			//PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
 			Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
 			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], cmp_rsp_imm_offset);
 			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[3], cmp_rsp_imm_offset);
 			//Weijie:
-			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
 			rewrite_imm32(imm1_addr, data_upper_bound);
 			rewrite_imm32(imm2_addr, data_lower_bound);
@@ -781,7 +782,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	//Weijie: rewrite CFICheckAddressNum, replace with value of 'call_target_idx'
-	//Weijie: rewrite CFICheckAddressPtr, replace with value of '(char *)&__cfi_start'
+	//Weijie: rewrite CFICheckAddressPtr, replace with value of 'call_target'
 	//Weijie: rewrite shadow stack base pointer, replace with value of '(char *)&__ss_start'
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
@@ -817,7 +818,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						if_calltg = 1;
 						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
-						rewrite_imm(imm_addr, (Elf64_Addr)&__cfi_start);
+						rewrite_imm(imm_addr, (Elf64_Addr)call_target);
 					}
 				}
 			}
@@ -1101,9 +1102,8 @@ void relocate_entrylabel()
 	// so we can directly replace symbols to these addresses
 
 	//Weijie: redirect call target to the new section: calltg
-	//Elf64_Addr *call_target;
-	//Weijie: use the global variable: target_table
-	Elf64_Addr *call_target = (Elf64_Addr *)target_table;
+	//Weijie & Xinyu: target_table starts those label strings, while call_target starts those target addresses;
+	call_target = (Elf64_Addr *)target_table + target_table_size + 10;
 
 	unsigned call_target_idx = 0;
 
