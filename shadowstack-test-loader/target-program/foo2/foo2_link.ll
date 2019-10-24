@@ -4,13 +4,11 @@ target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
 @.str = private unnamed_addr constant [29 x i8] c"----------1 in fun----------\00", align 1
-@.str.1 = private unnamed_addr constant [33 x i8] c"----------1 in my_itoa----------\00", align 1
-@.str.2 = private unnamed_addr constant [33 x i8] c"----------2 in my_itoa----------\00", align 1
-@.str.3 = private unnamed_addr constant [22 x i8] c"----------1----------\00", align 1
-@.str.4 = private unnamed_addr constant [22 x i8] c"----------2----------\00", align 1
-@.str.5 = private unnamed_addr constant [22 x i8] c"----------3----------\00", align 1
-@.str.6 = private unnamed_addr constant [22 x i8] c"----------4----------\00", align 1
-@.str.7 = private unnamed_addr constant [9 x i8] c"success!\00", align 1
+@.str.1 = private unnamed_addr constant [22 x i8] c"----------1----------\00", align 1
+@.str.2 = private unnamed_addr constant [22 x i8] c"----------2----------\00", align 1
+@.str.3 = private unnamed_addr constant [22 x i8] c"----------3----------\00", align 1
+@.str.4 = private unnamed_addr constant [22 x i8] c"----------4----------\00", align 1
+@.str.5 = private unnamed_addr constant [9 x i8] c"success!\00", align 1
 
 ; Function Attrs: noinline nounwind optnone
 define dso_local void @CFICheck(i64 %target) #0 {
@@ -111,120 +109,104 @@ entry:
 declare dso_local i32 @puts(i8*) #2
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i8* @my_itoa(i32 %val, i8* %buf, i32 %radix) #0 {
+define dso_local i8* @my_itoa(i64 %val, i8* %buf, i32 %radix) #0 {
 entry:
-  %val.addr = alloca i32, align 4
+  %val.addr = alloca i64, align 8
   %buf.addr = alloca i8*, align 8
   %radix.addr = alloca i32, align 4
   %p = alloca i8*, align 8
   %firstdig = alloca i8*, align 8
   %temp = alloca i8, align 1
   %digval = alloca i32, align 4
-  store i32 %val, i32* %val.addr, align 4
+  store i64 %val, i64* %val.addr, align 8
   store i8* %buf, i8** %buf.addr, align 8
   store i32 %radix, i32* %radix.addr, align 4
-  %call = call i32 @puts(i8* getelementptr inbounds ([33 x i8], [33 x i8]* @.str.1, i64 0, i64 0))
   %0 = load i8*, i8** %buf.addr, align 8
   store i8* %0, i8** %p, align 8
-  %1 = load i32, i32* %val.addr, align 4
-  %cmp = icmp slt i32 %1, 0
-  br i1 %cmp, label %if.then, label %if.end
-
-if.then:                                          ; preds = %entry
-  %2 = load i8*, i8** %p, align 8
-  %incdec.ptr = getelementptr inbounds i8, i8* %2, i32 1
-  store i8* %incdec.ptr, i8** %p, align 8
-  store i8 45, i8* %2, align 1
-  %3 = load i32, i32* %val.addr, align 4
-  %conv = sext i32 %3 to i64
-  %sub = sub nsw i64 0, %conv
-  %conv1 = trunc i64 %sub to i32
-  store i32 %conv1, i32* %val.addr, align 4
-  br label %if.end
-
-if.end:                                           ; preds = %if.then, %entry
-  %4 = load i8*, i8** %p, align 8
-  store i8* %4, i8** %firstdig, align 8
-  %call2 = call i32 @puts(i8* getelementptr inbounds ([33 x i8], [33 x i8]* @.str.2, i64 0, i64 0))
+  %1 = load i8*, i8** %p, align 8
+  store i8* %1, i8** %firstdig, align 8
   br label %do.body
 
-do.body:                                          ; preds = %do.cond, %if.end
-  %5 = load i32, i32* %val.addr, align 4
-  %6 = load i32, i32* %radix.addr, align 4
-  %rem = urem i32 %5, %6
-  store i32 %rem, i32* %digval, align 4
-  %7 = load i32, i32* %radix.addr, align 4
-  %8 = load i32, i32* %val.addr, align 4
-  %div = udiv i32 %8, %7
-  store i32 %div, i32* %val.addr, align 4
-  %9 = load i32, i32* %digval, align 4
-  %cmp3 = icmp ugt i32 %9, 9
-  br i1 %cmp3, label %if.then5, label %if.else
+do.body:                                          ; preds = %do.cond, %entry
+  %2 = load i64, i64* %val.addr, align 8
+  %3 = load i32, i32* %radix.addr, align 4
+  %conv = zext i32 %3 to i64
+  %rem = urem i64 %2, %conv
+  %conv1 = trunc i64 %rem to i32
+  store i32 %conv1, i32* %digval, align 4
+  %4 = load i32, i32* %radix.addr, align 4
+  %conv2 = zext i32 %4 to i64
+  %5 = load i64, i64* %val.addr, align 8
+  %div = udiv i64 %5, %conv2
+  store i64 %div, i64* %val.addr, align 8
+  %6 = load i32, i32* %digval, align 4
+  %cmp = icmp ugt i32 %6, 9
+  br i1 %cmp, label %if.then, label %if.else
 
-if.then5:                                         ; preds = %do.body
-  %10 = load i32, i32* %digval, align 4
-  %sub6 = sub i32 %10, 10
-  %add = add i32 %sub6, 97
-  %conv7 = trunc i32 %add to i8
-  %11 = load i8*, i8** %p, align 8
-  %incdec.ptr8 = getelementptr inbounds i8, i8* %11, i32 1
-  store i8* %incdec.ptr8, i8** %p, align 8
-  store i8 %conv7, i8* %11, align 1
-  br label %if.end12
+if.then:                                          ; preds = %do.body
+  %7 = load i32, i32* %digval, align 4
+  %sub = sub i32 %7, 10
+  %add = add i32 %sub, 97
+  %conv4 = trunc i32 %add to i8
+  %8 = load i8*, i8** %p, align 8
+  %incdec.ptr = getelementptr inbounds i8, i8* %8, i32 1
+  store i8* %incdec.ptr, i8** %p, align 8
+  store i8 %conv4, i8* %8, align 1
+  br label %if.end
 
 if.else:                                          ; preds = %do.body
-  %12 = load i32, i32* %digval, align 4
-  %add9 = add i32 %12, 48
-  %conv10 = trunc i32 %add9 to i8
-  %13 = load i8*, i8** %p, align 8
-  %incdec.ptr11 = getelementptr inbounds i8, i8* %13, i32 1
-  store i8* %incdec.ptr11, i8** %p, align 8
-  store i8 %conv10, i8* %13, align 1
-  br label %if.end12
+  %9 = load i32, i32* %digval, align 4
+  %add5 = add i32 %9, 48
+  %conv6 = trunc i32 %add5 to i8
+  %10 = load i8*, i8** %p, align 8
+  %incdec.ptr7 = getelementptr inbounds i8, i8* %10, i32 1
+  store i8* %incdec.ptr7, i8** %p, align 8
+  store i8 %conv6, i8* %10, align 1
+  br label %if.end
 
-if.end12:                                         ; preds = %if.else, %if.then5
+if.end:                                           ; preds = %if.else, %if.then
   br label %do.cond
 
-do.cond:                                          ; preds = %if.end12
-  %14 = load i32, i32* %val.addr, align 4
-  %cmp13 = icmp sgt i32 %14, 0
-  br i1 %cmp13, label %do.body, label %do.end
+do.cond:                                          ; preds = %if.end
+  %11 = load i64, i64* %val.addr, align 8
+  %cmp8 = icmp ugt i64 %11, 0
+  br i1 %cmp8, label %do.body, label %do.end
 
 do.end:                                           ; preds = %do.cond
-  %15 = load i8*, i8** %p, align 8
-  %incdec.ptr15 = getelementptr inbounds i8, i8* %15, i32 -1
-  store i8* %incdec.ptr15, i8** %p, align 8
-  store i8 32, i8* %15, align 1
-  br label %do.body16
+  %12 = load i8*, i8** %p, align 8
+  %incdec.ptr10 = getelementptr inbounds i8, i8* %12, i32 -1
+  store i8* %incdec.ptr10, i8** %p, align 8
+  store i8 32, i8* %12, align 1
+  br label %do.body11
 
-do.body16:                                        ; preds = %do.cond19, %do.end
-  %16 = load i8*, i8** %p, align 8
-  %17 = load i8, i8* %16, align 1
-  store i8 %17, i8* %temp, align 1
-  %18 = load i8*, i8** %firstdig, align 8
-  %19 = load i8, i8* %18, align 1
+do.body11:                                        ; preds = %do.cond14, %do.end
+  %13 = load i8*, i8** %p, align 8
+  %14 = load i8, i8* %13, align 1
+  store i8 %14, i8* %temp, align 1
+  %15 = load i8*, i8** %firstdig, align 8
+  %16 = load i8, i8* %15, align 1
+  %17 = load i8*, i8** %p, align 8
+  store i8 %16, i8* %17, align 1
+  %18 = load i8, i8* %temp, align 1
+  %19 = load i8*, i8** %firstdig, align 8
+  store i8 %18, i8* %19, align 1
   %20 = load i8*, i8** %p, align 8
-  store i8 %19, i8* %20, align 1
-  %21 = load i8, i8* %temp, align 1
+  %incdec.ptr12 = getelementptr inbounds i8, i8* %20, i32 -1
+  store i8* %incdec.ptr12, i8** %p, align 8
+  %21 = load i8*, i8** %firstdig, align 8
+  %incdec.ptr13 = getelementptr inbounds i8, i8* %21, i32 1
+  store i8* %incdec.ptr13, i8** %firstdig, align 8
+  br label %do.cond14
+
+do.cond14:                                        ; preds = %do.body11
   %22 = load i8*, i8** %firstdig, align 8
-  store i8 %21, i8* %22, align 1
   %23 = load i8*, i8** %p, align 8
-  %incdec.ptr17 = getelementptr inbounds i8, i8* %23, i32 -1
-  store i8* %incdec.ptr17, i8** %p, align 8
-  %24 = load i8*, i8** %firstdig, align 8
-  %incdec.ptr18 = getelementptr inbounds i8, i8* %24, i32 1
-  store i8* %incdec.ptr18, i8** %firstdig, align 8
-  br label %do.cond19
+  %cmp15 = icmp ult i8* %22, %23
+  br i1 %cmp15, label %do.body11, label %do.end17
 
-do.cond19:                                        ; preds = %do.body16
-  %25 = load i8*, i8** %firstdig, align 8
-  %26 = load i8*, i8** %p, align 8
-  %cmp20 = icmp ult i8* %25, %26
-  br i1 %cmp20, label %do.body16, label %do.end22
-
-do.end22:                                         ; preds = %do.cond19
-  %27 = load i8*, i8** %buf.addr, align 8
-  ret i8* %27
+do.end17:                                         ; preds = %do.cond14
+  %24 = load i8*, i8** %buf.addr, align 8
+  ret i8* %24
 }
 
 ; Function Attrs: noinline nounwind optnone
@@ -235,22 +217,23 @@ entry:
   %i_b = alloca [8 x i8], align 1
   %ii_b = alloca i8*, align 8
   store i32 ()* @fun, i32 ()** %fp, align 8
-  %call = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.3, i64 0, i64 0))
+  %call = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.1, i64 0, i64 0))
   %0 = load i32 ()*, i32 ()** %fp, align 8
   %call1 = call i32 %0()
   store i32 %call1, i32* %b, align 4
-  %call2 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.4, i64 0, i64 0))
+  %call2 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.2, i64 0, i64 0))
   %1 = bitcast [8 x i8]* %i_b to i8*
   store i8* %1, i8** %ii_b, align 8
-  %call3 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.5, i64 0, i64 0))
+  %call3 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.3, i64 0, i64 0))
   %2 = load i32, i32* %b, align 4
+  %conv = sext i32 %2 to i64
   %3 = load i8*, i8** %ii_b, align 8
-  %call4 = call i8* @my_itoa(i32 %2, i8* %3, i32 10)
+  %call4 = call i8* @my_itoa(i64 %conv, i8* %3, i32 10)
   store i8* %call4, i8** %ii_b, align 8
-  %call5 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.6, i64 0, i64 0))
+  %call5 = call i32 @puts(i8* getelementptr inbounds ([22 x i8], [22 x i8]* @.str.4, i64 0, i64 0))
   %4 = load i8*, i8** %ii_b, align 8
   %call6 = call i32 @puts(i8* %4)
-  %call7 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.7, i64 0, i64 0))
+  %call7 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.5, i64 0, i64 0))
   call void @exit(i32 0) #4
   unreachable
 }

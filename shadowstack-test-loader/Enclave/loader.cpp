@@ -1089,7 +1089,8 @@ Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 //Weijie: remember to do ecall_receive_entrylabel first. And do relocate_entrylabel until relocate() is done.
 void ecall_receive_entrylabel(char *entrylabel, int sz)
 {
-	dlog("target_table at %p (%lu)", target_table, target_table_size);
+	pr_progress("loading entrylabels");
+	dlog("target_table at %p", target_table);
 	cpy(target_table, entrylabel, (size_t)sz);
 	target_table_size = sz;
 }
@@ -1121,13 +1122,10 @@ void relocate_entrylabel()
 	call_target_idx = 0;
 
 	unsigned buffer_idx = 0;
-	for (unsigned i = 0; i < target_table_size; ++ i) {
-		//if (entrylabel[i] == '\0') {
+	for (unsigned i = 0; i < target_table_size; ++i) {
+		//Weijie: rewrite the labels with their addresses
 		if (target_table[i] == '\0') {
-			//dlog("entry label: %s", entrylabel+buffer_idx);
 			dlog("entry label: %s", target_table + buffer_idx);
-			//Weijie: rewrite the labels with their addresses
-			//call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, strlen(entrylabel+buffer_idx));
 			call_target[call_target_idx ++] = search_symtab_by_name(target_table + buffer_idx, strlen(target_table + buffer_idx));
 			dlog("call target address: 0x%lx", call_target[call_target_idx-1]);
 			buffer_idx = i+1;
