@@ -1146,7 +1146,7 @@ void ecall_receive_binary(char *binary, int sz)
 	dlog("program at %p (%lu)", program, program_size);
 	dlog(".sgx.ssblob = %p", (void*)(&__ss_start));
 	dlog(".sgx.calltg = %p", (void*)(&__cfi_start));
-	dlog("target_table at %p (%lu)", target_table, target_table_size);
+	dlog("target string table at %p (%lu)", target_table, target_table_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
 	dlog(".sgxdata = %p", _SGXDATA_BASE);
 	dlog("elf start = %p", (void*)(&__elf_start));
@@ -1170,14 +1170,15 @@ void ecall_receive_binary(char *binary, int sz)
 	relocate();
 
 	pr_progress("relocating entrylabels");
+	dlog("target string table at %p (%lu)", target_table, target_table_size);
 	relocate_entrylabel();
+	dlog("target address table at %p, total #:(%lu)", call_target, call_target_idx_global);
 
-	pr_progress("disassembling and checking");
+	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 	
-	//Weijie: no we don't need this disasm
 	pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
