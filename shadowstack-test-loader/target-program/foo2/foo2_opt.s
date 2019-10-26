@@ -122,6 +122,7 @@ CFICheck:                               # @CFICheck
 	movq	(%r11), %r10
 	addq	%r11, %r10
 	subq	$8, (%r11)
+	movq	(%r10), %r10
 	cmpq	%r10, (%rsp)
 	jne	.LBB0_14
 	retq
@@ -209,7 +210,7 @@ fun:                                    # @fun
 	addq	%r11, %r10
 	subq	$8, (%r11)
 	cmpq	%r10, (%rsp)
-	jne	.LBB1_2
+	je	.LBB1_2
 	retq
 # %bb.1:
 	popq	%rax
@@ -517,6 +518,7 @@ my_itoa:                                # @my_itoa
 	movq	(%r11), %r10
 	addq	%r11, %r10
 	subq	$8, (%r11)
+	movq	(%r10), %r10
 	cmpq	%r10, (%rsp)
 	jne	.LBB2_11
 	retq
@@ -556,8 +558,7 @@ enclave_main:                           # @enclave_main
 	movabsq	$.L.str.1, %rdi
 	callq	puts
 	movq	-32(%rbp), %rbx
-	movq	%rbx, %rdi
-	callq	CFICheck
+	movq	%rbx, %rdi	#callq	CFICheck
 	callq	*%rbx
 	pushq	%rbx
 	pushq	%rax
