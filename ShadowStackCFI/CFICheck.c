@@ -25,12 +25,19 @@ void CFICheck(long long target)
         else if (CFICheckAddressPtr[mid] > target)
         {
             ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 10);
-            puts("larger!\n");
-            high = mid - 1;
+			puts("larger!\n");
+			puts("CFICheckAddress[mid]: ");
+            puts(ii_b);
+            puts("\n");
+			high = mid - 1;
         }
         else
         {
+            ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 10);
             puts("smaller!\n");
+			puts("CFICheckAddress[mid]: ");
+            puts(ii_b);
+            puts("\n");
             low = mid + 1;
         }
     }
