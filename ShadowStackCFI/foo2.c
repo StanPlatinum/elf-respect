@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "enclave.h"
 
 int fun()
