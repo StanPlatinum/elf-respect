@@ -197,7 +197,7 @@ fun:                                    # @fun
 	addq	$8, (%r11)
 	movq	(%r11), %r10
 	addq	%r10, %r11
-	movq	%rsp, %r10	# movq	(%rsp), %r10
+	movq	(%rsp), %r10	# movq	(%rsp), %r10
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
@@ -209,7 +209,8 @@ fun:                                    # @fun
 	movq	(%r11), %r10
 	addq	%r11, %r10
 	subq	$8, (%r11)
-	cmpq	(%r10), %rsp	#cmpq	%r10, (%rsp)
+	movq	(%r10), %r11
+	cmpq	%r11, (%rsp)	#cmpq	%r10, (%rsp)
 	jne	.LBB1_2
 	retq
 # %bb.1:

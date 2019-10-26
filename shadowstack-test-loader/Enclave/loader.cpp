@@ -711,6 +711,7 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 					(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
 					(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
 					(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+					(strncmp("mov", forward_ins[4].mnemonic, 3) == 0) &&
 					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
 					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
 			   ){
@@ -921,13 +922,14 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 
 
 			if (j >= 6){
-				cs_insn forward_insn[6];
-				forward_insn[0] = insn[j-6];
-				forward_insn[1] = insn[j-5];
-				forward_insn[2] = insn[j-4];
-				forward_insn[3] = insn[j-3];
-				forward_insn[4] = insn[j-2];
-				forward_insn[5] = insn[j-1];
+				cs_insn forward_insn[7];
+				forward_insn[0] = insn[j-7];
+				forward_insn[1] = insn[j-6];
+				forward_insn[2] = insn[j-5];
+				forward_insn[3] = insn[j-4];
+				forward_insn[4] = insn[j-3];
+				forward_insn[5] = insn[j-2];
+				forward_insn[6] = insn[j-1];
 				longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
 			}
 			else{
