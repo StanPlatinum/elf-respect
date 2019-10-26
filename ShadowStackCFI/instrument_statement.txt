@@ -16,7 +16,8 @@
 	movq	(%r11), %r10
 	addq	%r11, %r10
 	subq	$8, (%r11)
-	cmpq	%r10, (%rsp)
+	movq	(%r10), %r11
+	cmpq	%r11, (%rsp)
 	jne	exit_label
 
     在函数末尾进行如下插桩(即ret之后)，此处插桩目的是进行exit系统调用：
