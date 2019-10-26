@@ -100,15 +100,6 @@ while.end:                                        ; preds = %if.then, %while.con
 declare dso_local void @exit(i32) #1
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @fun() #0 {
-entry:
-  %call = call i32 @puts(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @.str, i64 0, i64 0))
-  ret i32 1
-}
-
-declare dso_local i32 @puts(i8*) #2
-
-; Function Attrs: noinline nounwind optnone
 define dso_local i8* @my_itoa(i64 %val, i8* %buf, i32 %radix) #0 {
 entry:
   %val.addr = alloca i64, align 8
@@ -208,6 +199,15 @@ do.end17:                                         ; preds = %do.cond14
   %24 = load i8*, i8** %buf.addr, align 8
   ret i8* %24
 }
+
+; Function Attrs: noinline nounwind optnone
+define dso_local i32 @fun() #0 {
+entry:
+  %call = call i32 @puts(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @.str, i64 0, i64 0))
+  ret i32 1
+}
+
+declare dso_local i32 @puts(i8*) #2
 
 ; Function Attrs: noinline nounwind optnone
 define dso_local void @enclave_main() #0 {
