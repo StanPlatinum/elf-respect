@@ -1019,16 +1019,16 @@ void rewrite_whole()
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
-				else {
-					//Weijie: rewrite Memory write and long call/ret, not including CFICheck
-					textAddr = symtab[j].st_value;
-					buf = (unsigned char *)malloc(textSize);
-					//Weijie: fill in buf
-					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("disassembling symbol '%s': textAddr: %p, textSize: %u", &strtab[symtab[j].st_name], textAddr, textSize);
-					rv = cs_rewrite_entry(buf, textSize, textAddr);
-					free(buf);
-				}
+				//else {
+				//Weijie: rewrite Memory write and long call/ret, not including CFICheck
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("disassembling symbol '%s': textAddr: %p, textSize: %u", &strtab[symtab[j].st_name], textAddr, textSize);
+				rv = cs_rewrite_entry(buf, textSize, textAddr);
+				free(buf);
+				//}
 			}
 		}
 	}
