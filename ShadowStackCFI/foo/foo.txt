@@ -1,5 +1,0 @@
-foo_CFICheck
-foo_abort
-foo_fun
-foo_main
-foo_printf
