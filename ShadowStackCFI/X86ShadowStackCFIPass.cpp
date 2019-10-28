@@ -274,8 +274,10 @@ namespace {
             BuildMI(MBB, MI, DL, TII->get(X86::ADD64rr)).addReg(X86::R10).addDef(X86::R10).addReg(X86::R11);
             // sub [r11], 8
             BuildMI(MBB, MI, DL, TII->get(X86::SUB64mi8)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addImm(8);
-            // cmp [rsp], r10
-            addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::CMP64mr)), X86::RSP).addReg(X86::R10);
+            // mov r11, [r10]
+            addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addDef(X86::R11), X86::R10);
+            // cmp [rsp], r11
+            addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::CMP64mr)), X86::RSP).addReg(X86::R11);
             // jne trap
             BuildMI(MBB, MI, DL, TII->get(X86::JCC_1)).addMBB(&TrapBB).addImm(5);
             MBB.addSuccessor(&TrapBB);
@@ -596,6 +598,21 @@ namespace {
             }
         }
         
+        bool checkCFIFun(MachineInstr &MI)
+        {
+            if (MI.getOpcode() == CALL64pcrel32)
+            {
+                MachineOperand MO = MI.getOperand(0);
+                const GlobalValue* GV = MO.getGlobal();
+                
+                if (GV->getName() == "CFICheck")
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
+
         //修改地址检查Fun的参数
         bool insertCFIFun(MachineFunction &MF)
         {
@@ -609,7 +626,14 @@ namespace {
                     if (MI.getOpcode() == CALL64r)
                     {//call reg1
                         MCPhysReg reg1 = MI.getOperand(0).getReg();
-                        MII--;MII--;
+                        MII--;
+                        if (!checkCFIFun(*MII))
+                        {
+                            MII++;
+                            continue;
+                        }
+                        
+                        MII--;
                         MachineInstr &MI1 = *MII;
                         MCPhysReg reg2 = MI1.getOperand(0).getReg();
                         const TargetInstrInfo *TII;
@@ -626,7 +650,13 @@ namespace {
                     {//call [reg1]
                         MCPhysReg reg1 = MI.getOperand(0).getReg();
                         int64_t imm = MI.getOperand(3).getImm();
-                        MII--;MII--;
+                        MII--;
+                        if (!checkCFIFun(*MII))
+                        {
+                            MII++;
+                            continue;
+                        }
+                        MII--;
                         MachineInstr &MI1 = *MII;
                         MCPhysReg reg2 = MI1.getOperand(0).getReg();
                         const TargetInstrInfo *TII;
@@ -688,6 +718,7 @@ namespace {
         //找到mov指令并插桩,检查mov目标是否合法，不合法则跳转(使用)
         bool movInsert(MachineFunction &Func)
         {
+            bool hasStore = false;
             const TargetInstrInfo *TII;
             MachineRegisterInfo *MRI;
             printf("\nX86myMov work\n");
@@ -711,9 +742,16 @@ namespace {
                 for (MachineBasicBlock::iterator MBBI = (*MBB).begin(), MBBI_end = (*MBB).end(); MBBI != MBBI_end; MBBI++)
                 {
                     MachineInstr &MI = *MBBI;
-                    printf( "opcode = %d, operandNo = %d, mayStore = %d, memoryNo = %d\n", MI.getOpcode(), MI.getNumOperands(), MI.mayStore(), MI.getNumMemOperands());
+                    // printf( "opcode = %d, operandNo = %d, mayStore = %d, memoryNo = %d\n", MI.getOpcode(), MI.getNumOperands(), MI.mayStore(), MI.getNumMemOperands());
+                    
                     if (MI.mayStore() == false)
+                    {
                         continue;
+                    }
+                    else
+                    {
+                        hasStore = true;
+                    }
 
                     SmallVector<unsigned, 2> MemOps;
                     if (FindMemoryOperand(MI, &MemOps))
@@ -725,11 +763,23 @@ namespace {
                             MachineOperand &IndexReg = MI.getOperand(MemOp + 2);
                             MachineOperand &Disp = MI.getOperand(MemOp + 3);
                             MachineOperand &SegmentReg = MI.getOperand(MemOp + 4);
-                  
+
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RBX);
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
+                            if (Disp.isImm())
+                            {
+                                printMachineInstr(MI, 0);
+                                BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
                       .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addImm(Disp.getImm()).addReg(SegmentReg.getReg());
+                            }
+                            else
+                            {
+                                outs() << "!!!!!!!!!!!!!!\n!!!!!!!!!!\n!!!!!!!!!!\n";
+                                printMachineInstr(MI, 0);
+                                BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
+                      .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addGlobalAddress(Disp.getGlobal()).addReg(SegmentReg.getReg());
+                            }
+                            
                             
                             //检查下界，如果rbx>rax，则exit
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x3FFFFFFFFFFFFFFF);
@@ -748,7 +798,12 @@ namespace {
                     }
                 }
             }
-            return true;
+            if (hasStore == false)
+            {
+                Func.erase(Trap);
+            }
+            
+            return hasStore;
         }
 
         virtual bool runOnMachineFunction(MachineFunction &MF) {
