@@ -30,18 +30,21 @@
 
 ######## Checker Settings ########
 
+SGX_SRC_PATH = /root/linux-sgx
 #SGX_SRC_PATH = /home/weijliu/linux-sgx
-SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
+#SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
 TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
 
+ELFUTILS_PATH = /root/elfutils4sgx/elfutils-0.176
 #ELFUTILS_PATH = /home/weijliu/elfutils4sgx/elfutils-0.176
-ELFUTILS_PATH = /home/liuweijie/elfutils4sgx/elfutils-0.176
+#ELFUTILS_PATH = /home/liuweijie/elfutils4sgx/elfutils-0.176
 ELFUTILS_INC_PATH = $(ELFUTILS_PATH)/libelf
 
 #MUSL_LIBC_PATH = /root/musl-1.1.22
 
+CAPSTONE_PATH = /root/capstone
 #CAPSTONE_PATH = /home/weijliu/capstone
-CAPSTONE_PATH = /home/liuweijie/newdisk/capstone
+#CAPSTONE_PATH = /home/liuweijie/newdisk/capstone
 CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
 
 ###### Link Path Settings ######
@@ -77,8 +80,8 @@ endif
 ######## SGX SDK Settings ########
 
 SGX_SDK ?= /opt/intel/sgxsdk
-#SGX_MODE ?= HW
-SGX_MODE ?= SIM
+SGX_MODE ?= HW
+#SGX_MODE ?= SIM
 SGX_DEBUG ?= 1
 SGX_ARCH ?= x64
 
