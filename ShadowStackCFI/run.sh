@@ -13,4 +13,4 @@ echo $CFICheck_Func_PATH
 
 echo "start generating compiled binary..."
 
-python3 CFIShell.py $LLVM_BIN_PATH $CFIHello_So_PATH $TARGET_SOURCE $CFICheck_Func_PATH o
+python3 CFIShell.py $LLVM_BIN_PATH $CFIHello_So_PATH $TARGET_SOURCE $CFICheck_Func_PATH n

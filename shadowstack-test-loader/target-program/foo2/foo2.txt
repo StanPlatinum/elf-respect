@@ -1,6 +1,6 @@
 CFICheck
-exit
-my_itoa
-fun
 puts
+exit
+fun
+my_itoa
 enclave_main
