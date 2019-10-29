@@ -1,5 +1,3 @@
-#include "enclave.h"
-
 char *my_itoa(unsigned long long val, char *buf, unsigned radix)
 {
 	char   *p;

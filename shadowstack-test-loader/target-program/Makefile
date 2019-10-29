@@ -46,7 +46,7 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/my_itoa.o
 
 all: $(LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
