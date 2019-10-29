@@ -81,7 +81,7 @@ for.end:                                          ; preds = %for.cond
   %call6 = call i32 @puts(i8* %13)
   br label %while.cond
 
-while.cond:                                       ; preds = %if.end35, %for.end
+while.cond:                                       ; preds = %if.end33, %for.end
   %14 = load i32, i32* %low, align 4
   %15 = load i32, i32* %high, align 4
   %cmp7 = icmp sle i32 %14, %15
@@ -127,52 +127,46 @@ if.then:                                          ; preds = %while.body
   br label %while.end
 
 if.end:                                           ; preds = %while.body
-  %31 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %32 = load i32, i32* %mid, align 4
-  %idxprom18 = sext i32 %32 to i64
-  %arrayidx19 = getelementptr inbounds i64, i64* %31, i64 %idxprom18
-  %33 = load i64, i64* %arrayidx19, align 8
-  %34 = load i64, i64* %target.addr, align 8
-  %cmp20 = icmp ugt i64 %33, %34
-  br i1 %cmp20, label %if.then22, label %if.else
+  %31 = load i8*, i8** %cfiptr_mid_s, align 8
+  %32 = load i8*, i8** %target_str, align 8
+  %call18 = call i32 @strncmp(i8* %31, i8* %32, i64 16) #4
+  %cmp19 = icmp sgt i32 %call18, 0
+  br i1 %cmp19, label %if.then21, label %if.else
 
-if.then22:                                        ; preds = %if.end
-  %call23 = call i32 @puts(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @.str.5, i64 0, i64 0))
-  %35 = load i32, i32* %mid, align 4
-  %sub24 = sub nsw i32 %35, 1
-  store i32 %sub24, i32* %high, align 4
-  br label %if.end35
+if.then21:                                        ; preds = %if.end
+  %call22 = call i32 @puts(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @.str.5, i64 0, i64 0))
+  %33 = load i32, i32* %mid, align 4
+  %sub23 = sub nsw i32 %33, 1
+  store i32 %sub23, i32* %high, align 4
+  br label %if.end33
 
 if.else:                                          ; preds = %if.end
-  %36 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %37 = load i32, i32* %mid, align 4
-  %idxprom25 = sext i32 %37 to i64
-  %arrayidx26 = getelementptr inbounds i64, i64* %36, i64 %idxprom25
-  %38 = load i64, i64* %arrayidx26, align 8
-  %39 = load i64, i64* %target.addr, align 8
-  %cmp27 = icmp ult i64 %38, %39
-  br i1 %cmp27, label %if.then29, label %if.else32
+  %34 = load i8*, i8** %cfiptr_mid_s, align 8
+  %35 = load i8*, i8** %target_str, align 8
+  %call24 = call i32 @strncmp(i8* %34, i8* %35, i64 16) #4
+  %cmp25 = icmp slt i32 %call24, 0
+  br i1 %cmp25, label %if.then27, label %if.else30
 
-if.then29:                                        ; preds = %if.else
-  %call30 = call i32 @puts(i8* getelementptr inbounds ([28 x i8], [28 x i8]* @.str.6, i64 0, i64 0))
-  %40 = load i32, i32* %mid, align 4
-  %add31 = add nsw i32 %40, 1
-  store i32 %add31, i32* %low, align 4
-  br label %if.end34
+if.then27:                                        ; preds = %if.else
+  %call28 = call i32 @puts(i8* getelementptr inbounds ([28 x i8], [28 x i8]* @.str.6, i64 0, i64 0))
+  %36 = load i32, i32* %mid, align 4
+  %add29 = add nsw i32 %36, 1
+  store i32 %add29, i32* %low, align 4
+  br label %if.end32
 
-if.else32:                                        ; preds = %if.else
-  %call33 = call i32 @puts(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.7, i64 0, i64 0))
+if.else30:                                        ; preds = %if.else
+  %call31 = call i32 @puts(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.7, i64 0, i64 0))
   ret void
 
-if.end34:                                         ; preds = %if.then29
-  br label %if.end35
+if.end32:                                         ; preds = %if.then27
+  br label %if.end33
 
-if.end35:                                         ; preds = %if.end34, %if.then22
-  %call36 = call i32 @puts(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0))
+if.end33:                                         ; preds = %if.end32, %if.then21
+  %call34 = call i32 @puts(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.8, i64 0, i64 0))
   br label %while.cond
 
 while.end:                                        ; preds = %if.then, %while.cond
-  call void @exit(i32 -1) #3
+  call void @exit(i32 -1) #5
   unreachable
 }
 
@@ -180,13 +174,18 @@ declare dso_local i32 @puts(i8*) #1
 
 declare dso_local i8* @my_itoa(i64, i8*, i64) #1
 
+; Function Attrs: nounwind readonly
+declare dso_local i32 @strncmp(i8*, i8*, i64) #2
+
 ; Function Attrs: noreturn nounwind
-declare dso_local void @exit(i32) #2
+declare dso_local void @exit(i32) #3
 
 attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #2 = { noreturn nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #3 = { noreturn nounwind }
+attributes #2 = { nounwind readonly "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { noreturn nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #4 = { nounwind readonly }
+attributes #5 = { noreturn nounwind }
 
 !llvm.module.flags = !{!0}
 !llvm.ident = !{!1}

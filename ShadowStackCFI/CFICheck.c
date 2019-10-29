@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "enclave.h"
 
@@ -49,12 +50,14 @@ void CFICheck(unsigned long long target)
 		{
 			break;
 		}
-		if ((unsigned long long)CFICheckAddressPtr[mid] > target)
+		//if ((unsigned long long)CFICheckAddressPtr[mid] > target)
+		if (strncmp(cfiptr_mid_s, target_str, 16) > 0)
 		{
 			puts("target is smaller than [mid]");
 			high = mid - 1;
 		}
-		else if ((unsigned long long)CFICheckAddressPtr[mid] < target)
+		//else if ((unsigned long long)CFICheckAddressPtr[mid] < target)
+		else if (strncmp(cfiptr_mid_s, target_str, 16) < 0)
 		{
 			puts("target is larger than [mid]");
 			low = mid + 1;

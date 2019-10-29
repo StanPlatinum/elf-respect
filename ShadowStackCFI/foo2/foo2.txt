@@ -1,6 +1,7 @@
 CFICheck
 puts
 my_itoa
+strncmp
 exit
 fun
 enclave_main

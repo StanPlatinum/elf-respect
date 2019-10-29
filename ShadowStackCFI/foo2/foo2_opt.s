@@ -29,7 +29,7 @@ CFICheck:                               # @CFICheck
 	movabsq	$2305843009213693951, %rax # imm = 0x1FFFFFFFFFFFFFFF
 	pushq	%rbx
 	pushq	%rax
-	leaq	-32(%rbp), %rax
+	leaq	-64(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -38,10 +38,10 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -32(%rbp)
+	movq	%rax, -64(%rbp)
 	pushq	%rbx
 	pushq	%rax
-	leaq	-20(%rbp), %rax
+	leaq	-36(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -50,7 +50,7 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movl	$536870911, -20(%rbp)   # imm = 0x1FFFFFFF
+	movl	$536870911, -36(%rbp)   # imm = 0x1FFFFFFF
 	pushq	%rbx
 	pushq	%rax
 	leaq	-16(%rbp), %rax
@@ -63,7 +63,7 @@ CFICheck:                               # @CFICheck
 	popq	%rax
 	popq	%rbx
 	movl	$0, -16(%rbp)
-	movl	-20(%rbp), %eax
+	movl	-36(%rbp), %eax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-12(%rbp), %rax
@@ -93,14 +93,14 @@ CFICheck:                               # @CFICheck
 .LBB0_1:                                # %for.cond
                                         # =>This Inner Loop Header: Depth=1
 	movl	-8(%rbp), %eax
-	cmpl	-20(%rbp), %eax
+	cmpl	-36(%rbp), %eax
 	jge	.LBB0_4
 # %bb.2:                                # %for.body
                                         #   in Loop: Header=BB0_1 Depth=1
 	leaq	-104(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-64(%rbp), %rax
+	leaq	-56(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -109,16 +109,16 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -64(%rbp)
-	movq	-32(%rbp), %rax
+	movq	%rax, -56(%rbp)
+	movq	-64(%rbp), %rax
 	movslq	-8(%rbp), %rcx
 	movq	(%rax,%rcx,8), %rdi
-	movq	-64(%rbp), %rsi
+	movq	-56(%rbp), %rsi
 	movl	$16, %edx
 	callq	my_itoa
 	pushq	%rbx
 	pushq	%rax
-	leaq	-64(%rbp), %rax
+	leaq	-56(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -127,8 +127,8 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -64(%rbp)
-	movq	-64(%rbp), %rdi
+	movq	%rax, -56(%rbp)
+	movq	-56(%rbp), %rdi
 	callq	puts
 # %bb.3:                                # %for.inc
                                         #   in Loop: Header=BB0_1 Depth=1
@@ -153,7 +153,7 @@ CFICheck:                               # @CFICheck
 	leaq	-96(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-56(%rbp), %rax
+	leaq	-32(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -162,14 +162,14 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -56(%rbp)
+	movq	%rax, -32(%rbp)
 	movq	-72(%rbp), %rdi
-	movq	-56(%rbp), %rsi
+	movq	-32(%rbp), %rsi
 	movl	$16, %edx
 	callq	my_itoa
 	pushq	%rbx
 	pushq	%rax
-	leaq	-56(%rbp), %rax
+	leaq	-32(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -178,10 +178,10 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -56(%rbp)
+	movq	%rax, -32(%rbp)
 	movabsq	$.L.str.2, %rdi
 	callq	puts
-	movq	-56(%rbp), %rdi
+	movq	-32(%rbp), %rdi
 	callq	puts
 .LBB0_5:                                # %while.cond
                                         # =>This Inner Loop Header: Depth=1
@@ -245,7 +245,7 @@ CFICheck:                               # @CFICheck
 	leaq	-80(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-40(%rbp), %rax
+	leaq	-24(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -254,18 +254,18 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -40(%rbp)
+	movq	%rax, -24(%rbp)
 	movabsq	$.L.str.4, %rdi
 	callq	puts
-	movq	-32(%rbp), %rax
+	movq	-64(%rbp), %rax
 	movslq	-4(%rbp), %rcx
 	movq	(%rax,%rcx,8), %rdi
-	movq	-40(%rbp), %rsi
+	movq	-24(%rbp), %rsi
 	movl	$16, %edx
 	callq	my_itoa
 	pushq	%rbx
 	pushq	%rax
-	leaq	-40(%rbp), %rax
+	leaq	-24(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_17
@@ -274,8 +274,8 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -40(%rbp)
-	movq	-40(%rbp), %rdi
+	movq	%rax, -24(%rbp)
+	movq	-24(%rbp), %rdi
 	callq	puts
 	movl	-4(%rbp), %eax
 	cmpl	-12(%rbp), %eax
@@ -284,12 +284,13 @@ CFICheck:                               # @CFICheck
 	jmp	.LBB0_16
 .LBB0_8:                                # %if.end
                                         #   in Loop: Header=BB0_5 Depth=1
-	movq	-32(%rbp), %rax
-	movslq	-4(%rbp), %rcx
-	movq	(%rax,%rcx,8), %rax
-	cmpq	-72(%rbp), %rax
-	jbe	.LBB0_10
-# %bb.9:                                # %if.then22
+	movq	-24(%rbp), %rdi
+	movq	-32(%rbp), %rsi
+	movl	$16, %edx
+	callq	strncmp
+	cmpl	$0, %eax
+	jle	.LBB0_10
+# %bb.9:                                # %if.then21
                                         #   in Loop: Header=BB0_5 Depth=1
 	movabsq	$.L.str.5, %rdi
 	callq	puts
@@ -310,12 +311,13 @@ CFICheck:                               # @CFICheck
 	jmp	.LBB0_14
 .LBB0_10:                               # %if.else
                                         #   in Loop: Header=BB0_5 Depth=1
-	movq	-32(%rbp), %rax
-	movslq	-4(%rbp), %rcx
-	movq	(%rax,%rcx,8), %rax
-	cmpq	-72(%rbp), %rax
-	jae	.LBB0_12
-# %bb.11:                               # %if.then29
+	movq	-24(%rbp), %rdi
+	movq	-32(%rbp), %rsi
+	movl	$16, %edx
+	callq	strncmp
+	cmpl	$0, %eax
+	jge	.LBB0_12
+# %bb.11:                               # %if.then27
                                         #   in Loop: Header=BB0_5 Depth=1
 	movabsq	$.L.str.6, %rdi
 	callq	puts
@@ -334,7 +336,7 @@ CFICheck:                               # @CFICheck
 	popq	%rbx
 	movl	%eax, -16(%rbp)
 	jmp	.LBB0_13
-.LBB0_12:                               # %if.else32
+.LBB0_12:                               # %if.else30
 	movabsq	$.L.str.7, %rdi
 	callq	puts
 	addq	$112, %rsp
@@ -347,10 +349,10 @@ CFICheck:                               # @CFICheck
 	cmpq	%r11, (%rsp)
 	jne	.LBB0_18
 	retq
-.LBB0_13:                               # %if.end34
+.LBB0_13:                               # %if.end32
                                         #   in Loop: Header=BB0_5 Depth=1
 	jmp	.LBB0_14
-.LBB0_14:                               # %if.end35
+.LBB0_14:                               # %if.end33
                                         #   in Loop: Header=BB0_5 Depth=1
 	movabsq	$.L.str.8, %rdi
 	callq	puts
