@@ -107,7 +107,7 @@ while.body:                                       ; preds = %while.cond
   %20 = load i32, i32* %mid, align 4
   %conv = sext i32 %20 to i64
   %21 = load i8*, i8** %mid_s, align 8
-  %call9 = call i8* @my_itoa(i64 %conv, i8* %21, i64 10)
+  %call9 = call i8* @my_itoa(i64 %conv, i8* %21, i64 16)
   store i8* %call9, i8** %mid_s, align 8
   %22 = load i8*, i8** %mid_s, align 8
   %call10 = call i32 @puts(i8* %22)

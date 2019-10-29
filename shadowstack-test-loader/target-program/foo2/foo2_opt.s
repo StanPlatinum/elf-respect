@@ -226,7 +226,7 @@ CFICheck:                               # @CFICheck
 	callq	puts
 	movslq	-4(%rbp), %rdi
 	movq	-48(%rbp), %rsi
-	movl	$10, %edx
+	movl	$16, %edx
 	callq	my_itoa
 	pushq	%rbx
 	pushq	%rax

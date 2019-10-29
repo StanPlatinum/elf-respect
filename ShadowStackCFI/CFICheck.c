@@ -36,7 +36,7 @@ void CFICheck(unsigned long long target)
 		char mid_d[8];
 		char *mid_s = &mid_d;
 		puts("mid: ");
-		mid_s = my_itoa(mid, mid_s, 10);
+		mid_s = my_itoa(mid, mid_s, 16);
 		puts(mid_s);
 
 		char cfiptr_mid[8];
@@ -49,12 +49,12 @@ void CFICheck(unsigned long long target)
 		{
 			break;
 		}
-		if (CFICheckAddressPtr[mid] > target)
+		if ((unsigned long long)CFICheckAddressPtr[mid] > target)
 		{
 			puts("target is smaller than [mid]");
 			high = mid - 1;
 		}
-		else if (CFICheckAddressPtr[mid] < target)
+		else if ((unsigned long long)CFICheckAddressPtr[mid] < target)
 		{
 			puts("target is larger than [mid]");
 			low = mid + 1;
