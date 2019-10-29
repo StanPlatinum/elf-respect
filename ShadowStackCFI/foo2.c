@@ -8,6 +8,7 @@ int fun()
     return 1;
 }
 
+#if 0
 char *my_itoa(unsigned long long val, char *buf, unsigned radix)
 {
     char   *p;             
@@ -48,6 +49,7 @@ char *my_itoa(unsigned long long val, char *buf, unsigned radix)
     puts("----------4 in my_itoa----------");
     return buf;
 }
+#endif
 
 void enclave_main()
 {

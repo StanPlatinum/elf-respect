@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "enclave.h"
+
 void CFICheck(long long target)
 {
 	long long *CFICheckAddressPtr = 0x1FFFFFFFFFFFFFFF;
@@ -16,7 +18,7 @@ void CFICheck(long long target)
 		mid = low + (high - low) / 2;
 		//Weijie:
 		puts("Matching CFICheckAddressPtr[mid]: ");
-		ii_b = itoa(CFICheckAddressPtr[mid], ii_b, 10);
+		ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 10);
 		puts(ii_b);
 		puts("\n");
 
