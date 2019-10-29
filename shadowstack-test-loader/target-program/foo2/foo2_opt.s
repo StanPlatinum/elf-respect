@@ -286,7 +286,7 @@ CFICheck:                               # @CFICheck
                                         #   in Loop: Header=BB0_5 Depth=1
 	movq	-24(%rbp), %rdi
 	movq	-32(%rbp), %rsi
-	movl	$16, %edx
+	movl	$12, %edx
 	callq	strncmp
 	cmpl	$0, %eax
 	jle	.LBB0_10
@@ -313,7 +313,7 @@ CFICheck:                               # @CFICheck
                                         #   in Loop: Header=BB0_5 Depth=1
 	movq	-24(%rbp), %rdi
 	movq	-32(%rbp), %rsi
-	movl	$16, %edx
+	movl	$12, %edx
 	callq	strncmp
 	cmpl	$0, %eax
 	jge	.LBB0_12

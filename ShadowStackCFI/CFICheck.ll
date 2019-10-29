@@ -129,7 +129,7 @@ if.then:                                          ; preds = %while.body
 if.end:                                           ; preds = %while.body
   %31 = load i8*, i8** %cfiptr_mid_s, align 8
   %32 = load i8*, i8** %target_str, align 8
-  %call18 = call i32 @strncmp(i8* %31, i8* %32, i64 16) #4
+  %call18 = call i32 @strncmp(i8* %31, i8* %32, i64 12) #4
   %cmp19 = icmp sgt i32 %call18, 0
   br i1 %cmp19, label %if.then21, label %if.else
 
@@ -143,7 +143,7 @@ if.then21:                                        ; preds = %if.end
 if.else:                                          ; preds = %if.end
   %34 = load i8*, i8** %cfiptr_mid_s, align 8
   %35 = load i8*, i8** %target_str, align 8
-  %call24 = call i32 @strncmp(i8* %34, i8* %35, i64 16) #4
+  %call24 = call i32 @strncmp(i8* %34, i8* %35, i64 12) #4
   %cmp25 = icmp slt i32 %call24, 0
   br i1 %cmp25, label %if.then27, label %if.else30
 
