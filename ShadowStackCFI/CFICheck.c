@@ -10,14 +10,15 @@ void CFICheck(long long target)
 
 	puts("checking next indirect call...\n");
 
-	char *target_str;
+	char target_s[8];
+	char *target_str = target_s;
 	target_str = my_itoa(target, target_str, 16);
 	puts("target: ");
 	puts(target_str);
 	puts("\n");
 	//Weijie: for debugging
-	//char i_b[8];
-	char *ii_b;
+	char i_b[8];
+	char *ii_b = &i_b;
 
 	while (low <= high)
 	{
