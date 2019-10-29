@@ -53,150 +53,145 @@ for.cond:                                         ; preds = %for.inc, %entry
 for.body:                                         ; preds = %for.cond
   %3 = bitcast [8 x i8]* %list to i8*
   store i8* %3, i8** %list_s, align 8
-  %4 = load i32, i32* %i, align 4
-  %add = add nsw i32 %4, 48
-  %conv = sext i32 %add to i64
-  %5 = inttoptr i64 %conv to i8*
-  %call1 = call i32 @puts(i8* %5)
-  %6 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %7 = load i32, i32* %i, align 4
-  %idxprom = sext i32 %7 to i64
-  %arrayidx = getelementptr inbounds i64, i64* %6, i64 %idxprom
-  %8 = load i64, i64* %arrayidx, align 8
-  %9 = load i8*, i8** %list_s, align 8
-  %call2 = call i8* @my_itoa(i64 %8, i8* %9, i64 16)
-  store i8* %call2, i8** %list_s, align 8
-  %10 = load i8*, i8** %list_s, align 8
-  %call3 = call i32 @puts(i8* %10)
+  %4 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %5 = load i32, i32* %i, align 4
+  %idxprom = sext i32 %5 to i64
+  %arrayidx = getelementptr inbounds i64, i64* %4, i64 %idxprom
+  %6 = load i64, i64* %arrayidx, align 8
+  %7 = load i8*, i8** %list_s, align 8
+  %call1 = call i8* @my_itoa(i64 %6, i8* %7, i64 16)
+  store i8* %call1, i8** %list_s, align 8
+  %8 = load i8*, i8** %list_s, align 8
+  %call2 = call i32 @puts(i8* %8)
   br label %for.inc
 
 for.inc:                                          ; preds = %for.body
-  %11 = load i32, i32* %i, align 4
-  %inc = add nsw i32 %11, 1
+  %9 = load i32, i32* %i, align 4
+  %inc = add nsw i32 %9, 1
   store i32 %inc, i32* %i, align 4
   br label %for.cond
 
 for.end:                                          ; preds = %for.cond
-  %call4 = call i32 @puts(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @.str.1, i64 0, i64 0))
-  %12 = bitcast [8 x i8]* %target_d to i8*
-  store i8* %12, i8** %target_str, align 8
-  %13 = load i64, i64* %target.addr, align 8
-  %14 = load i8*, i8** %target_str, align 8
-  %call5 = call i8* @my_itoa(i64 %13, i8* %14, i64 16)
-  store i8* %call5, i8** %target_str, align 8
-  %call6 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.2, i64 0, i64 0))
-  %15 = load i8*, i8** %target_str, align 8
-  %call7 = call i32 @puts(i8* %15)
+  %call3 = call i32 @puts(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @.str.1, i64 0, i64 0))
+  %10 = bitcast [8 x i8]* %target_d to i8*
+  store i8* %10, i8** %target_str, align 8
+  %11 = load i64, i64* %target.addr, align 8
+  %12 = load i8*, i8** %target_str, align 8
+  %call4 = call i8* @my_itoa(i64 %11, i8* %12, i64 16)
+  store i8* %call4, i8** %target_str, align 8
+  %call5 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.2, i64 0, i64 0))
+  %13 = load i8*, i8** %target_str, align 8
+  %call6 = call i32 @puts(i8* %13)
   br label %while.cond
 
-while.cond:                                       ; preds = %if.end44, %for.end
-  %16 = load i32, i32* %low, align 4
-  %17 = load i32, i32* %high, align 4
-  %cmp8 = icmp sle i32 %16, %17
-  br i1 %cmp8, label %while.body, label %while.end
+while.cond:                                       ; preds = %if.end40, %for.end
+  %14 = load i32, i32* %low, align 4
+  %15 = load i32, i32* %high, align 4
+  %cmp7 = icmp sle i32 %14, %15
+  br i1 %cmp7, label %while.body, label %while.end
 
 while.body:                                       ; preds = %while.cond
-  %18 = bitcast [8 x i8]* %mid_d to i8*
-  store i8* %18, i8** %mid_s, align 8
+  %16 = bitcast [8 x i8]* %mid_d to i8*
+  store i8* %16, i8** %mid_s, align 8
+  %17 = load i32, i32* %low, align 4
+  %18 = load i32, i32* %high, align 4
   %19 = load i32, i32* %low, align 4
-  %20 = load i32, i32* %high, align 4
-  %21 = load i32, i32* %low, align 4
-  %sub = sub nsw i32 %20, %21
+  %sub = sub nsw i32 %18, %19
   %div = sdiv i32 %sub, 2
-  %add10 = add nsw i32 %19, %div
-  store i32 %add10, i32* %mid, align 4
-  %22 = load i32, i32* %mid, align 4
-  %conv11 = sext i32 %22 to i64
-  %23 = load i8*, i8** %mid_s, align 8
-  %call12 = call i8* @my_itoa(i64 %conv11, i8* %23, i64 10)
-  store i8* %call12, i8** %mid_s, align 8
-  %24 = load i8*, i8** %mid_s, align 8
-  %call13 = call i32 @puts(i8* %24)
-  %25 = bitcast [8 x i8]* %low_d to i8*
-  store i8* %25, i8** %low_s, align 8
-  %26 = load i32, i32* %low, align 4
-  %conv14 = sext i32 %26 to i64
-  %27 = load i8*, i8** %low_s, align 8
-  %call15 = call i8* @my_itoa(i64 %conv14, i8* %27, i64 10)
-  store i8* %call15, i8** %low_s, align 8
-  %28 = load i8*, i8** %low_s, align 8
-  %call16 = call i32 @puts(i8* %28)
-  %29 = bitcast [8 x i8]* %high_d to i8*
-  store i8* %29, i8** %high_s, align 8
-  %30 = load i32, i32* %high, align 4
-  %conv17 = sext i32 %30 to i64
-  %31 = load i8*, i8** %high_s, align 8
-  %call18 = call i8* @my_itoa(i64 %conv17, i8* %31, i64 10)
-  store i8* %call18, i8** %high_s, align 8
-  %32 = load i8*, i8** %high_s, align 8
-  %call19 = call i32 @puts(i8* %32)
-  %33 = bitcast [8 x i8]* %cfiptr_mid to i8*
-  store i8* %33, i8** %cfiptr_mid_s, align 8
-  %call20 = call i32 @puts(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.3, i64 0, i64 0))
-  %34 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %35 = load i32, i32* %mid, align 4
-  %idxprom21 = sext i32 %35 to i64
-  %arrayidx22 = getelementptr inbounds i64, i64* %34, i64 %idxprom21
-  %36 = load i64, i64* %arrayidx22, align 8
-  %37 = load i8*, i8** %cfiptr_mid_s, align 8
-  %call23 = call i8* @my_itoa(i64 %36, i8* %37, i64 16)
-  store i8* %call23, i8** %cfiptr_mid_s, align 8
-  %38 = load i8*, i8** %cfiptr_mid_s, align 8
-  %call24 = call i32 @puts(i8* %38)
-  %39 = load i32, i32* %mid, align 4
-  %40 = load i32, i32* %high, align 4
-  %cmp25 = icmp sgt i32 %39, %40
-  br i1 %cmp25, label %if.then, label %if.end
+  %add = add nsw i32 %17, %div
+  store i32 %add, i32* %mid, align 4
+  %20 = load i32, i32* %mid, align 4
+  %conv = sext i32 %20 to i64
+  %21 = load i8*, i8** %mid_s, align 8
+  %call8 = call i8* @my_itoa(i64 %conv, i8* %21, i64 10)
+  store i8* %call8, i8** %mid_s, align 8
+  %22 = load i8*, i8** %mid_s, align 8
+  %call9 = call i32 @puts(i8* %22)
+  %23 = bitcast [8 x i8]* %low_d to i8*
+  store i8* %23, i8** %low_s, align 8
+  %24 = load i32, i32* %low, align 4
+  %conv10 = sext i32 %24 to i64
+  %25 = load i8*, i8** %low_s, align 8
+  %call11 = call i8* @my_itoa(i64 %conv10, i8* %25, i64 10)
+  store i8* %call11, i8** %low_s, align 8
+  %26 = load i8*, i8** %low_s, align 8
+  %call12 = call i32 @puts(i8* %26)
+  %27 = bitcast [8 x i8]* %high_d to i8*
+  store i8* %27, i8** %high_s, align 8
+  %28 = load i32, i32* %high, align 4
+  %conv13 = sext i32 %28 to i64
+  %29 = load i8*, i8** %high_s, align 8
+  %call14 = call i8* @my_itoa(i64 %conv13, i8* %29, i64 10)
+  store i8* %call14, i8** %high_s, align 8
+  %30 = load i8*, i8** %high_s, align 8
+  %call15 = call i32 @puts(i8* %30)
+  %31 = bitcast [8 x i8]* %cfiptr_mid to i8*
+  store i8* %31, i8** %cfiptr_mid_s, align 8
+  %call16 = call i32 @puts(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.3, i64 0, i64 0))
+  %32 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %33 = load i32, i32* %mid, align 4
+  %idxprom17 = sext i32 %33 to i64
+  %arrayidx18 = getelementptr inbounds i64, i64* %32, i64 %idxprom17
+  %34 = load i64, i64* %arrayidx18, align 8
+  %35 = load i8*, i8** %cfiptr_mid_s, align 8
+  %call19 = call i8* @my_itoa(i64 %34, i8* %35, i64 16)
+  store i8* %call19, i8** %cfiptr_mid_s, align 8
+  %36 = load i8*, i8** %cfiptr_mid_s, align 8
+  %call20 = call i32 @puts(i8* %36)
+  %37 = load i32, i32* %mid, align 4
+  %38 = load i32, i32* %high, align 4
+  %cmp21 = icmp sgt i32 %37, %38
+  br i1 %cmp21, label %if.then, label %if.end
 
 if.then:                                          ; preds = %while.body
   br label %while.end
 
 if.end:                                           ; preds = %while.body
-  %41 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %42 = load i32, i32* %mid, align 4
-  %idxprom27 = sext i32 %42 to i64
-  %arrayidx28 = getelementptr inbounds i64, i64* %41, i64 %idxprom27
-  %43 = load i64, i64* %arrayidx28, align 8
-  %44 = load i64, i64* %target.addr, align 8
-  %cmp29 = icmp ugt i64 %43, %44
-  br i1 %cmp29, label %if.then31, label %if.else
+  %39 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %40 = load i32, i32* %mid, align 4
+  %idxprom23 = sext i32 %40 to i64
+  %arrayidx24 = getelementptr inbounds i64, i64* %39, i64 %idxprom23
+  %41 = load i64, i64* %arrayidx24, align 8
+  %42 = load i64, i64* %target.addr, align 8
+  %cmp25 = icmp ugt i64 %41, %42
+  br i1 %cmp25, label %if.then27, label %if.else
 
-if.then31:                                        ; preds = %if.end
-  %call32 = call i32 @puts(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.4, i64 0, i64 0))
-  %45 = load i32, i32* %mid, align 4
-  %sub33 = sub nsw i32 %45, 1
-  store i32 %sub33, i32* %high, align 4
-  br label %if.end44
+if.then27:                                        ; preds = %if.end
+  %call28 = call i32 @puts(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.4, i64 0, i64 0))
+  %43 = load i32, i32* %mid, align 4
+  %sub29 = sub nsw i32 %43, 1
+  store i32 %sub29, i32* %high, align 4
+  br label %if.end40
 
 if.else:                                          ; preds = %if.end
-  %46 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %47 = load i32, i32* %mid, align 4
-  %idxprom34 = sext i32 %47 to i64
-  %arrayidx35 = getelementptr inbounds i64, i64* %46, i64 %idxprom34
-  %48 = load i64, i64* %arrayidx35, align 8
-  %49 = load i64, i64* %target.addr, align 8
-  %cmp36 = icmp ult i64 %48, %49
-  br i1 %cmp36, label %if.then38, label %if.else41
+  %44 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %45 = load i32, i32* %mid, align 4
+  %idxprom30 = sext i32 %45 to i64
+  %arrayidx31 = getelementptr inbounds i64, i64* %44, i64 %idxprom30
+  %46 = load i64, i64* %arrayidx31, align 8
+  %47 = load i64, i64* %target.addr, align 8
+  %cmp32 = icmp ult i64 %46, %47
+  br i1 %cmp32, label %if.then34, label %if.else37
 
-if.then38:                                        ; preds = %if.else
-  %call39 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.5, i64 0, i64 0))
-  %50 = load i32, i32* %mid, align 4
-  %add40 = add nsw i32 %50, 1
-  store i32 %add40, i32* %low, align 4
-  br label %if.end43
+if.then34:                                        ; preds = %if.else
+  %call35 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.5, i64 0, i64 0))
+  %48 = load i32, i32* %mid, align 4
+  %add36 = add nsw i32 %48, 1
+  store i32 %add36, i32* %low, align 4
+  br label %if.end39
 
-if.else41:                                        ; preds = %if.else
-  %call42 = call i32 @puts(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.6, i64 0, i64 0))
+if.else37:                                        ; preds = %if.else
+  %call38 = call i32 @puts(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.6, i64 0, i64 0))
   ret void
 
-if.end43:                                         ; preds = %if.then38
-  br label %if.end44
+if.end39:                                         ; preds = %if.then34
+  br label %if.end40
 
-if.end44:                                         ; preds = %if.end43, %if.then31
+if.end40:                                         ; preds = %if.end39, %if.then27
   br label %while.cond
 
 while.end:                                        ; preds = %if.then, %while.cond
-  %call45 = call i32 @puts(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.7, i64 0, i64 0))
+  %call41 = call i32 @puts(i8* getelementptr inbounds ([2 x i8], [2 x i8]* @.str.7, i64 0, i64 0))
   call void @exit(i32 -1) #3
   unreachable
 }

@@ -16,7 +16,7 @@ void CFICheck(unsigned long long target)
 		char *list_s = &list;
 		//list_s = my_itoa(i, list_s, 10);
 		//puts(list_s);
-		puts(i + 0x30);
+		//puts(i + 0x30);
 		list_s = my_itoa(CFICheckAddressPtr[i], list_s, 16);
 		puts(list_s);
 	}
