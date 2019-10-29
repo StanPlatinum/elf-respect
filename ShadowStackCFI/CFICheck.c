@@ -8,14 +8,13 @@ void CFICheck(long long target)
 	int CFICheckAddressNum = 0x1FFFFFFF;
 	int low = 0, high = CFICheckAddressNum - 1, mid;
 
-	puts("checking next indirect call...\n");
+	puts("checking next indirect call...");
 
 	char target_s[8];
 	char *target_str = target_s;
 	target_str = my_itoa(target, target_str, 16);
 	puts("target: ");
 	puts(target_str);
-	puts("\n");
 	//Weijie: for debugging
 	char i_b[8];
 	char *ii_b = &i_b;
@@ -27,7 +26,6 @@ void CFICheck(long long target)
 		puts("Matching CFICheckAddressPtr[mid]: ");
 		ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 16);
 		puts(ii_b);
-		puts("\n");
 
 		if (mid >= high)
 		{
@@ -35,13 +33,13 @@ void CFICheck(long long target)
 		}
 		if (CFICheckAddressPtr[mid] == target)
 		{
-			puts("found it!\n");
+			puts("found it!");
 			return;
 		}
 		else if (CFICheckAddressPtr[mid] > target)
 		{
 			//ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 10);
-			puts("larger!\n");
+			puts("larger!");
 			//puts("CFICheckAddress[mid]: ");
 			//puts(ii_b);
 			//puts("\n");
@@ -50,7 +48,7 @@ void CFICheck(long long target)
 		else
 		{
 			//ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 10);
-			puts("smaller!\n");
+			puts("smaller!");
 			//puts("CFICheckAddress[mid]: ");
 			//puts(ii_b);
 			//puts("\n");
