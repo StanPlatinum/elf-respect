@@ -1,5 +1,6 @@
 CFICheck
 puts
+itoa
 exit
 fun
 my_itoa
