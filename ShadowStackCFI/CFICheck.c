@@ -35,18 +35,9 @@ void CFICheck(unsigned long long target)
 		
 		char mid_d[8];
 		char *mid_s = &mid_d;
+		puts("mid: ");
 		mid_s = my_itoa(mid, mid_s, 10);
 		puts(mid_s);
-
-		char low_d[8];
-		char *low_s = &low_d;
-		low_s = my_itoa(low, low_s, 10);
-		puts(low_s);
-
-		char high_d[8];
-		char *high_s = &high_d;
-		high_s = my_itoa(high, high_s, 10);
-		puts(high_s);
 
 		char cfiptr_mid[8];
 		char *cfiptr_mid_s = &cfiptr_mid;
@@ -73,8 +64,7 @@ void CFICheck(unsigned long long target)
 			puts("found it!");
 			return;
 		}
-
+		puts(".");
 	}
-	puts(".");
 	exit(-1);
 }
