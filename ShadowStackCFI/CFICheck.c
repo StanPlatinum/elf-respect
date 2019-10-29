@@ -13,7 +13,7 @@ void CFICheck(unsigned long long target)
 	puts("traverse all targets:");
 	for (int i = 0; i < CFICheckAddressNum; i++)
 	{
-		char list[8];
+		char list[9];
 		char *list_s = &list;
 		//list_s = my_itoa(i, list_s, 10);
 		//puts(list_s);
@@ -24,7 +24,7 @@ void CFICheck(unsigned long long target)
 
 	puts("checking next indirect call...");
 
-	char target_d[8];
+	char target_d[9];
 	char *target_str = &target_d;
 	target_str = my_itoa(target, target_str, 16);
 	puts("target: ");
@@ -34,13 +34,13 @@ void CFICheck(unsigned long long target)
 	{
 		mid = low + (high - low) / 2;
 		
-		char mid_d[8];
+		char mid_d[9];
 		char *mid_s = &mid_d;
 		puts("mid: ");
 		mid_s = my_itoa(mid, mid_s, 16);
 		puts(mid_s);
 
-		char cfiptr_mid[8];
+		char cfiptr_mid[9];
 		char *cfiptr_mid_s = &cfiptr_mid;
 		puts("CFICheckAddressPtr[mid]: ");
 		cfiptr_mid_s = my_itoa(CFICheckAddressPtr[mid], cfiptr_mid_s, 16);

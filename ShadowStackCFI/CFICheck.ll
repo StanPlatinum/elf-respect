@@ -23,13 +23,13 @@ entry:
   %high = alloca i32, align 4
   %mid = alloca i32, align 4
   %i = alloca i32, align 4
-  %list = alloca [8 x i8], align 1
+  %list = alloca [9 x i8], align 1
   %list_s = alloca i8*, align 8
-  %target_d = alloca [8 x i8], align 1
+  %target_d = alloca [9 x i8], align 1
   %target_str = alloca i8*, align 8
-  %mid_d = alloca [8 x i8], align 1
+  %mid_d = alloca [9 x i8], align 1
   %mid_s = alloca i8*, align 8
-  %cfiptr_mid = alloca [8 x i8], align 1
+  %cfiptr_mid = alloca [9 x i8], align 1
   %cfiptr_mid_s = alloca i8*, align 8
   store i64 %target, i64* %target.addr, align 8
   store i64* inttoptr (i64 2305843009213693951 to i64*), i64** %CFICheckAddressPtr, align 8
@@ -48,7 +48,7 @@ for.cond:                                         ; preds = %for.inc, %entry
   br i1 %cmp, label %for.body, label %for.end
 
 for.body:                                         ; preds = %for.cond
-  %3 = bitcast [8 x i8]* %list to i8*
+  %3 = bitcast [9 x i8]* %list to i8*
   store i8* %3, i8** %list_s, align 8
   %4 = load i64*, i64** %CFICheckAddressPtr, align 8
   %5 = load i32, i32* %i, align 4
@@ -70,7 +70,7 @@ for.inc:                                          ; preds = %for.body
 
 for.end:                                          ; preds = %for.cond
   %call3 = call i32 @puts(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @.str.1, i64 0, i64 0))
-  %10 = bitcast [8 x i8]* %target_d to i8*
+  %10 = bitcast [9 x i8]* %target_d to i8*
   store i8* %10, i8** %target_str, align 8
   %11 = load i64, i64* %target.addr, align 8
   %12 = load i8*, i8** %target_str, align 8
@@ -95,7 +95,7 @@ while.body:                                       ; preds = %while.cond
   %div = sdiv i32 %sub, 2
   %add = add nsw i32 %16, %div
   store i32 %add, i32* %mid, align 4
-  %19 = bitcast [8 x i8]* %mid_d to i8*
+  %19 = bitcast [9 x i8]* %mid_d to i8*
   store i8* %19, i8** %mid_s, align 8
   %call8 = call i32 @puts(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str.3, i64 0, i64 0))
   %20 = load i32, i32* %mid, align 4
@@ -105,7 +105,7 @@ while.body:                                       ; preds = %while.cond
   store i8* %call9, i8** %mid_s, align 8
   %22 = load i8*, i8** %mid_s, align 8
   %call10 = call i32 @puts(i8* %22)
-  %23 = bitcast [8 x i8]* %cfiptr_mid to i8*
+  %23 = bitcast [9 x i8]* %cfiptr_mid to i8*
   store i8* %23, i8** %cfiptr_mid_s, align 8
   %call11 = call i32 @puts(i8* getelementptr inbounds ([26 x i8], [26 x i8]* @.str.4, i64 0, i64 0))
   %24 = load i64*, i64** %CFICheckAddressPtr, align 8

@@ -97,7 +97,7 @@ CFICheck:                               # @CFICheck
 	jge	.LBB0_4
 # %bb.2:                                # %for.body
                                         #   in Loop: Header=BB0_1 Depth=1
-	leaq	-104(%rbp), %rax
+	leaq	-108(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-56(%rbp), %rax
@@ -150,7 +150,7 @@ CFICheck:                               # @CFICheck
 .LBB0_4:                                # %for.end
 	movabsq	$.L.str.1, %rdi
 	callq	puts
-	leaq	-96(%rbp), %rax
+	leaq	-99(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-32(%rbp), %rax
@@ -209,7 +209,7 @@ CFICheck:                               # @CFICheck
 	popq	%rax
 	popq	%rbx
 	movl	%ecx, -4(%rbp)
-	leaq	-88(%rbp), %rax
+	leaq	-90(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-48(%rbp), %rax
@@ -242,7 +242,7 @@ CFICheck:                               # @CFICheck
 	movq	%rax, -48(%rbp)
 	movq	-48(%rbp), %rdi
 	callq	puts
-	leaq	-80(%rbp), %rax
+	leaq	-81(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-24(%rbp), %rax
