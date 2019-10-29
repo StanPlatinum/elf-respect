@@ -112,8 +112,6 @@ CFICheck:                               # @CFICheck
 	callq	puts
 	movq	-32(%rbp), %rdi
 	callq	puts
-	movabsq	$.L.str.2, %rdi
-	callq	puts
 	leaq	-60(%rbp), %rax
 	pushq	%rbx
 	pushq	%rax
@@ -153,7 +151,7 @@ CFICheck:                               # @CFICheck
 	popq	%rax
 	popq	%rbx
 	movl	%ecx, -4(%rbp)
-	movabsq	$.L.str.3, %rdi
+	movabsq	$.L.str.2, %rdi
 	callq	puts
 	movq	-40(%rbp), %rax
 	movslq	-4(%rbp), %rcx
@@ -175,8 +173,6 @@ CFICheck:                               # @CFICheck
 	movq	%rax, -24(%rbp)
 	movq	-24(%rbp), %rdi
 	callq	puts
-	movabsq	$.L.str.2, %rdi
-	callq	puts
 	movl	-4(%rbp), %eax
 	cmpl	-8(%rbp), %eax
 	jl	.LBB0_4
@@ -189,8 +185,8 @@ CFICheck:                               # @CFICheck
 	movq	(%rax,%rcx,8), %rax
 	cmpq	-48(%rbp), %rax
 	jne	.LBB0_6
-# %bb.5:                                # %if.then14
-	movabsq	$.L.str.4, %rdi
+# %bb.5:                                # %if.then12
+	movabsq	$.L.str.3, %rdi
 	callq	puts
 	addq	$80, %rsp
 	popq	%rbp
@@ -209,9 +205,9 @@ CFICheck:                               # @CFICheck
 	movq	(%rax,%rcx,8), %rax
 	cmpq	-48(%rbp), %rax
 	jle	.LBB0_8
-# %bb.7:                                # %if.then19
+# %bb.7:                                # %if.then17
                                         #   in Loop: Header=BB0_1 Depth=1
-	movabsq	$.L.str.5, %rdi
+	movabsq	$.L.str.4, %rdi
 	callq	puts
 	movl	-4(%rbp), %eax
 	subl	$1, %eax
@@ -228,9 +224,9 @@ CFICheck:                               # @CFICheck
 	popq	%rbx
 	movl	%eax, -8(%rbp)
 	jmp	.LBB0_9
-.LBB0_8:                                # %if.else22
+.LBB0_8:                                # %if.else20
                                         #   in Loop: Header=BB0_1 Depth=1
-	movabsq	$.L.str.6, %rdi
+	movabsq	$.L.str.5, %rdi
 	callq	puts
 	movl	-4(%rbp), %eax
 	addl	$1, %eax
@@ -246,10 +242,10 @@ CFICheck:                               # @CFICheck
 	popq	%rax
 	popq	%rbx
 	movl	%eax, -12(%rbp)
-.LBB0_9:                                # %if.end25
+.LBB0_9:                                # %if.end23
                                         #   in Loop: Header=BB0_1 Depth=1
 	jmp	.LBB0_10
-.LBB0_10:                               # %if.end26
+.LBB0_10:                               # %if.end24
                                         #   in Loop: Header=BB0_1 Depth=1
 	jmp	.LBB0_1
 .LBB0_11:                               # %while.end.loopexit
@@ -281,7 +277,7 @@ fun:                                    # @fun
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movabsq	$.L.str.7, %rdi
+	movabsq	$.L.str.6, %rdi
 	callq	puts
 	movl	$1, %eax
 	popq	%rbp
@@ -326,7 +322,7 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movq	%rax, -32(%rbp)
-	movabsq	$.L.str.1.8, %rdi
+	movabsq	$.L.str.1.7, %rdi
 	callq	puts
 	movq	-32(%rbp), %rbx
 	movq	%rbx, %rdi
@@ -344,7 +340,7 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movl	%eax, -20(%rbp)
-	movabsq	$.L.str.2.9, %rdi
+	movabsq	$.L.str.2.8, %rdi
 	callq	puts
 	leaq	-40(%rbp), %rax
 	pushq	%rbx
@@ -359,7 +355,7 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movq	%rax, -16(%rbp)
-	movabsq	$.L.str.3.10, %rdi
+	movabsq	$.L.str.3.9, %rdi
 	callq	puts
 	movslq	-20(%rbp), %rdi
 	movq	-16(%rbp), %rsi
@@ -377,11 +373,11 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movq	%rax, -16(%rbp)
-	movabsq	$.L.str.4.11, %rdi
+	movabsq	$.L.str.4.10, %rdi
 	callq	puts
 	movq	-16(%rbp), %rdi
 	callq	puts
-	movabsq	$.L.str.5.12, %rdi
+	movabsq	$.L.str.5.11, %rdi
 	callq	puts
 	xorl	%edi, %edi
 	callq	exit
@@ -396,8 +392,8 @@ enclave_main:                           # @enclave_main
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .L.str:
-	.asciz	"checking next indirect call...\n"
-	.size	.L.str, 32
+	.asciz	"checking next indirect call..."
+	.size	.L.str, 31
 
 	.type	.L.str.1,@object        # @.str.1
 .L.str.1:
@@ -406,58 +402,53 @@ enclave_main:                           # @enclave_main
 
 	.type	.L.str.2,@object        # @.str.2
 .L.str.2:
-	.asciz	"\n"
-	.size	.L.str.2, 2
+	.asciz	"Matching CFICheckAddressPtr[mid]: "
+	.size	.L.str.2, 35
 
 	.type	.L.str.3,@object        # @.str.3
 .L.str.3:
-	.asciz	"Matching CFICheckAddressPtr[mid]: "
-	.size	.L.str.3, 35
+	.asciz	"found it!"
+	.size	.L.str.3, 10
 
 	.type	.L.str.4,@object        # @.str.4
 .L.str.4:
-	.asciz	"found it!\n"
-	.size	.L.str.4, 11
+	.asciz	"larger!"
+	.size	.L.str.4, 8
 
 	.type	.L.str.5,@object        # @.str.5
 .L.str.5:
-	.asciz	"larger!\n"
+	.asciz	"smaller!"
 	.size	.L.str.5, 9
 
 	.type	.L.str.6,@object        # @.str.6
 .L.str.6:
-	.asciz	"smaller!\n"
-	.size	.L.str.6, 10
-
-	.type	.L.str.7,@object        # @.str.7
-.L.str.7:
 	.asciz	"----------1 in fun----------"
-	.size	.L.str.7, 29
+	.size	.L.str.6, 29
 
-	.type	.L.str.1.8,@object      # @.str.1.8
-.L.str.1.8:
+	.type	.L.str.1.7,@object      # @.str.1.7
+.L.str.1.7:
 	.asciz	"----------1----------"
-	.size	.L.str.1.8, 22
+	.size	.L.str.1.7, 22
 
-	.type	.L.str.2.9,@object      # @.str.2.9
-.L.str.2.9:
+	.type	.L.str.2.8,@object      # @.str.2.8
+.L.str.2.8:
 	.asciz	"----------2----------"
-	.size	.L.str.2.9, 22
+	.size	.L.str.2.8, 22
 
-	.type	.L.str.3.10,@object     # @.str.3.10
-.L.str.3.10:
+	.type	.L.str.3.9,@object      # @.str.3.9
+.L.str.3.9:
 	.asciz	"----------3----------"
-	.size	.L.str.3.10, 22
+	.size	.L.str.3.9, 22
 
-	.type	.L.str.4.11,@object     # @.str.4.11
-.L.str.4.11:
+	.type	.L.str.4.10,@object     # @.str.4.10
+.L.str.4.10:
 	.asciz	"----------4----------"
-	.size	.L.str.4.11, 22
+	.size	.L.str.4.10, 22
 
-	.type	.L.str.5.12,@object     # @.str.5.12
-.L.str.5.12:
+	.type	.L.str.5.11,@object     # @.str.5.11
+.L.str.5.11:
 	.asciz	"success!"
-	.size	.L.str.5.12, 9
+	.size	.L.str.5.11, 9
 
 
 	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 444daba1eecc30b5a70de95e7a4016b5b8d4ce27)"
