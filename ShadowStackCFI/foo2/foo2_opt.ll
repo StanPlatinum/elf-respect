@@ -7,8 +7,8 @@ target triple = "x86_64-unknown-linux-gnu"
 @.str.1 = private unnamed_addr constant [31 x i8] c"checking next indirect call...\00", align 1
 @.str.2 = private unnamed_addr constant [9 x i8] c"target: \00", align 1
 @.str.3 = private unnamed_addr constant [26 x i8] c"CFICheckAddressPtr[mid]: \00", align 1
-@.str.4 = private unnamed_addr constant [8 x i8] c"larger!\00", align 1
-@.str.5 = private unnamed_addr constant [9 x i8] c"smaller!\00", align 1
+@.str.4 = private unnamed_addr constant [29 x i8] c"target is smaller than [mid]\00", align 1
+@.str.5 = private unnamed_addr constant [28 x i8] c"target is larger than [mid]\00", align 1
 @.str.6 = private unnamed_addr constant [10 x i8] c"found it!\00", align 1
 @.str.7 = private unnamed_addr constant [2 x i8] c".\00", align 1
 @.str.8 = private unnamed_addr constant [29 x i8] c"----------1 in fun----------\00", align 1
@@ -97,15 +97,15 @@ while.cond:                                       ; preds = %if.end40, %for.end
   br i1 %cmp7, label %while.body, label %while.end
 
 while.body:                                       ; preds = %while.cond
-  %16 = bitcast [8 x i8]* %mid_d to i8*
-  store i8* %16, i8** %mid_s, align 8
-  %17 = load i32, i32* %low, align 4
-  %18 = load i32, i32* %high, align 4
-  %19 = load i32, i32* %low, align 4
-  %sub = sub nsw i32 %18, %19
+  %16 = load i32, i32* %low, align 4
+  %17 = load i32, i32* %high, align 4
+  %18 = load i32, i32* %low, align 4
+  %sub = sub nsw i32 %17, %18
   %div = sdiv i32 %sub, 2
-  %add = add nsw i32 %17, %div
+  %add = add nsw i32 %16, %div
   store i32 %add, i32* %mid, align 4
+  %19 = bitcast [8 x i8]* %mid_d to i8*
+  store i8* %19, i8** %mid_s, align 8
   %20 = load i32, i32* %mid, align 4
   %conv = sext i32 %20 to i64
   %21 = load i8*, i8** %mid_s, align 8
@@ -163,7 +163,7 @@ if.end:                                           ; preds = %while.body
   br i1 %cmp25, label %if.then27, label %if.else
 
 if.then27:                                        ; preds = %if.end
-  %call28 = call i32 @puts(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.4, i64 0, i64 0))
+  %call28 = call i32 @puts(i8* getelementptr inbounds ([29 x i8], [29 x i8]* @.str.4, i64 0, i64 0))
   %43 = load i32, i32* %mid, align 4
   %sub29 = sub nsw i32 %43, 1
   store i32 %sub29, i32* %high, align 4
@@ -180,7 +180,7 @@ if.else:                                          ; preds = %if.end
   br i1 %cmp32, label %if.then34, label %if.else37
 
 if.then34:                                        ; preds = %if.else
-  %call35 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.5, i64 0, i64 0))
+  %call35 = call i32 @puts(i8* getelementptr inbounds ([28 x i8], [28 x i8]* @.str.5, i64 0, i64 0))
   %48 = load i32, i32* %mid, align 4
   %add36 = add nsw i32 %48, 1
   store i32 %add36, i32* %low, align 4

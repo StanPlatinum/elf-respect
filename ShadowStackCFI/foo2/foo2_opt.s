@@ -190,19 +190,6 @@ CFICheck:                               # @CFICheck
 	jg	.LBB0_15
 # %bb.6:                                # %while.body
                                         #   in Loop: Header=BB0_5 Depth=1
-	leaq	-120(%rbp), %rax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-64(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_17
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_17
-	popq	%rax
-	popq	%rbx
-	movq	%rax, -64(%rbp)
 	movl	-12(%rbp), %ecx
 	movl	-8(%rbp), %eax
 	subl	-12(%rbp), %eax
@@ -222,6 +209,19 @@ CFICheck:                               # @CFICheck
 	popq	%rax
 	popq	%rbx
 	movl	%ecx, -4(%rbp)
+	leaq	-120(%rbp), %rax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-64(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -64(%rbp)
 	movslq	-4(%rbp), %rdi
 	movq	-64(%rbp), %rsi
 	movl	$10, %edx
@@ -579,13 +579,13 @@ enclave_main:                           # @enclave_main
 
 	.type	.L.str.4,@object        # @.str.4
 .L.str.4:
-	.asciz	"larger!"
-	.size	.L.str.4, 8
+	.asciz	"target is smaller than [mid]"
+	.size	.L.str.4, 29
 
 	.type	.L.str.5,@object        # @.str.5
 .L.str.5:
-	.asciz	"smaller!"
-	.size	.L.str.5, 9
+	.asciz	"target is larger than [mid]"
+	.size	.L.str.5, 28
 
 	.type	.L.str.6,@object        # @.str.6
 .L.str.6:

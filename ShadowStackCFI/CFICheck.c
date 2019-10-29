@@ -31,9 +31,10 @@ void CFICheck(unsigned long long target)
 
 	while (low <= high)
 	{
+		mid = low + (high - low) / 2;
+		
 		char mid_d[8];
 		char *mid_s = &mid_d;
-		mid = low + (high - low) / 2;
 		mid_s = my_itoa(mid, mid_s, 10);
 		puts(mid_s);
 
@@ -59,12 +60,12 @@ void CFICheck(unsigned long long target)
 		}
 		if (CFICheckAddressPtr[mid] > target)
 		{
-			puts("larger!");
+			puts("target is smaller than [mid]");
 			high = mid - 1;
 		}
 		else if (CFICheckAddressPtr[mid] < target)
 		{
-			puts("smaller!");
+			puts("target is larger than [mid]");
 			low = mid + 1;
 		}
 		else
