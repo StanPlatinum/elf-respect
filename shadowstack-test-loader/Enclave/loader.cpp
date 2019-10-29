@@ -1110,9 +1110,7 @@ void relocate_entrylabel()
 	unsigned call_target_idx = 0;
 
 	for (unsigned i = 0; i < target_table_size; ++ i) {
-		//if (entrylabel[i] == '\n') {
 		if (target_table[i] == '\n') {
-			//entrylabel[i] = '\0';
 			target_table[i] = '\0';
 			call_target_idx ++;
 		}
@@ -1120,9 +1118,30 @@ void relocate_entrylabel()
 
 	call_target_idx_global = call_target_idx;
 
-	//call_target = (Elf64_Addr *)get_buf(call_target_idx*sizeof(Elf64_Addr));
-	call_target_idx = 0;
+    // shawn233: target_entries is an array that stores the pointers to each target entry
+    char **target_entries = (char **)get_buf(sizeof(char *) * call_target_idx_global);
+    target_entries[0] = target_table; // the pointer to the first entry is exactly target_table
+    call_target_idx = 1;
+    for (unsigned i = 0; i < (target_table_size - 1); ++ i) {
+		if (target_table[i] == '\0') {
+			target_entries[call_target_idx++] = (target_table + (i + 1));
+		}
+	}
+    if (call_target_idx != call_target_idx_global) {
+        dlog("[error] target_entries creation error, call_target_idx: %u mismatches call_target_idx_global: %u",\
+            call_target_idx, call_target_idx_global);
+    }
 
+    call_target_idx = 0;
+    for (unsigned i = 0; i < n_symtab; ++ i) {
+        for (unsigned j = 0; j < call_target_idx_global; ++ j) {
+            if (strncmp((const char *)target_entries[j], &strtab[symtab[i].st_name], strlen(target_entries[j])) == 0) {
+                call_target[call_target_idx++] = symtab[i].st_value;
+            }
+        }
+    }
+
+    /* shawn233: the old version is deprecated because it produces a call target table which is not ordered by addresses
 	unsigned buffer_idx = 0;
 	for (unsigned i = 0; i < target_table_size; ++i) {
 		//Weijie: rewrite the labels with their addresses
@@ -1132,7 +1151,8 @@ void relocate_entrylabel()
 			dlog("call target address: 0x%lx", call_target[call_target_idx-1]);
 			buffer_idx = i+1;
 		}
-	}	
+	}
+    */
 }
 
 //Weijie: Enclave starts here
