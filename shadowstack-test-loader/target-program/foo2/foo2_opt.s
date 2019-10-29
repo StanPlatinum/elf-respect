@@ -16,177 +16,350 @@ CFICheck:                               # @CFICheck
 	subq	$80, %rsp
 	pushq	%rbx
 	pushq	%rax
-	leaq	-48(%rbp), %rax
+	leaq	-56(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_13
+	ja	.LBB0_17
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_13
+	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rdi, -48(%rbp)
+	movq	%rdi, -56(%rbp)
 	movabsq	$2305843009213693951, %rax # imm = 0x1FFFFFFFFFFFFFFF
 	pushq	%rbx
 	pushq	%rax
 	leaq	-40(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_13
+	ja	.LBB0_17
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_13
+	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
 	movq	%rax, -40(%rbp)
 	pushq	%rbx
 	pushq	%rax
-	leaq	-52(%rbp), %rax
+	leaq	-28(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_13
+	ja	.LBB0_17
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_13
+	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movl	$536870911, -52(%rbp)   # imm = 0x1FFFFFFF
-	pushq	%rbx
-	pushq	%rax
-	leaq	-12(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rax
-	popq	%rbx
-	movl	$0, -12(%rbp)
-	movl	-52(%rbp), %eax
-	subl	$1, %eax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-8(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rax
-	popq	%rbx
-	movl	%eax, -8(%rbp)
-	movabsq	$.L.str, %rdi
-	callq	puts
-	leaq	-68(%rbp), %rax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-32(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rax
-	popq	%rbx
-	movq	%rax, -32(%rbp)
-	movq	-48(%rbp), %rdi
-	movq	-32(%rbp), %rsi
-	movl	$16, %edx
-	callq	my_itoa
-	pushq	%rbx
-	pushq	%rax
-	leaq	-32(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rax
-	popq	%rbx
-	movq	%rax, -32(%rbp)
-	movabsq	$.L.str.1, %rdi
-	callq	puts
-	movq	-32(%rbp), %rdi
-	callq	puts
-	leaq	-60(%rbp), %rax
+	movl	$536870911, -28(%rbp)   # imm = 0x1FFFFFFF
 	pushq	%rbx
 	pushq	%rax
 	leaq	-24(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_13
+	ja	.LBB0_17
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_13
+	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -24(%rbp)
-.LBB0_1:                                # %while.cond
+	movl	$0, -24(%rbp)
+	movl	-28(%rbp), %eax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-20(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movl	%eax, -20(%rbp)
+	leaq	-72(%rbp), %rax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	pushq	%rbx
+	pushq	%rax
+	leaq	-16(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movl	$0, -16(%rbp)
+.LBB0_1:                                # %for.cond
                                         # =>This Inner Loop Header: Depth=1
-	movl	-12(%rbp), %eax
-	cmpl	-8(%rbp), %eax
-	jg	.LBB0_11
-# %bb.2:                                # %while.body
+	movl	-16(%rbp), %eax
+	cmpl	-28(%rbp), %eax
+	jge	.LBB0_4
+# %bb.2:                                # %for.body
                                         #   in Loop: Header=BB0_1 Depth=1
-	movl	-12(%rbp), %ecx
-	movl	-8(%rbp), %eax
-	subl	-12(%rbp), %eax
+	movslq	-16(%rbp), %rdi
+	movq	-8(%rbp), %rsi
+	movl	$10, %edx
+	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rdi
+	callq	puts
+	movq	-40(%rbp), %rax
+	movslq	-16(%rbp), %rcx
+	movq	(%rax,%rcx,8), %rdi
+	movq	-8(%rbp), %rsi
+	movl	$16, %edx
+	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rdi
+	callq	puts
+# %bb.3:                                # %for.inc
+                                        #   in Loop: Header=BB0_1 Depth=1
+	movl	-16(%rbp), %eax
+	addl	$1, %eax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-16(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movl	%eax, -16(%rbp)
+	jmp	.LBB0_1
+.LBB0_4:                                # %for.end
+	movabsq	$.L.str, %rdi
+	callq	puts
+	leaq	-64(%rbp), %rax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-48(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -48(%rbp)
+	movq	-56(%rbp), %rdi
+	movq	-48(%rbp), %rsi
+	movl	$16, %edx
+	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-48(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -48(%rbp)
+	movabsq	$.L.str.1, %rdi
+	callq	puts
+	movq	-48(%rbp), %rdi
+	callq	puts
+.LBB0_5:                                # %while.cond
+                                        # =>This Inner Loop Header: Depth=1
+	movl	-24(%rbp), %eax
+	cmpl	-20(%rbp), %eax
+	jg	.LBB0_15
+# %bb.6:                                # %while.body
+                                        #   in Loop: Header=BB0_5 Depth=1
+	movl	-24(%rbp), %ecx
+	movl	-20(%rbp), %eax
+	subl	-24(%rbp), %eax
 	cltd
 	movl	$2, %esi
 	idivl	%esi
 	addl	%eax, %ecx
 	pushq	%rbx
 	pushq	%rax
-	leaq	-4(%rbp), %rax
+	leaq	-12(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_13
+	ja	.LBB0_17
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_13
+	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movl	%ecx, -4(%rbp)
+	movl	%ecx, -12(%rbp)
+	movslq	-12(%rbp), %rdi
+	movq	-8(%rbp), %rsi
+	movl	$10, %edx
+	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rdi
+	callq	puts
+	movslq	-24(%rbp), %rdi
+	movq	-8(%rbp), %rsi
+	movl	$10, %edx
+	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rdi
+	callq	puts
+	movslq	-20(%rbp), %rdi
+	movq	-8(%rbp), %rsi
+	movl	$10, %edx
+	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rdi
+	callq	puts
 	movabsq	$.L.str.2, %rdi
 	callq	puts
 	movq	-40(%rbp), %rax
-	movslq	-4(%rbp), %rcx
+	movslq	-12(%rbp), %rcx
 	movq	(%rax,%rcx,8), %rdi
-	movq	-24(%rbp), %rsi
+	movq	-8(%rbp), %rsi
 	movl	$16, %edx
 	callq	my_itoa
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rdi
+	callq	puts
+	movl	-12(%rbp), %eax
+	cmpl	-20(%rbp), %eax
+	jle	.LBB0_8
+# %bb.7:                                # %if.then
+	jmp	.LBB0_16
+.LBB0_8:                                # %if.end
+                                        #   in Loop: Header=BB0_5 Depth=1
+	movq	-40(%rbp), %rax
+	movslq	-12(%rbp), %rcx
+	movq	(%rax,%rcx,8), %rax
+	cmpq	-56(%rbp), %rax
+	jbe	.LBB0_10
+# %bb.9:                                # %if.then30
+                                        #   in Loop: Header=BB0_5 Depth=1
+	movabsq	$.L.str.3, %rdi
+	callq	puts
+	movl	-12(%rbp), %eax
+	subl	$1, %eax
+	pushq	%rbx
+	pushq	%rax
+	leaq	-20(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB0_17
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB0_17
+	popq	%rax
+	popq	%rbx
+	movl	%eax, -20(%rbp)
+	jmp	.LBB0_14
+.LBB0_10:                               # %if.else
+                                        #   in Loop: Header=BB0_5 Depth=1
+	movq	-40(%rbp), %rax
+	movslq	-12(%rbp), %rcx
+	movq	(%rax,%rcx,8), %rax
+	cmpq	-56(%rbp), %rax
+	jae	.LBB0_12
+# %bb.11:                               # %if.then37
+                                        #   in Loop: Header=BB0_5 Depth=1
+	movabsq	$.L.str.4, %rdi
+	callq	puts
+	movl	-12(%rbp), %eax
+	addl	$1, %eax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-24(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	ja	.LBB0_13
+	ja	.LBB0_17
 	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
-	jb	.LBB0_13
+	jb	.LBB0_17
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -24(%rbp)
-	movq	-24(%rbp), %rdi
-	callq	puts
-	movl	-4(%rbp), %eax
-	cmpl	-8(%rbp), %eax
-	jl	.LBB0_4
-# %bb.3:                                # %if.then
-	jmp	.LBB0_12
-.LBB0_4:                                # %if.end
-                                        #   in Loop: Header=BB0_1 Depth=1
-	movq	-40(%rbp), %rax
-	movslq	-4(%rbp), %rcx
-	movq	(%rax,%rcx,8), %rax
-	cmpq	-48(%rbp), %rax
-	jne	.LBB0_6
-# %bb.5:                                # %if.then12
-	movabsq	$.L.str.3, %rdi
+	movl	%eax, -24(%rbp)
+	jmp	.LBB0_13
+.LBB0_12:                               # %if.else40
+	movabsq	$.L.str.5, %rdi
 	callq	puts
 	addq	$80, %rsp
 	popq	%rbp
@@ -196,69 +369,25 @@ CFICheck:                               # @CFICheck
 	subq	$8, (%r11)
 	movq	(%r10), %r11
 	cmpq	%r11, (%rsp)
-	jne	.LBB0_14
+	jne	.LBB0_18
 	retq
-.LBB0_6:                                # %if.else
-                                        #   in Loop: Header=BB0_1 Depth=1
-	movq	-40(%rbp), %rax
-	movslq	-4(%rbp), %rcx
-	movq	(%rax,%rcx,8), %rax
-	cmpq	-48(%rbp), %rax
-	jle	.LBB0_8
-# %bb.7:                                # %if.then17
-                                        #   in Loop: Header=BB0_1 Depth=1
-	movabsq	$.L.str.4, %rdi
-	callq	puts
-	movl	-4(%rbp), %eax
-	subl	$1, %eax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-8(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rax
-	popq	%rbx
-	movl	%eax, -8(%rbp)
-	jmp	.LBB0_9
-.LBB0_8:                                # %if.else20
-                                        #   in Loop: Header=BB0_1 Depth=1
-	movabsq	$.L.str.5, %rdi
-	callq	puts
-	movl	-4(%rbp), %eax
-	addl	$1, %eax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-12(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB0_13
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB0_13
-	popq	%rax
-	popq	%rbx
-	movl	%eax, -12(%rbp)
-.LBB0_9:                                # %if.end23
-                                        #   in Loop: Header=BB0_1 Depth=1
-	jmp	.LBB0_10
-.LBB0_10:                               # %if.end24
-                                        #   in Loop: Header=BB0_1 Depth=1
-	jmp	.LBB0_1
-.LBB0_11:                               # %while.end.loopexit
-	jmp	.LBB0_12
-.LBB0_12:                               # %while.end
+.LBB0_13:                               # %if.end42
+                                        #   in Loop: Header=BB0_5 Depth=1
+	jmp	.LBB0_14
+.LBB0_14:                               # %if.end43
+                                        #   in Loop: Header=BB0_5 Depth=1
+	jmp	.LBB0_5
+.LBB0_15:                               # %while.end.loopexit
+	jmp	.LBB0_16
+.LBB0_16:                               # %while.end
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
-.LBB0_13:
+.LBB0_17:
 	popq	%rax
 	popq	%rbx
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
-.LBB0_14:
+.LBB0_18:
 	movl	$4294967295, %edi       # imm = 0xFFFFFFFF
 	callq	exit
 .Lfunc_end0:
@@ -407,18 +536,18 @@ enclave_main:                           # @enclave_main
 
 	.type	.L.str.3,@object        # @.str.3
 .L.str.3:
-	.asciz	"found it!"
-	.size	.L.str.3, 10
+	.asciz	"larger!"
+	.size	.L.str.3, 8
 
 	.type	.L.str.4,@object        # @.str.4
 .L.str.4:
-	.asciz	"larger!"
-	.size	.L.str.4, 8
+	.asciz	"smaller!"
+	.size	.L.str.4, 9
 
 	.type	.L.str.5,@object        # @.str.5
 .L.str.5:
-	.asciz	"smaller!"
-	.size	.L.str.5, 9
+	.asciz	"found it!"
+	.size	.L.str.5, 10
 
 	.type	.L.str.6,@object        # @.str.6
 .L.str.6:
