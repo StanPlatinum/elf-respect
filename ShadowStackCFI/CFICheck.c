@@ -9,16 +9,22 @@ void CFICheck(long long target)
 	int low = 0, high = CFICheckAddressNum - 1, mid;
 
 	puts("checking next indirect call...\n");
+
+	char *target_str;
+	target_str = my_itoa(target, target_str, 16);
+	puts("target: ");
+	puts(target_str);
+	puts("\n");
 	//Weijie: for debugging
-	char i_b[8];
-	char *ii_b = &i_b;
+	//char i_b[8];
+	char *ii_b;
 
 	while (low <= high)
 	{
 		mid = low + (high - low) / 2;
 		//Weijie:
 		puts("Matching CFICheckAddressPtr[mid]: ");
-		ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 10);
+		ii_b = my_itoa(CFICheckAddressPtr[mid], ii_b, 16);
 		puts(ii_b);
 		puts("\n");
 
