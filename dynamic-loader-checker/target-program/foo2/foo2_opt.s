@@ -256,6 +256,9 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movq	%rax, -16(%rbp)
+	movabsq	$.L.str, %rdi
+	movb	$0, %al
+	callq	puts
 	movq	-16(%rbp), %rbx
 	movq	%rbx, %rdi
 	callq	CFICheck
@@ -272,6 +275,9 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movl	%eax, -20(%rbp)
+	movabsq	$.L.str.1, %rdi
+	movb	$0, %al
+	callq	puts
 	xorl	%edi, %edi
 	callq	exit
 .LBB2_1:
@@ -282,6 +288,17 @@ enclave_main:                           # @enclave_main
 .Lfunc_end2:
 	.size	enclave_main, .Lfunc_end2-enclave_main
                                         # -- End function
+	.type	.L.str,@object          # @.str
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.L.str:
+	.asciz	"----------1----------"
+	.size	.L.str, 22
+
+	.type	.L.str.1,@object        # @.str.1
+.L.str.1:
+	.asciz	"----------2----------"
+	.size	.L.str.1, 22
+
 
 	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 444daba1eecc30b5a70de95e7a4016b5b8d4ce27)"
 	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 444daba1eecc30b5a70de95e7a4016b5b8d4ce27)"
