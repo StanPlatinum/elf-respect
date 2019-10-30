@@ -3,13 +3,6 @@ source_filename = "/home/weijliu/elf-respect/ShadowStackCFI/CFICheck.c"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@.str = private unnamed_addr constant [31 x i8] c"checking next indirect call...\00", align 1
-@.str.1 = private unnamed_addr constant [9 x i8] c"target: \00", align 1
-@.str.2 = private unnamed_addr constant [35 x i8] c"Matching CFICheckAddressPtr[mid]: \00", align 1
-@.str.3 = private unnamed_addr constant [10 x i8] c"found it!\00", align 1
-@.str.4 = private unnamed_addr constant [8 x i8] c"larger!\00", align 1
-@.str.5 = private unnamed_addr constant [9 x i8] c"smaller!\00", align 1
-
 ; Function Attrs: noinline nounwind optnone
 define dso_local void @CFICheck(i64 %target) #0 {
 entry:
@@ -19,124 +12,90 @@ entry:
   %low = alloca i32, align 4
   %high = alloca i32, align 4
   %mid = alloca i32, align 4
-  %target_s = alloca [8 x i8], align 1
-  %target_str = alloca i8*, align 8
-  %i_b = alloca [8 x i8], align 1
-  %ii_b = alloca i8*, align 8
+  %magic = alloca i64, align 8
   store i64 %target, i64* %target.addr, align 8
   store i64* inttoptr (i64 2305843009213693951 to i64*), i64** %CFICheckAddressPtr, align 8
   store i32 536870911, i32* %CFICheckAddressNum, align 4
   store i32 0, i32* %low, align 4
   %0 = load i32, i32* %CFICheckAddressNum, align 4
-  %sub = sub nsw i32 %0, 1
-  store i32 %sub, i32* %high, align 4
-  %call = call i32 @puts(i8* getelementptr inbounds ([31 x i8], [31 x i8]* @.str, i64 0, i64 0))
-  %arraydecay = getelementptr inbounds [8 x i8], [8 x i8]* %target_s, i64 0, i64 0
-  store i8* %arraydecay, i8** %target_str, align 8
-  %1 = load i64, i64* %target.addr, align 8
-  %2 = load i8*, i8** %target_str, align 8
-  %call1 = call i8* @my_itoa(i64 %1, i8* %2, i64 16)
-  store i8* %call1, i8** %target_str, align 8
-  %call2 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.1, i64 0, i64 0))
-  %3 = load i8*, i8** %target_str, align 8
-  %call3 = call i32 @puts(i8* %3)
-  %4 = bitcast [8 x i8]* %i_b to i8*
-  store i8* %4, i8** %ii_b, align 8
+  store i32 %0, i32* %high, align 4
+  store i64 1, i64* %magic, align 8
   br label %while.cond
 
-while.cond:                                       ; preds = %if.end24, %entry
-  %5 = load i32, i32* %low, align 4
-  %6 = load i32, i32* %high, align 4
-  %cmp = icmp sle i32 %5, %6
+while.cond:                                       ; preds = %if.end12, %entry
+  %1 = load i32, i32* %low, align 4
+  %2 = load i32, i32* %high, align 4
+  %cmp = icmp sle i32 %1, %2
   br i1 %cmp, label %while.body, label %while.end
 
 while.body:                                       ; preds = %while.cond
-  %7 = load i32, i32* %low, align 4
-  %8 = load i32, i32* %high, align 4
-  %9 = load i32, i32* %low, align 4
-  %sub4 = sub nsw i32 %8, %9
-  %div = sdiv i32 %sub4, 2
-  %add = add nsw i32 %7, %div
+  %3 = load i32, i32* %low, align 4
+  %4 = load i32, i32* %high, align 4
+  %5 = load i32, i32* %low, align 4
+  %sub = sub nsw i32 %4, %5
+  %div = sdiv i32 %sub, 2
+  %add = add nsw i32 %3, %div
   store i32 %add, i32* %mid, align 4
-  %call5 = call i32 @puts(i8* getelementptr inbounds ([35 x i8], [35 x i8]* @.str.2, i64 0, i64 0))
-  %10 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %11 = load i32, i32* %mid, align 4
-  %idxprom = sext i32 %11 to i64
-  %arrayidx = getelementptr inbounds i64, i64* %10, i64 %idxprom
-  %12 = load i64, i64* %arrayidx, align 8
-  %13 = load i8*, i8** %ii_b, align 8
-  %call6 = call i8* @my_itoa(i64 %12, i8* %13, i64 16)
-  store i8* %call6, i8** %ii_b, align 8
-  %14 = load i8*, i8** %ii_b, align 8
-  %call7 = call i32 @puts(i8* %14)
-  %15 = load i32, i32* %mid, align 4
-  %16 = load i32, i32* %high, align 4
-  %cmp8 = icmp sge i32 %15, %16
-  br i1 %cmp8, label %if.then, label %if.end
+  %6 = load i32, i32* %mid, align 4
+  %7 = load i32, i32* %high, align 4
+  %cmp1 = icmp sgt i32 %6, %7
+  br i1 %cmp1, label %if.then, label %if.end
 
 if.then:                                          ; preds = %while.body
   br label %while.end
 
 if.end:                                           ; preds = %while.body
-  %17 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %18 = load i32, i32* %mid, align 4
-  %idxprom9 = sext i32 %18 to i64
-  %arrayidx10 = getelementptr inbounds i64, i64* %17, i64 %idxprom9
-  %19 = load i64, i64* %arrayidx10, align 8
-  %20 = load i64, i64* %target.addr, align 8
-  %cmp11 = icmp eq i64 %19, %20
-  br i1 %cmp11, label %if.then12, label %if.else
+  %8 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %9 = load i32, i32* %mid, align 4
+  %idxprom = sext i32 %9 to i64
+  %arrayidx = getelementptr inbounds i64, i64* %8, i64 %idxprom
+  %10 = load i64, i64* %arrayidx, align 8
+  %11 = load i64, i64* %target.addr, align 8
+  %cmp2 = icmp ugt i64 %10, %11
+  br i1 %cmp2, label %if.then3, label %if.else
 
-if.then12:                                        ; preds = %if.end
-  %call13 = call i32 @puts(i8* getelementptr inbounds ([10 x i8], [10 x i8]* @.str.3, i64 0, i64 0))
-  ret void
+if.then3:                                         ; preds = %if.end
+  %12 = load i32, i32* %mid, align 4
+  %sub4 = sub nsw i32 %12, 1
+  store i32 %sub4, i32* %high, align 4
+  br label %if.end12
 
 if.else:                                          ; preds = %if.end
-  %21 = load i64*, i64** %CFICheckAddressPtr, align 8
-  %22 = load i32, i32* %mid, align 4
-  %idxprom14 = sext i32 %22 to i64
-  %arrayidx15 = getelementptr inbounds i64, i64* %21, i64 %idxprom14
-  %23 = load i64, i64* %arrayidx15, align 8
-  %24 = load i64, i64* %target.addr, align 8
-  %cmp16 = icmp sgt i64 %23, %24
-  br i1 %cmp16, label %if.then17, label %if.else20
+  %13 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %14 = load i32, i32* %mid, align 4
+  %idxprom5 = sext i32 %14 to i64
+  %arrayidx6 = getelementptr inbounds i64, i64* %13, i64 %idxprom5
+  %15 = load i64, i64* %arrayidx6, align 8
+  %16 = load i64, i64* %target.addr, align 8
+  %cmp7 = icmp ult i64 %15, %16
+  br i1 %cmp7, label %if.then8, label %if.else10
 
-if.then17:                                        ; preds = %if.else
-  %call18 = call i32 @puts(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @.str.4, i64 0, i64 0))
-  %25 = load i32, i32* %mid, align 4
-  %sub19 = sub nsw i32 %25, 1
-  store i32 %sub19, i32* %high, align 4
-  br label %if.end23
+if.then8:                                         ; preds = %if.else
+  %17 = load i32, i32* %mid, align 4
+  %add9 = add nsw i32 %17, 1
+  store i32 %add9, i32* %low, align 4
+  br label %if.end11
 
-if.else20:                                        ; preds = %if.else
-  %call21 = call i32 @puts(i8* getelementptr inbounds ([9 x i8], [9 x i8]* @.str.5, i64 0, i64 0))
-  %26 = load i32, i32* %mid, align 4
-  %add22 = add nsw i32 %26, 1
-  store i32 %add22, i32* %low, align 4
-  br label %if.end23
+if.else10:                                        ; preds = %if.else
+  ret void
 
-if.end23:                                         ; preds = %if.else20, %if.then17
-  br label %if.end24
+if.end11:                                         ; preds = %if.then8
+  br label %if.end12
 
-if.end24:                                         ; preds = %if.end23
+if.end12:                                         ; preds = %if.end11, %if.then3
   br label %while.cond
 
 while.end:                                        ; preds = %if.then, %while.cond
-  call void @exit(i32 -1) #3
+  call void @exit(i32 -1) #2
   unreachable
 }
 
-declare dso_local i32 @puts(i8*) #1
-
-declare dso_local i8* @my_itoa(i64, i8*, i64) #1
-
-; Function Attrs: noreturn nounwind
-declare dso_local void @exit(i32) #2
+; Function Attrs: noreturn
+declare dso_local void @exit(i32) #1
 
 attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #2 = { noreturn nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #3 = { noreturn nounwind }
+attributes #1 = { noreturn "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { noreturn }
 
 !llvm.module.flags = !{!0}
 !llvm.ident = !{!1}
