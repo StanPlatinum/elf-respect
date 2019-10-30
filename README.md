@@ -118,4 +118,23 @@ make
 ./app
 ```
 
+### Try anothor program
+
+Prepare the program
+
+ - Put your target unmodified program $(TARGET_NAME).c/cpp in ShadowStackCFI/.
+ - Please run `bash run.sh` to generate dir $(TARGET_NAME), which includes 5 files in the directory.
+ - Copy the dir $(TARGET_NAME) to shadowstack-test-loader/target-program/.
+
+```
+cd shadowstack-test-loader/target-program/
+make
+cd ..
+make
+```
+
+To re-generate the program, please do `make clean` in both `shadowstack-test-loader/target-program/` and `shadowstack-test-loader/`.
+
+Then simply run ./app to get what you want.
+
 GL and HF!
