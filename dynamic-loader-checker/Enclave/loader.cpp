@@ -23,6 +23,7 @@ char *shadow_stack = (char *)&__ss_start;
 /* Weijie: add target table pointer */
 char *target_table = (char *)&__cfi_start;
 size_t target_table_size = 0;
+Elf64_Addr *call_target;
 
 #include <endian.h>
 #if BYTE_ORDER == BIG_ENDIAN
@@ -467,8 +468,10 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 	return single_insn.address + imm_offset;
 }
 //Weijie: not sure with the upper bound
-Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
-Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
+//Elf64_Addr data_upper_bound = (Elf64_Addr)&__elf_end;
+Elf64_Addr data_upper_bound = 0xffffffffffffffff;
+//Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
+Elf64_Addr data_lower_bound = 0x0000000000000001;
 
 unsigned call_target_idx_global = 0;
 
@@ -553,22 +556,30 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
-			PrintDebugInfo("setting bounds...\n");
+			//PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
 			//Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
 			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
 			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], movabs_imm_offset);
 			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[3], movabs_imm_offset);
 			//Weijie:
-			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			//rewrite_imm32(imm1_addr, data_upper_bound);
-			//rewrite_imm32(imm1_addr, data_lower_bound);
-			rewrite_imm(imm1_addr, data_lower_bound);
-			rewrite_imm(imm2_addr, data_upper_bound);
-			PrintDebugInfo("memory rewritting done.\n");
+			//0x3fffffffffffffff <---> upper bound
+			//0x4fffffffffffffff <---> lower bound
+			rewrite_imm(imm1_addr, data_upper_bound);
+			rewrite_imm(imm2_addr, data_lower_bound);
+			PrintDebugInfo("memory write rewritting done.\n");
 			PrintDebugInfo("memory write check done.\n");
 			return 1;
+		}
+		else if (
+				(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
+				(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
+				(strncmp("add", forward_ins[7].mnemonic, 3) == 0)
+			) {
+			PrintDebugInfo("memory write by shadow stack.\n");
+			PrintDebugInfo("memory write check done.\n");
 		}
 		else
 		{
@@ -596,13 +607,13 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 				(strncmp("pop", backward_ins[5].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
-			PrintDebugInfo("setting bounds...\n");
+			//PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
 			Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
 			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], cmp_rsp_imm_offset);
 			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[3], cmp_rsp_imm_offset);
 			//Weijie:
-			dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
+			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
 			rewrite_imm32(imm1_addr, data_upper_bound);
 			rewrite_imm32(imm2_addr, data_lower_bound);
@@ -612,7 +623,7 @@ int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 		}
 		else
 		{
-			PrintDebugInfo("register check failed.\n");
+			//PrintDebugInfo("register check failed.\n");
 			return -1;
 		}
 	}
@@ -700,6 +711,7 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 					(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
 					(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
 					(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+					(strncmp("mov", forward_ins[4].mnemonic, 3) == 0) &&
 					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
 					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
 			   ){
@@ -771,7 +783,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	//Weijie: rewrite CFICheckAddressNum, replace with value of 'call_target_idx'
-	//Weijie: rewrite CFICheckAddressPtr, replace with value of '(char *)&__cfi_start'
+	//Weijie: rewrite CFICheckAddressPtr, replace with value of 'call_target'
 	//Weijie: rewrite shadow stack base pointer, replace with value of '(char *)&__ss_start'
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
@@ -807,7 +819,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						if_calltg = 1;
 						Elf64_Addr movabs_imm_offset = 2; //10-8=2;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], movabs_imm_offset);
-						rewrite_imm(imm_addr, (Elf64_Addr)&__cfi_start);
+						rewrite_imm(imm_addr, (Elf64_Addr)call_target);
 					}
 				}
 			}
@@ -873,6 +885,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes instrumentation!\n");
 			
+			/*
+			//Weijie: comment for now
 			//Weijie: checking register 'rsp'
 			if (count - j - 1 >= 6){
 				cs_insn backward_insn[6];
@@ -888,6 +902,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				//Weijie: to-do
 			}
 			if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
+			*/
 
 			if (j >= 7){
 				cs_insn forward_insn[7];
@@ -903,23 +918,24 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_call_safe < 0)	PrintDebugInfo("Abort! Illegal long func instrumentation!\n");
+			if (longfunc_call_safe < 0)	PrintDebugInfo("Check failed! Illegal long func instrumentation!\n");
 
 
 			if (j >= 6){
-				cs_insn forward_insn[6];
-				forward_insn[0] = insn[j-6];
-				forward_insn[1] = insn[j-5];
-				forward_insn[2] = insn[j-4];
-				forward_insn[3] = insn[j-3];
-				forward_insn[4] = insn[j-2];
-				forward_insn[5] = insn[j-1];
+				cs_insn forward_insn[7];
+				forward_insn[0] = insn[j-7];
+				forward_insn[1] = insn[j-6];
+				forward_insn[2] = insn[j-5];
+				forward_insn[3] = insn[j-4];
+				forward_insn[4] = insn[j-3];
+				forward_insn[5] = insn[j-2];
+				forward_insn[6] = insn[j-1];
 				longfunc_ret_safe = check_rewrite_longfunc_ret(handle, CS_MODE_64, &insn[j], forward_insn);
 			}
 			else{
 				//Weijie: to-do
 			}
-			if (longfunc_ret_safe < 0)	PrintDebugInfo("Abort! Illegal long ret instrumentation!\n");
+			if (longfunc_ret_safe < 0)	PrintDebugInfo("Check failed! Illegal long ret instrumentation!\n");
 
 			//Weijie: the logic of checking indirect call is a little bit different.
 			if (j >= 1){
@@ -937,7 +953,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 					//PrintDebugInfo("not an indirect call\n");
 				}
 			}
-			if (indirect_call_safe < 0)	PrintDebugInfo("Abort! Illegal indirect call instrumentation!\n");
+			if (indirect_call_safe < 0)	PrintDebugInfo("Check failed! Illegal indirect call instrumentation!\n");
 		}
 		cs_free(insn, count);
 	} else
@@ -988,7 +1004,6 @@ void rewrite_whole()
 		//Weijie: only disassemble .text section
 		if (pshdr[symtab[j].st_shndx].sh_type == SHT_PROGBITS && (pshdr[symtab[j].st_shndx].sh_flags & SHF_EXECINSTR)) {
 			//Weijie: print symbol name
-			dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 			textSize = symtab[j].st_size;
 			//Weijie: it is very strange the size of those LBB symbols is 0
 			if (textSize > 0){
@@ -1000,18 +1015,20 @@ void rewrite_whole()
 					buf = (unsigned char *)malloc(textSize);
 					//Weijie: fill in buf
 					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+					dlog("disassembling CFICheck: textAddr: %p, textSize: %u", textAddr, textSize);
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
-				//Weijie: rewrite Memory write and long call/ret, including CFICheck
+				//else {
+				//Weijie: rewrite Memory write and long call/ret, not including CFICheck
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				dlog("disassembling symbol '%s': textAddr: %p, textSize: %u", &strtab[symtab[j].st_name], textAddr, textSize);
 				rv = cs_rewrite_entry(buf, textSize, textAddr);
 				free(buf);
+				//}
 			}
 		}
 	}
@@ -1071,40 +1088,71 @@ Elf64_Addr search_symtab_by_name(char *name, size_t l) {
 	return 0;
 }
 
-//Weijie: we should do ecall_receive_entrylabel first.
+
+//Weijie: remember to do ecall_receive_entrylabel first. And do relocate_entrylabel until relocate() is done.
 void ecall_receive_entrylabel(char *entrylabel, int sz)
 {
-	dlog("target_table at %p (%lu)", target_table, target_table_size);
+	pr_progress("loading entrylabels");
+	dlog("target_table at %p", target_table);
 	cpy(target_table, entrylabel, (size_t)sz);
 	target_table_size = sz;
+}
 
+void relocate_entrylabel()
+{
 	// shawn233: in function load, symtab[i].st_value has been updated to the address of symbols
 	// so we can directly replace symbols to these addresses
 
-	Elf64_Addr *call_target;
+	//Weijie: redirect call target to the new section: calltg
+	//Weijie & Xinyu: target_table starts those label strings, while call_target starts those target addresses;
+	call_target = (Elf64_Addr *)target_table + target_table_size + 10;
+
 	unsigned call_target_idx = 0;
 
-	for (unsigned i = 0; i < sz; ++ i) {
-		if (entrylabel[i] == '\n') {
-			entrylabel[i] = '\0';
+	for (unsigned i = 0; i < target_table_size; ++ i) {
+		if (target_table[i] == '\n') {
+			target_table[i] = '\0';
 			call_target_idx ++;
 		}
 	}
 
 	call_target_idx_global = call_target_idx;
 
-	call_target = (Elf64_Addr *)get_buf(call_target_idx*sizeof(Elf64_Addr));
-	call_target_idx = 0;
+    // shawn233: target_entries is an array that stores the pointers to each target entry
+    char **target_entries = (char **)get_buf(sizeof(char *) * call_target_idx_global);
+    target_entries[0] = target_table; // the pointer to the first entry is exactly target_table
+    call_target_idx = 1;
+    for (unsigned i = 0; i < (target_table_size - 1); ++ i) {
+		if (target_table[i] == '\0') {
+			target_entries[call_target_idx++] = (target_table + (i + 1));
+		}
+	}
+    if (call_target_idx != call_target_idx_global) {
+        dlog("[error] target_entries creation error, call_target_idx: %u mismatches call_target_idx_global: %u",\
+            call_target_idx, call_target_idx_global);
+    }
 
+    call_target_idx = 0;
+    for (unsigned i = 0; i < n_symtab; ++ i) {
+        for (unsigned j = 0; j < call_target_idx_global; ++ j) {
+            if (strncmp((const char *)target_entries[j], &strtab[symtab[i].st_name], strlen(target_entries[j])) == 0) {
+                call_target[call_target_idx++] = symtab[i].st_value;
+            }
+        }
+    }
+
+    /* shawn233: the old version is deprecated because it produces a call target table which is not ordered by addresses
 	unsigned buffer_idx = 0;
-	for (unsigned i = 0; i < sz; ++ i) {
-		if (entrylabel[i] == '\0') {
-			dlog("entry label: %s", entrylabel+buffer_idx);
-			call_target[call_target_idx ++] = search_symtab_by_name(entrylabel+buffer_idx, strlen(entrylabel+buffer_idx));
+	for (unsigned i = 0; i < target_table_size; ++i) {
+		//Weijie: rewrite the labels with their addresses
+		if (target_table[i] == '\0') {
+			dlog("entry label: %s", target_table + buffer_idx);
+			call_target[call_target_idx ++] = search_symtab_by_name(target_table + buffer_idx, strlen(target_table + buffer_idx));
 			dlog("call target address: 0x%lx", call_target[call_target_idx-1]);
 			buffer_idx = i+1;
 		}
-	}	
+	}
+    */
 }
 
 //Weijie: Enclave starts here
@@ -1120,7 +1168,7 @@ void ecall_receive_binary(char *binary, int sz)
 	dlog("program at %p (%lu)", program, program_size);
 	dlog(".sgx.ssblob = %p", (void*)(&__ss_start));
 	dlog(".sgx.calltg = %p", (void*)(&__cfi_start));
-	dlog("target_table at %p (%lu)", target_table, target_table_size);
+	dlog("target string table at %p (%lu)", target_table, target_table_size);
 	dlog(".sgxcode = %p", _SGXCODE_BASE);
 	dlog(".sgxdata = %p", _SGXDATA_BASE);
 	dlog("elf start = %p", (void*)(&__elf_start));
@@ -1143,12 +1191,16 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("relocating");
 	relocate();
 
-	pr_progress("disassembling and checking");
+	pr_progress("relocating entrylabels");
+	dlog("target string table at %p (%lu)", target_table, target_table_size);
+	relocate_entrylabel();
+	dlog("target address table at %p, total #:(%lu)", call_target, call_target_idx_global);
+
+	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 	
-	//Weijie: no we don't need this disasm
-	pr_progress("debugging: validate if rewrites fine");
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);

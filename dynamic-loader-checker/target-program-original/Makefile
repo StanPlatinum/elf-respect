@@ -1,8 +1,13 @@
 
-SGX_Shield_PATH = /root/SGX-Shield
+#SGX_Shield_PATH = /root/SGX-Shield
+#SGX_Shield_PATH = /home/weijliu/SGX-Shield
+SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
+
+#Our_LLVM_PATH = /home/weijliu/llvm-project
 
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
@@ -15,7 +20,8 @@ CC = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
-TARGET_NAME = nw4test
+#TARGET_NAME = nw4test
+TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -28,7 +34,7 @@ NOLIBC_FLAG = -nodefaultlibs -nostdlib
 #Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
 LIBC = $(LIBC_DIR)/libc.a
-/home/liuweijie/newdisk/elf-respect/dyn-loader/target-programSGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 #Weijie: add Makefile in lib/ for ocalls
 OCALL_OBJS_DIR = lib/
@@ -41,9 +47,20 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 all: $(LIBC) $(TARGET_NAME)
 	mv $(TARGET_NAME) ../program
 
+LIBNBENCH = nbench/nbench.a
+
+nben: $(LIBNBENCH) $(TARGET_NAME)
+	cp nbench/*.o objs
+	rm objs/enclave_main.o
+	ls objs/*.o > list
+	cat list | ./tools/linker nben
+
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
+
+$(LIBNBENCH):
+	$(MAKE) -C nbench nbench.a
 
 $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
 	cp malloc.o objs/
@@ -71,19 +88,17 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -S -I. -o enclave_main.s $<
-	#$(CC) -c enclave_main.s -o $@
-	#$(CC) -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME).s -o $@
-	#gcc -c $(TARGET_NAME)-pure-llc.s -o $@
-	$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
+	$(CC) -S -I. -o enclave_main.s $<
+	$(CC) -c enclave_main.s -o $@
+	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
-	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
+	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list nben $(TARGET_NAME) \
 		lib/*.o
 
 clean-all:
 	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
                 tools/linker lib/*.o
 	$(MAKE) -C musl-libc clean
+	$(MAKE) -C nbench clean
 

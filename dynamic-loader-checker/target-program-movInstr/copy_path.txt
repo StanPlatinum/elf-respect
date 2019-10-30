@@ -1,6 +1,0 @@
-ver1: instrument mov
-ver2: instrument mov and operations on rsp
-
-new.s: instrument nw4test
-
-scp -r chenyi@156.56.159.9:/home/chenyi/LLVM/myWorkspace/toWJ/nw4test-checker/ .
