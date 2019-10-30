@@ -106,7 +106,7 @@ while.body:                                       ; preds = %while.cond
   %call10 = call i32 @puts(i8* getelementptr inbounds ([6 x i8], [6 x i8]* @.str.3, i64 0, i64 0))
   %arraydecay = getelementptr inbounds [9 x i8], [9 x i8]* %mid_d, i64 0, i64 0
   %19 = load i64, i64* %mid, align 8
-  %call11 = call i32 (i8*, i64, i8*, ...) @snprintf(i8* %arraydecay, i64 9, i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.4, i64 0, i64 0), i64 %19) #5
+  %call11 = call i32 (i8*, i64, i8*, ...) @snprintf(i8* %arraydecay, i64 8, i8* getelementptr inbounds ([3 x i8], [3 x i8]* @.str.4, i64 0, i64 0), i64 %19) #5
   store i32 %call11, i32* %ret, align 4
   %arraydecay12 = getelementptr inbounds [9 x i8], [9 x i8]* %mid_d, i64 0, i64 0
   %call13 = call i32 @puts(i8* %arraydecay12)

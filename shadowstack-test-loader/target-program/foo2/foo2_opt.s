@@ -211,7 +211,7 @@ CFICheck:                               # @CFICheck
 	callq	puts
 	leaq	-93(%rbp), %rdi
 	movq	-32(%rbp), %rcx
-	movl	$9, %esi
+	movl	$8, %esi
 	movabsq	$.L.str.4, %rdx
 	movb	$0, %al
 	callq	snprintf

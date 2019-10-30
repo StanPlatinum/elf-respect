@@ -39,7 +39,7 @@ void CFICheck(unsigned long long target)
 		puts("mid: ");
 		//mid_s = my_itoa(mid, mid_s, 16);
 		//puts(mid_s);
-		int ret = snprintf(mid_d, 9, "%s", mid);
+		int ret = snprintf(mid_d, 8, "%s", mid);
 		puts(mid_d);
 
 		char cfiptr_mid[9];
