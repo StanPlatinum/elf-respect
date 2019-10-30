@@ -1,7 +1,5 @@
 #include <stdio.h>
 
-#include "enclave.h"
-
 void CFICheck(unsigned long long target)
 {
 	unsigned long long *CFICheckAddressPtr = 0x1FFFFFFFFFFFFFFF;
