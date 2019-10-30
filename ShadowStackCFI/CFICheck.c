@@ -7,7 +7,7 @@ void CFICheck(unsigned long long target)
 {
 	unsigned long long *CFICheckAddressPtr = 0x1FFFFFFFFFFFFFFF;
 	int CFICheckAddressNum = 0x1FFFFFFF;
-	int low = 0, high = CFICheckAddressNum, mid;
+	unsigned long long low = 0, high = CFICheckAddressNum, mid;
 
 	//Weijie: for debugging
 	puts("traverse all targets:");
@@ -35,10 +35,12 @@ void CFICheck(unsigned long long target)
 		mid = low + (high - low) / 2;
 		
 		char mid_d[9];
-		char *mid_s = &mid_d;
+		//char *mid_s = &mid_d;
 		puts("mid: ");
-		mid_s = my_itoa(mid, mid_s, 16);
-		puts(mid_s);
+		//mid_s = my_itoa(mid, mid_s, 16);
+		//puts(mid_s);
+		int ret = snprintf(mid_d, 9, "%s", mid);
+		puts(mid_d);
 
 		char cfiptr_mid[9];
 		char *cfiptr_mid_s = &cfiptr_mid;

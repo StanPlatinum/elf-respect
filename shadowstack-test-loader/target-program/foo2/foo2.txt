@@ -1,6 +1,7 @@
 CFICheck
 puts
 my_itoa
+snprintf
 strncmp
 exit
 fun
