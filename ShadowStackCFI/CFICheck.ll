@@ -12,14 +12,13 @@ entry:
   %low = alloca i32, align 4
   %high = alloca i32, align 4
   %mid = alloca i32, align 4
-  %magic = alloca i64, align 8
   store i64 %target, i64* %target.addr, align 8
   store i64* inttoptr (i64 2305843009213693951 to i64*), i64** %CFICheckAddressPtr, align 8
   store i32 536870911, i32* %CFICheckAddressNum, align 4
   store i32 0, i32* %low, align 4
   %0 = load i32, i32* %CFICheckAddressNum, align 4
   store i32 %0, i32* %high, align 4
-  store i64 1, i64* %magic, align 8
+  store i32 0, i32* %mid, align 4
   br label %while.cond
 
 while.cond:                                       ; preds = %if.end12, %entry

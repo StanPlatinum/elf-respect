@@ -1,6 +1,4 @@
 CFICheck
 exit
 fun
-puts
 enclave_main
-my_itoa

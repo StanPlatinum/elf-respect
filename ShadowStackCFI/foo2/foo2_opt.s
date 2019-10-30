@@ -13,7 +13,7 @@ CFICheck:                               # @CFICheck
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$48, %rsp
+	subq	$32, %rsp
 	pushq	%rbx
 	pushq	%rax
 	leaq	-32(%rbp), %rax
@@ -78,7 +78,7 @@ CFICheck:                               # @CFICheck
 	movl	%eax, -8(%rbp)
 	pushq	%rbx
 	pushq	%rax
-	leaq	-40(%rbp), %rax
+	leaq	-4(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB0_13
@@ -87,7 +87,7 @@ CFICheck:                               # @CFICheck
 	jb	.LBB0_13
 	popq	%rax
 	popq	%rbx
-	movq	$1, -40(%rbp)
+	movl	$0, -4(%rbp)
 .LBB0_1:                                # %while.cond
                                         # =>This Inner Loop Header: Depth=1
 	movl	-12(%rbp), %eax
@@ -168,7 +168,7 @@ CFICheck:                               # @CFICheck
 	movl	%eax, -12(%rbp)
 	jmp	.LBB0_9
 .LBB0_8:                                # %if.else10
-	addq	$48, %rsp
+	addq	$32, %rsp
 	popq	%rbp
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
 	movq	(%r11), %r10
@@ -213,8 +213,6 @@ fun:                                    # @fun
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
-	movabsq	$.L.str, %rdi
-	callq	puts
 	movl	$1, %eax
 	popq	%rbp
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
@@ -244,11 +242,11 @@ enclave_main:                           # @enclave_main
 	pushq	%rbp
 	movq	%rsp, %rbp
 	pushq	%rbx
-	subq	$40, %rsp
+	subq	$24, %rsp
 	movabsq	$fun, %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-32(%rbp), %rax
+	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB2_1
@@ -257,10 +255,8 @@ enclave_main:                           # @enclave_main
 	jb	.LBB2_1
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -32(%rbp)
-	movabsq	$.L.str.1, %rdi
-	callq	puts
-	movq	-32(%rbp), %rbx
+	movq	%rax, -16(%rbp)
+	movq	-16(%rbp), %rbx
 	movq	%rbx, %rdi
 	callq	CFICheck
 	callq	*%rbx
@@ -276,45 +272,6 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movl	%eax, -20(%rbp)
-	movabsq	$.L.str.2, %rdi
-	callq	puts
-	leaq	-40(%rbp), %rax
-	pushq	%rbx
-	pushq	%rax
-	leaq	-16(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB2_1
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB2_1
-	popq	%rax
-	popq	%rbx
-	movq	%rax, -16(%rbp)
-	movabsq	$.L.str.3, %rdi
-	callq	puts
-	movslq	-20(%rbp), %rdi
-	movq	-16(%rbp), %rsi
-	movl	$10, %edx
-	callq	my_itoa
-	pushq	%rbx
-	pushq	%rax
-	leaq	-16(%rbp), %rax
-	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	ja	.LBB2_1
-	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
-	cmpq	%rbx, %rax
-	jb	.LBB2_1
-	popq	%rax
-	popq	%rbx
-	movq	%rax, -16(%rbp)
-	movabsq	$.L.str.4, %rdi
-	callq	puts
-	movq	-16(%rbp), %rdi
-	callq	puts
-	movabsq	$.L.str.5, %rdi
-	callq	puts
 	xorl	%edi, %edi
 	callq	exit
 .LBB2_1:
@@ -325,37 +282,6 @@ enclave_main:                           # @enclave_main
 .Lfunc_end2:
 	.size	enclave_main, .Lfunc_end2-enclave_main
                                         # -- End function
-	.type	.L.str,@object          # @.str
-	.section	.rodata.str1.1,"aMS",@progbits,1
-.L.str:
-	.asciz	"----------1 in fun----------"
-	.size	.L.str, 29
-
-	.type	.L.str.1,@object        # @.str.1
-.L.str.1:
-	.asciz	"----------1----------"
-	.size	.L.str.1, 22
-
-	.type	.L.str.2,@object        # @.str.2
-.L.str.2:
-	.asciz	"----------2----------"
-	.size	.L.str.2, 22
-
-	.type	.L.str.3,@object        # @.str.3
-.L.str.3:
-	.asciz	"----------3----------"
-	.size	.L.str.3, 22
-
-	.type	.L.str.4,@object        # @.str.4
-.L.str.4:
-	.asciz	"----------4----------"
-	.size	.L.str.4, 22
-
-	.type	.L.str.5,@object        # @.str.5
-.L.str.5:
-	.asciz	"success!"
-	.size	.L.str.5, 9
-
 
 	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 444daba1eecc30b5a70de95e7a4016b5b8d4ce27)"
 	.ident	"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 444daba1eecc30b5a70de95e7a4016b5b8d4ce27)"
