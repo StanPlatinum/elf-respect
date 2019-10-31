@@ -69,8 +69,8 @@ make
 git clone https://github.com/StanPlatinum/llvm-project.git
 cd llvm-project
 mkdir build && cd build
-cmake -DLLVM_ENABLE_PROJECTS=clang -G "Unix Makefiles" ../llvm
-make
+cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86" -G "Ninja" ../llvm
+ninja
 ```
  - This step may take some time...
 
