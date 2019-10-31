@@ -89,7 +89,7 @@ cd dynamic-loader-checker/target-program
 make
 ```
 
-## Build the loader
+## Build the dynamic SGX loader
 
  - To get your prepared binary checked and run, you should build the SGX dynamic-loader-check first.
 
