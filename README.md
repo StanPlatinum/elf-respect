@@ -54,7 +54,7 @@ make
  - To use the prototype, users should first know we have provided a code generator (using LLVM and some linking scripts) and a code execution environment (using Intel SGX).
  - Then users should prepare a crafted source code (in C/C++) for proof generation using our compiler toolset.
  
- ## How to write a pratical SGX application 
+ ## How to write a crafted SGX application 
 
  - The entry function is `void enclave()`.
  - The return of an enclave should be `enclave_exit();`.
