@@ -6,7 +6,7 @@ SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
 #Our_LLVM_PATH = /home/weijliu/llvm-project
 
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = $(CC4OCALL)
 #CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 

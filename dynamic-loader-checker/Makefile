@@ -42,7 +42,7 @@ ELFUTILS_INC_PATH = $(ELFUTILS_PATH)/libelf
 
 #CAPSTONE_PATH = /root/capstone
 #CAPSTONE_PATH = /home/weijliu/capstone
-CAPSTONE_PATH = /home/liuweijie/newdisk/capstone
+CAPSTONE_PATH = /home/liuweijie/capstone
 CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
 
 ###### Link Path Settings ######
