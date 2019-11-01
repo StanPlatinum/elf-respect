@@ -55,6 +55,7 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
 $(TARGET_NAME).s:
+	make -C ShadowStackCFI
 	cp ./ShadowStackCFI/$(TARGET_NAME)/$(TARGET_NAME)_opt.s $@
 
 enclave_main.o: $(TARGET_NAME).s enclave.h
