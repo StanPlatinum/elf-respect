@@ -1,5 +1,7 @@
-#include <stdio.h>
+//#include <stdio.h>
 #include <stdlib.h>
+
+#include "enclave.h"
 
 unsigned long* objs;
 unsigned long* objs_end;
@@ -37,7 +39,7 @@ int check_overlap()
 char __tmp[64] = {0};
 #define dlog(...) sprintf(__tmp, __VA_ARGS__); puts(__tmp); memset(__tmp, 0, 64)
 
-#include <enclave.h>
+
 void enclave_main()
 {
     unsigned int i;
