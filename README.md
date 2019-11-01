@@ -73,7 +73,8 @@ cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86" -G "Ninja" ../l
 ninja
 ```
  - This step may take some time...
-
+ - Please modify $(LLVM_PATH) in `dynamic-loader-checker/target-program/ShadowStackCFI/run.sh` to where the LLVM is cloned.
+ 
 ### Build SGX-Shield
 
  - SGX-Shield is a brilliant work which we have taken advantage of in our project. It can be cloned at https://github.com/jaebaek/SGX-Shield. Also, it is suggested that you can cloned a modified version at https://github.com/StanPlatinum/SGX-Shield.
@@ -84,10 +85,13 @@ ninja
  - The general way to generate a relocatable binary with proof is to the following commands:
  
 ```
+cd dynamic-loader-checker/target-program/ShadowStackCFI
+bash run.sh
 cd ..
-cd dynamic-loader-checker/target-program
 make
 ```
+
+ - Then the `program` and the `entryLabel.txt` has been generated and copied to the dir `dynamic-loader-checker`
 
 ## Build the dynamic SGX loader
 
