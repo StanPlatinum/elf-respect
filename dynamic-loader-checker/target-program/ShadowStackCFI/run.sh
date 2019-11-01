@@ -7,11 +7,15 @@ LLVM_BIN_PATH=$LLVM_PATH"/build/bin"
 CFIHello_So_PATH=$LLVM_PATH"/build/lib/LLVMCFIHello.so"
 echo $CFIHello_So_PATH
 
-TARGET_SOURCE=`pwd`"/foo2.c"
+ShadowStackCFI_PATH="/home/liuweijie/elf-respect/dynamic-loader-checker/target-program/ShadowStackCFI"
 
-CFICheck_Func_PATH=`pwd`"/CFICheck.c"
+TARGET_SOURCE=$ShadowStackCFI_PATH"/foo2.c"
+
+CFICheck_Func_PATH=$ShadowStackCFI_PATH"/CFICheck.c"
 echo $CFICheck_Func_PATH
+
+CFIShell_PyPATH=$ShadowStackCFI_PATH"/CFIShell.py"
 
 echo "start generating compiled binary..."
 
-python3 CFIShell.py $LLVM_BIN_PATH $CFIHello_So_PATH $TARGET_SOURCE $CFICheck_Func_PATH n
+python3 $CFIShell_PyPATH $LLVM_BIN_PATH $CFIHello_So_PATH $TARGET_SOURCE $CFICheck_Func_PATH n

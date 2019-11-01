@@ -10,33 +10,11 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = $(CC4OCALL)
 #CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-#Weijie: add llvm install path
-#CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-
-#CXX = clang++
-
-#TARGET_NAME = test
-#TARGET_NAME = test-movInstr
-#TARGET_NAME = simple_loop
-#TARGET_NAME = bm_malloc_and_sort
-#TARGET_NAME = bm_malloc_simple
-#TARGET_NAME = bm_hello
-#TARGET_NAME = nw4test
-
 # Now the target name will be a dir
 TARGET_NAME = foo2
-#TARGET_NAME = foo2-bak
-
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
-NOLIBC_FLAG = -nodefaultlibs -nostdlib
-
-#MUSL_LIBC_DIR = ./musl-libc
-#MUSL_LIBC = $(MUSL_LIBC_DIR)/lib/libc.a
-#SGX_CFLAGS = $(BASE_CFLAGS) -I$(MUSL_LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
-
-#Weijie: or use libc to provide exit.o ... and so on
 LIBC_DIR = ./libc
 LIBC = $(LIBC_DIR)/libc.a
 SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
@@ -69,7 +47,6 @@ lib/%.o: lib/%.s
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
-#Weijie: prepare whole static linked (with libc_static.a) obj and execute Makefile in Dir objs/
 objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 	cp $^ objs/
 	$(MAKE) -C objs
@@ -80,7 +57,6 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 $(TARGET_NAME).s:
 	cp ./ShadowStackCFI/$(TARGET_NAME)/$(TARGET_NAME)_opt.s $@
 
-#Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).s enclave.h
 	$(CC) -c $(SGX_CFLAGS) -o $@ $(LINKERFLAG) $<
 
