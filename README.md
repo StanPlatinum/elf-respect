@@ -4,7 +4,7 @@
 
 ## Prepare dependencies:
 
-### Build linux-sgx and linux-sgx-driver
+### Install linux-sgx and linux-sgx-driver from source
 
  - Please refer to https://github.com/intel/linux-sgx and https://github.com/intel/linux-sgx-driver.
  - Make sure the SGXSDK version is 2.5 or later.
@@ -14,7 +14,7 @@
 git clone https://github.com/StanPlatinum/linux-sgx.git
 ```
 
-### Build libelf
+### Install libelf from source
 
  - We use the libelf from the elfutils (https://sourceware.org/elfutils/). By default it will generate a static library.
 
@@ -29,7 +29,7 @@ automake -a -c
 make
 ```
 
-### Build capstone
+### Install capstone from source
 
  - Capstone can be cloned at https://github.com/aquynh/capstone. But it is suggested that users can build capstone using our modified version. Capstone by default will generate a static library (capstone.a). To reduce program size, you can configure capstone to only build x86 instruction decoding support.
 
@@ -87,7 +87,7 @@ ninja
  - The general way to generate a relocatable binary with proof is to the following commands:
  
 ```
-cd dynamic-loader-checker/target-program/ShadowStackCFI
+cd dynamic-loader-checker/target-program/
 make
 ```
 
