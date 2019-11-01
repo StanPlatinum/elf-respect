@@ -136,13 +136,13 @@ make
 
 ## Try anothor program step by step:
 
- - You can totally use our toolset to evaluate any other C/C++ programs.
+*You can totally use our toolset to evaluate any other C/C++ programs.
  
  - Firstly, modify your program. You can refer to (### Generate target binary from source code). And put your target unmodified program $(TARGET_NAME).c/cpp in dynamic-loader-checker/target-program/ShadowStackCFI/.
- - SecondlyT, run `make` in ShadowStackCFI/ to generate a directory whose name is $(TARGET_NAME), which includes 5 files in the directory. Run `make` in dynamic-loader-checker/target-program/ to generate the `program` in dynamic-loader-checker/.
+ - Secondly, run `make` in ShadowStackCFI/ to generate a directory whose name is $(TARGET_NAME), which includes 5 files in the directory. Run `make` in dynamic-loader-checker/target-program/ to generate the `program` in dynamic-loader-checker/.
  - Thirdly, run `make` in dynamic-loader-checker/ to generate the SGX app that can provide your service. Simply run ./app to get what you want. If your code has data leakage behavior, the SGX app would failed.
 
- - To re-generate the program, please do `make clean` in both `dynamic-loader-checker/target-program/`.
+*To re-generate the program, please do `make clean` in both `dynamic-loader-checker/target-program/`.
 
 ***
 
