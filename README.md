@@ -56,7 +56,7 @@ make
  
 ### Generate target binary from source code
  
-#### How to write a crafted SGX application 
+#### Write a crafted SGX application 
 
  - The entry function is `void enclave()`.
  - The return of an enclave should be `enclave_exit();`.
@@ -75,7 +75,7 @@ cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86" -G "Ninja" ../l
 ninja
 ```
  - This step may take some time...
- - Please modify $(LLVM_PATH) in `dynamic-loader-checker/target-program/ShadowStackCFI/run.sh` to where the LLVM is cloned.
+ - Please modify $(LLVM_PATH) in `dynamic-loader-checker/target-program/Makefile` to where the LLVM is cloned.
  
 ##### Build SGX-Shield
 
@@ -88,8 +88,6 @@ ninja
  
 ```
 cd dynamic-loader-checker/target-program/ShadowStackCFI
-bash run.sh
-cd ..
 make
 ```
 
@@ -138,8 +136,8 @@ make
 
 *You can totally use our toolset to evaluate any other C/C++ programs.
  
- - Firstly, modify your program. You can refer to [here](#generate-target-binary-from-source-code). And put your target unmodified program $(TARGET_NAME).c/cpp in dynamic-loader-checker/target-program/ShadowStackCFI/.
- - Secondly, run `make` in ShadowStackCFI/ to generate a directory whose name is $(TARGET_NAME), which includes 5 files in the directory. Run `make` in dynamic-loader-checker/target-program/ to generate the `program` in dynamic-loader-checker/.
+ - Firstly, modify your program. You can refer to [here](#generate-target-binary-from-source-code). And put your target unmodified program $(TARGET_NAME).c/cpp in ShadowStackCFI/.
+ - Secondly, run `make` in ShadowStackCFI/ to generate a directory whose name is $(TARGET_NAME), which includes 5 files in the directory. Copy the dir $(TARGET_NAME) to dynamic-loader-checker/target-program/. Run `make` in dynamic-loader-checker/target-program/ to generate the `program` in dynamic-loader-checker/.
  - Thirdly, run `make` in dynamic-loader-checker/ to generate the SGX app that can provide your service. Simply run `./app` to get what you want. If your code has data leakage behaviors, the SGX app would failed.
 
 *To re-generate the program, please do `make clean` in both `dynamic-loader-checker/target-program/` and `dynamic-loader-checker/` directories.
