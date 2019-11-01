@@ -13,7 +13,8 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 # Now the target name will be a dir
 #TARGET_NAME = foo2
-TARGET_NAME = bm_malloc_and_sort
+#TARGET_NAME = bm_malloc_and_sort
+TARGET_NAME = nw4test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
