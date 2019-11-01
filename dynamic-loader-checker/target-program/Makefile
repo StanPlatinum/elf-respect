@@ -50,7 +50,7 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/my_itoa.o
 
 all: $(LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
-	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
+	cp ./ShadowStackCFI/$(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
@@ -70,26 +70,17 @@ tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
 #Weijie: prepare whole static linked (with libc_static.a) obj and execute Makefile in Dir objs/
-#Weijie: could also use libc.a directly. if so, replace MUSL_LIC TO LIBC
-#objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 	cp $^ objs/
 	$(MAKE) -C objs
 
-#Weijie: add malloc.o 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
-#Weijie: generate movInstr obj file
-#$(TARGET_NAME)_new.s: $(TARGET_NAME)/$(TARGET_NAME)_new.s
-$(TARGET_NAME).s: $(TARGET_NAME)/$(TARGET_NAME)_opt.s
-	cp $< $@
+$(TARGET_NAME).s:
+	cp ./ShadowStackCFI/$(TARGET_NAME)/$(TARGET_NAME)_opt.s $@
 
 #Weijie: generate target obj file
-#enclave_main.o: $(TARGET_NAME).c enclave.h
-	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
-#Weijie: generate movInstr obj file
-#enclave_main.o: $(TARGET_NAME)_new.s enclave.h
 enclave_main.o: $(TARGET_NAME).s enclave.h
 	$(CC) -c $(SGX_CFLAGS) -o $@ $(LINKERFLAG) $<
 

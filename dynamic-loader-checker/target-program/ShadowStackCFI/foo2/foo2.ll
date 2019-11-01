@@ -1,5 +1,5 @@
-; ModuleID = '/home/weijliu/elf-respect/ShadowStackCFI/foo2.c'
-source_filename = "/home/weijliu/elf-respect/ShadowStackCFI/foo2.c"
+; ModuleID = '/home/liuweijie/elf-respect/dynamic-loader-checker/target-program/ShadowStackCFI/foo2.c'
+source_filename = "/home/liuweijie/elf-respect/dynamic-loader-checker/target-program/ShadowStackCFI/foo2.c"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
@@ -41,4 +41,4 @@ attributes #3 = { noreturn nounwind }
 !llvm.ident = !{!1}
 
 !0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{!"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 444daba1eecc30b5a70de95e7a4016b5b8d4ce27)"}
+!1 = !{!"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git 3a49d86ed12106d3767eefb5ff6d90f98867f42f)"}

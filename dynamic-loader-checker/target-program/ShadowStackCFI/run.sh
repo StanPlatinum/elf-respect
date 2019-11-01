@@ -1,6 +1,7 @@
 #!/bin/bash 
 
-LLVM_PATH="/home/weijliu/llvm-project"
+#LLVM_PATH="/home/weijliu/llvm-project"
+LLVM_PATH="/home/liuweijie/llvm-project"
 LLVM_BIN_PATH=$LLVM_PATH"/build/bin"
 
 CFIHello_So_PATH=$LLVM_PATH"/build/lib/LLVMCFIHello.so"
