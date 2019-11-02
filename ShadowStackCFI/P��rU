@@ -1,0 +1,5 @@
+CFICheck
+exit
+enclave_main
+malloc
+puts
