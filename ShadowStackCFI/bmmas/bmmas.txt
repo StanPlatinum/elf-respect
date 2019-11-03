@@ -1,6 +1,8 @@
 CFICheck
 exit
-init
+sort
+check_overlap
 enclave_main
 malloc
 puts
+free

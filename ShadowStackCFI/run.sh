@@ -12,7 +12,7 @@ ShadowStackCFI_PATH="."
 
 #TARGET_SOURCE=$ShadowStackCFI_PATH"/foo2.c"
 #TARGET_SOURCE=$ShadowStackCFI_PATH"/bm_malloc_and_sort.c"
-TARGET_SOURCE=$ShadowStackCFI_PATH"/bm_malloc_simple.c"
+TARGET_SOURCE=$ShadowStackCFI_PATH"/bmmas.c"
 #TARGET_SOURCE=$ShadowStackCFI_PATH"/nw4test.c"
 
 CFICheck_Func_PATH=$ShadowStackCFI_PATH"/CFICheck.c"

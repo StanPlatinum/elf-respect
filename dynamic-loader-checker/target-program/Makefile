@@ -9,12 +9,16 @@ CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 # Now the target name will be a dir
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
-TARGET_NAME = nw4test
+#TARGET_NAME = bm_malloc_simple
+TARGET_NAME = bmms
+#TARGET_NAME = bmmas
+#TARGET_NAME = nw4test
+#TARGET_NAME = nw
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -58,7 +62,8 @@ $(TARGET_NAME).s:
 	cp $(TARGET_NAME)/$(TARGET_NAME)_opt.s $@
 
 enclave_main.o: $(TARGET_NAME).s enclave.h
-	$(CC) -c $(SGX_CFLAGS) -o $@ $(LINKERFLAG) $<
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
+	#$(CC) -c $(TARGET_NAME).c -o $@
 
 clean:
 	rm -f *.ll *.s *.o objs/*.o objs/*.lo objs/*.a \
