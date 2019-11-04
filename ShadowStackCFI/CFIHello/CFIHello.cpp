@@ -63,20 +63,50 @@ namespace {
         LLVMContext &ctx = M.getContext();
         FunctionCallee hookFunc = M.getOrInsertFunction(funName, Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
         Function* hook= cast<Function>(hookFunc.getCallee()->stripPointerCasts());
-        
         for(Module::iterator FI = M.begin(); FI != M.end(); ++FI)
         {
+            //errs() << FI->getName();
             if (FI->getName() == hook->getName())
                 continue;
             for(Function::iterator BBI = FI->begin(); BBI != FI->end(); ++BBI)
             {
                 for(BasicBlock::iterator II = BBI->begin(); II != BBI->end(); ++II)          
                 {
+                    if (isa<IndirectBrInst>(&(*II)))
+                    {
+                        errs() << "!!!\n";
+                        IndirectBrInst *IdI = dyn_cast<IndirectBrInst>(II);
+                        IdI->print(errs());
+                    }
+                    
+
                     if(isa<CallInst>(&(*II)))
                     {
                         CallInst *CI = dyn_cast<CallInst>(II);
                         if (CI->isIndirectCall())
                         {
+                            // Instruction *III = dyn_cast<Instruction>(CI->getOperand(0));
+                            // III->print(errs());
+                            // errs() << "\n";
+                            // for (int i = 0; i < III->getNumOperands(); i++)
+                            // {
+                            //     III->getOperand(i)->print(errs());
+                            //     errs() << "\n";
+                            // }
+                            // errs() << "!!!\n";
+                            // for (BasicBlock::iterator IIII = BBI->begin(); IIII != BBI->end(); ++IIII)
+                            // {
+                            //     if (IIII->getOperand(0) == III->getOperand(0))
+                            //     {
+                            //         IIII--;
+                            //         for (int i = 0; i < IIII->getNumOperands(); i++)
+                            //         {
+                            //             IIII->getOperand(i)->print(errs());
+                            //             errs() << "!!!\n";
+                            //         }
+                            //         break;
+                            //     }
+                            // }
                             const long long i = 0x1111111111111111;
                             ArrayRef<Value *> arguments(ConstantInt::get( Type::getInt64Ty(M.getContext()), i, true));
                             CallInst *newInst = CallInst::Create(hook, arguments, "");
@@ -92,16 +122,22 @@ namespace {
  
     bool runOnModule(Module &M) override {
         std::error_code error;
-        StringRef name(M.getSourceFileName() + "/" + M.getSourceFileName() + ".txt");
+        string name = M.getSourceFileName() + "/" + M.getSourceFileName() + ".txt";
+        StringRef nameR(name);
         enum sys::fs::OpenFlags F_None;
         raw_fd_ostream file(name, error, F_None);
         for (auto FI = M.begin(); FI != M.end(); FI++)
         {
             Function &F = *FI;
+            // if (F.getName() == "fun")
+            // {
+            //     F.setName("fun1");
+            // }
             printEntryLable(F, file);
         }
         file.close();
     	return insertCFIFun(M, "CFICheck");
+        //return 0;
     }
   };
 }
