@@ -6,13 +6,14 @@
 
 ### Install linux-sgx and linux-sgx-driver from source
 
- - Please refer to https://github.com/intel/linux-sgx and https://github.com/intel/linux-sgx-driver.
  - Make sure the SGXSDK version is 2.5 or later.
  - In case the current directory structure of SGXSDK changes, you can use the forked 2.6 version (intact) from my Github.
  
 ```
 git clone https://github.com/StanPlatinum/linux-sgx.git
 ```
+
+ - Please refer to https://github.com/intel/linux-sgx and https://github.com/intel/linux-sgx-driver for more details.
 
 ### Install libelf from source
 
@@ -91,7 +92,7 @@ cd dynamic-loader-checker/target-program/
 make
 ```
 
- - Then the `program` and the `entryLabel.txt` has been generated and copied to the dir `dynamic-loader-checker`
+ - Then the `program` and the `entryLabel.txt` will be generated and copied to the dir `dynamic-loader-checker`
 
 ### Build the dynamic SGX loader
 
