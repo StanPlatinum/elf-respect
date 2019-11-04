@@ -3,8 +3,6 @@
 #SGX_Shield_PATH = /home/weijliu/SGX-Shield
 SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
 
-#Our_LLVM_PATH = /home/weijliu/llvm-project
-
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = $(Our_LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
@@ -20,7 +18,8 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
-TARGET_NAME = nw4test
+TARGET_NAME = bmmas
+#TARGET_NAME = nw4test
 #TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
@@ -45,7 +44,7 @@ ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 #all: $(MUSL_LIBC) $(TARGET_NAME)
 all: $(LIBC) $(TARGET_NAME)
-	mv $(TARGET_NAME) ../program
+	mv $(TARGET_NAME) ../program-original
 
 LIBNBENCH = nbench/nbench.a
 

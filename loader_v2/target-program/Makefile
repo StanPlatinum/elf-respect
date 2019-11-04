@@ -7,7 +7,8 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 CXX = clang++
 
-TARGET_NAME = test
+TARGET_NAME = bmmas
+#TARGET_NAME = test
 #TARGET_NAME = simple_loop
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
