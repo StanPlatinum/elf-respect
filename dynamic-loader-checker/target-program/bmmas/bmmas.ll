@@ -3,21 +3,23 @@ source_filename = "bmmas.c"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
-@objs = common dso_local global i64* null, align 8
-@objs_end = common dso_local global i64* null, align 8
 @__tmp = dso_local global [64 x i8] zeroinitializer, align 16
 @.str = private unnamed_addr constant [14 x i8] c"overlap exist\00", align 1
 @.str.1 = private unnamed_addr constant [11 x i8] c"no overlap\00", align 1
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local void @sort(i32 %left, i32 %right) #0 {
+define dso_local void @sort(i64* %objs, i64* %objs_end, i32 %left, i32 %right) #0 {
 entry:
+  %objs.addr = alloca i64*, align 8
+  %objs_end.addr = alloca i64*, align 8
   %left.addr = alloca i32, align 4
   %right.addr = alloca i32, align 4
   %i = alloca i32, align 4
   %j = alloca i32, align 4
   %pivot = alloca i64, align 8
   %tmp = alloca i64, align 8
+  store i64* %objs, i64** %objs.addr, align 8
+  store i64* %objs_end, i64** %objs_end.addr, align 8
   store i32 %left, i32* %left.addr, align 4
   store i32 %right, i32* %right.addr, align 4
   %0 = load i32, i32* %left.addr, align 4
@@ -29,7 +31,7 @@ if.then:                                          ; preds = %entry
   br label %return
 
 if.end:                                           ; preds = %entry
-  %2 = load i64*, i64** @objs, align 8
+  %2 = load i64*, i64** %objs.addr, align 8
   %3 = load i32, i32* %left.addr, align 4
   %idxprom = zext i32 %3 to i64
   %arrayidx = getelementptr inbounds i64, i64* %2, i64 %idxprom
@@ -49,7 +51,7 @@ for.cond:                                         ; preds = %for.inc, %if.end
   br i1 %cmp1, label %for.body, label %for.end
 
 for.body:                                         ; preds = %for.cond
-  %9 = load i64*, i64** @objs, align 8
+  %9 = load i64*, i64** %objs.addr, align 8
   %10 = load i32, i32* %j, align 4
   %idxprom2 = zext i32 %10 to i64
   %arrayidx3 = getelementptr inbounds i64, i64* %9, i64 %idxprom2
@@ -62,46 +64,46 @@ if.then5:                                         ; preds = %for.body
   %13 = load i32, i32* %i, align 4
   %inc = add i32 %13, 1
   store i32 %inc, i32* %i, align 4
-  %14 = load i64*, i64** @objs, align 8
+  %14 = load i64*, i64** %objs.addr, align 8
   %15 = load i32, i32* %j, align 4
   %idxprom6 = zext i32 %15 to i64
   %arrayidx7 = getelementptr inbounds i64, i64* %14, i64 %idxprom6
   %16 = load i64, i64* %arrayidx7, align 8
   store i64 %16, i64* %tmp, align 8
-  %17 = load i64*, i64** @objs, align 8
+  %17 = load i64*, i64** %objs.addr, align 8
   %18 = load i32, i32* %i, align 4
   %idxprom8 = zext i32 %18 to i64
   %arrayidx9 = getelementptr inbounds i64, i64* %17, i64 %idxprom8
   %19 = load i64, i64* %arrayidx9, align 8
-  %20 = load i64*, i64** @objs, align 8
+  %20 = load i64*, i64** %objs.addr, align 8
   %21 = load i32, i32* %j, align 4
   %idxprom10 = zext i32 %21 to i64
   %arrayidx11 = getelementptr inbounds i64, i64* %20, i64 %idxprom10
   store i64 %19, i64* %arrayidx11, align 8
   %22 = load i64, i64* %tmp, align 8
-  %23 = load i64*, i64** @objs, align 8
+  %23 = load i64*, i64** %objs.addr, align 8
   %24 = load i32, i32* %i, align 4
   %idxprom12 = zext i32 %24 to i64
   %arrayidx13 = getelementptr inbounds i64, i64* %23, i64 %idxprom12
   store i64 %22, i64* %arrayidx13, align 8
-  %25 = load i64*, i64** @objs_end, align 8
+  %25 = load i64*, i64** %objs_end.addr, align 8
   %26 = load i32, i32* %j, align 4
   %idxprom14 = zext i32 %26 to i64
   %arrayidx15 = getelementptr inbounds i64, i64* %25, i64 %idxprom14
   %27 = load i64, i64* %arrayidx15, align 8
   store i64 %27, i64* %tmp, align 8
-  %28 = load i64*, i64** @objs_end, align 8
+  %28 = load i64*, i64** %objs_end.addr, align 8
   %29 = load i32, i32* %i, align 4
   %idxprom16 = zext i32 %29 to i64
   %arrayidx17 = getelementptr inbounds i64, i64* %28, i64 %idxprom16
   %30 = load i64, i64* %arrayidx17, align 8
-  %31 = load i64*, i64** @objs_end, align 8
+  %31 = load i64*, i64** %objs_end.addr, align 8
   %32 = load i32, i32* %j, align 4
   %idxprom18 = zext i32 %32 to i64
   %arrayidx19 = getelementptr inbounds i64, i64* %31, i64 %idxprom18
   store i64 %30, i64* %arrayidx19, align 8
   %33 = load i64, i64* %tmp, align 8
-  %34 = load i64*, i64** @objs_end, align 8
+  %34 = load i64*, i64** %objs_end.addr, align 8
   %35 = load i32, i32* %i, align 4
   %idxprom20 = zext i32 %35 to i64
   %arrayidx21 = getelementptr inbounds i64, i64* %34, i64 %idxprom20
@@ -118,58 +120,62 @@ for.inc:                                          ; preds = %if.end22
   br label %for.cond
 
 for.end:                                          ; preds = %for.cond
-  %37 = load i64*, i64** @objs, align 8
+  %37 = load i64*, i64** %objs.addr, align 8
   %38 = load i32, i32* %left.addr, align 4
   %idxprom24 = zext i32 %38 to i64
   %arrayidx25 = getelementptr inbounds i64, i64* %37, i64 %idxprom24
   %39 = load i64, i64* %arrayidx25, align 8
   store i64 %39, i64* %tmp, align 8
-  %40 = load i64*, i64** @objs, align 8
+  %40 = load i64*, i64** %objs.addr, align 8
   %41 = load i32, i32* %i, align 4
   %idxprom26 = zext i32 %41 to i64
   %arrayidx27 = getelementptr inbounds i64, i64* %40, i64 %idxprom26
   %42 = load i64, i64* %arrayidx27, align 8
-  %43 = load i64*, i64** @objs, align 8
+  %43 = load i64*, i64** %objs.addr, align 8
   %44 = load i32, i32* %left.addr, align 4
   %idxprom28 = zext i32 %44 to i64
   %arrayidx29 = getelementptr inbounds i64, i64* %43, i64 %idxprom28
   store i64 %42, i64* %arrayidx29, align 8
   %45 = load i64, i64* %tmp, align 8
-  %46 = load i64*, i64** @objs, align 8
+  %46 = load i64*, i64** %objs.addr, align 8
   %47 = load i32, i32* %i, align 4
   %idxprom30 = zext i32 %47 to i64
   %arrayidx31 = getelementptr inbounds i64, i64* %46, i64 %idxprom30
   store i64 %45, i64* %arrayidx31, align 8
-  %48 = load i64*, i64** @objs_end, align 8
+  %48 = load i64*, i64** %objs_end.addr, align 8
   %49 = load i32, i32* %left.addr, align 4
   %idxprom32 = zext i32 %49 to i64
   %arrayidx33 = getelementptr inbounds i64, i64* %48, i64 %idxprom32
   %50 = load i64, i64* %arrayidx33, align 8
   store i64 %50, i64* %tmp, align 8
-  %51 = load i64*, i64** @objs_end, align 8
+  %51 = load i64*, i64** %objs_end.addr, align 8
   %52 = load i32, i32* %i, align 4
   %idxprom34 = zext i32 %52 to i64
   %arrayidx35 = getelementptr inbounds i64, i64* %51, i64 %idxprom34
   %53 = load i64, i64* %arrayidx35, align 8
-  %54 = load i64*, i64** @objs_end, align 8
+  %54 = load i64*, i64** %objs_end.addr, align 8
   %55 = load i32, i32* %left.addr, align 4
   %idxprom36 = zext i32 %55 to i64
   %arrayidx37 = getelementptr inbounds i64, i64* %54, i64 %idxprom36
   store i64 %53, i64* %arrayidx37, align 8
   %56 = load i64, i64* %tmp, align 8
-  %57 = load i64*, i64** @objs_end, align 8
+  %57 = load i64*, i64** %objs_end.addr, align 8
   %58 = load i32, i32* %i, align 4
   %idxprom38 = zext i32 %58 to i64
   %arrayidx39 = getelementptr inbounds i64, i64* %57, i64 %idxprom38
   store i64 %56, i64* %arrayidx39, align 8
-  %59 = load i32, i32* %left.addr, align 4
-  %60 = load i32, i32* %i, align 4
-  %sub = sub i32 %60, 1
-  call void @sort(i32 %59, i32 %sub)
-  %61 = load i32, i32* %i, align 4
-  %add40 = add i32 %61, 1
-  %62 = load i32, i32* %right.addr, align 4
-  call void @sort(i32 %add40, i32 %62)
+  %59 = load i64*, i64** %objs.addr, align 8
+  %60 = load i64*, i64** %objs_end.addr, align 8
+  %61 = load i32, i32* %left.addr, align 4
+  %62 = load i32, i32* %i, align 4
+  %sub = sub i32 %62, 1
+  call void @sort(i64* %59, i64* %60, i32 %61, i32 %sub)
+  %63 = load i64*, i64** %objs.addr, align 8
+  %64 = load i64*, i64** %objs_end.addr, align 8
+  %65 = load i32, i32* %i, align 4
+  %add40 = add i32 %65, 1
+  %66 = load i32, i32* %right.addr, align 4
+  call void @sort(i64* %63, i64* %64, i32 %add40, i32 %66)
   br label %return
 
 return:                                           ; preds = %for.end, %if.then
@@ -177,10 +183,16 @@ return:                                           ; preds = %for.end, %if.then
 }
 
 ; Function Attrs: noinline nounwind optnone
-define dso_local i32 @check_overlap() #0 {
+define dso_local i32 @check_overlap(i64* %objs, i64* %objs_end) #0 {
 entry:
   %retval = alloca i32, align 4
+  %objs.addr = alloca i64*, align 8
+  %objs_end.addr = alloca i64*, align 8
   %i = alloca i32, align 4
+  %j = alloca i32, align 4
+  store i64* %objs, i64** %objs.addr, align 8
+  store i64* %objs_end, i64** %objs_end.addr, align 8
+  store i32 0, i32* %j, align 4
   store i32 1, i32* %i, align 4
   br label %for.cond
 
@@ -190,13 +202,13 @@ for.cond:                                         ; preds = %for.inc, %entry
   br i1 %cmp, label %for.body, label %for.end
 
 for.body:                                         ; preds = %for.cond
-  %1 = load i64*, i64** @objs_end, align 8
+  %1 = load i64*, i64** %objs_end.addr, align 8
   %2 = load i32, i32* %i, align 4
   %sub = sub i32 %2, 1
   %idxprom = zext i32 %sub to i64
   %arrayidx = getelementptr inbounds i64, i64* %1, i64 %idxprom
   %3 = load i64, i64* %arrayidx, align 8
-  %4 = load i64*, i64** @objs, align 8
+  %4 = load i64*, i64** %objs.addr, align 8
   %5 = load i32, i32* %i, align 4
   %idxprom1 = zext i32 %5 to i64
   %arrayidx2 = getelementptr inbounds i64, i64* %4, i64 %idxprom1
@@ -209,12 +221,15 @@ if.then:                                          ; preds = %for.body
   br label %return
 
 if.end:                                           ; preds = %for.body
+  %7 = load i32, i32* %j, align 4
+  %inc = add i32 %7, 1
+  store i32 %inc, i32* %j, align 4
   br label %for.inc
 
 for.inc:                                          ; preds = %if.end
-  %7 = load i32, i32* %i, align 4
-  %inc = add i32 %7, 1
-  store i32 %inc, i32* %i, align 4
+  %8 = load i32, i32* %i, align 4
+  %inc4 = add i32 %8, 1
+  store i32 %inc4, i32* %i, align 4
   br label %for.cond
 
 for.end:                                          ; preds = %for.cond
@@ -222,21 +237,23 @@ for.end:                                          ; preds = %for.cond
   br label %return
 
 return:                                           ; preds = %for.end, %if.then
-  %8 = load i32, i32* %retval, align 4
-  ret i32 %8
+  %9 = load i32, i32* %retval, align 4
+  ret i32 %9
 }
 
 ; Function Attrs: noinline nounwind optnone
 define dso_local void @enclave_main() #0 {
 entry:
   %i = alloca i32, align 4
+  %objs = alloca i64*, align 8
+  %objs_end = alloca i64*, align 8
   %size = alloca i64, align 8
   %call = call noalias i8* @malloc(i64 32768) #4
   %0 = bitcast i8* %call to i64*
-  store i64* %0, i64** @objs, align 8
+  store i64* %0, i64** %objs, align 8
   %call1 = call noalias i8* @malloc(i64 32768) #4
   %1 = bitcast i8* %call1 to i64*
-  store i64* %1, i64** @objs_end, align 8
+  store i64* %1, i64** %objs_end, align 8
   store i32 0, i32* %i, align 4
   br label %for.cond
 
@@ -254,19 +271,19 @@ for.body:                                         ; preds = %for.cond
   %4 = load i64, i64* %size, align 8
   %call2 = call noalias i8* @malloc(i64 %4) #4
   %5 = ptrtoint i8* %call2 to i64
-  %6 = load i64*, i64** @objs, align 8
+  %6 = load i64*, i64** %objs, align 8
   %7 = load i32, i32* %i, align 4
   %idxprom = zext i32 %7 to i64
   %arrayidx = getelementptr inbounds i64, i64* %6, i64 %idxprom
   store i64 %5, i64* %arrayidx, align 8
-  %8 = load i64*, i64** @objs, align 8
+  %8 = load i64*, i64** %objs, align 8
   %9 = load i32, i32* %i, align 4
   %idxprom3 = zext i32 %9 to i64
   %arrayidx4 = getelementptr inbounds i64, i64* %8, i64 %idxprom3
   %10 = load i64, i64* %arrayidx4, align 8
   %11 = load i64, i64* %size, align 8
   %add5 = add i64 %10, %11
-  %12 = load i64*, i64** @objs_end, align 8
+  %12 = load i64*, i64** %objs_end, align 8
   %13 = load i32, i32* %i, align 4
   %idxprom6 = zext i32 %13 to i64
   %arrayidx7 = getelementptr inbounds i64, i64* %12, i64 %idxprom6
@@ -280,8 +297,12 @@ for.inc:                                          ; preds = %for.body
   br label %for.cond
 
 for.end:                                          ; preds = %for.cond
-  call void @sort(i32 0, i32 4095)
-  %call8 = call i32 @check_overlap()
+  %15 = load i64*, i64** %objs, align 8
+  %16 = load i64*, i64** %objs_end, align 8
+  call void @sort(i64* %15, i64* %16, i32 0, i32 4095)
+  %17 = load i64*, i64** %objs, align 8
+  %18 = load i64*, i64** %objs_end, align 8
+  %call8 = call i32 @check_overlap(i64* %17, i64* %18)
   %tobool = icmp ne i32 %call8, 0
   br i1 %tobool, label %if.then, label %if.else
 
@@ -298,23 +319,23 @@ if.end:                                           ; preds = %if.else, %if.then
   br label %for.cond11
 
 for.cond11:                                       ; preds = %for.inc17, %if.end
-  %15 = load i32, i32* %i, align 4
-  %cmp12 = icmp ult i32 %15, 4096
+  %19 = load i32, i32* %i, align 4
+  %cmp12 = icmp ult i32 %19, 4096
   br i1 %cmp12, label %for.body14, label %for.end19
 
 for.body14:                                       ; preds = %for.cond11
-  %16 = load i64*, i64** @objs, align 8
-  %17 = load i32, i32* %i, align 4
-  %idxprom15 = zext i32 %17 to i64
-  %arrayidx16 = getelementptr inbounds i64, i64* %16, i64 %idxprom15
-  %18 = load i64, i64* %arrayidx16, align 8
-  %19 = inttoptr i64 %18 to i8*
-  call void @free(i8* %19) #4
+  %20 = load i64*, i64** %objs, align 8
+  %21 = load i32, i32* %i, align 4
+  %idxprom15 = zext i32 %21 to i64
+  %arrayidx16 = getelementptr inbounds i64, i64* %20, i64 %idxprom15
+  %22 = load i64, i64* %arrayidx16, align 8
+  %23 = inttoptr i64 %22 to i8*
+  call void @free(i8* %23) #4
   br label %for.inc17
 
 for.inc17:                                        ; preds = %for.body14
-  %20 = load i32, i32* %i, align 4
-  %inc18 = add i32 %20, 1
+  %24 = load i32, i32* %i, align 4
+  %inc18 = add i32 %24, 1
   store i32 %inc18, i32* %i, align 4
   br label %for.cond11
 

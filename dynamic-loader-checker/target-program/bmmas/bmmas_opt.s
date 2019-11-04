@@ -213,7 +213,31 @@ sort:                                   # @sort
 	movq	%r10, (%r11)
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$48, %rsp
+	subq	$64, %rsp
+	pushq	%rbx
+	pushq	%rax
+	leaq	-24(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB1_10
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB1_10
+	popq	%rax
+	popq	%rbx
+	movq	%rdi, -24(%rbp)
+	pushq	%rbx
+	pushq	%rax
+	leaq	-32(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB1_10
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB1_10
+	popq	%rax
+	popq	%rbx
+	movq	%rsi, -32(%rbp)
 	pushq	%rbx
 	pushq	%rax
 	leaq	-8(%rbp), %rax
@@ -225,10 +249,10 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movl	%edi, -8(%rbp)
+	movl	%edx, -8(%rbp)
 	pushq	%rbx
 	pushq	%rax
-	leaq	-28(%rbp), %rax
+	leaq	-44(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB1_10
@@ -237,19 +261,19 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movl	%esi, -28(%rbp)
+	movl	%ecx, -44(%rbp)
 	movl	-8(%rbp), %eax
-	cmpl	-28(%rbp), %eax
+	cmpl	-44(%rbp), %eax
 	jl	.LBB1_2
 # %bb.1:                                # %if.then
 	jmp	.LBB1_9
 .LBB1_2:                                # %if.end
-	movq	objs, %rax
+	movq	-24(%rbp), %rax
 	movl	-8(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-40(%rbp), %rax
+	leaq	-56(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB1_10
@@ -258,7 +282,7 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -40(%rbp)
+	movq	%rax, -56(%rbp)
 	movl	-8(%rbp), %eax
 	pushq	%rbx
 	pushq	%rax
@@ -289,14 +313,14 @@ sort:                                   # @sort
 .LBB1_3:                                # %for.cond
                                         # =>This Inner Loop Header: Depth=1
 	movl	-12(%rbp), %eax
-	cmpl	-28(%rbp), %eax
+	cmpl	-44(%rbp), %eax
 	ja	.LBB1_8
 # %bb.4:                                # %for.body
                                         #   in Loop: Header=BB1_3 Depth=1
-	movq	objs, %rax
+	movq	-24(%rbp), %rax
 	movl	-12(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
-	cmpq	-40(%rbp), %rax
+	cmpq	-56(%rbp), %rax
 	jae	.LBB1_6
 # %bb.5:                                # %if.then5
                                         #   in Loop: Header=BB1_3 Depth=1
@@ -314,12 +338,12 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movl	%eax, -4(%rbp)
-	movq	objs, %rax
+	movq	-24(%rbp), %rax
 	movl	-12(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-24(%rbp), %rax
+	leaq	-40(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB1_10
@@ -328,11 +352,11 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -24(%rbp)
-	movq	objs, %rax
+	movq	%rax, -40(%rbp)
+	movq	-24(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
-	movq	objs, %rcx
+	movq	-24(%rbp), %rcx
 	movl	-12(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -346,8 +370,8 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	-24(%rbp), %rax
-	movq	objs, %rcx
+	movq	-40(%rbp), %rax
+	movq	-24(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -361,12 +385,12 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	objs_end, %rax
+	movq	-32(%rbp), %rax
 	movl	-12(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-24(%rbp), %rax
+	leaq	-40(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB1_10
@@ -375,11 +399,11 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -24(%rbp)
-	movq	objs_end, %rax
+	movq	%rax, -40(%rbp)
+	movq	-32(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
-	movq	objs_end, %rcx
+	movq	-32(%rbp), %rcx
 	movl	-12(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -393,8 +417,8 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	-24(%rbp), %rax
-	movq	objs_end, %rcx
+	movq	-40(%rbp), %rax
+	movq	-32(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -429,12 +453,12 @@ sort:                                   # @sort
 	movl	%eax, -12(%rbp)
 	jmp	.LBB1_3
 .LBB1_8:                                # %for.end
-	movq	objs, %rax
+	movq	-24(%rbp), %rax
 	movl	-8(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-24(%rbp), %rax
+	leaq	-40(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB1_10
@@ -443,11 +467,11 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -24(%rbp)
-	movq	objs, %rax
+	movq	%rax, -40(%rbp)
+	movq	-24(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
-	movq	objs, %rcx
+	movq	-24(%rbp), %rcx
 	movl	-8(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -461,8 +485,8 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	-24(%rbp), %rax
-	movq	objs, %rcx
+	movq	-40(%rbp), %rax
+	movq	-24(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -476,12 +500,12 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	objs_end, %rax
+	movq	-32(%rbp), %rax
 	movl	-8(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-24(%rbp), %rax
+	leaq	-40(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB1_10
@@ -490,11 +514,11 @@ sort:                                   # @sort
 	jb	.LBB1_10
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -24(%rbp)
-	movq	objs_end, %rax
+	movq	%rax, -40(%rbp)
+	movq	-32(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
-	movq	objs_end, %rcx
+	movq	-32(%rbp), %rcx
 	movl	-8(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -508,8 +532,8 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	-24(%rbp), %rax
-	movq	objs_end, %rcx
+	movq	-40(%rbp), %rax
+	movq	-32(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -523,16 +547,20 @@ sort:                                   # @sort
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movl	-8(%rbp), %edi
-	movl	-4(%rbp), %esi
-	subl	$1, %esi
+	movq	-24(%rbp), %rdi
+	movq	-32(%rbp), %rsi
+	movl	-8(%rbp), %edx
+	movl	-4(%rbp), %ecx
+	subl	$1, %ecx
 	callq	sort
-	movl	-4(%rbp), %edi
-	addl	$1, %edi
-	movl	-28(%rbp), %esi
+	movq	-24(%rbp), %rdi
+	movq	-32(%rbp), %rsi
+	movl	-4(%rbp), %edx
+	addl	$1, %edx
+	movl	-44(%rbp), %ecx
 	callq	sort
 .LBB1_9:                                # %return
-	addq	$48, %rsp
+	addq	$64, %rsp
 	popq	%rbp
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
 	movq	(%r11), %r10
@@ -568,6 +596,42 @@ check_overlap:                          # @check_overlap
 	movq	%rsp, %rbp
 	pushq	%rbx
 	pushq	%rax
+	leaq	-32(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB2_8
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB2_8
+	popq	%rax
+	popq	%rbx
+	movq	%rdi, -32(%rbp)
+	pushq	%rbx
+	pushq	%rax
+	leaq	-24(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB2_8
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB2_8
+	popq	%rax
+	popq	%rbx
+	movq	%rsi, -24(%rbp)
+	pushq	%rbx
+	pushq	%rax
+	leaq	-8(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB2_8
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB2_8
+	popq	%rax
+	popq	%rbx
+	movl	$0, -8(%rbp)
+	pushq	%rbx
+	pushq	%rax
 	leaq	-4(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
@@ -584,16 +648,33 @@ check_overlap:                          # @check_overlap
 	jae	.LBB2_6
 # %bb.2:                                # %for.body
                                         #   in Loop: Header=BB2_1 Depth=1
-	movq	objs_end, %rax
+	movq	-24(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	subl	$1, %ecx
 	movl	%ecx, %ecx
 	movq	(%rax,%rcx,8), %rax
-	movq	objs, %rcx
+	movq	-32(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	cmpq	(%rcx,%rdx,8), %rax
 	jbe	.LBB2_4
 # %bb.3:                                # %if.then
+	pushq	%rbx
+	pushq	%rax
+	leaq	-12(%rbp), %rax
+	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	ja	.LBB2_8
+	movabsq	$5764607523034234879, %rbx # imm = 0x4FFFFFFFFFFFFFFF
+	cmpq	%rbx, %rax
+	jb	.LBB2_8
+	popq	%rax
+	popq	%rbx
+	movl	$1, -12(%rbp)
+	jmp	.LBB2_7
+.LBB2_4:                                # %if.end
+                                        #   in Loop: Header=BB2_1 Depth=1
+	movl	-8(%rbp), %eax
+	addl	$1, %eax
 	pushq	%rbx
 	pushq	%rax
 	leaq	-8(%rbp), %rax
@@ -605,12 +686,8 @@ check_overlap:                          # @check_overlap
 	jb	.LBB2_8
 	popq	%rax
 	popq	%rbx
-	movl	$1, -8(%rbp)
-	jmp	.LBB2_7
-.LBB2_4:                                # %if.end
-                                        #   in Loop: Header=BB2_1 Depth=1
-	jmp	.LBB2_5
-.LBB2_5:                                # %for.inc
+	movl	%eax, -8(%rbp)
+# %bb.5:                                # %for.inc
                                         #   in Loop: Header=BB2_1 Depth=1
 	movl	-4(%rbp), %eax
 	addl	$1, %eax
@@ -630,7 +707,7 @@ check_overlap:                          # @check_overlap
 .LBB2_6:                                # %for.end
 	pushq	%rbx
 	pushq	%rax
-	leaq	-8(%rbp), %rax
+	leaq	-12(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB2_8
@@ -639,9 +716,9 @@ check_overlap:                          # @check_overlap
 	jb	.LBB2_8
 	popq	%rax
 	popq	%rbx
-	movl	$0, -8(%rbp)
+	movl	$0, -12(%rbp)
 .LBB2_7:                                # %return
-	movl	-8(%rbp), %eax
+	movl	-12(%rbp), %eax
 	popq	%rbp
 	movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
 	movq	(%r11), %r10
@@ -669,12 +746,12 @@ enclave_main:                           # @enclave_main
 # %bb.0:                                # %entry
 	pushq	%rbp
 	movq	%rsp, %rbp
-	subq	$16, %rsp
+	subq	$32, %rsp
 	movl	$32768, %edi            # imm = 0x8000
 	callq	malloc
 	pushq	%rbx
 	pushq	%rax
-	leaq	objs, %rax
+	leaq	-16(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB3_12
@@ -683,12 +760,12 @@ enclave_main:                           # @enclave_main
 	jb	.LBB3_12
 	popq	%rax
 	popq	%rbx
-	movq	%rax, objs
+	movq	%rax, -16(%rbp)
 	movl	$32768, %edi            # imm = 0x8000
 	callq	malloc
 	pushq	%rbx
 	pushq	%rax
-	leaq	objs_end, %rax
+	leaq	-24(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB3_12
@@ -697,7 +774,7 @@ enclave_main:                           # @enclave_main
 	jb	.LBB3_12
 	popq	%rax
 	popq	%rbx
-	movq	%rax, objs_end
+	movq	%rax, -24(%rbp)
 	pushq	%rbx
 	pushq	%rax
 	leaq	-4(%rbp), %rax
@@ -724,7 +801,7 @@ enclave_main:                           # @enclave_main
 	movl	%edx, %eax
 	pushq	%rbx
 	pushq	%rax
-	leaq	-16(%rbp), %rax
+	leaq	-32(%rbp), %rax
 	movabsq	$4611686018427387903, %rbx # imm = 0x3FFFFFFFFFFFFFFF
 	cmpq	%rbx, %rax
 	ja	.LBB3_12
@@ -733,10 +810,10 @@ enclave_main:                           # @enclave_main
 	jb	.LBB3_12
 	popq	%rax
 	popq	%rbx
-	movq	%rax, -16(%rbp)
-	movq	-16(%rbp), %rdi
+	movq	%rax, -32(%rbp)
+	movq	-32(%rbp), %rdi
 	callq	malloc
-	movq	objs, %rcx
+	movq	-16(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -750,11 +827,11 @@ enclave_main:                           # @enclave_main
 	popq	%rax
 	popq	%rbx
 	movq	%rax, (%rcx,%rdx,8)
-	movq	objs, %rax
+	movq	-16(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rax
-	addq	-16(%rbp), %rax
-	movq	objs_end, %rcx
+	addq	-32(%rbp), %rax
+	movq	-24(%rbp), %rcx
 	movl	-4(%rbp), %edx
 	pushq	%rbx
 	pushq	%rax
@@ -786,9 +863,13 @@ enclave_main:                           # @enclave_main
 	movl	%eax, -4(%rbp)
 	jmp	.LBB3_1
 .LBB3_4:                                # %for.end
-	xorl	%edi, %edi
-	movl	$4095, %esi             # imm = 0xFFF
+	movq	-16(%rbp), %rdi
+	movq	-24(%rbp), %rsi
+	xorl	%edx, %edx
+	movl	$4095, %ecx             # imm = 0xFFF
 	callq	sort
+	movq	-16(%rbp), %rdi
+	movq	-24(%rbp), %rsi
 	callq	check_overlap
 	cmpl	$0, %eax
 	je	.LBB3_6
@@ -820,7 +901,7 @@ enclave_main:                           # @enclave_main
 	jae	.LBB3_11
 # %bb.9:                                # %for.body14
                                         #   in Loop: Header=BB3_8 Depth=1
-	movq	objs, %rax
+	movq	-16(%rbp), %rax
 	movl	-4(%rbp), %ecx
 	movq	(%rax,%rcx,8), %rdi
 	callq	free
@@ -852,10 +933,6 @@ enclave_main:                           # @enclave_main
 .Lfunc_end3:
 	.size	enclave_main, .Lfunc_end3-enclave_main
                                         # -- End function
-	.type	objs,@object            # @objs
-	.comm	objs,8,8
-	.type	objs_end,@object        # @objs_end
-	.comm	objs_end,8,8
 	.type	__tmp,@object           # @__tmp
 	.bss
 	.globl	__tmp

@@ -784,11 +784,9 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 	//Weijie: rewrite CFICheckAddressNum, replace with value of 'call_target_idx'
 	//Weijie: rewrite CFICheckAddressPtr, replace with value of 'call_target'
 	//Weijie: rewrite shadow stack base pointer, replace with value of '(char *)&__ss_start'
-
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
 
 	CFICheck_sym_addr = textAddr;
-
 	//PrintDebugInfo("-----printing-----\n");
 	if (count) {
 		size_t j;
@@ -796,7 +794,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		int if_calltg = 0;
 		int if_setnum = 0;
 		for (j = 0; j < count; j++) {
-			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 
 			//Weijie: start checking...
 
@@ -854,7 +852,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
-	PrintDebugInfo("Symbol insn count: %d\n", count);
+	//PrintDebugInfo("Symbol insn count: %d\n", count);
 	if (count) {
 		size_t j;
 		int memwt_intact = 0;
@@ -863,7 +861,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int longfunc_ret_safe = 0;
 		int indirect_call_safe = 0;
 		for (j = 0; j < count; j++) {
-			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: maintain a insn set including more than 8? insns right before the current disasmed insn
 			if (j >= 8){
 				cs_insn forward_insn[8];
@@ -1014,7 +1012,7 @@ void rewrite_whole()
 					buf = (unsigned char *)malloc(textSize);
 					//Weijie: fill in buf
 					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-					dlog("disassembling CFICheck: textAddr: %p, textSize: %u", textAddr, textSize);
+					//dlog("disassembling CFICheck: textAddr: %p, textSize: %u", textAddr, textSize);
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
 					free(buf);
 				}
@@ -1024,7 +1022,7 @@ void rewrite_whole()
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("disassembling symbol '%s': textAddr: %p, textSize: %u", &strtab[symtab[j].st_name], textAddr, textSize);
+				//dlog("disassembling symbol '%s': textAddr: %p, textSize: %u", &strtab[symtab[j].st_name], textAddr, textSize);
 				rv = cs_rewrite_entry(buf, textSize, textAddr);
 				free(buf);
 			}
@@ -1049,20 +1047,18 @@ void disasm_whole()
 			
 			//Weijie: print symbol name
 			textSize = symtab[j].st_size;
-			/*
 			if (textSize > 0){
-				dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+				//dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 				//PrintDebugInfo("-----setting params-----\n");
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				//dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
-			*/
-			
+			/*
 			//Weijie: just disasm enclave_main
 			int ifmain_rv = strncmp("enclave_main", &strtab[symtab[j].st_name], 12);
 			if (ifmain_rv == 0) {
@@ -1074,7 +1070,19 @@ void disasm_whole()
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
-			
+			//Weijie: just disasm enclave_main
+			int iff1_rv = strncmp("check_overlap", &strtab[symtab[j].st_name], 13);
+			if (iff1_rv == 0) {
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("disassembling check_overlap: textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+			*/
+		
 
 		}
 	}
@@ -1190,8 +1198,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	pr_progress("debugging: validate if rewrites fine");
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);

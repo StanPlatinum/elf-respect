@@ -3,10 +3,9 @@
 
 #include "enclave.h"
 
-unsigned long* objs;
-unsigned long* objs_end;
+#define MSIZE 0x1000
 
-void sort(unsigned int left, unsigned int right)
+void sort(unsigned long *objs, unsigned long *objs_end, unsigned int left, unsigned int right)
 {
     unsigned int i, j;
     unsigned long pivot, tmp;
@@ -22,16 +21,17 @@ void sort(unsigned int left, unsigned int right)
     }
     tmp = objs[left]; objs[left] = objs[i]; objs[i] = tmp;
     tmp = objs_end[left]; objs_end[left] = objs_end[i]; objs_end[i] = tmp;
-    sort(left, i-1);
-    sort(i+1, right);
+    sort(objs, objs_end, left, i-1);
+    sort(objs, objs_end, i+1, right);
 }
 
-int check_overlap()
+int check_overlap(unsigned long *objs, unsigned long *objs_end)
 {
-    unsigned int i;
-    for (i = 1;i < 0x1000;++i) {
-        if (objs_end[i-1] > objs[i])
-            return 1;
+    unsigned int i, j=0;
+    for (i = 1;i < MSIZE;++i) {
+        if (objs_end[i-1] > objs[i])	return 1;
+	//Weijie: test
+	j++;
     }
     return 0;
 }
@@ -43,21 +43,22 @@ char __tmp[64] = {0};
 void enclave_main()
 {
     unsigned int i;
-    objs = (unsigned long*)malloc(0x1000 * sizeof(unsigned long));
-    objs_end = (unsigned long*)malloc(0x1000 * sizeof(unsigned long));
-    for (i = 0;i < 0x1000; ++i) {
+    unsigned long *objs = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
+    unsigned long *objs_end = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
+    for (i = 0;i < MSIZE; ++i) {
         size_t size = i % 5 + 5;
         objs[i] = (unsigned long)malloc(size);
         objs_end[i] = objs[i]+size;
     }
 
-    sort(0, 0x1000-1);
-    if (check_overlap())
+    sort(objs, objs_end, 0, MSIZE-1);
+    if (check_overlap(objs, objs_end))
         puts("overlap exist");
     else
         puts("no overlap");
 
-    for (i = 0;i < 0x1000; ++i)
+    for (i = 0;i < MSIZE; ++i)
         free((void*)objs[i]);
+
     enclave_exit();
 }
