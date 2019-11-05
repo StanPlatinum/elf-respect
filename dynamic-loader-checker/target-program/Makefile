@@ -12,14 +12,14 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 # Now the target name will be a dir
-#TARGET_NAME = foo2
+TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bmms
 #TARGET_NAME = bmmas
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = nw4test
-TARGET_NAME = nw
+#TARGET_NAME = nw
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

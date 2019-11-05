@@ -7,13 +7,14 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 CXX = clang++
 
-TARGET_NAME = bmmas
+#TARGET_NAME = bmmas
 #TARGET_NAME = test
 #TARGET_NAME = simple_loop
-#TARGET_NAME = bm_malloc_and_sort
+#TARGET_NAME = malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
-#TARGET_NAME = nw4test
+#TARGET_NAME = nw
+TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

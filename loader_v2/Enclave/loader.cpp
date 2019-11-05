@@ -312,7 +312,7 @@ static void load(void)
 
 				//Weijie: checking if loader could find main()...
 				//dlog("%u: finding main...", __LINE__);
-				dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
+				//dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
 					//Weijie: record i
@@ -337,7 +337,7 @@ static void load(void)
 
 			}
 		}
-		dlog("sym %04u/%d %08lx", i, n_symtab, (unsigned long)symtab[i].st_value);
+		//dlog("sym %04u/%d %08lx", i, n_symtab, (unsigned long)symtab[i].st_value);
 	}
 }
 
@@ -352,7 +352,7 @@ static void relocate(void)
 
 			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
 
-			dlog("rel[%04u] %04u (%08lx) --> %04u", i, dst_sym, dst, src_sym);
+			//dlog("rel[%04u] %04u (%08lx) --> %04u", i, dst_sym, dst, src_sym);
 			if (type == R_X86_64_64) {
 				/* word 64 */
 				*(addr_t *)dst = symtab[src_sym].st_value + reltab[k][i].r_addend;

@@ -1,15 +1,5 @@
 CFICheck
 exit
-max
-dpm_init
-my_strlen
-print_matrix
-print_traceback
-my_strrev
-strncat
-nw_align
-llvm.memcpy.p0i8.p0i8.i64
-Ecall_nw
-malloc
+fun
 enclave_main
 puts
