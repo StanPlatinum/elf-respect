@@ -1,11 +1,100 @@
-; ModuleID = 'bmmas.c'
-source_filename = "bmmas.c"
+; ModuleID = '<stdin>'
+source_filename = "malloc_and_sort"
 target datalayout = "e-m:e-i64:64-f80:128-n8:16:32:64-S128"
 target triple = "x86_64-unknown-linux-gnu"
 
 @__tmp = dso_local global [64 x i8] zeroinitializer, align 16
 @.str = private unnamed_addr constant [14 x i8] c"overlap exist\00", align 1
 @.str.1 = private unnamed_addr constant [11 x i8] c"no overlap\00", align 1
+
+; Function Attrs: noinline nounwind optnone
+define dso_local void @CFICheck(i64 %target) #0 {
+entry:
+  %target.addr = alloca i64, align 8
+  %CFICheckAddressPtr = alloca i64*, align 8
+  %CFICheckAddressNum = alloca i32, align 4
+  %low = alloca i32, align 4
+  %high = alloca i32, align 4
+  %mid = alloca i32, align 4
+  store i64 %target, i64* %target.addr, align 8
+  store i64* inttoptr (i64 2305843009213693951 to i64*), i64** %CFICheckAddressPtr, align 8
+  store i32 536870911, i32* %CFICheckAddressNum, align 4
+  store i32 0, i32* %low, align 4
+  %0 = load i32, i32* %CFICheckAddressNum, align 4
+  store i32 %0, i32* %high, align 4
+  store i32 0, i32* %mid, align 4
+  br label %while.cond
+
+while.cond:                                       ; preds = %if.end12, %entry
+  %1 = load i32, i32* %low, align 4
+  %2 = load i32, i32* %high, align 4
+  %cmp = icmp sle i32 %1, %2
+  br i1 %cmp, label %while.body, label %while.end
+
+while.body:                                       ; preds = %while.cond
+  %3 = load i32, i32* %low, align 4
+  %4 = load i32, i32* %high, align 4
+  %5 = load i32, i32* %low, align 4
+  %sub = sub nsw i32 %4, %5
+  %div = sdiv i32 %sub, 2
+  %add = add nsw i32 %3, %div
+  store i32 %add, i32* %mid, align 4
+  %6 = load i32, i32* %mid, align 4
+  %7 = load i32, i32* %high, align 4
+  %cmp1 = icmp sgt i32 %6, %7
+  br i1 %cmp1, label %if.then, label %if.end
+
+if.then:                                          ; preds = %while.body
+  br label %while.end
+
+if.end:                                           ; preds = %while.body
+  %8 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %9 = load i32, i32* %mid, align 4
+  %idxprom = sext i32 %9 to i64
+  %arrayidx = getelementptr inbounds i64, i64* %8, i64 %idxprom
+  %10 = load i64, i64* %arrayidx, align 8
+  %11 = load i64, i64* %target.addr, align 8
+  %cmp2 = icmp ugt i64 %10, %11
+  br i1 %cmp2, label %if.then3, label %if.else
+
+if.then3:                                         ; preds = %if.end
+  %12 = load i32, i32* %mid, align 4
+  %sub4 = sub nsw i32 %12, 1
+  store i32 %sub4, i32* %high, align 4
+  br label %if.end12
+
+if.else:                                          ; preds = %if.end
+  %13 = load i64*, i64** %CFICheckAddressPtr, align 8
+  %14 = load i32, i32* %mid, align 4
+  %idxprom5 = sext i32 %14 to i64
+  %arrayidx6 = getelementptr inbounds i64, i64* %13, i64 %idxprom5
+  %15 = load i64, i64* %arrayidx6, align 8
+  %16 = load i64, i64* %target.addr, align 8
+  %cmp7 = icmp ult i64 %15, %16
+  br i1 %cmp7, label %if.then8, label %if.else10
+
+if.then8:                                         ; preds = %if.else
+  %17 = load i32, i32* %mid, align 4
+  %add9 = add nsw i32 %17, 1
+  store i32 %add9, i32* %low, align 4
+  br label %if.end11
+
+if.else10:                                        ; preds = %if.else
+  ret void
+
+if.end11:                                         ; preds = %if.then8
+  br label %if.end12
+
+if.end12:                                         ; preds = %if.end11, %if.then3
+  br label %while.cond
+
+while.end:                                        ; preds = %if.then, %while.cond
+  call void @exit(i32 -1) #4
+  unreachable
+}
+
+; Function Attrs: noreturn
+declare dso_local void @exit(i32) #1
 
 ; Function Attrs: noinline nounwind optnone
 define dso_local void @sort(i64* %objs, i64* %objs_end, i32 %left, i32 %right) #0 {
@@ -248,10 +337,10 @@ entry:
   %objs = alloca i64*, align 8
   %objs_end = alloca i64*, align 8
   %size = alloca i64, align 8
-  %call = call noalias i8* @malloc(i64 32768) #4
+  %call = call noalias i8* @malloc(i64 32768) #5
   %0 = bitcast i8* %call to i64*
   store i64* %0, i64** %objs, align 8
-  %call1 = call noalias i8* @malloc(i64 32768) #4
+  %call1 = call noalias i8* @malloc(i64 32768) #5
   %1 = bitcast i8* %call1 to i64*
   store i64* %1, i64** %objs_end, align 8
   store i32 0, i32* %i, align 4
@@ -269,7 +358,7 @@ for.body:                                         ; preds = %for.cond
   %conv = zext i32 %add to i64
   store i64 %conv, i64* %size, align 8
   %4 = load i64, i64* %size, align 8
-  %call2 = call noalias i8* @malloc(i64 %4) #4
+  %call2 = call noalias i8* @malloc(i64 %4) #5
   %5 = ptrtoint i8* %call2 to i64
   %6 = load i64*, i64** %objs, align 8
   %7 = load i32, i32* %i, align 4
@@ -330,7 +419,7 @@ for.body14:                                       ; preds = %for.cond11
   %arrayidx16 = getelementptr inbounds i64, i64* %20, i64 %idxprom15
   %22 = load i64, i64* %arrayidx16, align 8
   %23 = inttoptr i64 %22 to i8*
-  call void @free(i8* %23) #4
+  call void @free(i8* %23) #5
   br label %for.inc17
 
 for.inc17:                                        ; preds = %for.body14
@@ -340,30 +429,28 @@ for.inc17:                                        ; preds = %for.body14
   br label %for.cond11
 
 for.end19:                                        ; preds = %for.cond11
-  call void @exit(i32 0) #5
+  call void @exit(i32 0) #6
   unreachable
 }
 
 ; Function Attrs: nounwind
-declare dso_local noalias i8* @malloc(i64) #1
+declare dso_local noalias i8* @malloc(i64) #2
 
-declare dso_local i32 @puts(...) #2
+declare dso_local i32 @puts(...) #3
 
 ; Function Attrs: nounwind
-declare dso_local void @free(i8*) #1
-
-; Function Attrs: noreturn nounwind
-declare dso_local void @exit(i32) #3
+declare dso_local void @free(i8*) #2
 
 attributes #0 = { noinline nounwind optnone "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #1 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #2 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #3 = { noreturn nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
-attributes #4 = { nounwind }
-attributes #5 = { noreturn nounwind }
+attributes #1 = { noreturn "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #2 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #3 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "less-precise-fpmad"="false" "no-frame-pointer-elim"="true" "no-frame-pointer-elim-non-leaf" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
+attributes #4 = { noreturn }
+attributes #5 = { nounwind }
+attributes #6 = { noreturn nounwind }
 
-!llvm.module.flags = !{!0}
-!llvm.ident = !{!1}
+!llvm.ident = !{!0, !0}
+!llvm.module.flags = !{!1}
 
-!0 = !{i32 1, !"wchar_size", i32 4}
-!1 = !{!"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git a4f4db9447980bbac19917a6ddb3c6501bb9ebc1)"}
+!0 = !{!"clang version 9.0.0 (https://github.com/StanPlatinum/llvm-project.git a4f4db9447980bbac19917a6ddb3c6501bb9ebc1)"}
+!1 = !{i32 1, !"wchar_size", i32 4}

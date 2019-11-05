@@ -17,6 +17,7 @@ CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bmms
 #TARGET_NAME = bmmas
+#TARGET_NAME = malloc_and_sort
 #TARGET_NAME = nw4test
 TARGET_NAME = nw
 

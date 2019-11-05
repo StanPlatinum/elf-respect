@@ -1,0 +1,8 @@
+CFICheck
+exit
+sort
+check_overlap
+enclave_main
+malloc
+puts
+free

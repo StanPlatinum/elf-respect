@@ -1,5 +1,5 @@
 	.text
-	.file	"bmmas"
+	.file	"malloc_and_sort"
 	.globl	CFICheck                # -- Begin function CFICheck
 	.p2align	4, 0x90
 	.type	CFICheck,@function

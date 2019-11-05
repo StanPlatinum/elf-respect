@@ -104,7 +104,7 @@ void  print_traceback( char ** traceback, char *seq_1, char *seq_2 )
 }
 
 /* implemented by Weijie */
-char *strrev(char *str)
+char *my_strrev(char *str)
 {
         char *p1, *p2;
         if (! str || ! *str)
@@ -244,8 +244,8 @@ int nw_align(                  // Needleman-Wunsch algorithm
 
         /* reverse seq_als, modified by Weijie. */
         char *tmp1, *tmp2;
-        tmp1 = strrev(seq_1_al);
-        tmp2 = strrev(seq_2_al);
+        tmp1 = my_strrev(seq_1_al);
+        tmp2 = my_strrev(seq_2_al);
         return  0 ;
 }
 
@@ -287,13 +287,13 @@ void Ecall_nw(
 }
 
 void enclave_main(){
-	char seq_1[] = "AGTACGTC";
-        char seq_2[] = "ACGTCGT";
+	//char seq_1[] = "AGTACGTC";
+        //char seq_2[] = "ACGTCGT";
 	char seq_1_al[50];
         char seq_2_al[50];
 
 	puts("running NW algorithm...");
-	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
+	Ecall_nw("ACTACGTC", "ACGTCGT", seq_1_al, seq_2_al);
 
 	puts("exiting...");
 	enclave_exit();

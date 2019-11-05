@@ -1047,6 +1047,8 @@ void disasm_whole()
 			
 			//Weijie: print symbol name
 			textSize = symtab[j].st_size;
+			
+			/*
 			if (textSize > 0){
 				//dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 				//PrintDebugInfo("-----setting params-----\n");
@@ -1058,7 +1060,8 @@ void disasm_whole()
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
-			/*
+			*/
+			
 			//Weijie: just disasm enclave_main
 			int ifmain_rv = strncmp("enclave_main", &strtab[symtab[j].st_name], 12);
 			if (ifmain_rv == 0) {
@@ -1070,6 +1073,8 @@ void disasm_whole()
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
+
+			/*
 			//Weijie: just disasm enclave_main
 			int iff1_rv = strncmp("check_overlap", &strtab[symtab[j].st_name], 13);
 			if (iff1_rv == 0) {
@@ -1198,8 +1203,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	//pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
