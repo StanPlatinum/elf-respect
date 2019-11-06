@@ -11,10 +11,10 @@ CXX = clang++
 #TARGET_NAME = test
 #TARGET_NAME = simple_loop
 #TARGET_NAME = malloc_and_sort
-#TARGET_NAME = bm_malloc_simple
+TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
 #TARGET_NAME = nw
-TARGET_NAME = foo2
+#TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -51,8 +51,9 @@ $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"
 
-lib/%.o: lib/%.s
-	$(CC4OCALL) -c -o $@ $<
+lib/%.o: lib/%.s dep/ocall.o
+	cp dep/ocall.o lib/
+	$(CC) -c -o $@ $<
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
@@ -66,13 +67,13 @@ objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 
 #Weijie: add malloc.o 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
+	#$(CC) -c $(SGX_CFLAGS) -o $@ $<
 	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
 
 #Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -S -I. -o enclave_main.s $<
 	$(CC) -c enclave_main.s -o $@
-	#$(CC) -c $(SGX_CFLAGS) -I. -o $@ $(LINKERFLAG) $<
 
 clean:
 	rm -f *.s *.o objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
