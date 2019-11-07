@@ -1,15 +1,11 @@
 
 #CC = /home/weijliu/llvm-source/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CC4AS = /home/liuweijie/llvm-4.0.1/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-
+CC4AS = /home/liuweijie/llvm-assembler/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 CXX = clang++
 
-#TARGET_NAME = bmmas
-#TARGET_NAME = test
-#TARGET_NAME = simple_loop
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
@@ -51,16 +47,13 @@ lib/%.o: lib/%.s
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
-#Weijie: prepare whole static linked (with libc_static.a) obj and execute Makefile in Dir objs/
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 	cp $^ objs/
 	$(MAKE) -C objs
 
-#Weijie: add malloc.o 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4AS) -c $(SGX_CFLAGS) -o $@ $<
 
-#Weijie: generate target obj file
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -S -I. -o enclave_main.s $<
 	$(CC) -c enclave_main.s -o $@
