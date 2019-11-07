@@ -78,10 +78,17 @@ ninja
  - This step may take some time...
  - Please modify $(LLVM_PATH) in `dynamic-loader-checker/target-program/Makefile` to where the LLVM is cloned.
  
-##### Build SGX-Shield
+##### Build our customized assembler
 
- - SGX-Shield is a brilliant work which we have taken advantage of in our project. It can be cloned at https://github.com/jaebaek/SGX-Shield. Also, it is suggested that you can cloned a modified version at https://github.com/StanPlatinum/SGX-Shield.
- - Please modify $(SGX_Shield_PATH) in `dynamic-loader-checker/target-program/Makefile` to where the SGX-Shield is cloned.
+```
+git clone https://github.com/StanPlatinum/llvm-assembler.git
+cd llvm-assembler
+mkdir build && cd build
+cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86" -G "make" ../llvm
+make -j4
+```
+
+ - Please modify $(CC4AS) in `dynamic-loader-checker/target-program/Makefile` to where the our assembler is cloned.
 
 #### Prepare the pre-link relocatable binary
 
