@@ -1,6 +1,6 @@
 #SGX_Shield_PATH = /root/SGX-Shield
-SGX_Shield_PATH = /home/weijliu/SGX-Shield
-#SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
+Our_AS_Path = /home/weijliu/SGX-Shield
+#Our_AS_Path = /home/liuweijie/llvm-assembler
 
 #LLVM_PATH = /home/liuweijie/llvm-project
 LLVM_PATH = /home/weijliu/llvm-project
@@ -8,7 +8,7 @@ LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 #CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC4AS = $(Our_AS_Path)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 CLEAN_CC = /home/weijliu/llvm-source/build/bin/clang
 AS = $(CLEAN_CC) -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
@@ -49,7 +49,7 @@ $(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s
-	$(CC4OCALL) -c -o $@ $<
+	$(CC4AS) -c -o $@ $<
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
@@ -59,7 +59,7 @@ objs/libc_targetprogram.a: enclave_main.o $(LIBC)
 	$(MAKE) -C objs
 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	$(CC4OCALL) -c $(SGX_CFLAGS) -o $@ $<
+	$(CC4AS) -c $(SGX_CFLAGS) -o $@ $<
 
 $(TARGET_NAME).s:
 	python3 ./CFIShell.py $(LLVM_BIN_PATH) $(CFIHello_So_PATH) $(TARGET_NAME).c ./CFICheck.c n

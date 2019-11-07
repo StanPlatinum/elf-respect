@@ -1,14 +1,13 @@
 
-#CC = /home/weijliu/llvm-source/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/weijliu/llvm-source/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CC4AS = /home/liuweijie/llvm-assembler/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC4AS = /home/weijliu/SGX-Shield/llvm/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC4AS = /home/liuweijie/llvm-assembler/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CXX = clang++
+#CXX = clang++
 
 #TARGET_NAME = malloc_and_sort
-#TARGET_NAME = bm_malloc_simple
-#TARGET_NAME = bm_hello
 TARGET_NAME = nw
 #TARGET_NAME = foo2
 
@@ -59,7 +58,7 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -c enclave_main.s -o $@
 
 clean:
-	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME)
+	rm -f *.s *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME)
 
 clean-all:
 	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
