@@ -1,7 +1,7 @@
 
 CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/liuweijie/llvm-4.0.1/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
 #CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
@@ -52,7 +52,7 @@ $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s dep/ocall.o
-	cp dep/ocall.o lib/
+	#cp dep/ocall.o lib/
 	$(CC) -c -o $@ $<
 
 tools/linker: tools/linkage_editor.cpp
