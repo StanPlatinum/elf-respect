@@ -15,7 +15,7 @@ char *my_itoa(unsigned long long val, char *buf, unsigned radix)
 		else
 			*p++ = (char)(digval + '0');
 	}while(val > 0);
-	*p-- = '\0 ';
+	*p-- = '\0';
 	do{
 		temp = *p;
 		*p = *firstdig;

@@ -1,15 +1,18 @@
 #SGX_Shield_PATH = /root/SGX-Shield
-#SGX_Shield_PATH = /home/weijliu/SGX-Shield
-SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
+SGX_Shield_PATH = /home/weijliu/SGX-Shield
+#SGX_Shield_PATH = /home/liuweijie/my-sgx-shield
 
-LLVM_PATH = /home/liuweijie/llvm-project
+#LLVM_PATH = /home/liuweijie/llvm-project
+LLVM_PATH = /home/weijliu/llvm-project
 LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
+#CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 CC4OCALL = $(SGX_Shield_PATH)/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CLEAN_CC = /home/weijliu/llvm-source/build/bin/clang
+AS = $(CLEAN_CC) -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#AS = $(CC)
 
 # Now the target name will be a dir
 TARGET_NAME = foo2
@@ -63,8 +66,7 @@ $(TARGET_NAME).s:
 	cp $(TARGET_NAME)/$(TARGET_NAME)_opt.s $@
 
 enclave_main.o: $(TARGET_NAME).s enclave.h
-	$(CC) -c $(SGX_CFLAGS) -o $@ $<
-	#$(CC) -c $(TARGET_NAME).c -o $@
+	$(AS) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.o objs/*.o objs/*.lo objs/*.a \

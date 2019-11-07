@@ -1,9 +1,10 @@
 
-CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC = /home/liuweijie/llvm-4.0.1/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC4OCALL = /home/weijliu/SGX-Shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC4OCALL = /home/liuweijie/my-sgx-shield/llvm/build/bin/clang-4.0 -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/weijliu/llvm-source/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC = /home/liuweijie/llvm-4.0.1/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #Weijie: add llvm install path
-#CC = /opt/llvm/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 CXX = clang++
 
@@ -11,10 +12,10 @@ CXX = clang++
 #TARGET_NAME = test
 #TARGET_NAME = simple_loop
 #TARGET_NAME = malloc_and_sort
-TARGET_NAME = bm_malloc_simple
+#TARGET_NAME = bm_malloc_simple
 #TARGET_NAME = bm_hello
 #TARGET_NAME = nw
-#TARGET_NAME = foo2
+TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -53,7 +54,8 @@ $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(
 
 lib/%.o: lib/%.s dep/ocall.o
 	#cp dep/ocall.o lib/
-	$(CC) -c -o $@ $<
+	$(CC4OCALL) -c -o $@ $<
+	#$(CC) -c -o $@ $<
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
