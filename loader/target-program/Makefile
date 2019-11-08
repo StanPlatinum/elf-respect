@@ -2,7 +2,7 @@
 CC = /home/weijliu/llvm-source/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
-CC4AS = /home/weijliu/SGX-Shield/llvm/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC4AS = /home/weijliu/SGX-Shield/llvm/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC4AS = /home/liuweijie/llvm-assembler/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 #CXX = clang++
@@ -41,7 +41,7 @@ $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s 
-	$(CC4AS) -c -o $@ $<
+	$(CC) -c -o $@ $<
 
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
@@ -51,7 +51,7 @@ objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 	$(MAKE) -C objs
 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
-	$(CC4AS) -c $(SGX_CFLAGS) -o $@ $<
+	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -S -I. -o enclave_main.s $<
