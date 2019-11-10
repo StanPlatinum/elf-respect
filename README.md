@@ -28,4 +28,4 @@ We build a multi-step loader which can load a modified binary into the enclave m
 
 ***
 
-Usage: https://github.com/StanPlatinum/elf-respect.wiki.git
+Usage: https://github.com/StanPlatinum/elf-respect/wiki/Usage
