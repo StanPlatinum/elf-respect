@@ -20,7 +20,7 @@ Moreover, our method provides a new paradigm for PCC to use a TEE (such as Intel
 
 Due to the differences between normal binary and SGX binary, we have to do a lot of work to adjust a PCC framework being fitted into SGX.
 
-Our checker tool don’t use formal verification to validate the loaded private binary, but leverage data/control flow analysis to fulfill the goal of verifying if a binary has such confidential/secure properties, which is more efficient.
+Our checker tool don’t use formal verification to validate the loaded private binary, but does leverage data/control flow analysis to fulfill the goal of verifying if a binary has such confidential/secure properties, which is more efficient.
 
 CFI is also required in our whole solution, to prevent a strong attacker from bypassing our runtime checks we instrumented in the loaded binary. Our CFI scheme can guarantee all indirect branches of both the target binary and the SGX’s SDK are legal. 
 
