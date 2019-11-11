@@ -24,10 +24,13 @@ TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
-LIBC_DIR = libc
-LIBC = $(LIBC_DIR)/libc.a
+#LIBC_DIR = libc
+#LIBC = $(LIBC_DIR)/libc.a
+#SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
-SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
+MUSL_LIBC_DIR = ./musl-libc
+MUSL_LIBC = $(MUSL_LIBC_DIR)/lib/libc.a
+SGX_CFLAGS = $(BASE_CFLAGS) -I$(MUSL_LIBC_DIR)/include -fno-stack-protector -fvisibility=hidden
 
 OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
@@ -35,9 +38,13 @@ include $(OCALL_LIB_MK)
 
 ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/my_itoa.o
 
-all: $(LIBC) $(TARGET_NAME).bin
+all: $(MUSL_LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
 	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
+
+$(MUSL_LIBC):
+	(cd musl-libc; ./configure)
+	make -C musl-libc lib/libc.a
 
 $(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
 	cp malloc.o objs/
@@ -52,7 +59,7 @@ lib/%.o: lib/%.s
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
-objs/libc_targetprogram.a: enclave_main.o $(LIBC)
+objs/libc_targetprogram.a: enclave_main.o $(MUSL_LIBC)
 	cp $^ objs/
 	$(MAKE) -C objs
 
@@ -75,4 +82,5 @@ clean-all:
 	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list \
 		tools/linker lib/*.o
 	rm -rf $(TARGET_NAME)
+	$(MAKE) -C musl-libc clean
 
