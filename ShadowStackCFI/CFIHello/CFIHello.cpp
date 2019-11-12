@@ -8,7 +8,10 @@
 #include <llvm/IR/Verifier.h>
 #include <llvm/IR/IRBuilder.h>
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Transforms/IPO/PassManagerBuilder.h"
+#include "llvm/IR/LegacyPassManager.h"
 #include <string>
+#include<fstream>
  
 using namespace llvm;
 using namespace std;
@@ -16,16 +19,17 @@ using namespace std;
 #define DEBUG_TYPE "hello"
  
 namespace {
-  struct CFIHello : public ModulePass {
+  class CFIHello : public ModulePass {
+  public:
     static char ID; // Pass identification, rep lacement for typeid
     CFIHello() : ModulePass(ID) {}
 
     //打印每个Fun的entry的label到文件。
-    void printEntryLable(Function &F, raw_fd_ostream &file)
+    void printEntryLable(Function &F, std::ofstream &file)
     {
         //string MName = F.getParent()->getSourceFileName();
         //MName.erase(MName.end() - 3, MName.end());
-        file << F.getName() << "\n";
+        file << F.getName().str() << "\n";
     }
 
     //插入一个全新的Fun并添加调用
@@ -72,12 +76,12 @@ namespace {
             {
                 for(BasicBlock::iterator II = BBI->begin(); II != BBI->end(); ++II)          
                 {
-                    if (isa<IndirectBrInst>(&(*II)))
-                    {
-                        errs() << "!!!\n";
-                        IndirectBrInst *IdI = dyn_cast<IndirectBrInst>(II);
-                        IdI->print(errs());
-                    }
+                    // if (isa<IndirectBrInst>(&(*II)))
+                    // {
+                    //     errs() << "!!!\n";
+                    //     IndirectBrInst *IdI = dyn_cast<IndirectBrInst>(II);
+                    //     IdI->print(errs());
+                    // }
                     
 
                     if(isa<CallInst>(&(*II)))
@@ -111,6 +115,7 @@ namespace {
                             ArrayRef<Value *> arguments(ConstantInt::get( Type::getInt64Ty(M.getContext()), i, true));
                             CallInst *newInst = CallInst::Create(hook, arguments, "");
                             BBI->getInstList().insert(II, newInst);
+                            II->print(errs());
                             b = true;
                         }
                     }
@@ -122,25 +127,40 @@ namespace {
  
     bool runOnModule(Module &M) override {
         std::error_code error;
-        string name = M.getSourceFileName() + "/" + M.getSourceFileName() + ".txt";
-        StringRef nameR(name);
-        enum sys::fs::OpenFlags F_None;
-        raw_fd_ostream file(name, error, F_None);
+        const string sourceName = M.getSourceFileName();
+        int pos = sourceName.find(".", 0);
+        string name = sourceName.substr(0, pos) + ".txt";
+        errs() << name << "\n";
+        // StringRef nameR(name);
+        // errs() << nameR << "\n";
+        // enum sys::fs::OpenFlags F_None;
+        // enum sys::fs::FileAccess FA_Write;
+        // raw_fd_ostream file(name, error, FA_Write);
+        std::ofstream file(name);
         for (auto FI = M.begin(); FI != M.end(); FI++)
         {
             Function &F = *FI;
-            // if (F.getName() == "fun")
-            // {
-            //     F.setName("fun1");
-            // }
-            printEntryLable(F, file);
+            file << F.getName().str() << "\n";
         }
         file.close();
-    	return insertCFIFun(M, "CFICheck");
-        //return 0;
+        //return insertCFIFun(M, "CFICheck");
+        return 0;
     }
   };
 }
  
 char CFIHello::ID = 0;
 static RegisterPass<CFIHello> X("cfihello", "CFI Pass");
+
+static void registerCFIHello(const PassManagerBuilder &,
+                                llvm::legacy::PassManagerBase &PM) {
+       PM.add(new CFIHello());
+}
+
+static RegisterStandardPasses
+    RegisterCFIHello0(PassManagerBuilder::EP_EnabledOnOptLevel0,
+                          registerCFIHello);
+
+static RegisterStandardPasses
+    RegisterCFIHello(PassManagerBuilder::EP_ModuleOptimizerEarly,
+                          registerCFIHello);

@@ -39,6 +39,15 @@ xxx_opt.ll is the IR file inserted CFIFunction call.
 xxx_opt.s is the assmbly file instrumented ShadowStack and CFI instructions.  
 xxx.txt is the txt file which save entry lables of this module.  
 
+### UsagePlus:
+ - To replace CFIChell.py.
+ - 1 Add #include "CFICheck.c" to your source code.
+ - 2 Execute command:
+~~~
+/your/clang/path/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang /your/pass/library/path/LLVMCFIHello.so xxx.c -o xxx.s
+~~~
+ - 3 Now you can see xxx.txt in your source code path and xxx.s.
+
 ***
 
 ### Notes: How to write a sample source program

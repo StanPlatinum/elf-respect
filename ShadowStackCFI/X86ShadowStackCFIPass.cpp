@@ -149,6 +149,7 @@ namespace {
         
         map<string, MBBNode> MBBNodeMap;    //保存所有的MBBNode，string为MBBNodeName
         const GlobalValue* exitGV;
+        const GlobalValue* CFICheckGV;
 
     public:
         static char ID;
@@ -201,6 +202,160 @@ namespace {
             file << "}\n";
             file.close();
         }
+
+        //遍历函数的MBB，向map中插入MBBNode，并记录MBB与函数的调用和返回关系
+        void findCallandInsertMBBNode(MachineFunction &MF)
+        {
+            string callFunStr = "";
+            string retFunStr = "";
+            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
+            {
+                MachineBasicBlock &MBB = *MBBI;
+                retFunStr = callFunStr;
+                callFunStr = "";
+
+                //遍历MBB的指令，如果有callq，则分割MBB，并记录调用关系
+                for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
+                {
+                    MachineInstr &MI = *MII;
+                    if (MI.getOpcode() == CALL64pcrel32)
+                    {
+                        MachineBasicBlock &NewBB = *MF.CreateMachineBasicBlock();
+                        auto FNPI = NewBB.getFirstNonPHI();
+                        NewBB.splice(++FNPI, &MBB, ++MII, MBB.end());
+                        for (MachineBasicBlock *SucMBB : MBB.successors())
+                        {
+                            MBB.removeSuccessor(SucMBB);
+                            NewBB.addSuccessor(SucMBB);
+                        }
+                        MBB.addSuccessor(&NewBB);
+                        MF.insert(++MBBI, &NewBB);
+                        MBBI--;
+                        MBBI--;
+
+                        MachineOperand MO = MI.getOperand(0);
+                        string tmpStr;
+                        raw_string_ostream rso(tmpStr);
+                        MO.print(rso);
+                        callFunStr = rso.str();
+                        callFunStr = replaceChar(callFunStr, '@');
+                        break;
+                    }
+                }
+
+                //向MBBNodeMap中插入由当前MBB构造的MBBNode
+                MBBNode MBBN(&MBB);
+                MBBN.callFun = callFunStr;
+                MBBN.retFun = retFunStr;
+                if (callFunStr == "")
+                {
+                    for (MachineBasicBlock *sucMBB : MBB.successors())
+                    {
+                        MBBNode sucMBBN(sucMBB);
+                        MBBN.nextMBBNVec.push_back(sucMBBN.MBBNodeName);
+                    }
+                }
+                MBBNodeMap.insert(pair<string, MBBNode>(MBBN.MBBNodeName,MBBN));
+            }
+        }
+
+        //向MBBNode中添加因为call和ret产生的NextNode
+        void addCallRetNext()
+        {
+            for (auto mapI = MBBNodeMap.begin(); mapI != MBBNodeMap.end(); mapI++)
+            {
+                int rc = 0;
+                for (auto mapI2 = MBBNodeMap.begin(); mapI2 != MBBNodeMap.end(); mapI2++)
+                {
+                    string nameStr = mapI2->second.MBBNodeName;
+                    string funStr = nameStr.substr(0, nameStr.find("_"));
+                    if (mapI->second.callFun == funStr && nameStr[nameStr.length() - 1] == '0')
+                    {
+                        mapI->second.nextMBBNVec.push_back(mapI2->second.MBBNodeName);
+                        rc++;
+                    }
+                    if (mapI->second.retFun == funStr && mapI2->second.isRetMBB)
+                    {
+                        mapI2->second.nextMBBNVec.push_back(mapI->second.MBBNodeName);
+                        rc++;
+                    }
+                    if (rc == 2)
+                    {
+                        break;
+                    }
+                    if (++mapI2 == MBBNodeMap.end() && mapI->second.callFun != "" && rc == 0)
+                    {
+                        for (auto mapI3 = MBBNodeMap.begin(); mapI3 != MBBNodeMap.end(); mapI3++)
+                        {
+                            if (mapI->second.callFun == mapI3->second.retFun)
+                            {
+                                mapI->second.nextMBBNVec.push_back(mapI3->second.MBBNodeName);
+                                break;
+                            }
+                        }
+                    }
+                    mapI2--;
+                }
+            }
+        }
+        
+        //输出Module的CFG到dot文件
+        void MModuleCFG()
+        {
+            std::error_code error;
+            std::string str;
+            vector<string> MBBNodeVec;
+            StringRef name("ModuleCFG.dot");
+            
+            enum sys::fs::OpenFlags F_None;
+            raw_fd_ostream file(name, error, F_None);
+            file << "digraph \"CFG for Module\" {\n";
+            for (auto mapI = MBBNodeMap.begin(); mapI != MBBNodeMap.end(); mapI++)
+            {
+                if (find(MBBNodeVec.begin(), MBBNodeVec.end(), mapI->first) == MBBNodeVec.end())
+                {
+                    MBBNodeVec.push_back(mapI->first);
+                }
+                file << "\t" << mapI->first << " [shape=record, label=\"{";
+                file << mapI->first << ":\\l\\l";
+                for (auto instrI = mapI->second.MBBNodeInstrVev.begin(); instrI != mapI->second.MBBNodeInstrVev.end(); instrI++)
+                {
+                    file << *instrI << "\\l\n";
+                }
+                file << "}\"];\n";
+                for (auto nextMBBI = mapI->second.nextMBBNVec.begin(); nextMBBI != mapI->second.nextMBBNVec.end(); nextMBBI++)
+                {
+                    if (find(MBBNodeVec.begin(), MBBNodeVec.end(), *nextMBBI) == MBBNodeVec.end())
+                    {
+                        MBBNodeVec.push_back(*nextMBBI);
+                    }
+                    file << "\t" << mapI->first << "-> " << *nextMBBI << ";\n";
+                }
+            }
+            file << "}\n";
+            file.close();
+        }
+
+        //输出Module的CFG到dot文件,用于被runOnMachineFunction调用
+        void MModuleCFG(MachineFunction &MF, int funTotalNum)
+        {
+            outs() << "\n" << MF.getName().str() << "\n";
+            findCallandInsertMBBNode(MF);
+            outs() << "findCall Done\n";
+            count++;
+            //在遍历完所有函数后，执行
+            if (count == funTotalNum)
+            {
+                addCallRetNext();
+                outs() << "!!!\n";
+                for (auto mapI = MBBNodeMap.begin(); mapI != MBBNodeMap.end(); mapI++)
+                {
+                    mapI->second.print();
+                }
+                MModuleCFG();
+            }
+        }
+
         //找到mov指令并插桩,检查mov目标是否合法，不合法则跳转(未使用)
         void insertMovInst(MachineFunction &MF)
         {
@@ -247,7 +402,7 @@ namespace {
         }
 
         void insertSSEntry(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL)
-        {
+        { 
             auto MBBI = MBB.begin();
             // mov r11, 0x2fffffffffffffff
             BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
@@ -444,159 +599,6 @@ namespace {
                 }
             }
         }
-
-        //遍历函数的MBB，向map中插入MBBNode，并记录MBB与函数的调用和返回关系
-        void findCallandInsertMBBNode(MachineFunction &MF)
-        {
-            string callFunStr = "";
-            string retFunStr = "";
-            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
-            {
-                MachineBasicBlock &MBB = *MBBI;
-                retFunStr = callFunStr;
-                callFunStr = "";
-
-                //遍历MBB的指令，如果有callq，则分割MBB，并记录调用关系
-                for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
-                {
-                    MachineInstr &MI = *MII;
-                    if (MI.getOpcode() == CALL64pcrel32)
-                    {
-                        MachineBasicBlock &NewBB = *MF.CreateMachineBasicBlock();
-                        auto FNPI = NewBB.getFirstNonPHI();
-                        NewBB.splice(++FNPI, &MBB, ++MII, MBB.end());
-                        for (MachineBasicBlock *SucMBB : MBB.successors())
-                        {
-                            MBB.removeSuccessor(SucMBB);
-                            NewBB.addSuccessor(SucMBB);
-                        }
-                        MBB.addSuccessor(&NewBB);
-                        MF.insert(++MBBI, &NewBB);
-                        MBBI--;
-                        MBBI--;
-
-                        MachineOperand MO = MI.getOperand(0);
-                        string tmpStr;
-                        raw_string_ostream rso(tmpStr);
-                        MO.print(rso);
-                        callFunStr = rso.str();
-                        callFunStr = replaceChar(callFunStr, '@');
-                        break;
-                    }
-                }
-
-                //向MBBNodeMap中插入由当前MBB构造的MBBNode
-                MBBNode MBBN(&MBB);
-                MBBN.callFun = callFunStr;
-                MBBN.retFun = retFunStr;
-                if (callFunStr == "")
-                {
-                    for (MachineBasicBlock *sucMBB : MBB.successors())
-                    {
-                        MBBNode sucMBBN(sucMBB);
-                        MBBN.nextMBBNVec.push_back(sucMBBN.MBBNodeName);
-                    }
-                }
-                MBBNodeMap.insert(pair<string, MBBNode>(MBBN.MBBNodeName,MBBN));
-            }
-        }
-
-        //向MBBNode中添加因为call和ret产生的NextNode
-        void addCallRetNext()
-        {
-            for (auto mapI = MBBNodeMap.begin(); mapI != MBBNodeMap.end(); mapI++)
-            {
-                int rc = 0;
-                for (auto mapI2 = MBBNodeMap.begin(); mapI2 != MBBNodeMap.end(); mapI2++)
-                {
-                    string nameStr = mapI2->second.MBBNodeName;
-                    string funStr = nameStr.substr(0, nameStr.find("_"));
-                    if (mapI->second.callFun == funStr && nameStr[nameStr.length() - 1] == '0')
-                    {
-                        mapI->second.nextMBBNVec.push_back(mapI2->second.MBBNodeName);
-                        rc++;
-                    }
-                    if (mapI->second.retFun == funStr && mapI2->second.isRetMBB)
-                    {
-                        mapI2->second.nextMBBNVec.push_back(mapI->second.MBBNodeName);
-                        rc++;
-                    }
-                    if (rc == 2)
-                    {
-                        break;
-                    }
-                    if (++mapI2 == MBBNodeMap.end() && mapI->second.callFun != "" && rc == 0)
-                    {
-                        for (auto mapI3 = MBBNodeMap.begin(); mapI3 != MBBNodeMap.end(); mapI3++)
-                        {
-                            if (mapI->second.callFun == mapI3->second.retFun)
-                            {
-                                mapI->second.nextMBBNVec.push_back(mapI3->second.MBBNodeName);
-                                break;
-                            }
-                        }
-                    }
-                    mapI2--;
-                }
-            }
-        }
-        
-        //输出Module的CFG到dot文件
-        void MModuleCFG()
-        {
-            std::error_code error;
-            std::string str;
-            vector<string> MBBNodeVec;
-            StringRef name("ModuleCFG.dot");
-            
-            enum sys::fs::OpenFlags F_None;
-            raw_fd_ostream file(name, error, F_None);
-            file << "digraph \"CFG for Module\" {\n";
-            for (auto mapI = MBBNodeMap.begin(); mapI != MBBNodeMap.end(); mapI++)
-            {
-                if (find(MBBNodeVec.begin(), MBBNodeVec.end(), mapI->first) == MBBNodeVec.end())
-                {
-                    MBBNodeVec.push_back(mapI->first);
-                }
-                file << "\t" << mapI->first << " [shape=record, label=\"{";
-                file << mapI->first << ":\\l\\l";
-                for (auto instrI = mapI->second.MBBNodeInstrVev.begin(); instrI != mapI->second.MBBNodeInstrVev.end(); instrI++)
-                {
-                    file << *instrI << "\\l\n";
-                }
-                file << "}\"];\n";
-                for (auto nextMBBI = mapI->second.nextMBBNVec.begin(); nextMBBI != mapI->second.nextMBBNVec.end(); nextMBBI++)
-                {
-                    if (find(MBBNodeVec.begin(), MBBNodeVec.end(), *nextMBBI) == MBBNodeVec.end())
-                    {
-                        MBBNodeVec.push_back(*nextMBBI);
-                    }
-                    file << "\t" << mapI->first << "-> " << *nextMBBI << ";\n";
-                }
-            }
-            file << "}\n";
-            file.close();
-        }
-
-        //输出Module的CFG到dot文件,用于被runOnMachineFunction调用
-        void MModuleCFG(MachineFunction &MF, int funTotalNum)
-        {
-            outs() << "\n" << MF.getName().str() << "\n";
-            findCallandInsertMBBNode(MF);
-            outs() << "findCall Done\n";
-            count++;
-            //在遍历完所有函数后，执行
-            if (count == funTotalNum)
-            {
-                addCallRetNext();
-                outs() << "!!!\n";
-                for (auto mapI = MBBNodeMap.begin(); mapI != MBBNodeMap.end(); mapI++)
-                {
-                    mapI->second.print();
-                }
-                MModuleCFG();
-            }
-        }
         
         bool checkCFIFun(MachineInstr &MI)
         {
@@ -614,7 +616,7 @@ namespace {
         }
 
         //修改地址检查Fun的参数
-        bool insertCFIFun(MachineFunction &MF)
+        bool rewriteCFIFun(MachineFunction &MF)
         {
             for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
             {
@@ -674,6 +676,44 @@ namespace {
             return true;
         }
 
+        //插入地址检查Fun
+        bool insertCFIFun(MachineFunction &MF)
+        {
+            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
+            {
+                MachineBasicBlock &MBB = *MBBI;
+                for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
+                {
+                    MachineInstr &MI = *MII;
+                        
+                    if (MI.getOpcode() == CALL64r)
+                    {//call reg
+                        const TargetInstrInfo *TII;
+                        DebugLoc DL = MI.getDebugLoc();
+                        TII = MF.getSubtarget().getInstrInfo();
+                        MCPhysReg reg = MI.getOperand(0).getReg();
+                        //mov RDI, reg
+                        MachineInstr &tmpMI = *BuildMI(MBB, MII, DL, TII->get(MOV64rr)).addReg(RDI).addReg(reg);
+                        MachineInstr &tmpMI1 = *BuildMI(MBB, MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(CFICheckGV);
+                    }
+                    if (MI.getOpcode() == CALL64m)
+                    {//call [reg]
+                        const TargetInstrInfo *TII;
+                        DebugLoc DL = MI.getDebugLoc();
+                        TII = MF.getSubtarget().getInstrInfo();
+                        MCPhysReg reg = MI.getOperand(0).getReg();
+                        int64_t imm = MI.getOperand(3).getImm();
+
+                        //mov RDI, [reg]
+                        MachineInstr &tmpMI = *BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addReg(RDI).addReg(reg).addImm(1).addReg(0).addImm(imm).addReg(0);
+                        MachineInstr &tmpMI1 = *BuildMI(MBB, MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(CFICheckGV);
+                        
+                    }
+                }
+            }
+            return true;
+        }
+
         //获取exit函数的GlobaValue指针
         void getExitGV(MachineFunction &MF)
         {
@@ -721,8 +761,8 @@ namespace {
             bool hasStore = false;
             const TargetInstrInfo *TII;
             MachineRegisterInfo *MRI;
-            printf("\nX86myMov work\n");
-            printf("Func: %s\n", Func.getName().data());
+            // printf("\nX86myMov work\n");
+            // printf("Func: %s\n", Func.getName().data());
 
             TII = Func.getSubtarget().getInstrInfo();
             MRI = &Func.getRegInfo();
@@ -768,14 +808,14 @@ namespace {
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
                             if (Disp.isImm())
                             {
-                                printMachineInstr(MI, 0);
+                                //printMachineInstr(MI, 0);
                                 BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
                       .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addImm(Disp.getImm()).addReg(SegmentReg.getReg());
                             }
                             else
                             {
-                                outs() << "!!!!!!!!!!!!!!\n!!!!!!!!!!\n!!!!!!!!!!\n";
-                                printMachineInstr(MI, 0);
+                                // outs() << "!!!!!!!!!!!!!!\n!!!!!!!!!!\n!!!!!!!!!!\n";
+                                // printMachineInstr(MI, 0);
                                 BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
                       .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addGlobalAddress(Disp.getGlobal()).addReg(SegmentReg.getReg());
                             }
@@ -810,6 +850,8 @@ namespace {
             if (MF.getName() == "CFICheck")
             {
                 getExitGV(MF);
+                const Function &F = MF.getFunction();
+                CFICheckGV = &F;
             }
             
             bool bm = movInsert(MF);
