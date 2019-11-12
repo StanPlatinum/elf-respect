@@ -12,25 +12,13 @@ LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 #CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC4T = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang $(CFIHello_So_PATH)
-
+#CC4T = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang $(CFIHello_So_PATH)
+CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 #AS = $(CC)
 
-# Now the target name will be a dir
 TARGET_NAME = foo2
-#TARGET_NAME = bm_malloc_and_sort
-#TARGET_NAME = bm_malloc_simple
-#TARGET_NAME = bmms
-#TARGET_NAME = bmmas
-#TARGET_NAME = malloc_and_sort
-#TARGET_NAME = nw4test
-#TARGET_NAME = nw
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
-
-#LIBC_DIR = libc
-#LIBC = $(LIBC_DIR)/libc.a
-#SGX_CFLAGS = $(BASE_CFLAGS) -fno-stack-protector -fvisibility=hidden
 
 MUSL_LIBC_DIR = ./musl-libc
 MUSL_LIBC = $(MUSL_LIBC_DIR)/lib/libc.a
@@ -70,11 +58,12 @@ objs/libc_targetprogram.a: enclave_main.o $(MUSL_LIBC)
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4AS) -c $(SGX_CFLAGS) -o $@ $<
 
-$(TARGET_NAME).s: $(TARGET_NAME).c
-	$(CC4T) $< -o $@
+#$(TARGET_NAME).s: $(TARGET_NAME).c
+#	$(CC4T) $< -o $@
 
-enclave_main.o: $(TARGET_NAME).s enclave.h
-	$(CC4AS) -c $< -o $@
+#enclave_main.o: $(TARGET_NAME).s enclave.h
+enclave_main.o: $(TARGET_NAME).c enclave.h CFICheck.c
+	$(CC) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.o objs/*.o objs/*.lo objs/*.a \
