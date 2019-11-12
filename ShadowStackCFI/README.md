@@ -44,9 +44,9 @@ xxx.txt is the txt file which save entry lables of this module.
  - 1 Add #include "CFICheck.c" to your source code.
  - 2 Execute command:
 ~~~
-/your/clang/path/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang /your/pass/library/path/LLVMCFIHello.so xxx.c -o xxx.s
+/your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang /your/llvm/path/build/lib/LLVMCFIHello.so yoursourcefile.c -o yourasmfile.s
 ~~~
- - 3 Now you can see xxx.txt in your source code path and xxx.s.
+ - 3 Now you can see yoursourcefile.txt in your source file path and yourasmfile.s.
 
 ***
 
