@@ -2,13 +2,17 @@
 Our_AS_Path = /home/weijliu/llvm-mc
 #Our_AS_Path = /home/liuweijie/llvm-assembler
 
+CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC
+
 #LLVM_PATH = /home/liuweijie/llvm-project
-LLVM_PATH = /home/weijliu/llvm-project
+
+#LLVM_PATH = /home/weijliu/llvm-project
+LLVM_PATH = /home/weijliu/proofGen
 LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 #CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC
+CC4T = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #AS = $(CC)
 
@@ -36,11 +40,11 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/my_itoa.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
-	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
+	cp $(TARGET_NAME).txt ../entryLabel.txt
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
@@ -66,9 +70,8 @@ objs/libc_targetprogram.a: enclave_main.o $(MUSL_LIBC)
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4AS) -c $(SGX_CFLAGS) -o $@ $<
 
-$(TARGET_NAME).s:
-	python3 ./CFIShell.py $(LLVM_BIN_PATH) $(CFIHello_So_PATH) $(TARGET_NAME).c ./CFICheck.c n
-	cp $(TARGET_NAME)/$(TARGET_NAME)_opt.s $@
+$(TARGET_NAME).s: $(TARGET_NAME).c
+	$(CC4T) $< -o $@
 
 enclave_main.o: $(TARGET_NAME).s enclave.h
 	$(CC4AS) -c $< -o $@
