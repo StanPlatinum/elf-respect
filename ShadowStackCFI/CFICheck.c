@@ -1,10 +1,17 @@
+#include <stdio.h>
+#include "CFICheck.h"
 
 void CFICheck(unsigned long long target)
 {
 	unsigned long long *CFICheckAddressPtr = 0x1FFFFFFFFFFFFFFF;
 	int CFICheckAddressNum = 0x1FFFFFFF;
-	int low = 0, high = CFICheckAddressNum, mid = 0;
-	//unsigned long long magic = 0x1;
+	int low = 0, high = CFICheckAddressNum, mid=0;
+
+    if (target == 1)
+    {
+        return;
+    }
+    
 
 	while (low <= high)
 	{
@@ -21,11 +28,11 @@ void CFICheck(unsigned long long target)
 		{
 			low = mid + 1;
 		}
-		else
-		{
+        else
+        {
 			return;
-		}
-
+        }
+        
 	}
 	exit(-1);
 }

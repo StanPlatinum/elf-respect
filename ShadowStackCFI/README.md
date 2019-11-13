@@ -42,6 +42,7 @@ xxx.txt is the txt file which save entry lables of this module.
 ### UsagePlus:
  - To replace CFIChell.py.
  - 1 Add #include "CFICheck.c" to your source code.
+ - Or add #include "CFICheck.h" to your source code and CFICheck(0) to a function in your source code.
  - 2 Execute command:
 ~~~
 /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang /your/llvm/path/build/lib/LLVMCFIHello.so yoursourcefile.c -o yourasmfile.s
