@@ -1,0 +1,5 @@
+CFICheck
+exit
+fun
+enclave_main
+puts
