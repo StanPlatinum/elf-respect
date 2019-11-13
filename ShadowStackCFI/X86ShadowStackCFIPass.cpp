@@ -150,6 +150,8 @@ namespace {
         map<string, MBBNode> MBBNodeMap;    //保存所有的MBBNode，string为MBBNodeName
         const GlobalValue* exitGV;
         const GlobalValue* CFICheckGV;
+        bool hasExit = false;
+        bool hasCFICheck = false;
 
     public:
         static char ID;
@@ -847,22 +849,45 @@ namespace {
         }
 
         virtual bool runOnMachineFunction(MachineFunction &MF) {
-            if (MF.getName() == "CFICheck")
+            // if (MF.getName() == "CFICheck")
+            // {
+            //     getExitGV(MF);
+            //     const Function &F = MF.getFunction();
+            //     CFICheckGV = &F;
+            // }
+            if (hasExit == false && hasCFICheck == false)
             {
-                getExitGV(MF);
-                const Function &F = MF.getFunction();
-                CFICheckGV = &F;
+                const Function &FF = MF.getFunction();
+                const Module *M = FF.getParent();
+                for (auto FI = M->begin(); FI != M->end(); FI++)
+                {
+                    if (FI->getName().str() == "CFICheck")
+                    {
+                        const Function &F = *FI;
+                        CFICheckGV = &F;
+                        hasCFICheck = true;
+                        outs() << "Found CFICheck\n";
+                    }
+                    if (FI->getName().str() == "exit")
+                    {
+                        const Function &F = *FI;
+                        exitGV = &F;
+                        hasExit = true;
+                        outs() << "Found exit\n";
+                    }
+                }
             }
-            
-            bool bm = movInsert(MF);
-            bool bs = insertShadowStackInst(MF);
-            bool bc = insertCFIFun(MF);
-            
-            return bm || bc || bs;
+            if (hasCFICheck == true && hasExit == true)
+            {
+                bool bm = movInsert(MF);
+                bool bs = insertShadowStackInst(MF);
+                bool bc = insertCFIFun(MF);
+                return bm || bc || bs;
+            }
         }
     };
 }
- 
+
 namespace llvm {
 FunctionPass *createX86ShadowStackCFIPass(){
     return new X86ShadowStackCFIPass();

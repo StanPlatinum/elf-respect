@@ -130,7 +130,7 @@ namespace {
         const string sourceName = M.getSourceFileName();
         int pos = sourceName.find(".", 0);
         string name = sourceName.substr(0, pos) + ".txt";
-        errs() << name << "\n";
+        //errs() << name << "\n";
         // StringRef nameR(name);
         // errs() << nameR << "\n";
         // enum sys::fs::OpenFlags F_None;
