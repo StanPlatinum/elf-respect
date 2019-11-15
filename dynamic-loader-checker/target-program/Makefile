@@ -28,7 +28,7 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
@@ -62,16 +62,16 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 #	$(CC4T) $< -o $@
 
 #enclave_main.o: $(TARGET_NAME).s enclave.h
-enclave_main.o: $(TARGET_NAME).c enclave.h CFICheck.c
+enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -c $< -o $@
 
 clean:
-	rm -f *.ll *.s *.o objs/*.o objs/*.lo objs/*.a \
+	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \
 		list lib/*.o
 	rm -rf $(TARGET_NAME)
 
 clean-all:
-	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list \
+	rm -f *.ll *.s *.txt *.o *.a objs/*.o objs/*.lo objs/*.a list \
 		tools/linker lib/*.o
 	rm -rf $(TARGET_NAME)
 	$(MAKE) -C musl-libc clean
