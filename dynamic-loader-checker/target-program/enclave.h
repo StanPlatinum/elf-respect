@@ -13,6 +13,6 @@ void ocall_open(char *name, int *fd);
 size_t get_line(int fd, char *buf);
 void push_gadget(unsigned long gadget);
 
-//char *my_itoa(unsigned long long val, char *buf, unsigned long radix);
+char *my_itoa(unsigned long long val, char *buf, unsigned long radix);
 
 #endif

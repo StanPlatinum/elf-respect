@@ -1,5 +1,5 @@
-fun
-CFICheck
 enclave_main
+malloc
+free
 puts
 exit

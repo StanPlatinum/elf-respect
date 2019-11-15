@@ -16,7 +16,8 @@ CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 #AS = $(CC)
 
-TARGET_NAME = foo2
+TARGET_NAME = bmms
+#TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -28,7 +29,7 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o
+ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o lib/my_itoa.o
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
