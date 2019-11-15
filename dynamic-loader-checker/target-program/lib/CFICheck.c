@@ -7,7 +7,7 @@ void CFICheck(unsigned long long target)
 	int CFICheckAddressNum = 0x1FFFFFFF;
 	int low = 0, high = CFICheckAddressNum, mid=0;
 
-    if (target == 1)
+    if (target == 0)
     {
         return;
     }
