@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
 	ecall_receive_binary(eid, buffer, sz);
 
 	fclose(fp);
-	printf("receive binary completed.\n");
+	printf("receiving/executing binary completed.\n");
 
 	log("destroy the enclave");
 	sgx_destroy_enclave(eid);

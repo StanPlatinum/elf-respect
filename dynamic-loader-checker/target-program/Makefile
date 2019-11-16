@@ -29,7 +29,11 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o
+ASM_OBJS = $(STACK_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
+
+STACK_OBJ = lib/stack.o
+
+#ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o
 
 #ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o lib/my_itoa.o
 
@@ -37,6 +41,9 @@ all: $(MUSL_LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
 	cp $(TARGET_NAME).txt ../entryLabel.txt
 #	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
+
+$(STACK_OBJ): lib/stack.c
+	$(CC4AS) -c $< -o $@
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)

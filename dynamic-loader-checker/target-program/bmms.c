@@ -4,11 +4,12 @@
 //#include <stdlib.h>
 #include "enclave.h"
 
-#include "CFICheck.h"
+//#include "CFICheck.h"
+#include "CFICheck.c"
 
 void enclave_main()
 {
-	CFICheck(0);
+	//CFICheck(0);
 	puts("test1");
 	//Weijie: the magic must be initialized
 	unsigned long magic = 0;

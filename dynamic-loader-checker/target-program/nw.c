@@ -3,7 +3,8 @@
 
 #include "enclave.h"
 
-#include "CFICheck.h"
+//#include "CFICheck.h"
+#include "CFICheck.c"
 /*
    void This_function_name_is_MD5_of_this_file()
    {
@@ -20,10 +21,9 @@
    }
  */
 
-
 int  max( int f1, int f2, int f3, char * ptr )
 {
-	CFICheck(0);
+	//CFICheck(0);
 
 	int  max = 0 ;
 	if( f1 >= f2 && f1 >= f3 )
@@ -44,7 +44,7 @@ int  max( int f1, int f2, int f3, char * ptr )
 	return  max ;
 }
 
-void  dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
+void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
 	F[ 0 ][ 0 ] =  0 ;
 	traceback[ 0 ][ 0 ] = 'n' ;
@@ -70,7 +70,7 @@ size_t my_strlen(const char *str)
 }
 
 
-void  print_matrix( int ** F, char *seq_1, char *seq_2 )
+void print_matrix( int ** F, char *seq_1, char *seq_2 )
 {
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
@@ -135,9 +135,8 @@ char *my_strrev(char *str)
 	}
 	return str;
 }
-
-	char *
-strncat(char *dst, const char *src, size_t n)
+	
+char *strncat(char *dst, const char *src, size_t n)
 {
 	if (n != 0) {
 		char *d = dst;
@@ -282,14 +281,16 @@ void Ecall_nw(
 
 	// Dynamic programming matrix
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
+	puts("test1");
 	for( int i = 0; i <= L2; i++ )  
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
 	// Traceback matrix
+	puts("test2");
+	
 	char ** traceback = (char **)malloc( (L2 + 1) * sizeof(char *));
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
-	puts("test0");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
@@ -299,14 +300,14 @@ void Ecall_nw(
 	
 	// Create alignment
 	int rv;
-	puts("test1");
 	rv = nw_align( F, traceback, seq_1, seq_2, seq_1_al, seq_2_al, d );
-	puts("test2");
+	
+	puts("test3");
+
 	if (rv == 0){ 
 		print_matrix( F, seq_1, seq_2 );
 		print_traceback( traceback, seq_1, seq_2 );
 	}
-	puts("test3");
 }
 
 void enclave_main(){
