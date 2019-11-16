@@ -43,7 +43,8 @@ all: $(MUSL_LIBC) $(TARGET_NAME).bin
 #	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
 
 $(STACK_OBJ): lib/stack.c
-	$(CC4AS) -c $< -o $@
+#$(CC4AS) -c $< -o $@
+	$(CC) -c $< -o $@
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
@@ -84,12 +85,12 @@ enclave_main.o: $(TARGET_NAME).s enclave.h CFICheck.h
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \
-		list lib/*.o
+		list lib/*.o lib/*.txt
 	rm -rf $(TARGET_NAME)
 
 clean-all:
 	rm -f *.ll *.s *.txt *.o *.a objs/*.o objs/*.lo objs/*.a list \
-		tools/linker lib/*.o
+		tools/linker lib/*.o lib/*.txt
 	rm -rf $(TARGET_NAME)
 	$(MAKE) -C musl-libc clean
 
