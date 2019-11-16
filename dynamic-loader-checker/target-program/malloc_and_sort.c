@@ -60,5 +60,6 @@ void enclave_main()
     for (i = 0;i < MSIZE; ++i)
         free((void*)objs[i]);
 
+	puts("success!");
     enclave_exit();
 }

@@ -3,8 +3,28 @@
 
 #include "enclave.h"
 
+#include "CFICheck.h"
+/*
+   void This_function_name_is_MD5_of_this_file()
+   {
+   int a = 0;
+   int b = 1;
+   if(a < b)
+   {
+   CFICheck(0);
+   }
+   else
+   {
+   exit(0);
+   }
+   }
+ */
+
+
 int  max( int f1, int f2, int f3, char * ptr )
 {
+	CFICheck(0);
+
 	int  max = 0 ;
 	if( f1 >= f2 && f1 >= f3 )
 	{
@@ -30,7 +50,6 @@ void  dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 	traceback[ 0 ][ 0 ] = 'n' ;
 
 	int i=0, j=0;
-
 	for( j = 1; j <= L1; j++ )
 	{
 		F[ 0 ][ j ] =  -j * d ;
@@ -43,8 +62,7 @@ void  dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 	}
 }
 
-	size_t
-my_strlen(const char *str)
+size_t my_strlen(const char *str)
 {
 	const char *s;
 	for (s = str; *s; ++s);
@@ -271,19 +289,24 @@ void Ecall_nw(
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
+	puts("test0");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
+	
 	seq_1_al[0] = '\0';
 	seq_2_al[0] = '\0';
-
+	
 	// Create alignment
 	int rv;
+	puts("test1");
 	rv = nw_align( F, traceback, seq_1, seq_2, seq_1_al, seq_2_al, d );
+	puts("test2");
 	if (rv == 0){ 
 		print_matrix( F, seq_1, seq_2 );
 		print_traceback( traceback, seq_1, seq_2 );
 	}
+	puts("test3");
 }
 
 void enclave_main(){
