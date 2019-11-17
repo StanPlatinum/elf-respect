@@ -1048,7 +1048,7 @@ void disasm_whole()
 			//Weijie: print symbol name
 			textSize = symtab[j].st_size;
 			
-			/*
+			//Weeijie: disasm all symbols
 			if (textSize > 0){
 				//dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 				//PrintDebugInfo("-----setting params-----\n");
@@ -1060,9 +1060,10 @@ void disasm_whole()
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
-			*/
+			
 			
 			//Weijie: just disasm enclave_main
+			/*
 			int ifmain_rv = strncmp("enclave_main", &strtab[symtab[j].st_name], 12);
 			if (ifmain_rv == 0) {
 				textAddr = symtab[j].st_value;
@@ -1073,7 +1074,7 @@ void disasm_whole()
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
-
+			*/
 			/*
 			//Weijie: just disasm enclave_main
 			int iff1_rv = strncmp("check_overlap", &strtab[symtab[j].st_name], 13);
