@@ -22,6 +22,7 @@
 #include "X86InstrInfo.h"
 #include "X86Subtarget.h"
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <vector>
 #include <map>
@@ -152,6 +153,8 @@ namespace {
         const GlobalValue* CFICheckGV;
         bool hasExit = false;
         bool hasCFICheck = false;
+        bool entryLabelPrinted = false;
+        bool needInsertCFI = true;  //用于设置是否需要进行CFICheck插桩
 
     public:
         static char ID;
@@ -805,6 +808,12 @@ namespace {
                             MachineOperand &IndexReg = MI.getOperand(MemOp + 2);
                             MachineOperand &Disp = MI.getOperand(MemOp + 3);
                             MachineOperand &SegmentReg = MI.getOperand(MemOp + 4);
+                            
+                            //检查是否为全局指针
+                            if (!Disp.isImm())
+                            {
+                                continue;
+                            }
 
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RBX);
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
@@ -848,18 +857,32 @@ namespace {
             return hasStore;
         }
 
-        virtual bool runOnMachineFunction(MachineFunction &MF) {
-            // if (MF.getName() == "CFICheck")
-            // {
-            //     getExitGV(MF);
-            //     const Function &F = MF.getFunction();
-            //     CFICheckGV = &F;
-            // }
-            if (hasExit == false && hasCFICheck == false)
+        void printEntrylabel(const Module &M)
+        {
+            const string sourceName = M.getName().str();
+            int pos = sourceName.find(".", 0);
+            string name = sourceName.substr(0, pos) + ".txt";
+            std::ofstream file(name);
+            for (auto FI = M.begin(); FI != M.end(); FI++)
             {
-                const Function &FF = MF.getFunction();
-                const Module *M = FF.getParent();
-                for (auto FI = M->begin(); FI != M->end(); FI++)
+                const Function &F = *FI;
+                pos = F.getName().str().find(".", 0);
+                if (pos != -1)
+                {
+                    string isllvm =  F.getName().str().substr(0, pos);
+                    if (isllvm == "llvm")
+                    {
+                        continue;
+                    }
+                }
+                file << F.getName().str() << "\n";
+            }
+            file.close();
+        }
+
+        void findCFICheckandExit(const Module &M)
+        {
+            for (auto FI = M.begin(); FI != M.end(); FI++)
                 {
                     if (FI->getName().str() == "CFICheck")
                     {
@@ -876,14 +899,54 @@ namespace {
                         outs() << "Found exit\n";
                     }
                 }
+        }
+
+        virtual bool runOnMachineFunction(MachineFunction &MF) {
+            // if (MF.getName() == "CFICheck")
+            // {
+            //     getExitGV(MF);
+            //     const Function &F = MF.getFunction();
+            //     CFICheckGV = &F;
+            // }
+            bool bm = false, bs = false, bc = false;
+            if (needInsertCFI == true)
+            {
+                if (entryLabelPrinted == false)
+                {
+                    const Function &FF = MF.getFunction();
+                    const Module &M = *FF.getParent();
+                    printEntrylabel(M);
+                    entryLabelPrinted = true;
+                }
             }
-            if (hasCFICheck == true && hasExit == true)
+            
+            if (hasExit == false || (hasCFICheck == false && needInsertCFI == true))
+            {
+                const Function &FF = MF.getFunction();
+                const Module &M = *FF.getParent();
+                findCFICheckandExit(M);
+            }
+            
+            if (hasExit == true)
             {
                 bool bm = movInsert(MF);
                 bool bs = insertShadowStackInst(MF);
-                bool bc = insertCFIFun(MF);
-                return bm || bc || bs;
             }
+            else
+            {
+                outs() << "Cannot find Exit.\n";
+            }
+            
+            if (hasCFICheck == true && needInsertCFI == true)
+            {
+                bool bc = insertCFIFun(MF);
+            }
+            else if (hasCFICheck == false)
+            {
+                outs() << "Cannot find CFICheck.\n";
+            }
+
+            return bm || bc || bs;
         }
     };
 }

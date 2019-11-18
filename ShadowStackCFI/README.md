@@ -45,9 +45,10 @@ xxx.txt is the txt file which save entry lables of this module.
  - Or add #include "CFICheck.h" to your source code and CFICheck(0) to a function in your source code.
  - 2 Execute command:
 ~~~
-/your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S -Xclang -load -Xclang /your/llvm/path/build/lib/LLVMCFIHello.so yoursourcefile.c -o yourasmfile.s
+/your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S yoursourcefile.c -o yourasmfile.s
 ~~~
  - 3 Now you can see yoursourcefile.txt in your source file path and yourasmfile.s.
+ - 4 If you donot want to instrument CFICheck, please change "bool needInsertCFI = true;" to "bool needInsertCFI = false;" in X86ShadowStackCFI.cpp
 
 ***
 
