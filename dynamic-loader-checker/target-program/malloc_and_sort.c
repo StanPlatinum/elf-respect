@@ -3,6 +3,8 @@
 
 #include "enclave.h"
 
+#include "CFICheck.c"
+
 #define MSIZE 0x1000
 
 void sort(unsigned long *objs, unsigned long *objs_end, unsigned int left, unsigned int right)
@@ -27,6 +29,7 @@ void sort(unsigned long *objs, unsigned long *objs_end, unsigned int left, unsig
 
 int check_overlap(unsigned long *objs, unsigned long *objs_end)
 {
+	puts("test check_overlap");
     unsigned int i, j=0;
     for (i = 1;i < MSIZE;++i) {
         if (objs_end[i-1] > objs[i])	return 1;
@@ -45,14 +48,22 @@ void enclave_main()
     unsigned int i;
     unsigned long *objs = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
     unsigned long *objs_end = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
-    for (i = 0;i < MSIZE; ++i) {
+	
+	puts("test0");
+    
+	for (i = 0;i < MSIZE; ++i) {
         size_t size = i % 5 + 5;
         objs[i] = (unsigned long)malloc(size);
         objs_end[i] = objs[i]+size;
     }
 
-    sort(objs, objs_end, 0, MSIZE-1);
-    if (check_overlap(objs, objs_end))
+	puts("test1");
+	
+	sort(objs, objs_end, 0, MSIZE-1);
+	
+	puts("test2");
+    
+	if (check_overlap(objs, objs_end))
         puts("overlap exist");
     else
         puts("no overlap");
@@ -60,5 +71,6 @@ void enclave_main()
     for (i = 0;i < MSIZE; ++i)
         free((void*)objs[i]);
 
+	puts("success!");
     enclave_exit();
 }

@@ -3,8 +3,28 @@
 
 #include "enclave.h"
 
+//#include "CFICheck.h"
+#include "CFICheck.c"
+/*
+   void This_function_name_is_MD5_of_this_file()
+   {
+   int a = 0;
+   int b = 1;
+   if(a < b)
+   {
+   CFICheck(0);
+   }
+   else
+   {
+   exit(0);
+   }
+   }
+ */
+
 int  max( int f1, int f2, int f3, char * ptr )
 {
+	//CFICheck(0);
+
 	int  max = 0 ;
 	if( f1 >= f2 && f1 >= f3 )
 	{
@@ -24,13 +44,14 @@ int  max( int f1, int f2, int f3, char * ptr )
 	return  max ;
 }
 
-void  dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
+void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
 	F[ 0 ][ 0 ] =  0 ;
 	traceback[ 0 ][ 0 ] = 'n' ;
 
+	puts("test2");
+	
 	int i=0, j=0;
-
 	for( j = 1; j <= L1; j++ )
 	{
 		F[ 0 ][ j ] =  -j * d ;
@@ -43,8 +64,7 @@ void  dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 	}
 }
 
-	size_t
-my_strlen(const char *str)
+size_t my_strlen(const char *str)
 {
 	const char *s;
 	for (s = str; *s; ++s);
@@ -52,7 +72,7 @@ my_strlen(const char *str)
 }
 
 
-void  print_matrix( int ** F, char *seq_1, char *seq_2 )
+void print_matrix( int ** F, char *seq_1, char *seq_2 )
 {
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
@@ -117,9 +137,8 @@ char *my_strrev(char *str)
 	}
 	return str;
 }
-
-	char *
-strncat(char *dst, const char *src, size_t n)
+	
+char *strncat(char *dst, const char *src, size_t n)
 {
 	if (n != 0) {
 		char *d = dst;
@@ -168,6 +187,12 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	//char attach[2] = "";
 	//Weijie: no memset
 	char attach[2];
+
+	//Weijie:
+	L1 = 8;
+	L2 = 7;
+
+	puts("test4");
 
 	for( i = 1; i <= L2; i++ )
 	{
@@ -262,24 +287,36 @@ void Ecall_nw(
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
 
+	//Weijie:
+	L1 = 8;
+	L2 = 7;
+
 	// Dynamic programming matrix
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
-	for( int i = 0; i <= L2; i++ )  
+	for( int i = 0; i <= L2; i++ ){
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
+	}
 	// Traceback matrix
+	
 	char ** traceback = (char **)malloc( (L2 + 1) * sizeof(char *));
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
+	puts("test1");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
+	
 	seq_1_al[0] = '\0';
 	seq_2_al[0] = '\0';
-
+	
+	puts("test3");
 	// Create alignment
 	int rv;
 	rv = nw_align( F, traceback, seq_1, seq_2, seq_1_al, seq_2_al, d );
+	
+	puts("test5");
+
 	if (rv == 0){ 
 		print_matrix( F, seq_1, seq_2 );
 		print_traceback( traceback, seq_1, seq_2 );
@@ -287,14 +324,17 @@ void Ecall_nw(
 }
 
 void enclave_main(){
-	//char seq_1[] = "AGTACGTC";
-	//char seq_2[] = "ACGTCGT";
+	char seq_1[] = "AGTACGTC";
+	char seq_2[] = "ACGTCGT";
+
+	//CFICheck(0);
+	
 	char seq_1_al[50];
 	char seq_2_al[50];
 	puts("running NW algorithm...");
 
-	//Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
-	Ecall_nw("ACTACGTC", "ACGTCGT", seq_1_al, seq_2_al);
+	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
+	//Ecall_nw("ACTACGTC", "ACGTCGT", seq_1_al, seq_2_al);
 
 	puts("exiting...");
 	enclave_exit();
