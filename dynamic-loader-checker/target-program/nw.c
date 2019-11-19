@@ -189,8 +189,8 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	char attach[2];
 
 	//Weijie:
-	L1 = 8;
-	L2 = 7;
+	//L1 = 8;
+	//L2 = 7;
 
 	puts("test4");
 
@@ -288,8 +288,8 @@ void Ecall_nw(
 	int  L2 = my_strlen(seq_2);
 
 	//Weijie:
-	L1 = 8;
-	L2 = 7;
+	//L1 = 8;
+	//L2 = 7;
 
 	// Dynamic programming matrix
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
