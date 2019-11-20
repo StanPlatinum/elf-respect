@@ -7,6 +7,7 @@ CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #LLVM_PATH = /home/liuweijie/llvm-project
 
 #LLVM_PATH = /home/weijliu/llvm-project
+#LLVM_PATH = /home/weijliu/llvm-mc
 LLVM_PATH = /home/weijliu/proofGen
 LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
@@ -78,7 +79,7 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 #	$(CC4AS) -c $< -o $@
 
 $(TARGET_NAME).s: $(TARGET_NAME).c enclave.h CFICheck.h
-	$(CC) -S $< -o $@
+	$(CC) -S -I. $< -o $@
 
 enclave_main.o: $(TARGET_NAME).s
 	$(CC) -c $< -o $@
