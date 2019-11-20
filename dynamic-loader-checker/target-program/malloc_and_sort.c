@@ -45,19 +45,18 @@ char __tmp[64] = {0};
 
 void enclave_main()
 {
-    unsigned int i;
-    unsigned long *objs = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
-    unsigned long *objs_end = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
-	
 	puts("test0");
     
+	unsigned int i;
+    unsigned long *objs = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
+	puts("test1");
+    unsigned long *objs_end = (unsigned long*)malloc(MSIZE * sizeof(unsigned long));
+	
 	for (i = 0;i < MSIZE; ++i) {
         size_t size = i % 5 + 5;
         objs[i] = (unsigned long)malloc(size);
         objs_end[i] = objs[i]+size;
     }
-
-	puts("test1");
 	
 	sort(objs, objs_end, 0, MSIZE-1);
 	

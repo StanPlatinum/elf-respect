@@ -1050,13 +1050,13 @@ void disasm_whole()
 			
 			//Weeijie: disasm all symbols
 			if (textSize > 0){
-				//dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+				dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 				//PrintDebugInfo("-----setting params-----\n");
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				//dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}

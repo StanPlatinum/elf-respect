@@ -14,9 +14,9 @@ CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig
 #CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
-#TARGET_NAME = nw
+TARGET_NAME = nw
 #TARGET_NAME = simple_malloc
-TARGET_NAME = malloc_and_sort
+#TARGET_NAME = malloc_and_sort
 #TARGET_NAME = foo2
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
@@ -43,8 +43,8 @@ all: $(MUSL_LIBC) $(TARGET_NAME).bin
 #	cp $(TARGET_NAME)/$(TARGET_NAME).txt ../entryLabel.txt
 
 $(STACK_OBJ): lib/stack.c
-#$(CC4AS) -c $< -o $@
-	$(CC) -c $< -o $@
+	$(CC4AS) -c $< -o $@
+#	$(CC) -c $< -o $@
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)

@@ -1,5 +1,5 @@
 
-CC = /home/weijliu/llvm-source/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 #CC4AS = /home/weijliu/SGX-Shield/llvm/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
