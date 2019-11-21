@@ -9,8 +9,10 @@
 
 void enclave_main()
 {
-	//CFICheck(0);
 	puts("test0");
+	//CFICheck(0);
+	char *test = "simple";
+	puts(test);
 	//Weijie: the magic must be initialized
 	unsigned long magic = 0;
 	char* buf = (char*)malloc(0x80);

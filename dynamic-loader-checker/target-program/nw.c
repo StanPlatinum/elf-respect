@@ -46,6 +46,9 @@ int  max( int f1, int f2, int f3, char * ptr )
 
 void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
+	//Weijie:
+	unsigned int magic_in_dpm = 0;
+
 	F[ 0 ][ 0 ] =  0 ;
 	traceback[ 0 ][ 0 ] = 'n' ;
 
@@ -327,6 +330,8 @@ void enclave_main(){
 	char seq_1[] = "AGTACGTC";
 	char seq_2[] = "ACGTCGT";
 
+	puts("test0");
+	puts(seq_1);
 	//CFICheck(0);
 	
 	char seq_1_al[50];
