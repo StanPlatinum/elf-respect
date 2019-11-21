@@ -5,7 +5,7 @@
 #include "enclave.h"
 
 //#include "CFICheck.h"
-#include "CFICheck.c"
+//#include "CFICheck.c"
 
 void enclave_main()
 {
