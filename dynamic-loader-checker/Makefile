@@ -80,7 +80,6 @@ endif
 
 SGX_SDK ?= /opt/intel/sgxsdk
 SGX_MODE ?= HW
-#SGX_MODE ?= SIM
 SGX_DEBUG ?= 1
 SGX_ARCH ?= x64
 

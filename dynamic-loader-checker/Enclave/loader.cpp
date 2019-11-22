@@ -546,21 +546,26 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	if (if_memwt > 0){
 		//Weijie: checking if they are 'movabs rbx, 0ximm', 'cmp rax, rbx' and so on
 		if (
-				(strncmp("movabs", forward_ins[0].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[1].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[2].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", forward_ins[3].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0)	&&
-				(strncmp("jb", forward_ins[5].mnemonic, 2) == 0)	&&
-				(strncmp("pop", forward_ins[6].mnemonic, 3) == 0)	&&
-				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
+				(strncmp("pushfq", forward_ins[0].mnemonic, 6) == 0)	&&
+				(strncmp("push", forward_ins[1].mnemonic, 4) == 0)	&&
+				(strncmp("push", forward_ins[2].mnemonic, 4) == 0)	&&
+				(strncmp("lea", forward_ins[3].mnemonic, 3) == 0)	&&
+				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
+				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
+				(strncmp("ja", forward_ins[6].mnemonic, 2) == 0)	&&
+				(strncmp("movabs", forward_ins[7].mnemonic, 6) == 0)	&&
+				(strncmp("cmp", forward_ins[8].mnemonic, 3) == 0)	&&
+				(strncmp("jb", forward_ins[9].mnemonic, 2) == 0)	&&
+				(strncmp("pop", forward_ins[10].mnemonic, 3) == 0)	&&
+				(strncmp("pop", forward_ins[11].mnemonic, 3) == 0)	&&
+				(strncmp("popfq", forward_ins[12].mnemonic, 5) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//Weijie: getting the address
 			//Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
 			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
-			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[0], movabs_imm_offset);
-			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[3], movabs_imm_offset);
+			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[3], movabs_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[6], movabs_imm_offset);
 			//Weijie:
 			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
@@ -572,6 +577,7 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//PrintDebugInfo("memory write check done.\n");
 			return 1;
 		}
+		/*
 		else if (
 				(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
 				(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
@@ -580,6 +586,7 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 			//PrintDebugInfo("memory write by shadow stack.\n");
 			//PrintDebugInfo("memory write check done.\n");
 		}
+		*/
 		else
 		{
 			//PrintDebugInfo("memory write check failed.\n");
@@ -863,16 +870,21 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		for (j = 0; j < count; j++) {
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: maintain a insn set including more than 8? insns right before the current disasmed insn
-			if (j >= 8){
-				cs_insn forward_insn[8];
-				forward_insn[0] = insn[j-8];
-				forward_insn[1] = insn[j-7];
-				forward_insn[2] = insn[j-6];
-				forward_insn[3] = insn[j-5];
-				forward_insn[4] = insn[j-4];
-				forward_insn[5] = insn[j-3];
-				forward_insn[6] = insn[j-2];
-				forward_insn[7] = insn[j-1];
+			if (j >= 13){
+				cs_insn forward_insn[13];
+				forward_insn[0] = insn[j-13];
+				forward_insn[1] = insn[j-12];
+				forward_insn[2] = insn[j-11];
+				forward_insn[3] = insn[j-10];
+				forward_insn[4] = insn[j-9];
+				forward_insn[5] = insn[j-8];
+				forward_insn[6] = insn[j-7];
+				forward_insn[7] = insn[j-6];
+				forward_insn[8] = insn[j-5];
+				forward_insn[9] = insn[j-4];
+				forward_insn[10] = insn[j-3];
+				forward_insn[11] = insn[j-2];
+				forward_insn[12] = insn[j-1];
 				//Weijie: checking mem write
 				memwt_intact = check_rewrite_memwt(handle, CS_MODE_64, &insn[j], forward_insn);
 			}

@@ -316,11 +316,12 @@ void Ecall_nw(
 
 void enclave_main(){
 	char seq_1[] = "AGTACGTC";
+	puts("test0");
 	char seq_2[] = "ACGTCGT";
 
-	puts("test0");
 	puts(seq_1);
 	//CFICheck(0);
+	puts("test0.5");
 	
 	char seq_1_al[50];
 	char seq_2_al[50];
