@@ -5,21 +5,6 @@
 
 //#include "CFICheck.h"
 #include "CFICheck.c"
-/*
-   void This_function_name_is_MD5_of_this_file()
-   {
-   int a = 0;
-   int b = 1;
-   if(a < b)
-   {
-   CFICheck(0);
-   }
-   else
-   {
-   exit(0);
-   }
-   }
- */
 
 int  max( int f1, int f2, int f3, char * ptr )
 {
@@ -46,10 +31,14 @@ int  max( int f1, int f2, int f3, char * ptr )
 
 void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
+	puts("test1");
 	//Weijie:
-	unsigned int magic_in_dpm = 0;
+	//unsigned int magic_in_dpm = 0;
 
 	F[ 0 ][ 0 ] =  0 ;
+
+	puts("test1.5");
+	
 	traceback[ 0 ][ 0 ] = 'n' ;
 
 	puts("test2");
@@ -305,7 +294,6 @@ void Ecall_nw(
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
-	puts("test1");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
