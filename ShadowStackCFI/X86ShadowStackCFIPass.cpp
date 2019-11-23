@@ -464,7 +464,7 @@ namespace {
         bool checkSSMF(MachineFunction &MF)
         {
             if (MF.empty() || !MF.getRegInfo().tracksLiveness())
-                return false;               
+                return false;
             if (MF.front().isLiveIn(X86::R10) || MF.front().isLiveIn(X86::R11))
                 return false;
             
@@ -776,6 +776,7 @@ namespace {
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
 
             MachineBasicBlock* Trap = Func.CreateMachineBasicBlock();
+            BuildMI(Trap, DL, TII->get(X86::POPF64));
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RAX);
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RBX);
             BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
@@ -817,6 +818,7 @@ namespace {
 
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RBX);
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
+                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSHF64));
                             if (Disp.isImm())
                             {
                                 //printMachineInstr(MI, 0);
@@ -843,6 +845,7 @@ namespace {
 
                             MBB->addSuccessor(Trap);
 
+                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::POPF64));
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RAX);
                             BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RBX);
                         }
@@ -929,8 +932,8 @@ namespace {
             
             if (hasExit == true)
             {
-                bool bm = movInsert(MF);
-                bool bs = insertShadowStackInst(MF);
+                bm = movInsert(MF);
+                bs = insertShadowStackInst(MF);
             }
             else
             {
@@ -939,13 +942,13 @@ namespace {
             
             if (hasCFICheck == true && needInsertCFI == true)
             {
-                bool bc = insertCFIFun(MF);
+                bc = insertCFIFun(MF);
             }
             else if (hasCFICheck == false)
             {
                 outs() << "Cannot find CFICheck.\n";
             }
-
+            
             return bm || bc || bs;
         }
     };
