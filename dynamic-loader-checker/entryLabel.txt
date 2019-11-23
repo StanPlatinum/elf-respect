@@ -11,4 +11,5 @@ strncat
 nw_align
 Ecall_nw
 malloc
+my_itoa
 enclave_main

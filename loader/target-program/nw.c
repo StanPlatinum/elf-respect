@@ -5,21 +5,6 @@
 
 //#include "CFICheck.h"
 #include "CFICheck.c"
-/*
-   void This_function_name_is_MD5_of_this_file()
-   {
-   int a = 0;
-   int b = 1;
-   if(a < b)
-   {
-   CFICheck(0);
-   }
-   else
-   {
-   exit(0);
-   }
-   }
- */
 
 int  max( int f1, int f2, int f3, char * ptr )
 {
@@ -46,10 +31,14 @@ int  max( int f1, int f2, int f3, char * ptr )
 
 void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
+	puts("test1");
 	//Weijie:
-	unsigned int magic_in_dpm = 0;
+	//unsigned int magic_in_dpm = 0;
 
 	F[ 0 ][ 0 ] =  0 ;
+
+	puts("test1.5");
+	
 	traceback[ 0 ][ 0 ] = 'n' ;
 
 	puts("test2");
@@ -287,25 +276,30 @@ void Ecall_nw(
 {
 	int  d = 2 ;                 /* gap penalty */
 
+	puts("test0.6");
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
 
+	puts("test0.7");
 	//Weijie:
 	//L1 = 8;
 	//L2 = 7;
 
 	// Dynamic programming matrix
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
+	puts("test0.72");
 	for( int i = 0; i <= L2; i++ ){
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
 	}
 	// Traceback matrix
+	puts("test0.75");
 	
 	char ** traceback = (char **)malloc( (L2 + 1) * sizeof(char *));
+	puts("test0.78");
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
-	puts("test1");
+	puts("test0.8");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
@@ -328,11 +322,12 @@ void Ecall_nw(
 
 void enclave_main(){
 	char seq_1[] = "AGTACGTC";
+	puts("test0");
 	char seq_2[] = "ACGTCGT";
 
-	puts("test0");
 	puts(seq_1);
 	//CFICheck(0);
+	puts("test0.5");
 	
 	char seq_1_al[50];
 	char seq_2_al[50];

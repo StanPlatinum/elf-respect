@@ -2,7 +2,7 @@
 Our_AS_Path = /home/weijliu/llvm-mc
 #Our_AS_Path = /home/liuweijie/llvm-assembler
 
-CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
+CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig
 
 #LLVM_PATH = /home/liuweijie/llvm-project
 
@@ -30,11 +30,10 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = $(STACK_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
-
 STACK_OBJ = lib/stack.o
+DEBUG_OBJ = lib/my_itoa.o
 
-#ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o
+ASM_OBJS = $(STACK_OBJ) $(DEBUG_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
 
 #ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o lib/CFICheck.o lib/my_itoa.o
 
@@ -46,6 +45,9 @@ all: $(MUSL_LIBC) $(TARGET_NAME).bin
 $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@
 #	$(CC) -c $< -o $@
+
+$(DEBUG_OBJ): lib/my_itoa.c
+	$(CC4AS) -c $< -o $@
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)

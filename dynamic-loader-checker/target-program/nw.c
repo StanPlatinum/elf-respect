@@ -276,24 +276,44 @@ void Ecall_nw(
 {
 	int  d = 2 ;                 /* gap penalty */
 
+	puts("test0.6");
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
 
+	puts("test0.7");
 	//Weijie:
 	//L1 = 8;
 	//L2 = 7;
 
 	// Dynamic programming matrix
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
+	
+	puts("test0.72");
+	//Weijie:
+	puts("L2:");
+	char rvl2[8];
+	char *rva = rvl2;
+	rva = my_itoa(L2, rva, 10);
+	puts(rva);
+
 	for( int i = 0; i <= L2; i++ ){
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
+		//Weijie:
+		puts("return value of malloc:");
+		//char rvmalloc[8];
+		//char *rva = rvmalloc;
+		//rva = my_itoa(F[i], rva, 10);
+		//puts(rva);
 	}
 	// Traceback matrix
+	puts("test0.75");
 	
 	char ** traceback = (char **)malloc( (L2 + 1) * sizeof(char *));
+	puts("test0.78");
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
+	puts("test0.8");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */

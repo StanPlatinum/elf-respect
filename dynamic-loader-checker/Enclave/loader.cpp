@@ -546,9 +546,9 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	if (if_memwt > 0){
 		//Weijie: checking if they are 'movabs rbx, 0ximm', 'cmp rax, rbx' and so on
 		if (
-				(strncmp("pushfq", forward_ins[0].mnemonic, 6) == 0)	&&
+				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
 				(strncmp("push", forward_ins[1].mnemonic, 4) == 0)	&&
-				(strncmp("push", forward_ins[2].mnemonic, 4) == 0)	&&
+				(strncmp("pushfq", forward_ins[2].mnemonic, 6) == 0)	&&
 				(strncmp("lea", forward_ins[3].mnemonic, 3) == 0)	&&
 				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
 				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
@@ -556,16 +556,16 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 				(strncmp("movabs", forward_ins[7].mnemonic, 6) == 0)	&&
 				(strncmp("cmp", forward_ins[8].mnemonic, 3) == 0)	&&
 				(strncmp("jb", forward_ins[9].mnemonic, 2) == 0)	&&
-				(strncmp("pop", forward_ins[10].mnemonic, 3) == 0)	&&
+				(strncmp("popfq", forward_ins[10].mnemonic, 5) == 0)	&&
 				(strncmp("pop", forward_ins[11].mnemonic, 3) == 0)	&&
-				(strncmp("popfq", forward_ins[12].mnemonic, 5) == 0)
+				(strncmp("pop", forward_ins[12].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//Weijie: getting the address
 			//Elf64_Addr cmp_imm_offset = 2; //cmp 1 byte, rax 1 byte
 			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
-			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[3], movabs_imm_offset);
-			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[6], movabs_imm_offset);
+			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[4], movabs_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[7], movabs_imm_offset);
 			//Weijie:
 			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
