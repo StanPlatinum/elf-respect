@@ -9,11 +9,11 @@
 int  max( int f1, int f2, int f3, char * ptr )
 {
 	//CFICheck(0);
-
 	int  max = 0 ;
 	if( f1 >= f2 && f1 >= f3 )
 	{
 		max = f1 ;
+	puts("test4.45");
 		*ptr = '|' ;
 	}
 	else if( f2 > f3 )
@@ -58,9 +58,17 @@ void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 
 size_t my_strlen(const char *str)
 {
+	/*
 	const char *s;
 	for (s = str; *s; ++s);
 	return (s - str);
+	*/
+	if ( (str == NULL) || (*str == '\0') ) {
+		return 0;
+	}
+	else {
+		return my_strlen(str+1)+1;
+	}
 }
 
 
@@ -94,12 +102,12 @@ void  print_traceback( char ** traceback, char *seq_1, char *seq_2 )
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
 
-	//PrintDebugInfo("    ");
+	puts("    ");
 	for( int j = 0; j < L1; j++ )
 	{
 		//PrintDebugInfo("%c ", seq_1[ j ]);
 	}
-	//PrintDebugInfo("\n");
+	puts("\n");
 
 	for( int i = 0; i <= L2; i++ )
 	{
@@ -161,7 +169,7 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	int        k = 0, x = 0, y = 0;
 
 	int        fU, fD, fL ;
-	char       ptr, nuc ;
+	char       ptr = NULL, nuc ;
 	int        i = 0, j = 0;
 
 	const int  a =  2;   // Match
@@ -180,6 +188,7 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	//Weijie: no memset
 	char attach[2];
 
+	int temp = 0;
 	//Weijie:
 	//L1 = 8;
 	//L2 = 7;
@@ -189,10 +198,8 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	for( i = 1; i <= L2; i++ )
 	{
 		for( j = 1; j <= L1; j++ )
-
 		{
 			nuc = seq_1[ j-1 ] ;
-
 			switch( nuc )
 			{
 				case 'A':  x = 0 ;  break ;
@@ -200,9 +207,7 @@ int nw_align(                  // Needleman-Wunsch algorithm
 				case 'G':  x = 2 ;  break ;
 				case 'T':  x = 3 ;
 			}
-
 			nuc = seq_2[ i-1 ] ;
-
 			switch( nuc )
 			{
 				case 'A':  y = 0 ;  break ;
@@ -210,15 +215,19 @@ int nw_align(                  // Needleman-Wunsch algorithm
 				case 'G':  y = 2 ;  break ;
 				case 'T':  y = 3 ;
 			}
-
 			fU = F[ i-1 ][ j ] - d ;
 			fD = F[ i-1 ][ j-1 ] + s[ x ][ y ] ;
 			fL = F[ i ][ j-1 ] - d ;
-
-			F[ i ][ j ] = max( fU, fD, fL, &ptr ) ;
+			puts("test4.4");
+			temp = max( fU, fD, fL, &ptr ) ;
+			puts("test4.5");
+			F[ i ][ j ] = temp;
+			puts("test4.6");
 			traceback[ i ][ j ] =  ptr ;
 		}
 	}
+
+
 	i-- ; j-- ;
 	while( i > 0 || j > 0 )
 	{
@@ -277,8 +286,15 @@ void Ecall_nw(
 	int  d = 2 ;                 /* gap penalty */
 
 	puts("test0.6");
-	int  L1 = my_strlen(seq_1);
-	int  L2 = my_strlen(seq_2);
+	puts(seq_2);
+
+	unsigned long long L1 = my_strlen(seq_1);
+	unsigned long long L2 = my_strlen(seq_2);
+	//Weijie:
+	puts("L2:");
+	char rvl2[9];
+	my_itoa(L2, rvl2, 10);
+	puts(rvl2);
 
 	puts("test0.7");
 	//Weijie:
@@ -289,17 +305,11 @@ void Ecall_nw(
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
 	
 	puts("test0.72");
-	//Weijie:
-	puts("L2:");
-	char rvl2[8];
-	char *rva = rvl2;
-	rva = my_itoa(L2, rva, 10);
-	puts(rva);
-
 	for( int i = 0; i <= L2; i++ ){
+		puts("entering loop");
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
-		//Weijie:
-		puts("return value of malloc:");
+		//Weijie"
+		if (F[i] == NULL)	puts("malloc failed!");
 		//char rvmalloc[8];
 		//char *rva = rvmalloc;
 		//rva = my_itoa(F[i], rva, 10);

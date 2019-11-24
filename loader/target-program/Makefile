@@ -1,8 +1,6 @@
 CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig
 #CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-
-#CC4AS = /home/weijliu/SGX-Shield/llvm/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC4AS = /home/liuweijie/llvm-assembler/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
+#CC4AS = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
 #CXX = clang++
 
@@ -25,10 +23,15 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-ASM_OBJS = lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
+DEBUG_OBJ = lib/my_itoa.o
+
+ASM_OBJS = $(DEBUG_OBJ) lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
 all: $(MUSL_LIBC) $(TARGET_NAME)
 	mv $(TARGET_NAME) ../program
+
+$(DEBUG_OBJ): lib/my_itoa.c
+	$(CC) -c $< -o $@
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
@@ -55,8 +58,8 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
 
 enclave_main.o: $(TARGET_NAME).c enclave.h
-	$(CC) -S -I. -o enclave_main.s $<
-	$(CC) -c enclave_main.s -o $@
+	$(CC) -S -I. -o $(TARGET_NAME).s $<
+	$(CC) -c $(TARGET_NAME).s -o $@
 
 clean:
 	rm -f *.s *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME)
