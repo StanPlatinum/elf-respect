@@ -9,11 +9,11 @@
 int  max( int f1, int f2, int f3, char * ptr )
 {
 	//CFICheck(0);
+	puts("max");
 	int  max = 0 ;
 	if( f1 >= f2 && f1 >= f3 )
 	{
 		max = f1 ;
-	puts("test4.45");
 		*ptr = '|' ;
 	}
 	else if( f2 > f3 )
@@ -31,18 +31,13 @@ int  max( int f1, int f2, int f3, char * ptr )
 
 void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
-	puts("test1");
 	//Weijie:
 	//unsigned int magic_in_dpm = 0;
-
 	F[ 0 ][ 0 ] =  0 ;
 
 	puts("test1.5");
 	
 	traceback[ 0 ][ 0 ] = 'n' ;
-
-	puts("test2");
-	
 	int i=0, j=0;
 	for( j = 1; j <= L1; j++ )
 	{
@@ -76,13 +71,10 @@ void print_matrix( int ** F, char *seq_1, char *seq_2 )
 {
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
-	//PrintDebugInfo("        ");
 	for( int j = 0; j < L1; j++ )
 	{
 		//PrintDebugInfo("%c   ", seq_1[ j ]);
 	}
-	//PrintDebugInfo("\n");
-
 	for( int i = 0; i <= L2; i++ )
 	{
 		if( i > 0 )
@@ -93,7 +85,6 @@ void print_matrix( int ** F, char *seq_1, char *seq_2 )
 		{
 			//PrintDebugInfo("%d ", F[ i ][ j ]);
 		}
-		//PrintDebugInfo("\n");
 	}
 }
 
@@ -101,13 +92,10 @@ void  print_traceback( char ** traceback, char *seq_1, char *seq_2 )
 {
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
-
-	puts("    ");
 	for( int j = 0; j < L1; j++ )
 	{
 		//PrintDebugInfo("%c ", seq_1[ j ]);
 	}
-	puts("\n");
 
 	for( int i = 0; i <= L2; i++ )
 	{
@@ -140,6 +128,7 @@ char *my_strrev(char *str)
 	
 char *strncat(char *dst, const char *src, size_t n)
 {
+	puts("ncat");
 	if (n != 0) {
 		char *d = dst;
 		const char *s = src;
@@ -169,7 +158,7 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	int        k = 0, x = 0, y = 0;
 
 	int        fU, fD, fL ;
-	char       ptr = NULL, nuc ;
+	char       ptr, nuc;
 	int        i = 0, j = 0;
 
 	const int  a =  2;   // Match
@@ -192,8 +181,6 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	//Weijie:
 	//L1 = 8;
 	//L2 = 7;
-
-	puts("test4");
 
 	for( i = 1; i <= L2; i++ )
 	{
@@ -218,23 +205,21 @@ int nw_align(                  // Needleman-Wunsch algorithm
 			fU = F[ i-1 ][ j ] - d ;
 			fD = F[ i-1 ][ j-1 ] + s[ x ][ y ] ;
 			fL = F[ i ][ j-1 ] - d ;
-			puts("test4.4");
 			temp = max( fU, fD, fL, &ptr ) ;
-			puts("test4.5");
 			F[ i ][ j ] = temp;
-			puts("test4.6");
 			traceback[ i ][ j ] =  ptr ;
 		}
 	}
 
-
 	i-- ; j-- ;
 	while( i > 0 || j > 0 )
 	{
+
 		switch( traceback[ i ][ j ] )
 		{
-
 			case '|' :      //seq_1_al += '-' ;
+				puts("|");
+
 				strncat(seq_1_al, "-", 1);
 				//seq_2_al += seq_2[ i-1 ] ;
 				attach[0] = seq_2[i-1];
@@ -244,6 +229,8 @@ int nw_align(                  // Needleman-Wunsch algorithm
 				break ;
 
 			case '\\':      //seq_1_al += seq_1[ j-1 ] ;
+				puts("\\");
+
 				attach[0] = seq_1[j-1];
 				attach[1] = '\0';
 				strncat(seq_1_al, attach, 1);
@@ -255,19 +242,19 @@ int nw_align(                  // Needleman-Wunsch algorithm
 				break ;
 
 			case '-' :      //seq_1_al += seq_1[ j-1 ] ;
+				puts("-");
+
 				attach[0] = seq_1[j-1];
-
-
 
 				attach[1] = '\0';
 				strncat(seq_1_al, attach, 1);
 				//seq_2_al += '-' ;
 				strncat(seq_2_al, "-", 1);
 				j-- ;
+
 		}
 		k++ ;
 	}
-
 	/* reverse seq_als, modified by Weijie. */
 	char *tmp1, *tmp2;
 	tmp1 = my_strrev(seq_1_al);
@@ -285,9 +272,6 @@ void Ecall_nw(
 {
 	int  d = 2 ;                 /* gap penalty */
 
-	puts("test0.6");
-	puts(seq_2);
-
 	unsigned long long L1 = my_strlen(seq_1);
 	unsigned long long L2 = my_strlen(seq_2);
 	//Weijie:
@@ -296,7 +280,6 @@ void Ecall_nw(
 	my_itoa(L2, rvl2, 10);
 	puts(rvl2);
 
-	puts("test0.7");
 	//Weijie:
 	//L1 = 8;
 	//L2 = 7;
@@ -306,7 +289,6 @@ void Ecall_nw(
 	
 	puts("test0.72");
 	for( int i = 0; i <= L2; i++ ){
-		puts("entering loop");
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
 		//Weijie"
 		if (F[i] == NULL)	puts("malloc failed!");
@@ -316,14 +298,11 @@ void Ecall_nw(
 		//puts(rva);
 	}
 	// Traceback matrix
-	puts("test0.75");
 	
 	char ** traceback = (char **)malloc( (L2 + 1) * sizeof(char *));
-	puts("test0.78");
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
-	puts("test0.8");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
@@ -331,7 +310,6 @@ void Ecall_nw(
 	seq_1_al[0] = '\0';
 	seq_2_al[0] = '\0';
 	
-	puts("test3");
 	// Create alignment
 	int rv;
 	rv = nw_align( F, traceback, seq_1, seq_2, seq_1_al, seq_2_al, d );
@@ -349,9 +327,7 @@ void enclave_main(){
 	puts("test0");
 	char seq_2[] = "ACGTCGT";
 
-	puts(seq_1);
 	//CFICheck(0);
-	puts("test0.5");
 	
 	char seq_1_al[50];
 	char seq_2_al[50];
