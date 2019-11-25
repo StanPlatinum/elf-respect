@@ -64,6 +64,7 @@ endif
 ######## SGX SDK Settings ########
 
 SGX_SDK ?= /opt/intel/sgxsdk
+#SGX_MODE ?= SIM
 SGX_MODE ?= HW
 SGX_DEBUG ?= 1
 SGX_ARCH ?= x64
