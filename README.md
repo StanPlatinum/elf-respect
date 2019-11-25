@@ -6,7 +6,7 @@ Although SGX can provide strong isolation and integrity assurance, code privacy 
 
 So in this project we are aiming at a new problem: how service providers build a Practical Privacy-preserving TEE that can ensure the privacy of both data providers and code providers, i.e., a solution that enables a user to verify whether a remote service (such as MLasS) has the properties of confidentiality (and integrity) without touching the binary/source code.
 
-We also provide a compiling tool set which is applicable for the verification.
+We also provide a compiling tool set (currently supporting C code) which is applicable in the confidential verification/attestation (for the code producer).
 
 ***
 
