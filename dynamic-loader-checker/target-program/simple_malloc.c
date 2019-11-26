@@ -5,14 +5,12 @@
 #include "enclave.h"
 
 //#include "CFICheck.h"
-#include "CFICheck.c"
+//#include "CFICheck.c"
 
 void enclave_main()
 {
-	puts("test0");
 	//CFICheck(0);
-	char *test = "simple";
-	puts(test);
+	puts("test0");
 	//Weijie: the magic must be initialized
 	unsigned long magic = 0;
 	char* buf = (char*)malloc(0x80);

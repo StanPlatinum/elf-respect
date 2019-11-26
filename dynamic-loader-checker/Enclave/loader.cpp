@@ -980,7 +980,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	cs_insn *insn;
 	size_t count;
 	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
-		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		//PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
 	}
 	//Weijie: must add option
@@ -991,7 +991,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	if (count) {
 		size_t j;
 		for (j = 0; j < count; j++) {
-			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 		}
 		cs_free(insn, count);
 	} else
@@ -1062,13 +1062,13 @@ void disasm_whole()
 			
 			//Weeijie: disasm all symbols
 			if (textSize > 0){
-				dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+				//dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 				//PrintDebugInfo("-----setting params-----\n");
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				//dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}

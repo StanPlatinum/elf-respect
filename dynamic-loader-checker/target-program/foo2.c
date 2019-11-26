@@ -2,12 +2,8 @@
 
 #include "enclave.h"
 
-//#include "CFICheck.c"
-#include "CFICheck.h"
-
 int fun()
 {
-	CFICheck(0);
     //puts("----------1 in fun----------");
     return 1;
 }

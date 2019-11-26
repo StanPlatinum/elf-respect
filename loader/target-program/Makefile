@@ -5,11 +5,21 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #CXX = clang++
 
 #TARGET_NAME = simple_malloc
-TARGET_NAME = simple_loop
+#TARGET_NAME = simple_loop
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = hardware
 #TARGET_NAME = nw
 #TARGET_NAME = foo2
+
+#TARGET_NAME = bm_hello
+#TARGET_NAME = bm_malloc_and_sort
+#TARGET_NAME = bm_clock
+#TARGET_NAME = bm_malloc_magic
+#TARGET_NAME = bm_malloc_memalign_magic
+#TARGET_NAME = bm_memcpy
+#TARGET_NAME = bm_memchr
+#TARGET_NAME = bm_sprintf
+TARGET_NAME = bm_sort_and_binsearch
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
