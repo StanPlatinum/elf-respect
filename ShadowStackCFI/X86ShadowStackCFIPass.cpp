@@ -1,4 +1,7 @@
 #include "X86.h"
+#include "X86InstrBuilder.h"
+#include "X86InstrInfo.h"
+#include "X86Subtarget.h"
 #include "llvm/Pass.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFunction.h"
@@ -15,12 +18,10 @@
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/ADT/Statistic.h"
 #include "llvm/Support/Debug.h"
+#include "llvm/ADT/Statistic.h"
 #include "llvm/MC/MCContext.h"
-#include "X86InstrBuilder.h"
-#include "X86InstrInfo.h"
-#include "X86Subtarget.h"
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -71,7 +72,18 @@ void printMachineInstr(MachineInstr &MI, int IorB)
     for (int i = 0; i < MI.getNumOperands(); i++)
     {
         MachineOperand MO = MI.getOperand(i);
-        outs() << " " << MI.getOperand(i) << " isBlockAddress " << MO.isBlockAddress() << " isCFIIndex " << MO.isCFIIndex() << " isCImm " << MO.isCImm() << " isCPI " << MO.isCPI() << " isFI " << MO.isFI() << " isFPImm " << MO.isFPImm() << " isGlobal " << MO.isGlobal() << " isImm " << MO.isImm() << " isIntrinsicID " << MO.isIntrinsicID() << " isJTI " << MO.isJTI() << " isMBB " << MO.isMBB() << " isMCSymbol " << MO.isMCSymbol() << " isMetadata " << MO.isMetadata() << " isPredicate " << MO.isPredicate() << " isReg " << MO.isReg() << " isRegLiveOut " << MO.isRegLiveOut() << " isRegMask " << MO.isRegMask() << " isSymbol " << MO.isSymbol() << " isTargetIndex " << MO.isTargetIndex()<< "\n";
+        outs() << " " << MI.getOperand(i);
+        if (MO.isReg())
+        {
+            outs() << " " << MO.isImplicit() << " " << MI.hasRegisterImplicitUseOperand(MO.getReg()) << "\n";
+        }
+        else
+        {
+            outs() << "\n";
+        }
+        
+        
+        // outs() << " " << MI.getOperand(i) << " isBlockAddress " << MO.isBlockAddress() << " isCFIIndex " << MO.isCFIIndex() << " isCImm " << MO.isCImm() << " isCPI " << MO.isCPI() << " isFI " << MO.isFI() << " isFPImm " << MO.isFPImm() << " isGlobal " << MO.isGlobal() << " isImm " << MO.isImm() << " isIntrinsicID " << MO.isIntrinsicID() << " isJTI " << MO.isJTI() << " isMBB " << MO.isMBB() << " isMCSymbol " << MO.isMCSymbol() << " isMetadata " << MO.isMetadata() << " isPredicate " << MO.isPredicate() << " isReg " << MO.isReg() << " isRegLiveOut " << MO.isRegLiveOut() << " isRegMask " << MO.isRegMask() << " isSymbol " << MO.isSymbol() << " isTargetIndex " << MO.isTargetIndex()<< "\n";
     }
     outs() << "\n";
 }
@@ -405,7 +417,8 @@ namespace {
                 }
             }
         }
-
+        
+        //在函数入口进行ShadowStack插桩
         void insertSSEntry(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL)
         { 
             auto MBBI = MBB.begin();
@@ -423,6 +436,7 @@ namespace {
             BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64mr)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addReg(X86::R10);
         }
 
+        //在函数出口进行ShadowStack插桩
         void insertSSRet(const TargetInstrInfo *TII, MachineBasicBlock &MBB, MachineInstr &MI, MachineBasicBlock &TrapBB)
         {
             const DebugLoc &DL = MI.getDebugLoc();
@@ -443,12 +457,14 @@ namespace {
             MBB.addSuccessor(&TrapBB);
         }
 
+        //在leaf函数入口进行ShadowStack插桩
         void insertSSEntrySimple(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL, MCPhysReg FreeRegister)
         {
             // mov REG, [rsp]
             addDirectMem(BuildMI(MBB, MBB.begin(), DL, TII->get(X86::MOV64rm)).addDef(FreeRegister), X86::RSP);
         }
 
+        //在leaf函数出口进行ShadowStack插桩
         void insertSSRetSimple(const TargetInstrInfo *TII, MachineBasicBlock &MBB, MachineInstr &MI, MachineBasicBlock &TrapBB, MCPhysReg FreeRegister)
         {
             const DebugLoc &DL = MI.getDebugLoc();
@@ -555,7 +571,7 @@ namespace {
             return SimpleMFReg;
         }
 
-        //插入shadowstack指令，目前尚未添加ret地址更改后的处理，ss首地址写为0x20000
+        //插入shadowstack指令，目前尚未添加ret地址更改后的处理，ss首地址写为0x2FFFFFFFFFFFFFFF
         bool insertShadowStackInst(MachineFunction &MF)
         {
             if (!checkSSMF(MF))
@@ -605,6 +621,7 @@ namespace {
             }
         }
         
+        //被rewriteCFIFun调用，检查是否有IR PASS插入了CFICheck
         bool checkCFIFun(MachineInstr &MI)
         {
             if (MI.getOpcode() == CALL64pcrel32)
@@ -620,7 +637,7 @@ namespace {
             }
         }
 
-        //修改地址检查Fun的参数
+        //修改地址检查Fun的参数，此函数需要同IR PASS进行配合使用
         bool rewriteCFIFun(MachineFunction &MF)
         {
             for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
@@ -719,7 +736,7 @@ namespace {
             return true;
         }
 
-        //获取exit函数的GlobaValue指针
+        //获取exit函数的GlobaValue指针（未使用）
         void getExitGV(MachineFunction &MF)
         {
             for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
@@ -760,34 +777,32 @@ namespace {
           return true;
         }
 
-        //找到mov指令并插桩,检查mov目标是否合法，不合法则跳转(使用)
-        bool movInsert(MachineFunction &Func)
+        //找到store指令并插桩,检查store目标是否合法，不合法则跳转
+        bool movInsert(MachineFunction &MF)
         {
             bool hasStore = false;
             const TargetInstrInfo *TII;
-            MachineRegisterInfo *MRI;
             // printf("\nX86myMov work\n");
             // printf("Func: %s\n", Func.getName().data());
 
-            TII = Func.getSubtarget().getInstrInfo();
-            MRI = &Func.getRegInfo();
-            MachineBasicBlock &MBBf = Func.front();
+            TII = MF.getSubtarget().getInstrInfo();
+            MachineBasicBlock &MBBf = MF.front();
             const MachineBasicBlock *NonEmpty = MBBf.empty() ? MBBf.getFallThrough() : &MBBf;
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
 
-            MachineBasicBlock* Trap = Func.CreateMachineBasicBlock();
+            MachineBasicBlock* Trap = MF.CreateMachineBasicBlock();
             BuildMI(Trap, DL, TII->get(X86::POPF64));
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RAX);
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RBX);
             BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
             BuildMI(Trap, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
-            Func.push_back(Trap);
+            MF.push_back(Trap);
 
-            for (MachineFunction::iterator MBB = Func.begin(), MBB_end = Func.end(); MBB != MBB_end; MBB++)
+            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
             {
-                for (MachineBasicBlock::iterator MBBI = (*MBB).begin(), MBBI_end = (*MBB).end(); MBBI != MBBI_end; MBBI++)
+                for (auto MII = (*MBBI).begin(); MII != (*MBBI).end(); MII++)
                 {
-                    MachineInstr &MI = *MBBI;
+                    MachineInstr &MI = *MII;
                     // printf( "opcode = %d, operandNo = %d, mayStore = %d, memoryNo = %d\n", MI.getOpcode(), MI.getNumOperands(), MI.mayStore(), MI.getNumMemOperands());
                     
                     if (MI.mayStore() == false)
@@ -816,48 +831,97 @@ namespace {
                                 continue;
                             }
 
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RBX);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::PUSHF64));
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RBX);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSHF64));
                             if (Disp.isImm())
                             {
                                 //printMachineInstr(MI, 0);
-                                BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
+                                BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
                       .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addImm(Disp.getImm()).addReg(SegmentReg.getReg());
                             }
                             else
                             {
                                 // outs() << "!!!!!!!!!!!!!!\n!!!!!!!!!!\n!!!!!!!!!!\n";
                                 // printMachineInstr(MI, 0);
-                                BuildMI(*MBB, *MBBI, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
+                                BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
                       .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addGlobalAddress(Disp.getGlobal()).addReg(SegmentReg.getReg());
                             }
                             
                             
                             //检查下界，如果rbx>rax，则exit
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x3FFFFFFFFFFFFFFF);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x3FFFFFFFFFFFFFFF);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
                             
                             //检查上界，如果rbx<rax，则exit
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x4FFFFFFFFFFFFFFF);BuildMI(*MBB, *MBBI, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x4FFFFFFFFFFFFFFF);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
 
-                            MBB->addSuccessor(Trap);
+                            MBBI->addSuccessor(Trap);
 
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::POPF64));
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RAX);
-                            BuildMI(*MBB, *MBBI, DL, TII->get(X86::POP64r)).addReg(RBX);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::POPF64));
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(RAX);
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(RBX);
                         }
                     }
                 }
             }
             if (hasStore == false)
             {
-                Func.erase(Trap);
+                MF.erase(Trap);
             }
             
             return hasStore;
+        }
+
+        //找到修改rsp指令并插桩,检查rsp被修改后是否合法，不合法则跳转
+        bool rspInsert(MachineFunction &MF)
+        {
+            bool hasRsp = false;
+            const TargetInstrInfo *TII;
+            TII = MF.getSubtarget().getInstrInfo();
+            MachineBasicBlock &MBBf = MF.front();
+            const MachineBasicBlock *NonEmpty = MBBf.empty() ? MBBf.getFallThrough() : &MBBf;
+            const DebugLoc &DL = NonEmpty->front().getDebugLoc();
+
+            MachineBasicBlock* Trap = MF.CreateMachineBasicBlock();
+            BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
+            BuildMI(Trap, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
+            MF.push_back(Trap);
+
+            for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
+            {
+                for (auto MII = MBBI->begin(); MII != MBBI->end(); MII++)
+                {
+                    if (!(MII->readsWritesVirtualRegister(X86::RSP).second && !MII->hasRegisterImplicitUseOperand(X86::RSP)))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        hasRsp = true;
+                    }
+                    MII++;
+                    //检查下界，如果imm>rsp，则exit
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64ri8)).addReg(X86::RSP).addImm(0x5FFFFFFFFFFFFFFF);
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
+                    
+                    //检查上界，如果imm<rsp，则exit
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64ri8)).addReg(X86::RSP).addImm(0x6FFFFFFFFFFFFFFF);
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
+
+                    MBBI->addSuccessor(Trap);
+                    MII--;
+                }
+            }
+            if (hasRsp == false)
+            {
+                MF.erase(Trap);
+            }
+            
+            return hasRsp;
         }
 
         void printEntrylabel(const Module &M)
@@ -882,12 +946,13 @@ namespace {
             }
             file.close();
         }
-
+        
+        //获取CFICheck和exit函数的GlobaValue指针
         void findCFICheckandExit(const Module &M)
         {
             for (auto FI = M.begin(); FI != M.end(); FI++)
                 {
-                    if (FI->getName().str() == "CFICheck")
+                    if (FI->getName().str().find("CFICheck") != string::npos)
                     {
                         const Function &F = *FI;
                         CFICheckGV = &F;
@@ -903,24 +968,15 @@ namespace {
                     }
                 }
         }
-
+        
         virtual bool runOnMachineFunction(MachineFunction &MF) {
-            // if (MF.getName() == "CFICheck")
-            // {
-            //     getExitGV(MF);
-            //     const Function &F = MF.getFunction();
-            //     CFICheckGV = &F;
-            // }
-            bool bm = false, bs = false, bc = false;
-            if (needInsertCFI == true)
+            bool bm = false, bs = false, bc = false, br = false;
+            if (needInsertCFI == true && entryLabelPrinted == false)
             {
-                if (entryLabelPrinted == false)
-                {
-                    const Function &FF = MF.getFunction();
-                    const Module &M = *FF.getParent();
-                    printEntrylabel(M);
-                    entryLabelPrinted = true;
-                }
+                const Function &FF = MF.getFunction();
+                const Module &M = *FF.getParent();
+                printEntrylabel(M);
+                entryLabelPrinted = true;
             }
             
             if (hasExit == false || (hasCFICheck == false && needInsertCFI == true))
@@ -934,6 +990,7 @@ namespace {
             {
                 bm = movInsert(MF);
                 bs = insertShadowStackInst(MF);
+                br = rspInsert(MF);
             }
             else
             {
@@ -949,7 +1006,7 @@ namespace {
                 outs() << "Cannot find CFICheck.\n";
             }
             
-            return bm || bc || bs;
+            return bm || bc || bs || br;
         }
     };
 }
