@@ -48,6 +48,18 @@ $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
 
+LIBNBENCH = nbench/nbench.a
+nben: $(TARGET_NAME) $(LIBNBENCH)
+	cp nbench/*.o objs
+	ls objs/*.o > list
+	cat list | ./tools/linker nben
+	mv nben ../
+	rm $(TARGET_NAME)
+
+$(LIBNBENCH):
+	$(MAKE) -C nbench nbench.a
+
+
 $(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
 	cp lib/*.o objs
 	ls objs/*.o > list

@@ -5,7 +5,7 @@
 
 char buf[1024] = {0};
 
-#include <enclave.h>
+#include "enclave.h"
 
 #include "CFICheck.c"
 

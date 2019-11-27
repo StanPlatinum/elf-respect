@@ -564,7 +564,8 @@ static unsigned int binsearch(uint32_t k)
 }
 
 char buf[32] = {0};
-#include <enclave.h>
+
+#include "enclave.h"
 
 #include "CFICheck.c"
 

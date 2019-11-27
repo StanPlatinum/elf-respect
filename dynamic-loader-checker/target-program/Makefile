@@ -26,8 +26,8 @@ CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-add
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
-#TARGET_NAME = bm_sort_and_binsearch
-TARGET_NAME = bm_sprintf
+#TARGET_NAME = bm_sprintf
+TARGET_NAME = bm_sort_and_binsearch
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -57,7 +57,20 @@ $(STACK_OBJ): lib/stack.c
 
 $(DEBUG_OBJ): lib/my_itoa.c
 	$(CC4AS) -c $< -o $@
+	
 
+LIBNBENCH = nbench/nbench.a
+nben: $(TARGET_NAME).bin $(LIBNBENCH)
+	cp nbench/*.o objs
+	ls objs/*.o > list
+	cat list | ./tools/linker nben
+	mv nben ../
+	rm $(TARGET_NAME).bin
+
+$(LIBNBENCH):
+	$(MAKE) -C nbench nbench.a
+
+				 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
