@@ -1,10 +1,10 @@
-# Privacy-preserving TEE protoype on a service-oriented environment
+# Privacy-preserving TEE protoype on a Service-Oriented Environment
 
 ***
 
 Although SGX can provide strong isolation and integrity assurance, code privacy may raise some concerns when using it in cloud environments.
 
-So in this project we are aiming at a new problem: how service providers build a Practical Privacy-preserving TEE that can ensure the privacy of both data providers and code providers, i.e., a solution that enables a user to verify whether a remote service (such as MLasS) has the properties of confidentiality (and integrity) without touching the binary/source code.
+So in this project we are aiming at a new problem: how service providers build a Practical TEE that can ensure the privacy of both data providers and code providers, i.e., a solution that enables a user to verify whether a remote service (such as MLasS) has the properties of confidentiality (and integrity) **WITHOUT** touching the binary/source code.
 
 We also provide a compiling tool set (currently supporting C code) which is applicable in the confidential verification/attestation (for the code producer).
 
