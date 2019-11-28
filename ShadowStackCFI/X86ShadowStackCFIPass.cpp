@@ -72,16 +72,7 @@ void printMachineInstr(MachineInstr &MI, int IorB)
     for (int i = 0; i < MI.getNumOperands(); i++)
     {
         MachineOperand MO = MI.getOperand(i);
-        outs() << " " << MI.getOperand(i);
-        if (MO.isReg())
-        {
-            outs() << " " << MO.isImplicit() << " " << MI.hasRegisterImplicitUseOperand(MO.getReg()) << "\n";
-        }
-        else
-        {
-            outs() << "\n";
-        }
-        
+        outs() << "\t" << MI.getOperand(i) << "\t" <<MO.isReg() << "\t" << MO.isImm() << "\n";
         
         // outs() << " " << MI.getOperand(i) << " isBlockAddress " << MO.isBlockAddress() << " isCFIIndex " << MO.isCFIIndex() << " isCImm " << MO.isCImm() << " isCPI " << MO.isCPI() << " isFI " << MO.isFI() << " isFPImm " << MO.isFPImm() << " isGlobal " << MO.isGlobal() << " isImm " << MO.isImm() << " isIntrinsicID " << MO.isIntrinsicID() << " isJTI " << MO.isJTI() << " isMBB " << MO.isMBB() << " isMCSymbol " << MO.isMCSymbol() << " isMetadata " << MO.isMetadata() << " isPredicate " << MO.isPredicate() << " isReg " << MO.isReg() << " isRegLiveOut " << MO.isRegLiveOut() << " isRegMask " << MO.isRegMask() << " isSymbol " << MO.isSymbol() << " isTargetIndex " << MO.isTargetIndex()<< "\n";
     }
@@ -716,6 +707,7 @@ namespace {
                         MCPhysReg reg = MI.getOperand(0).getReg();
                         //mov RDI, reg
                         MachineInstr &tmpMI = *BuildMI(MBB, MII, DL, TII->get(MOV64rr)).addReg(RDI).addReg(reg);
+                        //callq CFICheck
                         MachineInstr &tmpMI1 = *BuildMI(MBB, MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(CFICheckGV);
                     }
                     if (MI.getOpcode() == CALL64m)
@@ -728,6 +720,7 @@ namespace {
 
                         //mov RDI, [reg]
                         MachineInstr &tmpMI = *BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addReg(RDI).addReg(reg).addImm(1).addReg(0).addImm(imm).addReg(0);
+                        //callq CFICheck
                         MachineInstr &tmpMI1 = *BuildMI(MBB, MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(CFICheckGV);
                         
                     }
@@ -782,8 +775,6 @@ namespace {
         {
             bool hasStore = false;
             const TargetInstrInfo *TII;
-            // printf("\nX86myMov work\n");
-            // printf("Func: %s\n", Func.getName().data());
 
             TII = MF.getSubtarget().getInstrInfo();
             MachineBasicBlock &MBBf = MF.front();
@@ -791,10 +782,15 @@ namespace {
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
 
             MachineBasicBlock* Trap = MF.CreateMachineBasicBlock();
+            //popfq
             BuildMI(Trap, DL, TII->get(X86::POPF64));
+            //popq %rax
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RAX);
+            //popq %rbx
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RBX);
+            //movl $-1, %edi
             BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
+            //callq exit
             BuildMI(Trap, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
             MF.push_back(Trap);
 
@@ -802,9 +798,7 @@ namespace {
             {
                 for (auto MII = (*MBBI).begin(); MII != (*MBBI).end(); MII++)
                 {
-                    MachineInstr &MI = *MII;
-                    // printf( "opcode = %d, operandNo = %d, mayStore = %d, memoryNo = %d\n", MI.getOpcode(), MI.getNumOperands(), MI.mayStore(), MI.getNumMemOperands());
-                    
+                    MachineInstr &MI = *MII;                    
                     if (MI.mayStore() == false)
                     {
                         continue;
@@ -824,46 +818,59 @@ namespace {
                             MachineOperand &IndexReg = MI.getOperand(MemOp + 2);
                             MachineOperand &Disp = MI.getOperand(MemOp + 3);
                             MachineOperand &SegmentReg = MI.getOperand(MemOp + 4);
-                            
+                            //printMachineInstr(MI, 0);
+
                             //检查是否为全局指针
                             if (!Disp.isImm())
                             {
                                 continue;
                             }
 
+                            //pushq %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RBX);
+                            //pushq %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
+                            //pushfq
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSHF64));
                             if (Disp.isImm())
                             {
-                                //printMachineInstr(MI, 0);
-                                BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
-                      .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addImm(Disp.getImm()).addReg(SegmentReg.getReg());
+                                //leaq , %rax
+                                MachineInstr &tmpMI = *BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg()).addImm(Scale.getImm()).addReg(IndexReg.getReg()).addImm(Disp.getImm()).addReg(SegmentReg.getReg());
+                                //printMachineInstr(tmpMI, 1);
                             }
                             else
                             {
-                                // outs() << "!!!!!!!!!!!!!!\n!!!!!!!!!!\n!!!!!!!!!!\n";
-                                // printMachineInstr(MI, 0);
-                                BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg())
-                      .addImm(Scale.getImm()).addReg(IndexReg.getReg()).addGlobalAddress(Disp.getGlobal()).addReg(SegmentReg.getReg());
+                                //leaq , %rax
+                                MachineInstr &tmpMI1 = *BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg()).addImm(Scale.getImm()).addReg(IndexReg.getReg()).addGlobalAddress(Disp.getGlobal()).addReg(SegmentReg.getReg());
+                                //printMachineInstr(tmpMI1, 1);
                             }
                             
                             
                             //检查下界，如果rbx>rax，则exit
+                            //movq $0x3FFFFFFFFFFFFFFF, %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x3FFFFFFFFFFFFFFF);
+                            //cmpq %rbx, %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
+                            //ja trap
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
                             
                             //检查上界，如果rbx<rax，则exit
+                            //movq $0x4FFFFFFFFFFFFFFF, %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x4FFFFFFFFFFFFFFF);
+                            //cmpq %rbx, %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
+                            //jb trap
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
 
-                            MBBI->addSuccessor(Trap);
-
+                            
+                            //popfq
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::POPF64));
+                            //popq %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(RAX);
+                            //popq %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(RBX);
+                            
+                            MBBI->addSuccessor(Trap);
                         }
                     }
                 }
@@ -887,7 +894,11 @@ namespace {
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
 
             MachineBasicBlock* Trap = MF.CreateMachineBasicBlock();
-            BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
+            //popq %rax
+            BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(X86::RAX);
+            //movq $-1, %edi
+            BuildMI(Trap, DL, TII->get(X86::MOV32ri)).addReg(X86::EDI).addImm(0xFFFFFFFF);
+            //callq exit
             BuildMI(Trap, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(exitGV);
             MF.push_back(Trap);
 
@@ -895,7 +906,7 @@ namespace {
             {
                 for (auto MII = MBBI->begin(); MII != MBBI->end(); MII++)
                 {
-                    if (!(MII->readsWritesVirtualRegister(X86::RSP).second && !MII->hasRegisterImplicitUseOperand(X86::RSP)))
+                    if (!((MII->readsWritesVirtualRegister(X86::RSP).second && !MII->hasRegisterImplicitUseOperand(X86::RSP)) || (MII->readsWritesVirtualRegister(X86::ESP).second && !MII->hasRegisterImplicitUseOperand(X86::ESP))))
                     {
                         continue;
                     }
@@ -903,17 +914,40 @@ namespace {
                     {
                         hasRsp = true;
                     }
-                    MII++;
-                    //检查下界，如果imm>rsp，则exit
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64ri8)).addReg(X86::RSP).addImm(0x5FFFFFFFFFFFFFFF);
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
                     
+                    bool isMovRbpRsp = ((MII->getOpcode() == X86::MOV64rr) ? (MII->getOperand(1).getReg() == X86::RBP) : false);
+                    MCPhysReg checkReg = isMovRbpRsp ? X86::RBP : X86::RSP;
+                    if (!isMovRbpRsp)
+                    {
+                        MII++;
+                    }
+                    //pushq %rax
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
+
+                    //检查下界，如果imm>rsp，则exit
+                    //movq $0x5FFFFFFFFFFFFFFF, %rax
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RAX).addImm(0x5FFFFFFFFFFFFFFF);
+                    //cmpq %rax, %rsp
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(checkReg).addReg(X86::RAX);
+                    //ja trap
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
+
                     //检查上界，如果imm<rsp，则exit
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64ri8)).addReg(X86::RSP).addImm(0x6FFFFFFFFFFFFFFF);
+                    //movq $0x6FFFFFFFFFFFFFFF, %rax
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RAX).addImm(0x6FFFFFFFFFFFFFFF);
+                    //cmpq %rax, %rsp
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(checkReg).addReg(X86::RAX);
+                    //jb trap
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
 
+                    //popq %rax
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(X86::RAX);
+
                     MBBI->addSuccessor(Trap);
-                    MII--;
+                    if (!isMovRbpRsp)
+                    {
+                        MII--;
+                    }
                 }
             }
             if (hasRsp == false)

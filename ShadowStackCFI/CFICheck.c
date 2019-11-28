@@ -1,10 +1,10 @@
 #include <stdio.h>
-#include "CFICheck.h"
+#include <stdlib.h>
 
 void CFICheck(unsigned long long target)
 {
-	unsigned long long *CFICheckAddressPtr = 0x1FFFFFFFFFFFFFFF;
-	int CFICheckAddressNum = 0x1FFFFFFF;
+	unsigned long long *CFICheckAddressPtr = (unsigned long long *)0x1FFFFFFFFFFFFFFFULL;
+    int CFICheckAddressNum = 0x1FFFFFFF;
 	int low = 0, high = CFICheckAddressNum, mid=0;
 
     if (target == 0)
