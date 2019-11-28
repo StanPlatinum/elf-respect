@@ -472,8 +472,6 @@ Elf64_Addr get_immAddr(cs_insn single_insn, Elf64_Addr imm_offset)
 Elf64_Addr data_upper_bound = 0xffffffffffffffff;
 //Elf64_Addr data_lower_bound = (Elf64_Addr)_SGXDATA_BASE;
 Elf64_Addr data_lower_bound = 0x0000000000000001;
-Elf64_Addr stack_upper_bound = 0xffffffffffffffff;
-Elf64_Addr stack_lower_bound = 0x0000000000000001;
 
 unsigned call_target_idx_global = 0;
 
@@ -600,74 +598,37 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 }
 
 
-int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *forward_ins)
+int check_register(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins)
 {
 	int if_rsp = find_rsp(ins);
-	if ( (if_rsp > 0) && (backward_ins) ){
+	if (if_rsp > 0){
 		//PrintDebugInfo("found rsp writes.\n");
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
 				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("movabs", backward_ins[1].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", backward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("ja", backward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", backward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", backward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jl", backward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("pop", backward_ins[7].mnemonic, 3) == 0)
+				(strncmp("cmp", backward_ins[1].mnemonic, 3) == 0)	&&
+				(strncmp("ja", backward_ins[2].mnemonic, 2) == 0)	&&
+				(strncmp("cmp", backward_ins[3].mnemonic, 3) == 0)	&&
+				(strncmp("jl", backward_ins[4].mnemonic, 2) == 0)	&&
+				(strncmp("pop", backward_ins[5].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
-			//Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
-			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
-			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], movabs_imm_offset);
-			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[4], movabs_imm_offset);
+			Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
+			Elf64_Addr imm1_addr =  get_immAddr(backward_ins[1], cmp_rsp_imm_offset);
+			Elf64_Addr imm2_addr =  get_immAddr(backward_ins[3], cmp_rsp_imm_offset);
 			//Weijie:
 			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			//rewrite_imm(imm1_addr, stack_upper_bound);
-			rewrite_imm(imm1_addr, stack_lower_bound);
-			//rewrite_imm(imm2_addr, stack_lower_bound);
-			rewrite_imm(imm2_addr, stack_upper_bound);
+			rewrite_imm32(imm1_addr, data_upper_bound);
+			rewrite_imm32(imm2_addr, data_lower_bound);
 			//PrintDebugInfo("register rewritting done.\n");
 			//PrintDebugInfo("register check done.\n");
 			return 1;
 		}
 		else
-			return -1;
-	}
-	else if ( (if_rsp > 0) && (forward_ins) )
-	{
-		if (
-				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("movabs", forward_ins[1].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jl", forward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
-		){
-			//Weijie: check: mov rbp, rsp
-
-			//Weijie: replace 2 imms
-			//PrintDebugInfo("setting bounds...\n");
-			//Weijie: getting the address
-			//Elf64_Addr cmp_rsp_imm_offset = 3; //cmp 1 byte, rsp 2 byte
-			Elf64_Addr movabs_imm_offset = 2; //movabs 1 byte, rbx 1 byte?
-			Elf64_Addr imm1_addr =  get_immAddr(forward_ins[1], movabs_imm_offset);
-			Elf64_Addr imm2_addr =  get_immAddr(forward_ins[4], movabs_imm_offset);
-			//Weijie:
-			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
-			//Weijie: rewritting
-			rewrite_imm(imm1_addr, stack_upper_bound);
-			rewrite_imm(imm2_addr, stack_lower_bound);
-			//PrintDebugInfo("register rewritting done.\n");
-			//PrintDebugInfo("register check done.\n");
-			return 1;
-		}
-		else {
+		{
 			//PrintDebugInfo("register check failed.\n");
 			return -1;
 		}
@@ -933,41 +894,24 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			//if (memwt_intact < 0)	PrintDebugInfo("Abort! Illegal memory writes instrumentation!\n");
 
+			/*
 			//Weijie: comment for now
 			//Weijie: checking register 'rsp'
-			if (count - j - 1 >= 8){
-				cs_insn backward_insn[8];
-				backward_insn[0] = insn[j+1];
-				backward_insn[1] = insn[j+2];
-				backward_insn[2] = insn[j+3];
-				backward_insn[3] = insn[j+4];
-				backward_insn[4] = insn[j+5];
-				backward_insn[5] = insn[j+6];
-				backward_insn[6] = insn[j+7];
-				backward_insn[7] = insn[j+8];
-				register_intact = check_rsp(handle, CS_MODE_64, &insn[j], backward_insn, NULL);
+			if (count - j - 1 >= 6){
+			cs_insn backward_insn[6];
+			backward_insn[0] = insn[j+1];
+			backward_insn[1] = insn[j+2];
+			backward_insn[2] = insn[j+3];
+			backward_insn[3] = insn[j+4];
+			backward_insn[4] = insn[j+5];
+			backward_insn[5] = insn[j+6];
+			register_intact = check_register(handle, CS_MODE_64, &insn[j], backward_insn);
 			}
 			else{
 			//Weijie: to-do
 			}
-			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
-			if (j >= 8){
-				cs_insn forward_insn[8];
-				forward_insn[0] = insn[j-8];
-				forward_insn[1] = insn[j-7];
-				forward_insn[2] = insn[j-6];
-				forward_insn[3] = insn[j-5];
-				forward_insn[4] = insn[j-4];
-				forward_insn[5] = insn[j-3];
-				forward_insn[6] = insn[j-2];
-				forward_insn[7] = insn[j-1];
-				register_intact = check_rsp(handle, CS_MODE_64, &insn[j], NULL, forward_insn);
-			}
-			else{
-				//Weijie: to-do
-			}
-			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
-
+			if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
+			*/
 
 			if (j >= 7){
 				cs_insn forward_insn[7];
@@ -1036,7 +980,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	cs_insn *insn;
 	size_t count;
 	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
-		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		//PrintDebugInfo("ERROR: Failed to initialize engine!\n");
 		return -1;
 	}
 	//Weijie: must add option
@@ -1047,7 +991,7 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	if (count) {
 		size_t j;
 		for (j = 0; j < count; j++) {
-			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 		}
 		cs_free(insn, count);
 	} else
@@ -1118,17 +1062,46 @@ void disasm_whole()
 			
 			//Weeijie: disasm all symbols
 			if (textSize > 0){
-				dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
+				//dlog("disassembling symbol '%s':", &strtab[symtab[j].st_name]);
 				//PrintDebugInfo("-----setting params-----\n");
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
-				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
+				//dlog("textAddr: %p, textSize: %u", textAddr, textSize);
 				rv = cs_disasm_entry(buf, textSize, textAddr);
 				free(buf);
 			}
 			
+			
+			//Weijie: just disasm enclave_main
+			/*
+			int ifmain_rv = strncmp("enclave_main", &strtab[symtab[j].st_name], 12);
+			if (ifmain_rv == 0) {
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("disassembling enclave_main: textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+			*/
+			/*
+			//Weijie: just disasm enclave_main
+			int iff1_rv = strncmp("check_overlap", &strtab[symtab[j].st_name], 13);
+			if (iff1_rv == 0) {
+				textAddr = symtab[j].st_value;
+				buf = (unsigned char *)malloc(textSize);
+				//Weijie: fill in buf
+				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+				dlog("disassembling check_overlap: textAddr: %p, textSize: %u", textAddr, textSize);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				free(buf);
+			}
+			*/
+		
+
 		}
 	}
 }
