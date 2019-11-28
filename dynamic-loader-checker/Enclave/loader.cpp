@@ -604,7 +604,7 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 {
 	int if_rsp = find_rsp(ins);
 	if ( (if_rsp > 0) && (backward_ins) ){
-		//PrintDebugInfo("found rsp writes.\n");
+		//PrintDebugInfo("found rsp writes and back_ins.\n");
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
 				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
@@ -613,7 +613,7 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 				(strncmp("ja", backward_ins[3].mnemonic, 2) == 0)	&&
 				(strncmp("movabs", backward_ins[4].mnemonic, 6) == 0)	&&
 				(strncmp("cmp", backward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jl", backward_ins[6].mnemonic, 2) == 0)	&&
+				(strncmp("jb", backward_ins[6].mnemonic, 2) == 0)	&&
 				(strncmp("pop", backward_ins[7].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
@@ -626,10 +626,10 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 			//Weijie:
 			//dlog("imm1 address: %p, imm2 address: %p", imm1_addr, imm2_addr);
 			//Weijie: rewritting
-			//rewrite_imm(imm1_addr, stack_upper_bound);
-			rewrite_imm(imm1_addr, stack_lower_bound);
-			//rewrite_imm(imm2_addr, stack_lower_bound);
-			rewrite_imm(imm2_addr, stack_upper_bound);
+			rewrite_imm(imm1_addr, stack_upper_bound);
+			//rewrite_imm(imm1_addr, stack_lower_bound);
+			rewrite_imm(imm2_addr, stack_lower_bound);
+			//rewrite_imm(imm2_addr, stack_upper_bound);
 			//PrintDebugInfo("register rewritting done.\n");
 			//PrintDebugInfo("register check done.\n");
 			return 1;
@@ -639,6 +639,7 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 	}
 	else if ( (if_rsp > 0) && (forward_ins) )
 	{
+		//PrintDebugInfo("found rsp writes and for_ins.\n");
 		if (
 				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
 				(strncmp("movabs", forward_ins[1].mnemonic, 6) == 0)	&&
@@ -646,11 +647,10 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 				(strncmp("ja", forward_ins[3].mnemonic, 2) == 0)	&&
 				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
 				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jl", forward_ins[6].mnemonic, 2) == 0)	&&
+				(strncmp("jb", forward_ins[6].mnemonic, 2) == 0)	&&
 				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
 		){
 			//Weijie: check: mov rbp, rsp
-
 			//Weijie: replace 2 imms
 			//PrintDebugInfo("setting bounds...\n");
 			//Weijie: getting the address
@@ -907,6 +907,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int longfunc_ret_safe = 0;
 		int indirect_call_safe = 0;
 		for (j = 0; j < count; j++) {
+			//Weijie: comment for benchmarking
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: maintain a insn set including more than 8? insns right before the current disasmed insn
 			if (j >= 13){
@@ -1243,8 +1244,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	pr_progress("debugging: validate if rewrites fine");
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
