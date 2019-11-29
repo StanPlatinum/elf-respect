@@ -1,4 +1,4 @@
-fun
+CFICheck
+exit
 enclave_main
 puts
-exit

@@ -247,8 +247,8 @@ int main(int argc, char *argv[])
 	//enclave_main(eid);
 
 	char *buffer;
-	//FILE *fp = fopen("./program", "rb");
-	FILE *fp = fopen("./nben", "rb");
+	FILE *fp = fopen("./program", "rb");
+	//FILE *fp = fopen("./nben", "rb");
 	if (fp == NULL) {
 		perror("[error] file open failed.\n");
 		exit(1);
