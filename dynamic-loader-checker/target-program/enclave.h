@@ -1,7 +1,9 @@
 #ifndef __ENCLAVE_H
 #define __ENCLAVE_H
 
-#include <stdlib.h>
+//#include <stdlib.h>
+
+#include "CFICheck.c"
 
 #define MAX_OCALL_GET_LINE 64
 

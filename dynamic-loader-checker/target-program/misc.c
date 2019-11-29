@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include "misc.h"
 
-//#include "enclave.h"
-//#include "CFICheck.c"
+#include "enclave.h"
+#include "CFICheck.c"
 
 /***********************************************************
 **     MISCELLANEOUS BUT OTHERWISE NECESSARY ROUTINES     **
