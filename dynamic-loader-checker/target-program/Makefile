@@ -8,18 +8,20 @@ CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fn
 
 #LLVM_PATH = /home/weijliu/llvm-project
 #LLVM_PATH = /home/weijliu/llvm-mc
-LLVM_PATH = /home/weijliu/proofGen
+
+#LLVM_PATH = /home/weijliu/proofGen
+#LLVM_PATH = /home/weijliu/proofGen4store
+LLVM_PATH = /home/weijliu/proofGen4memwt
 LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 #CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 #CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
-#TARGET_NAME = nw
+TARGET_NAME = nw
 #TARGET_NAME = simple_malloc
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = foo2
-#6TARGET_NAME = bm_hello
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
 #TARGET_NAME = bm_clock
@@ -27,7 +29,9 @@ CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-add
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
-TARGET_NAME = bm_sort_and_binsearch
+#TARGET_NAME = bm_sort_and_binsearch
+
+#TARGET_NAME = misc
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -118,4 +122,6 @@ clean-all:
 		tools/linker lib/*.o lib/*.txt
 	rm -rf $(TARGET_NAME)
 	$(MAKE) -C musl-libc clean
+	$(MAKE) -C nbench clean
+#	$(MAKE) -C mbedtls clean
 

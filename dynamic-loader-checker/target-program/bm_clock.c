@@ -5,6 +5,9 @@
 #include <enclave.h>
 #include <time.h>
 
+#include "enclave.h"
+#include "CFICheck.c"
+
 double TicksToFracSecs(unsigned long tickamount)
 {
     return((double)tickamount/(double)CLOCKS_PER_SEC);

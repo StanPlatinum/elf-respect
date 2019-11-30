@@ -36,6 +36,9 @@
 */
 #include "sysspec.h"
 
+//Weijie:
+//#include "enclave.h"
+
 #ifdef DOS16
 #include <io.h>
 #include <fcntl.h>

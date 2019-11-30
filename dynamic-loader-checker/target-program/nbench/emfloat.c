@@ -29,6 +29,9 @@
 #include "nmglobal.h"
 #include "emfloat.h"
 
+//Weijie:
+//#include "enclave.h"
+
 /*
 ** Floating-point emulator.
 ** These routines are only "sort of" IEEE-compliant.  All work is

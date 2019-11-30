@@ -1,5 +1,4 @@
 This version of loader/target-program has been tested on bio-sgx06.
-This version of loader/target-program-original has been tested on my thinkpad.
 
 ## Usage
 

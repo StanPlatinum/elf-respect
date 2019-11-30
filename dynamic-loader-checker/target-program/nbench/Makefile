@@ -19,14 +19,22 @@ default: nbench
 # You should leave -static in the CFLAGS so that your sysinfo can be
 # compiled into the executable.
 
-CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig
+LLVM_PATH = /home/weijliu/llvm-mc
+#LLVM_PATH = /home/weijliu/proofGen4store
+#LLVM_PATH = /home/weijliu/proofGen4memwt
+#LLVM_PATH = /home/weijliu/proofGen4libc
+#LLVM_PATH = /home/weijliu/proofGen
+
+CC = $(LLVM_PATH)/build/bin/clang
+#-fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 
 # generic options for gcc
-BASE_CFLAGS = -fPIC -fno-asynchronous-unwind-tables\
-			  -fno-jump-tables\
+BASE_CFLAGS = -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables\
 			  -Wall -pedantic -Wno-unused-function -std=gnu11
-LIBSGXDIR = ../../libsgx
-CFLAGS = $(BASE_CFLAGS) -I$(LIBSGXDIR)/include -I$(LIBSGXDIR)/musl-libc/include \
+
+LIBCDIR = ..
+
+CFLAGS = $(BASE_CFLAGS) -I$(LIBCDIR)/include -I$(LIBCDIR)/musl-libc/include \
 		 -fno-stack-protector -fvisibility=hidden
 
 # if your gcc lets you do it, then try this one
