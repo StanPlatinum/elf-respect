@@ -8,10 +8,10 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = simple_loop
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = hardware
-#TARGET_NAME = nw
+TARGET_NAME = nw
 #TARGET_NAME = foo2
 
-TARGET_NAME = bm_malloc_and_sort
+#TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_clock
 #TARGET_NAME = bm_malloc_magic
 #TARGET_NAME = bm_malloc_memalign_magic
@@ -37,6 +37,15 @@ DEBUG_OBJ = lib/my_itoa.o
 
 ASM_OBJS = $(DEBUG_OBJ) lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
 
+
+
+LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o	\
+		 libgcc/__divdi3.o libgcc/__divti3.o libgcc/__lshrdi3.o		\
+		 libgcc/multi3.o libgcc/__negti2.o libgcc/__udivdi3.o		\
+		 libgcc/__udivmoddi4.o libgcc/__udivmodti4.o				\
+		 libgcc/__udivti3.o libgcc/__umoddi3.o libgcc/__umodti3.o
+
+
 all: $(MUSL_LIBC) $(TARGET_NAME)
 	mv $(TARGET_NAME) ../program
 
@@ -46,6 +55,19 @@ $(DEBUG_OBJ): lib/my_itoa.c
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
+
+
+LIBSSL = mbedtls/libmbedtls.a
+$(LIBSSL):
+		$(MAKE) -C mbedtls
+
+https: $(TARGET_NAME) $(LIBSSL)
+	cp mbedtls/*.o objs
+	echo '' > objs/enclave_main.o
+	rm objs/enclave_main.o
+	ls objs/*.o > list
+	cat list | ./tools/linker https
+
 
 LIBNBENCH = nbench/nbench.a
 nben: $(TARGET_NAME) $(LIBNBENCH)
@@ -59,8 +81,9 @@ $(LIBNBENCH):
 	$(MAKE) -C nbench nbench.a
 
 
-$(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
+$(TARGET_NAME): objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) $(LIBGCC)
 	cp lib/*.o objs
+	cp libgcc/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker $(TARGET_NAME)
 	@echo "Build successfully!"

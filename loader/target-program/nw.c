@@ -4,12 +4,11 @@
 #include "enclave.h"
 
 //#include "CFICheck.h"
-#include "CFICheck.c"
+//#include "CFICheck.c"
 
 int  max( int f1, int f2, int f3, char * ptr )
 {
 	//CFICheck(0);
-	puts("test4.45");
 	int  max = 0 ;
 	if( f1 >= f2 && f1 >= f3 )
 	{
@@ -31,18 +30,11 @@ int  max( int f1, int f2, int f3, char * ptr )
 
 void dpm_init( int ** F, char ** traceback, int L1, int L2, int d )
 {
-	puts("test1");
 	//Weijie:
 	//unsigned int magic_in_dpm = 0;
-
 	F[ 0 ][ 0 ] =  0 ;
-
-	puts("test1.5");
-	
 	traceback[ 0 ][ 0 ] = 'n' ;
 
-	puts("test2");
-	
 	int i=0, j=0;
 	for( j = 1; j <= L1; j++ )
 	{
@@ -102,7 +94,6 @@ void  print_traceback( char ** traceback, char *seq_1, char *seq_2 )
 	int  L1 = my_strlen(seq_1);
 	int  L2 = my_strlen(seq_2);
 
-	puts("    ");
 	for( int j = 0; j < L1; j++ )
 	{
 		//PrintDebugInfo("%c ", seq_1[ j ]);
@@ -193,8 +184,6 @@ int nw_align(                  // Needleman-Wunsch algorithm
 	//L1 = 8;
 	//L2 = 7;
 
-	puts("test4");
-
 	for( i = 1; i <= L2; i++ )
 	{
 		for( j = 1; j <= L1; j++ )
@@ -218,11 +207,8 @@ int nw_align(                  // Needleman-Wunsch algorithm
 			fU = F[ i-1 ][ j ] - d ;
 			fD = F[ i-1 ][ j-1 ] + s[ x ][ y ] ;
 			fL = F[ i ][ j-1 ] - d ;
-			puts("test4.4");
 			temp = max( fU, fD, fL, &ptr ) ;
-			puts("test4.5");
 			F[ i ][ j ] = temp;
-			puts("test4.6");
 			traceback[ i ][ j ] =  ptr ;
 		}
 	}
@@ -284,29 +270,17 @@ void Ecall_nw(
 		)
 {
 	int  d = 2 ;                 /* gap penalty */
-
-	puts("test0.6");
-	puts(seq_2);
-
 	unsigned long long L1 = my_strlen(seq_1);
 	unsigned long long L2 = my_strlen(seq_2);
 	//Weijie:
-	puts("L2:");
-	char rvl2[9];
-	my_itoa(L2, rvl2, 10);
-	puts(rvl2);
-
-	puts("test0.7");
-	//Weijie:
-	//L1 = 8;
-	//L2 = 7;
-
+	//puts("L2:");
+	//char rvl2[9];
+	//my_itoa(L2, rvl2, 10);
+	//puts(rvl2);
 	// Dynamic programming matrix
 	int ** F = (int **)malloc( (L2 + 1) * sizeof(int *) );
 	
-	puts("test0.72");
 	for( int i = 0; i <= L2; i++ ){
-		puts("entering loop");
 		F[ i ] = (int *)malloc( L1 * sizeof(int));
 		//Weijie"
 		if (F[i] == NULL)	puts("malloc failed!");
@@ -316,14 +290,11 @@ void Ecall_nw(
 		//puts(rva);
 	}
 	// Traceback matrix
-	puts("test0.75");
 	
 	char ** traceback = (char **)malloc( (L2 + 1) * sizeof(char *));
-	puts("test0.78");
 	for( int i = 0; i <= L2; i++ )  
 		traceback[ i ] = (char *)malloc( L1 * sizeof(char));
 
-	puts("test0.8");
 	// Initialize traceback and F matrix (fill in first row and column)
 	dpm_init( F, traceback, L1, L2, d );
 	/* Initialize seq_als */
@@ -331,12 +302,10 @@ void Ecall_nw(
 	seq_1_al[0] = '\0';
 	seq_2_al[0] = '\0';
 	
-	puts("test3");
 	// Create alignment
 	int rv;
 	rv = nw_align( F, traceback, seq_1, seq_2, seq_1_al, seq_2_al, d );
 	
-	puts("test5");
 
 	if (rv == 0){ 
 		print_matrix( F, seq_1, seq_2 );
@@ -344,20 +313,26 @@ void Ecall_nw(
 	}
 }
 
-void enclave_main(){
-	char seq_1[] = "AGTACGTC";
-	puts("test0");
-	char seq_2[] = "ACGTCGT";
+#define MAXSEQLEN 10000
 
-	puts(seq_1);
-	//CFICheck(0);
-	puts("test0.5");
-	
-	char seq_1_al[50];
-	char seq_2_al[50];
+#include "nw_data.h"
+
+void enclave_main(){
+	//char seq_1[] = "AGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATG";
+	//char seq_2[] = "ACGTCGTGCATGCATGATCGTACTACTGTTATAGCGGCGGCTATATATCG";
+	//char seq_1[] = "AGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATGGGATCGTACTGAGCTAGCTACGATGTGACGTCGATGCATGCATTGTGATC";
+	//char seq_2[] = "ACGTCGTGCATGCATGATCGTACTACTGTTATAGCGGCGGCTATATATCGTATATTATTTATTATATGGGGGGGGCAGCATGCTATGATGCATGCTAGCT";
+
+	//char seq_1[] = "AGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATGACGTCGTGCATGCATGATCGTACTACTGTTATAGCGGCGGCTATATATCGAGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATGGGATCGTACTGAGCTAGCTACGATGTGACGTCGATGCATGCATTGTGATCAGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATGAGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATG";
+	//char seq_2[] = "AGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATGACGTCGTGCATGCATGATCGTACTACTGTTATAGCGGCGGCTATATATCGAGTACGTCGAAGCGATGCATGCGAGAGTACTGGATCACGACTGATGCATGGGATCGTACTGAGCTAGCTACGATGTGACGTCGATGCATGCATTGTGATCACGTCGTGCATGCATGATCGTACTACTGTTATAGCGGCGGCTATATATCGACGTCGTGCATGCATGATCGTACTACTGTTATAGCGGCGGCTATATATCG";
+
+	char seq_1_al[MAXSEQLEN];
+	char seq_2_al[MAXSEQLEN];
 	puts("running NW algorithm...");
 
-	Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
+	//Ecall_nw(seq_1, seq_2, seq_1_al, seq_2_al);
+	//Ecall_nw(data501, data502, seq_1_al, seq_2_al);
+	Ecall_nw(data1001, data1002, seq_1_al, seq_2_al);
 	//Ecall_nw("ACTACGTC", "ACGTCGT", seq_1_al, seq_2_al);
 
 	puts("exiting...");
