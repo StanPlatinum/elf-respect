@@ -1,45 +1,95 @@
 插桩说明
 
-长函数的ShadowStack:
+长函数的ShadowStack
     在函数入口进行如下插桩(即push rbp之前)：
-    movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	addq	$8, (%r11)
-	movq	(%r11), %r10
-	addq	%r10, %r11
-	movq	(%rsp), %r10
-	movq	%r10, (%r11)
-	pushq	%rbp
-	movq	%rsp, %rbp
+        movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
+        addq	$8, (%r11)
+        movq	(%r11), %r10
+        addq	%r10, %r11
+        movq	(%rsp), %r10
+        movq	%r10, (%r11)
+        pushq	%rbp
+        movq	%rsp, %rbp
 	
     在函数返回前进行如下插桩(即ret之前)：
-    movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
-	movq	(%r11), %r10
-	addq	%r11, %r10
-	subq	$8, (%r11)
-	movq	(%r10), %r11
-	cmpq	%r11, (%rsp)
-	jne	exit_label
+        movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
+        movq	(%r11), %r10
+        addq	%r11, %r10
+        subq	$8, (%r11)
+        movq	(%r10), %r11
+        cmpq	%r11, (%rsp)
+        jne	exit_label
 
     在函数末尾进行如下插桩(即ret之后)，此处插桩目的是进行exit系统调用：
-    exit_label：
-        movl	$60, %eax
-	    movl	$0, %edi
-	    syscall
+    exit_label:
+	    movl	$-1, %edi
+	    callq   exit
 
 短函数的shadowstack：
     在函数入口进行如下插桩(即push rbp之前)：
-    movq	(%rsp), %reg → 某个未被函数使用的reg
+        movq	(%rsp), %reg → 某个未被函数使用的reg
 
     在函数返回前进行如下插桩(即ret之前)：
-    cmpq	%rcx, (%rsp)
-	jne	exit_label
+        cmpq	%rcx, (%rsp)
+        jne	exit_label
 
     在函数末尾进行如下插桩(即ret之后)，此处插桩目的是进行exit系统调用：
-    exit_label：
-        movl	$60, %eax
-	    movl	$0, %edi
-	    syscall
+    exit_label:
+        movl	$-1, %edi
+	    callq   exit
 
-对indirect call的检查(在callq *%reg之前)：
-    movq	%reg, %rdi
-	callq	CFICheck
+对indirect call的检查
+    在callq *%reg之前：
+        movq	%reg, %rdi
+        callq	CFICheck
+    在callq *(%reg)之前：
+        movq	(%reg), %rdi
+        callq	CFICheck
+
+对mov的检查
+    在mov xxx, [reg+imm]之前：
+        pushq   %rbx
+        pushq   %rax
+        pushfq
+        leaq    [reg+imm], %rax
+        movq    $0x3FFFFFFFFFFFFFFF, %rbx
+        cmpq    %rbx, %rax
+        ja      exit_label
+        movq    $0x4FFFFFFFFFFFFFFF, %rbx
+        cmpq    %rbx, %rax
+        jb      exit_label
+        popfq
+        popq    %rax
+        popq    %rbx
+    在函数末尾进行如下插桩(即ret之后)，此处插桩目的是进行exit系统调用：
+    exit_label:
+        popfq
+        popq    %rax
+        popq    %rbx
+        movl    $-1, %edi
+        callq   exit
+
+对rsp的检查
+    在修改rsp的指令之后：
+        pushq   %rax
+        movq    $0x5FFFFFFFFFFFFFFF, %rax
+        cmpq    %rax, %rsp
+        ja      exit_label
+        movq    $0x6FFFFFFFFFFFFFFF, %rax
+        cmpq    %rax, %rsp
+        jb      exit_label
+        popq    %rax
+    或在指令movq %rbp, %rsp之前：
+        pushq   %rax
+        movq    $0x5FFFFFFFFFFFFFFF, %rax
+        cmpq    %rax, %rbp
+        ja      exit_label
+        movq    $0x6FFFFFFFFFFFFFFF, %rax
+        cmpq    %rax, %rbp
+        jb      exit_label
+        popq    %rax
+    在函数末尾进行如下插桩(即ret之后)，此处插桩目的是进行exit系统调用：
+    exit_label:
+        popq    %rax
+        movl    $-1, %edi
+        callq   exit

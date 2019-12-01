@@ -413,17 +413,17 @@ namespace {
         void insertSSEntry(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL)
         { 
             auto MBBI = MBB.begin();
-            // mov r11, 0x2fffffffffffffff
+            //movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
             BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
-            // add [r11], 8
+            //addq	$8, (%r11)
             BuildMI(MBB, MBBI, DL, TII->get(X86::ADD64mi8)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addImm(8);
-            // mov r10, [r11]
+            //movq	(%r11), %r10
             addDirectMem(BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64rm)).addDef(X86::R10), X86::R11);
-            // add r11, r10
+            //addq	%r10, %r11
             BuildMI(MBB, MBBI, DL, TII->get(X86::ADD64rr)).addReg(X86::R11).addDef(X86::R11).addReg(X86::R10);
-            // mov r10, [rsp]
+            //movq	(%rsp), %r10
             addDirectMem(BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64rm)).addDef(X86::R10), X86::RSP);
-            // mov [r11], r10
+            //movq	%r10, (%r11)
             BuildMI(MBB, MBBI, DL, TII->get(X86::MOV64mr)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addReg(X86::R10);
         }
 
@@ -431,17 +431,17 @@ namespace {
         void insertSSRet(const TargetInstrInfo *TII, MachineBasicBlock &MBB, MachineInstr &MI, MachineBasicBlock &TrapBB)
         {
             const DebugLoc &DL = MI.getDebugLoc();
-            // mov r11, 0x2fffffffffffffff
+            //movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
             BuildMI(MBB, MI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
-            // mov r10, [r11]
+            //movq	(%r11), %r10
             addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addDef(X86::R10), X86::R11);
-            // add r10, r11
+            //addq	%r11, %r10
             BuildMI(MBB, MI, DL, TII->get(X86::ADD64rr)).addReg(X86::R10).addDef(X86::R10).addReg(X86::R11);
-            // sub [r11], 8
+            //subq	$8, (%r11)
             BuildMI(MBB, MI, DL, TII->get(X86::SUB64mi8)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addImm(8);
-            // mov r11, [r10]
+            //movq	(%r10), %r11
             addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::MOV64rm)).addDef(X86::R11), X86::R10);
-            // cmp [rsp], r11
+            // cmpq	%r11, (%rsp)
             addDirectMem(BuildMI(MBB, MI, DL, TII->get(X86::CMP64mr)), X86::RSP).addReg(X86::R11);
             // jne trap
             BuildMI(MBB, MI, DL, TII->get(X86::JCC_1)).addMBB(&TrapBB).addImm(5);
@@ -593,11 +593,11 @@ namespace {
                 if (MI.isReturn())
                 {
                     Trap = MF.CreateMachineBasicBlock();
-                    // // mov eax, 60(60为exit的syscall调用号)
+                    // //movl	$60, %eax(60为exit的syscall调用号)
                     // BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EAX).addImm(60);
-                    // // mov edi, 0
+                    // //movl	$0, %edi
                     // BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0);
-                    // // syscall
+                    // //syscall
                     // BuildMI(Trap, MI.getDebugLoc(), TII->get(SYSCALL));
                     // callq exit(-1)
                     BuildMI(Trap, MI.getDebugLoc(), TII->get(X86::MOV32ri)).addReg(EDI).addImm(0xFFFFFFFF);
@@ -834,13 +834,13 @@ namespace {
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSHF64));
                             if (Disp.isImm())
                             {
-                                //leaq , %rax
+                                //leaq (BaseReg+Disp*IndexReg), %rax
                                 MachineInstr &tmpMI = *BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg()).addImm(Scale.getImm()).addReg(IndexReg.getReg()).addImm(Disp.getImm()).addReg(SegmentReg.getReg());
                                 //printMachineInstr(tmpMI, 1);
                             }
                             else
                             {
-                                //leaq , %rax
+                                //leaq (BaseReg+Disp*IndexReg), %rax
                                 MachineInstr &tmpMI1 = *BuildMI(*MBBI, *MII, DL, TII->get(X86::LEA64r)).addReg(X86::RAX).addReg(BaseReg.getReg()).addImm(Scale.getImm()).addReg(IndexReg.getReg()).addGlobalAddress(Disp.getGlobal()).addReg(SegmentReg.getReg());
                                 //printMachineInstr(tmpMI1, 1);
                             }
