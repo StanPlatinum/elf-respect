@@ -18,7 +18,8 @@ LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 #CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
-TARGET_NAME = nw
+TARGET_NAME = fasta
+#TARGET_NAME = nw
 #TARGET_NAME = simple_malloc
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = foo2

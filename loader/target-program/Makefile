@@ -8,8 +8,9 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = simple_loop
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = hardware
-TARGET_NAME = nw
 #TARGET_NAME = foo2
+#TARGET_NAME = nw
+TARGET_NAME = fasta
 
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_clock
