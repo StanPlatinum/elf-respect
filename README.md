@@ -28,4 +28,13 @@ We build a multi-step loader which can load a modified binary into the enclave m
 
 ***
 
-Usage: https://github.com/StanPlatinum/elf-respect/wiki/Usage
+Quick Start:
+
+Make sure 1) you have an 'SGX machine' (a machine whose CPU supports Intel SGX, with SGXSDK/Driver installed); 2) you have at least 10G memory (Swap could be included) and 80G disk space before having a try.
+
+```
+./install.sh
+```
+***
+
+Detailed Usage: https://github.com/StanPlatinum/elf-respect/wiki/Usage
