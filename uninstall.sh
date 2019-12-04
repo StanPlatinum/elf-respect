@@ -25,8 +25,11 @@ rm -rf elfutils4sgx
 echo "Deleting Capstone..."
 rm -rf capstone
 
-echo "Deleting LLVM..."
+echo "Deleting ProofGen..."
 rm -rf proofGen
+
+echo "Deleting LLVM-MC..."
+rm -rf llvm-mc
 
 echo "Uninstall successfully!"
 
