@@ -31,5 +31,23 @@ rm -rf proofGen
 echo "Deleting LLVM-MC..."
 rm -rf llvm-mc
 
+cd elf-respect
+
+cd loader
+make clean
+rm Makefile
+cd target-program
+make clean-all
+rm Makefile
+cd ../..
+
+cd dynamic-loader-checker
+make clean
+rm Makefile
+cd target-program
+make clean-all
+rm Makefile
+cd ../..
+
 echo "Uninstall successfully!"
 

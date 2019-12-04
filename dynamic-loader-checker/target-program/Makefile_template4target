@@ -1,5 +1,3 @@
-LLVM_PATH = /home/liuweijie/proofGen
-Our_AS_Path = /home/liuweijie/llvm-mc
 #Our_AS_Path = /home/weijliu/llvm-mc
 #LLVM_PATH = /home/weijliu/proofGen
 
@@ -48,9 +46,7 @@ ASM_OBJS = $(STACK_OBJ) $(DEBUG_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin
 	mv $(TARGET_NAME).bin ../program
-	ifeq (exist, "exist")
-	#cp $(TARGET_NAME).txt ../entryLabel.txt
-	endif
+	cp $(TARGET_NAME).txt ../entryLabel.txt
 
 $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@

@@ -1,58 +1,25 @@
-#
-# Copyright (C) 2011-2016 Intel Corporation. All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-#   * Redistributions of source code must retain the above copyright
-#     notice, this list of conditions and the following disclaimer.
-#   * Redistributions in binary form must reproduce the above copyright
-#     notice, this list of conditions and the following disclaimer in
-#     the documentation and/or other materials provided with the
-#     distribution.
-#   * Neither the name of Intel Corporation nor the names of its
-#     contributors may be used to endorse or promote products derived
-#     from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
+SGX_SRC_PATH = /home/liuweijie/linux-sgx
+ELFUTILS_PATH = /home/liuweijie/elfutils4sgx/elfutils-0.176
+CAPSTONE_PATH = /home/liuweijie/capstone
 
 ######## Checker Settings ########
 
-#SGX_SRC_PATH = /root/linux-sgx
-SGX_SRC_PATH = /home/weijliu/linux-sgx
-#SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
+#SGX_SRC_PATH = /home/weijliu/linux-sgx
+#ELFUTILS_PATH = /home/weijliu/elfutils4sgx/elfutils-0.176
+#CAPSTONE_PATH = /home/weijliu/capstone
+
 TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
-
-#ELFUTILS_PATH = /root/elfutils4sgx/elfutils-0.176
-ELFUTILS_PATH = /home/weijliu/elfutils4sgx/elfutils-0.176
-#ELFUTILS_PATH = /home/liuweijie/elfutils4sgx/elfutils-0.176
 ELFUTILS_INC_PATH = $(ELFUTILS_PATH)/libelf
-
-#CAPSTONE_PATH = /root/capstone
-CAPSTONE_PATH = /home/weijliu/capstone
-#CAPSTONE_PATH = /home/liuweijie/capstone
 CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
 
 ###### Link Path Settings ######
 
-CHECKER_Dyn_INC_PATH = -I$(CAPSTONE)/install-x86/include -I$(ELFUTILS_INC_PATH) -I/usr/include -I/usr/include/x86_64-linux-gnu
+#CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_PATH)/install-x86/include -I$(ELFUTILS_INC_PATH) -I/usr/include -I/usr/include/x86_64-linux-gnu
 CHECKER_Static_INC_PATH = -I$(ELFUTILS_INC_PATH) -I$(MUSL_LIBC_PATH)/install/include $(TRTS_INC_PATH)
-CHECKER_Dyn_LIB_PATH = -L$(CAPSTONE_LIB_PATH)
+#CHECKER_Dyn_LIB_PATH = -L$(CAPSTONE_LIB_PATH)
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 
-CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lcapstone -lz -lc
+#CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lcapstone -lz -lc
 CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
 
 ######## Target Settings ########

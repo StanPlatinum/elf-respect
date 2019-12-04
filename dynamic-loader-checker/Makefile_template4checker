@@ -1,17 +1,23 @@
 
 ######## Checker Settings ########
 
-#SGX_SRC_PATH = /root/linux-sgx
-#SGX_SRC_PATH = /home/liuweijie/Downloads/sdk2.6-18.04/linux-sgx
-#TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+#SGX_SRC_PATH = /home/weijliu/linux-sgx
+#ELFUTILS_PATH = /home/weijliu/elfutils4sgx/elfutils-0.176
+#CAPSTONE_PATH = /home/weijliu/capstone
 
-#CHECKER_Dyn_INC_PATH = -I/home/liuweijie/dyninst4sgxminidep/dyninst-install/include -I/home/liuweijie/capstone/install-x86/include -I/home/liuweijie/dyninst4sgxminidep/dyninst-build/elfutils/include -I/usr/include -I/usr/include/x86_64-linux-gnu
-#CHECKER_Static_INC_PATH = -I/home/liuweijie/elfutils4sgx/elfutils-0.176/libelf/ -I/home/liuweijie/musl-1.1.22/install/include -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
-#CHECKER_Dyn_LIB_PATH = -L/home/liuweijie/dyninst4sgxminidep/dyninst-install/lib -L/home/liuweijie/capstone/install-x86/lib
-#CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
+TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+ELFUTILS_INC_PATH = $(ELFUTILS_PATH)/libelf
+CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
 
-#CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lelf -lcapstone -lz -lc
-#CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
+###### Link Path Settings ######
+
+#CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_PATH)/install-x86/include -I$(ELFUTILS_INC_PATH) -I/usr/include -I/usr/include/x86_64-linux-gnu
+CHECKER_Static_INC_PATH = -I$(ELFUTILS_INC_PATH) -I$(MUSL_LIBC_PATH)/install/include $(TRTS_INC_PATH)
+#CHECKER_Dyn_LIB_PATH = -L$(CAPSTONE_LIB_PATH)
+CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
+
+#CHECKER_Link_Outside := $(CHECKER_Dyn_LIB_PATH) -lcapstone -lz -lc
+CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
 
 ######## Target Settings ########
 
@@ -19,6 +25,7 @@
 #IN_ENCLAVE_PROGRAM = target-program/nw4test
 #IN_ENCLAVE_PROGRAM = target-program/test
 #IN_ENCLAVE_PROGRAM = target-program/bm_malloc_simple
+#IN_ENCLAVE_PROGRAM = program-original
 IN_ENCLAVE_PROGRAM = program
 #IN_ENCLAVE_PROGRAM = nben
 #IN_ENCLAVE_PROGRAM = target-program/simple_loop
@@ -36,7 +43,6 @@ endif
 ######## SGX SDK Settings ########
 
 SGX_SDK ?= /opt/intel/sgxsdk
-#SGX_MODE ?= SIM
 SGX_MODE ?= HW
 SGX_DEBUG ?= 1
 SGX_ARCH ?= x64
@@ -125,12 +131,11 @@ Crypto_Library_Name := sgx_tcrypto
 Enclave_Cpp_Files := Enclave/Enclave.cpp
 
 #added by Weijie
-#Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
-Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(TRTS_INC_PATH)
-
+Enclave_Include_Paths := -IInclude -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport $(CHECKER_Static_INC_PATH)
 
 # edited by Weijie
-Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fPIC -fstack-protector $(Enclave_Include_Paths)
+#Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fPIC -fstack-protector $(Enclave_Include_Paths)
+Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(Enclave_Include_Paths)
 
 Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++03 -nostdinc++
 Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) \
@@ -198,13 +203,13 @@ App/App.o: App/App.cpp App/ocall.cpp
 
 
 # edited by Weijie
-# @$(CXX) $^ -o $@ $(App_Link_Flags)
 # @$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags)
 #$(App_Name): App/Enclave_u.o App/attack.o App/App.o
 # checker part added by Weijie
 $(App_Name): App/Enclave_u.o App/App.o
 	@echo $(App_Link_Flags)
-	@$(CXX) $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags) $(CHECKER_Link_Outside)
+	@$(CXX) $^ -o $@ $(App_Link_Flags) $(CHECKER_Link_Outside)
+	#@$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags) $(CHECKER_Link_Outside)
 	@echo "LINK =>  $@"
 
 
@@ -232,14 +237,19 @@ Enclave/Enclave_t.o: Enclave/enclave.c Enclave/Enclave_t.c Enclave/ocall_type.h
 #Xinyu & Weijie: Only use objcopy to reserve some memory (64M currently, with alloc, data, code)
 Enclave/%.o: Enclave/%.cpp
 	$(CXX) $(Enclave_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
-	@fallocate -l 64M blob
+	@fallocate -l 4M ssblob
+	@objcopy --add-section .sgx.ssblob=ssblob --set-section-flags .sgx.ssblob=alloc,data,code $@
+	@fallocate -l 4M calltg
+	@objcopy --add-section .sgx.calltg=calltg --set-section-flags .sgx.calltg=alloc,data,code $@
+	@fallocate -l 56M blob
 	@objcopy --add-section .sgx.code=blob --set-section-flags .sgx.code=alloc,data,code $@
 	@echo "CXX  <=  $<"
 
 $(Enclave_Name): Enclave/Enclave_t.o $(Enclave_Cpp_Objects)
+	#@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
+	# checker part added by Weijie
 	@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(CHECKER_Link_Static) $(DEF_SYMBOL_SCRIPT)
 	@echo "LINK =>  $@"
-	#@$(CXX) $^ -o $@ $(Enclave_Link_Flags) $(DEF_SYMBOL_SCRIPT)
 
 $(Signed_Enclave_Name): $(Enclave_Name)
 	@$(SGX_ENCLAVE_SIGNER) sign -key Enclave/Enclave_private.pem -enclave $(Enclave_Name) -out $@ -config $(Enclave_Config_File)
@@ -254,6 +264,5 @@ symtab_test: symtab_test.cpp
 .PHONY: clean
 
 clean:
-	@rm -f $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
-		blob gen_def Enclave/ocall_type.h symtab_test
-#		blob App/attack.o gen_def Enclave/ocall_type.h
+	@rm -f log.txt $(App_Name) $(Enclave_Name) $(Signed_Enclave_Name) $(App_Cpp_Objects) App/Enclave_u.* $(Enclave_Cpp_Objects) Enclave/Enclave_t.* \
+		nben ssblob calltg blob gen_def Enclave/ocall_type.h symtab_test

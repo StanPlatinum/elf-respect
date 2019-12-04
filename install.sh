@@ -29,6 +29,7 @@ then
 else
 	echo "SGXSDK already exists!"
 fi
+SGXSDK_Source_Path=`pwd`"/linux-sgx"
 
 if [ ! -d "./elfutils4sgx" ]
 then
@@ -53,6 +54,8 @@ then
 else
 	echo "Libelf already exists!"
 fi
+Libelf_Path=`pwd`"/elfutils4sgx/elfutils-0.176"
+echo "Libelf Path: "$Libelf_Path
 
 
 if [ ! -d "./capstone" ]
@@ -77,7 +80,8 @@ then
 else
 	echo "Capstone already exist!"
 fi
-
+Capstone_Path=`pwd`"/capstone"
+echo "Capstone Path: "$Capstone_Path
 
 if [ ! -d "./llvm-mc" ]
 then
@@ -96,12 +100,13 @@ then
 	else
 		echo "LLVM-MC install succeed!"
 	fi
-	LLVM_MC_Bin_Path="$LLVM_MC_Path/build/bin"
-	echo $LLVM_MC_Bin_Path
 	cd ../..
 else
 	echo "LLVM-MC already exists!"
 fi
+LLVM_MC_Path=`pwd`"/llvm-mc"
+LLVM_MC_Bin_Path="$LLVM_MC_Path/build/bin"
+echo "LLVM-MC Bin Path: "$LLVM_MC_Bin_Path
 
 
 if [ ! -d "./proofGen" ]
@@ -121,42 +126,61 @@ then
 	else
 		echo "ProofGen install succeed!"
 	fi
-	ProofGen_Bin_Path="$ProofGen_Path/build/bin"
-	echo $ProofGen_Bin_Path
 	cd ../..
 else
 	echo "ProofGen already exists!"
 fi
+ProofGen_Path=`pwd`"/proofGen"
+ProofGen_Bin_Path="$ProofGen_Path/build/bin"
+echo "ProofGen Bin Path: "$ProofGen_Bin_Path
 
-echo "Install successfully!"
+echo "Dependencies install successfully!"
 cd $Bash_Dir
 
 
 echo "Configuring loader..."
-echo "Generating Makefile header..."
-CC4AS=$LLVM_MC_Path"/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig"
-echo "CC = "$CC4AS > Makefile_header4target
-cat Makefile_header4target Makefile_template4target > Makefile4target
-mv Makefile4target ./loader/target-program
 cd loader
 make
 cd target-program
+echo "Generating Makefile header..."
+CC4AS=$LLVM_MC_Path"/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig"
+echo "CC = "$CC4AS > Makefile_header4target
+cat Makefile_header4target Makefile_template4target > Makefile
+rm Makefile_header4target
+echo "Generating all including musl-libc"
 make clean-all
-echo "Generating musl-libc"
 make CC="$CC4AS"
+if [ $? -ne 0 ]
+then
+	echo "Musl-libc install failed!"
+	make clean-all
+else
+	echo "Musl-libc install succeed!"
+fi
+make clean
 cd ../..
 
+
 echo "Configuring dyloader..."
-echo "Generating Makefile header..."
-cat Makefile_header4checker Makefile_template4checker > Makefile4checker
-mv Makefile4checker ./dynamic-loader-checker
-
-echo "Generating Makefile header..."
-
 cd dynamic-loader-checker
+echo "Generating Makefile header..."
+echo "SGX_SRC_PATH = "$SGXSDK_Source_Path > Makefile_header4checker
+echo "ELFUTILS_PATH = "$Libelf_Path >> Makefile_header4checker
+echo "CAPSTONE_PATH = "$Capstone_Path >> Makefile_header4checker
+cat Makefile_header4checker Makefile_template4checker > Makefile
 make
+rm Makefile_header4checker
 cd target-program
+echo "Generating Makefile header..."
+echo "LLVM_PATH = "$ProofGen_Path > Makefile_header4target
+echo "Our_AS_Path = "$LLVM_MC_Path >> Makefile_header4target
+cat Makefile_header4target Makefile_template4target > Makefile
+rm Makefile_header4target
 make clean-all
 echo "Generating musl-libc"
 make CC="$CC4AS"
+make clean
+cd ../..
 
+
+echo "Installed!"
