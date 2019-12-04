@@ -16,8 +16,8 @@ cd ..
 Install_Path=`pwd`
 echo $Install_Path
 
-#echo "Deleting SGXSDK..."
-#rm -rf linux-sgx
+echo "Deleting SGXSDK..."
+rm -rf linux-sgx
 
 echo "Deleting Libelf..."
 rm -rf elfutils4sgx
@@ -28,5 +28,5 @@ rm -rf capstone
 echo "Deleting LLVM..."
 rm -rf proofGen
 
-echo "Uninstall succeed!"
+echo "Uninstall successfully!"
 

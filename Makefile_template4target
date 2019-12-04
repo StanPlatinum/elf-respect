@@ -1,7 +1,5 @@
-CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig
-#CC = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
-#CC4AS = clang -fPIC -fno-asynchronous-unwind-tables -fno-jump-tables
 
+#CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig
 #CXX = clang++
 
 #TARGET_NAME = simple_malloc

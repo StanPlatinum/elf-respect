@@ -79,12 +79,37 @@ else
 fi
 
 
+if [ ! -d "./llvm-mc" ]
+then
+	echo "Building LLVM-MC..."
+	git clone https://github.com/StanPlatinum/llvm-mc.git
+	cd llvm-mc
+	LLVM_MC_Path=`pwd`
+	echo "LLVM-MC Path: "$LLVM_MC_Path
+	mkdir build
+	cd build
+	cmake -DLLVM_ENABLE_PROJECTS=clang -DLLVM_TARGETS_TO_BUILD="X86" -G "Unix Makefiles" ../llvm
+	make -j2
+	if [ $? -ne 0 ]
+	then
+		echo "LLVM-MC install failed!"
+	else
+		echo "LLVM-MC install succeed!"
+	fi
+	LLVM_MC_Bin_Path="$LLVM_MC_Path/build/bin"
+	echo $LLVM_MC_Bin_Path
+	cd ../..
+else
+	echo "LLVM-MC already exists!"
+fi
+
+
 if [ ! -d "./proofGen" ]
 then
-	echo "Building LLVM..."
+	echo "Building ProofGen..."
 	git clone https://github.com/StanPlatinum/proofGen.git
 	cd proofGen
-	LLVM_Path=`pwd`
+	ProofGen_Path=`pwd`
 	echo "LLVM Path: "$LLVM_Path
 	mkdir build
 	cd build
@@ -92,15 +117,46 @@ then
 	make
 	if [ $? -ne 0 ]
 	then
-		echo "LLVM install failed!"
+		echo "ProofGen install failed!"
 	else
-		echo "LLVM install succeed!"
+		echo "ProofGen install succeed!"
 	fi
-	LLVM_Bin_Path="$LLVM_Path/build/bin"
-	echo $LLVM_Bin_Path
+	ProofGen_Bin_Path="$ProofGen_Path/build/bin"
+	echo $ProofGen_Bin_Path
 	cd ../..
 else
-	echo "LLVM already exists!"
+	echo "ProofGen already exists!"
 fi
 
 echo "Install successfully!"
+cd $Bash_Dir
+
+
+echo "Configuring loader..."
+echo "Generating Makefile header..."
+CC4AS=$LLVM_MC_Path"/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig"
+echo "CC = "$CC4AS > Makefile_header4target
+cat Makefile_header4target Makefile_template4target > Makefile4target
+mv Makefile4target ./loader/target-program
+cd loader
+make
+cd target-program
+make clean-all
+echo "Generating musl-libc"
+make CC="$CC4AS"
+cd ../..
+
+echo "Configuring dyloader..."
+echo "Generating Makefile header..."
+cat Makefile_header4checker Makefile_template4checker > Makefile4checker
+mv Makefile4checker ./dynamic-loader-checker
+
+echo "Generating Makefile header..."
+
+cd dynamic-loader-checker
+make
+cd target-program
+make clean-all
+echo "Generating musl-libc"
+make CC="$CC4AS"
+
