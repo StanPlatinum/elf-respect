@@ -25,11 +25,21 @@ rm -rf elfutils4sgx
 echo "Deleting Capstone..."
 rm -rf capstone
 
-echo "Deleting ProofGen..."
-rm -rf proofGen
+echo "R U sure U want to uninstall ProofGen?"
+read -p "Type y or n" var
+if [ var == "y" ]
+then
+	echo "Deleting ProofGen..."
+	rm -rf proofGen
+fi
 
-echo "Deleting LLVM-MC..."
-rm -rf llvm-mc
+echo "R U sure U want to uninstall ProofGen?"
+read -p "Type y or n" var
+if [ var == "y" ]
+then
+	echo "Deleting LLVM-MC..."
+	rm -rf llvm-mc
+fi
 
 cd elf-respect
 
