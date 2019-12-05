@@ -30,7 +30,7 @@ We build a multi-step loader that can load a modified binary into the enclave mo
 
 Quick Start:
 
-Make sure 1) you have an 'SGX machine' (a machine whose CPU supports Intel SGX, with SGXSDK/Driver installed); 2) you have at least 10G memory (Swap could be included) and 180G disk space before having a try.
+Make sure 1) you have an 'SGX machine' (a machine whose CPU supports Intel SGX, with SGXSDK/Driver installed); 2) you have at least 10G memory (Swap could be included) and 100G disk space before having a try.
 
 The installation paths of other dependencies are in the same directory as elf-respect by default.
 
