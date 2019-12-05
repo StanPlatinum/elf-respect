@@ -1,3 +1,0 @@
-SGX_SRC_PATH = /home/liuweijie/linux-sgx
-ELFUTILS_PATH = /home/liuweijie/elfutils4sgx/elfutils-0.176
-CAPSTONE_PATH = /home/liuweijie/capstone

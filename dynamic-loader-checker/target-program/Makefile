@@ -44,12 +44,10 @@ DEBUG_OBJ = lib/my_itoa.o
 
 ASM_OBJS = $(STACK_OBJ) $(DEBUG_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
 
-all: $(MUSL_LIBC) $(TARGET_NAME).bin
+
+all: $(MUSL_LIBC) $(TARGET_NAME).bin 
 	mv $(TARGET_NAME).bin ../program
-	exist = $(shell if [ -f $(FILE) ]; then echo "exist"; else echo "notexist"; fi;)
-	ifeq (exist, "exist")
-		cp $(TARGET_NAME).txt ../entryLabel.txt
-	endif
+	cp $(TARGET_NAME).txt ../entryLabel.txt
 
 $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@

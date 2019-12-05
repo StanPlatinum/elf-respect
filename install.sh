@@ -161,7 +161,7 @@ make clean
 cd ../..
 
 
-echo "Configuring dyloader..."
+echo "Configuring dynamic-loader-checker..."
 cd dynamic-loader-checker
 echo "Generating Makefile header..."
 echo "SGX_SRC_PATH = "$SGXSDK_Source_Path > Makefile_header4checker
