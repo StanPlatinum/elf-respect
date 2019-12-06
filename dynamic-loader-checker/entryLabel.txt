@@ -1,14 +1,5 @@
+useless
 CFICheck
 exit
-max
-dpm_init
-my_strlen
-print_matrix
-print_traceback
-puts
-my_strrev
-strncat
-nw_align
-Ecall_nw
-malloc
 enclave_main
+puts

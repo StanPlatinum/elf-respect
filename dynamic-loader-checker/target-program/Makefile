@@ -1,7 +1,7 @@
-LLVM_PATH = /home/liuweijie/proofGen
-Our_AS_Path = /home/liuweijie/llvm-mc
-#Our_AS_Path = /home/weijliu/llvm-mc
-#LLVM_PATH = /home/weijliu/proofGen
+#LLVM_PATH = /home/liuweijie/proofGen
+#Our_AS_Path = /home/liuweijie/llvm-mc
+Our_AS_Path = /home/weijliu/llvm-mc
+LLVM_PATH = /home/weijliu/proofGen
 
 CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 
@@ -14,7 +14,7 @@ CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-add
 #CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
-TARGET_NAME = nw
+#TARGET_NAME = nw
 #TARGET_NAME = simple_malloc
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = foo2
@@ -27,6 +27,7 @@ TARGET_NAME = nw
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
+TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
@@ -40,10 +41,9 @@ OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
 STACK_OBJ = lib/stack.o
-DEBUG_OBJ = lib/my_itoa.o
+#DEBUG_OBJ = lib/my_itoa.o
 
 ASM_OBJS = $(STACK_OBJ) $(DEBUG_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
-
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin 
 	mv $(TARGET_NAME).bin ../program
@@ -53,9 +53,8 @@ $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@
 #	$(CC) -c $< -o $@
 
-$(DEBUG_OBJ): lib/my_itoa.c
-	$(CC4AS) -c $< -o $@
-	
+#$(DEBUG_OBJ): lib/my_itoa.c
+#	$(CC4AS) -c $< -o $@
 
 LIBNBENCH = nbench/nbench.a
 nben: $(TARGET_NAME).bin $(LIBNBENCH)
@@ -73,7 +72,9 @@ $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
 
-$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS)
+#$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
+	cp CFICheck.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
 	ls objs/*.o > list
@@ -102,8 +103,13 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 $(TARGET_NAME).s: $(TARGET_NAME).c enclave.h CFICheck.h
 	$(CC) -S -I. $< -o $@
-
 enclave_main.o: $(TARGET_NAME).s
+	$(CC) -c $< -o $@
+
+#foo1.o: foo1.c
+#	$(CC) -c $< -o $@
+
+CFICheck.o: CFICheck.c
 	$(CC) -c $< -o $@
 
 clean:
