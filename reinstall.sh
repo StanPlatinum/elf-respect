@@ -1,6 +1,59 @@
 #!/bin/bash
 # Only can be used when musl-libc already being built!
 
+Curr_Path=`pwd`
+echo "Current Path: "$Curr_Path
+
+Bash_Dir=$(cd "$(dirname "$0")";pwd)
+echo "Bash file Path: "$Bash_Dir
+
+if [ "$Curr_Path" != "$Bash_Dir" ]
+then
+        echo "Wrong install path! Please make sure you are in a right elf-respect repo!"
+        exit 1
+fi
+
+cd ..
+Install_Path=`pwd`
+echo "Re-install Path: "$Install_Path
+
+if [ ! -d "./linux-sgx" ]
+then
+        echo "No SGXSDK!"
+        exit 1
+fi
+SGXSDK_Source_Path=`pwd`"/linux-sgx"
+
+if [ ! -d "./elfutils4sgx" ]
+then
+        echo "No Libelf!"
+        exit 1
+fi
+Libelf_Path=`pwd`"/elfutils4sgx/elfutils-0.176"
+
+if [ ! -d "./capstone" ]
+then
+        echo "No Capstone!"
+        exit 1
+fi
+Capstone_Path=`pwd`"/capstone"
+
+if [ ! -d "./llvm-mc" ]
+then
+	echo "No llvm-mc!"
+	exit 1
+fi
+LLVM_MC_Path=`pwd`"/llvm-mc"
+
+if [ ! -d "./proofGen" ]
+then
+        echo "No proofGen!"
+        exit 1
+fi
+ProofGen_Path=`pwd`"/proofGen"
+
+cd elf-respect
+
 echo "Configuring loader..."
 cd loader
 make clean
