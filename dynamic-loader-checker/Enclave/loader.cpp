@@ -878,6 +878,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						Elf64_Addr mov_imm_offset = 3; //7-4=3;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm_offset);
 						rewrite_imm32(imm_addr, call_target_idx_global);
+						PrintDebugInfo("rewrite 0x1fffffff to %d\n", call_target_idx_global);
 					}
 				}
 			}

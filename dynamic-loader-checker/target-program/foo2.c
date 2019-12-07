@@ -1,6 +1,7 @@
 //#include <stdio.h>
 
 #include "enclave.h"
+#include "CFICheck.c"
 
 int fun()
 {
