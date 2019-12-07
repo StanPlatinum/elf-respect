@@ -89,28 +89,6 @@ namespace {
                         CallInst *CI = dyn_cast<CallInst>(II);
                         if (CI->isIndirectCall())
                         {
-                            // Instruction *III = dyn_cast<Instruction>(CI->getOperand(0));
-                            // III->print(errs());
-                            // errs() << "\n";
-                            // for (int i = 0; i < III->getNumOperands(); i++)
-                            // {
-                            //     III->getOperand(i)->print(errs());
-                            //     errs() << "\n";
-                            // }
-                            // errs() << "!!!\n";
-                            // for (BasicBlock::iterator IIII = BBI->begin(); IIII != BBI->end(); ++IIII)
-                            // {
-                            //     if (IIII->getOperand(0) == III->getOperand(0))
-                            //     {
-                            //         IIII--;
-                            //         for (int i = 0; i < IIII->getNumOperands(); i++)
-                            //         {
-                            //             IIII->getOperand(i)->print(errs());
-                            //             errs() << "!!!\n";
-                            //         }
-                            //         break;
-                            //     }
-                            // }
                             const long long i = 0x1111111111111111;
                             ArrayRef<Value *> arguments(ConstantInt::get( Type::getInt64Ty(M.getContext()), i, true));
                             CallInst *newInst = CallInst::Create(hook, arguments, "");
@@ -126,25 +104,28 @@ namespace {
     }
  
     bool runOnModule(Module &M) override {
-        std::error_code error;
-        const string sourceName = M.getSourceFileName();
-        int pos = sourceName.find(".", 0);
-        string name = sourceName.substr(0, pos) + ".txt";
-        //errs() << name << "\n";
+        // std::error_code error;
+        // const string sourceName = M.getSourceFileName();
+        // int pos = sourceName.find(".", 0);
+        // string name = sourceName.substr(0, pos) + ".txt";
+        // errs() << name << "\n";
         // StringRef nameR(name);
         // errs() << nameR << "\n";
         // enum sys::fs::OpenFlags F_None;
         // enum sys::fs::FileAccess FA_Write;
         // raw_fd_ostream file(name, error, FA_Write);
-        std::ofstream file(name);
-        for (auto FI = M.begin(); FI != M.end(); FI++)
-        {
-            Function &F = *FI;
-            file << F.getName().str() << "\n";
-        }
-        file.close();
-        //return insertCFIFun(M, "CFICheck");
-        return 0;
+        // std::ofstream file(name);
+        // for (auto FI = M.begin(); FI != M.end(); FI++)
+        // {
+        //     Function &F = *FI;
+        //     file << F.getName().str() << "\n";
+        // }
+        // file.close();
+        // return insertCFIFun(M, "CFICheck");
+        LLVMContext &ctx = M.getContext();
+        FunctionCallee funDeclareCFICheck = M.getOrInsertFunction("CFICheck", Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
+        FunctionCallee funDeclareExit = M.getOrInsertFunction("exit", Type::getVoidTy(ctx), Type::getInt32Ty(ctx));
+        return 1;
     }
   };
 }

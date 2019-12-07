@@ -44,11 +44,24 @@ xxx.txt is the txt file which save entry lables of this module.
  - 1 Add #include "CFICheck.c" to your source code.
  - Or add #include "CFICheck.h" to your source code and CFICheck(0) to a function in your source code.
  - 2 Execute command:
-~~~
-/your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -S yoursourcefile.c -o yourasmfile.s
-~~~
+    ~~~
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -S yoursourcefile.c -o yourasmfile.s
+    ~~~
  - 3 Now you can see yoursourcefile.txt in your source file path and yourasmfile.s.
  - 4 If you donot want to instrument CFICheck, please change "bool needInsertCFI = true;" to "bool needInsertCFI = false;" in X86ShadowStackCFI.cpp
+
+
+### UsagePlusPlus
+ - You do not need to modify your source files now.
+ - 1 Execute command to compile your source:
+    ~~~
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so -S yoursourcefile.c -o yourasmfile.s
+    ~~~
+ - 2 Execute command to compile CFICheck.c:
+    ~~~
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so CFICheck.c -o CFICheck.o
+    ~~~
+ - 3 Link your object file with CFICheck.o
 
 ***
 
