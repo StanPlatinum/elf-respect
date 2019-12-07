@@ -431,10 +431,9 @@ void PrintDebugInfo(const char *fmt, ...)
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
 	//Weijie: write 32 bits
-	//Weijie:
-	//dlog("writting: %llx", src);
 	uint32_t *dst32 = (uint32_t *)dst;
 	dst32[0] = src;
+	dlog("writting: %llx to %llx", src, (unsigned long long)dst32);
 }
 
 //Xinyu & Weijie: assume imm_Addr is a 64 bit bound, and imm_after is a 64 bit int
@@ -840,7 +839,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		int if_calltg = 0;
 		int if_setnum = 0;
 		for (j = 0; j < count; j++) {
-			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 
 			//Weijie: start checking...
 
@@ -875,8 +874,9 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 					if (op2.imm == 0x1fffffff) {
 						//Weijie: do the rewritting of CFICheckAddressNum
 						if_setnum = 1;
-						Elf64_Addr mov_imm_offset = 3; //7-4=3;
-						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm_offset);
+						//Elf64_Addr mov_imm_offset = 3; //7-4=3;
+						Elf64_Addr mov_imm32_offset = 4; //8-4=4;
+						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm32_offset);
 						rewrite_imm32(imm_addr, call_target_idx_global);
 						PrintDebugInfo("rewrite 0x1fffffff to %d\n", call_target_idx_global);
 					}
@@ -1245,8 +1245,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	//pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
