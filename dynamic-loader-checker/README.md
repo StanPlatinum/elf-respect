@@ -1,5 +1,3 @@
-This version of loader/target-program has been tested on bio-sgx06.
-
 ## Usage
 
 ***
