@@ -24,7 +24,7 @@ void useless()
 
 void enclave_main()
 {
-	unsigned long long magic = 1;
+	//unsigned long long magic = 1;
     puts("hello");
     enclave_exit();
 }

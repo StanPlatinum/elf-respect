@@ -31,10 +31,9 @@ OCALL_OBJS_DIR = lib/
 OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
-DEBUG_OBJ = lib/my_itoa.o
+#DEBUG_OBJ = lib/my_itoa.o
 
 ASM_OBJS = $(DEBUG_OBJ) lib/stack.o lib/start.o lib/ocall.o lib/rop_gadget.o
-
 
 
 LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o	\
@@ -47,13 +46,12 @@ LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o	\
 all: $(MUSL_LIBC) $(TARGET_NAME)
 	mv $(TARGET_NAME) ../program
 
-$(DEBUG_OBJ): lib/my_itoa.c
-	$(CC) -c $< -o $@
+#$(DEBUG_OBJ): lib/my_itoa.c
+#	$(CC) -c $< -o $@
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
-
 
 LIBSSL = mbedtls/libmbedtls.a
 $(LIBSSL):

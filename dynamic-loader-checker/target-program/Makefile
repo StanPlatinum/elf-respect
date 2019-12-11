@@ -15,7 +15,7 @@ CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-add
 #TARGET_NAME = nw
 #TARGET_NAME = simple_malloc
 #TARGET_NAME = malloc_and_sort
-TARGET_NAME = foo2
+#TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
 #TARGET_NAME = bm_clock
@@ -24,8 +24,8 @@ TARGET_NAME = foo2
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
-#TARGET_NAME = bm_hello
 
+TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
