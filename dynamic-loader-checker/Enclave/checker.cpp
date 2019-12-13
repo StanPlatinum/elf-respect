@@ -22,6 +22,9 @@ static void print_string_hex(unsigned char *str, size_t len)
 	PrintDebugInfo("\n");
 }
 
+//Weijie:
+#define CAPSTONE_HAS_X86
+
 static void test()
 {
 #ifdef CAPSTONE_HAS_X86
