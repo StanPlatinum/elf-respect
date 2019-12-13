@@ -308,5 +308,6 @@ static void test()
 
 void ecall_test_capstone_iter()
 {
+	PrintDebugInfo("start to test cs_disasm_iter()...\n");
 	test();
 }

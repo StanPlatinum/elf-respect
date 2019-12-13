@@ -259,7 +259,7 @@ int main(int argc, char *argv[])
 	int entrylabel_n_read = fread(entrylabel_buffer, sizeof(char), entrylabel_sz, entrylabel_fp);
 	printf("number of bytes read in entryLabel: %d\n", entrylabel_n_read);
 
-	//Weijie: call another Ecall
+	//Weijie: call Ecall
 	ecall_receive_entrylabel(eid, entrylabel_buffer, entrylabel_sz);
 	
 	fclose(entrylabel_fp);
@@ -284,13 +284,16 @@ int main(int argc, char *argv[])
 	int n_read = fread(buffer, sizeof(char), sz, fp);
 	printf("number of bytes read is %d\n", n_read);
 	
-	//Weijie: call Ecall
+	//Weijie: call another Ecall
 	ecall_receive_binary(eid, buffer, sz);
 
 	fclose(fp);
 	printf("receiving/executing binary completed.\n");
 
-	log("destroy the enclave");
+	//Weijie: call test ecall
+	ecall_test_capstone_iter(eid);
+
+	log("destroying the enclave");
 	sgx_destroy_enclave(eid);
 	return 0;
 }
