@@ -15,7 +15,7 @@ CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
 ###### Link Path Settings ######
 
 #CHECKER_Dyn_INC_PATH = -I$(CAPSTONE_PATH)/install-x86/include -I$(ELFUTILS_INC_PATH) -I/usr/include -I/usr/include/x86_64-linux-gnu
-CHECKER_Static_INC_PATH = -I$(ELFUTILS_INC_PATH) -I$(MUSL_LIBC_PATH)/install/include $(TRTS_INC_PATH)
+CHECKER_Static_INC_PATH = -I$(CAPSTONE_PATH)/include -I$(ELFUTILS_INC_PATH) -I$(MUSL_LIBC_PATH)/install/include $(TRTS_INC_PATH)
 #CHECKER_Dyn_LIB_PATH = -L$(CAPSTONE_LIB_PATH)
 CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
 

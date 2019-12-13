@@ -8,7 +8,7 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = hardware
 #TARGET_NAME = foo2
 #TARGET_NAME = nw
-TARGET_NAME = fasta
+#TARGET_NAME = fasta
 
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_clock
@@ -18,6 +18,7 @@ TARGET_NAME = fasta
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
+TARGET_NAME = bm_hello
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

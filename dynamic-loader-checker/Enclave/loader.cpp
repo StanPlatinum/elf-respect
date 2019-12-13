@@ -1,3 +1,5 @@
+#include "checker.cpp"
+
 typedef unsigned long addr_t;
 
 extern char __ss_start;         /* defined in the linker script */
@@ -839,7 +841,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		int if_calltg = 0;
 		int if_setnum = 0;
 		for (j = 0; j < count; j++) {
-			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 
 			//Weijie: start checking...
 
@@ -878,7 +880,7 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 						Elf64_Addr mov_imm32_offset = 4; //8-4=4;
 						Elf64_Addr imm_addr = get_immAddr(insn[j], mov_imm32_offset);
 						rewrite_imm32(imm_addr, call_target_idx_global);
-						PrintDebugInfo("rewrite 0x1fffffff to %d\n", call_target_idx_global);
+						//PrintDebugInfo("rewrite 0x1fffffff to %d\n", call_target_idx_global);
 					}
 				}
 			}
@@ -907,6 +909,8 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int longfunc_call_safe = 0;
 		int longfunc_ret_safe = 0;
 		int indirect_call_safe = 0;
+		int forward_farthest = 13;
+		int backward_farthest = 8;
 		for (j = 0; j < count; j++) {
 			//Weijie: comment for benchmarking
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
