@@ -306,11 +306,7 @@ static void test()
 	}
 }
 
-/*
-int main()
+void ecall_test_capstone_iter()
 {
 	test();
-
-	return 0;
 }
-*/

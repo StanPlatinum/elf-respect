@@ -33,19 +33,17 @@
 
 enclave {
 
-    /* Weijie: must include the following line, otherwise the compiling won't pass */
+    /* Weijie: use my customized header */
     include "libelf_extra_types.h"
 
-    /* Weijie: use an ECALL to receive target binary and load it into the 32M blob */
+    /* Weijie: use an ECALL to receive target binary and load it into the blob */
     trusted {
-	//Weijie: try "out"
-	//public void ecall_receive_binary([out, size=sz] char *buffer, int sz);
-	//public void ecall_receive_binary([in, size=sz] char *buffer, int sz);
 	//Xinyu & Weijie: try "user_check"
 	public void ecall_receive_binary([user_check] char *buffer, int sz);
 	public void ecall_receive_entrylabel([user_check] char *buffer, int sz);
     };
-
+	/* Weijie: test for cs_disasm_iter() */
+	//public void ecall_test_capstone_iter();
     /* 
      * ocall_print_string - invokes OCALL to display string buffer inside the enclave.
      *  [in]: copy the string buffer to App outside.

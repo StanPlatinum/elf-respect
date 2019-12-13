@@ -1,5 +1,3 @@
-#include "checker.cpp"
-
 typedef unsigned long addr_t;
 
 extern char __ss_start;         /* defined in the linker script */
@@ -1267,3 +1265,4 @@ void ecall_receive_binary(char *binary, int sz)
 
 }
 
+#include "checker.cpp"
