@@ -1,9 +1,15 @@
+LLVM_PATH = /home/weijliu/proofGen
+
+LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
+CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
+
+#CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
+CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 # Also see "include/mbedtls/config.h"
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
-LIBSGXDIR = ../../../libsgx
-CFLAGS = $(BASE_CFLAGS) -I$(LIBSGXDIR)/include -I$(LIBSGXDIR)/musl-libc/include \
+CFLAGS = $(BASE_CFLAGS) -I../musl-libc/include \
 		 -fno-stack-protector -fvisibility=hidden
 
 LOCAL_CFLAGS = -Iinclude -I../ -D_FILE_OFFSET_BITS=64
@@ -66,6 +72,7 @@ libmbedcrypto.a: $(OBJS_CRYPTO)
 
 %.o: %.c
 	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) -c $<
+#	$(CC) -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so $< -o $@
 
 clean:
 	rm -f *.o libmbed*

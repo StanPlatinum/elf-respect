@@ -1,0 +1,7 @@
+mbedtls_base64_encode
+mbedtls_base64_decode
+mbedtls_base64_self_test
+printf
+memcmp
+CFICheck
+exit

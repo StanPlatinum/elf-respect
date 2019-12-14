@@ -1,0 +1,12 @@
+mbedtls_platform_entropy_poll
+check_version_3_17_plus
+getrandom_wrapper
+fopen64
+fread
+fclose
+mbedtls_hardclock_poll
+mbedtls_timing_hardclock
+uname
+syscall
+CFICheck
+exit

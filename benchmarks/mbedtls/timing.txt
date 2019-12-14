@@ -1,0 +1,14 @@
+mbedtls_timing_hardclock
+mbedtls_timing_get_timer
+gettimeofday
+mbedtls_set_alarm
+signal
+sighandler
+alarm
+mbedtls_timing_set_delay
+mbedtls_timing_get_delay
+mbedtls_timing_self_test
+printf
+busy_msleep
+CFICheck
+exit
