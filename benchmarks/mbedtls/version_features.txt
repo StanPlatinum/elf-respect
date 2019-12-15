@@ -1,4 +1,0 @@
-mbedtls_version_check_feature
-strcmp
-CFICheck
-exit

@@ -46,6 +46,11 @@ OBJS_TLS=	debug.o		net.o		ssl_cache.o	\
 .PHONY: all static clean
 
 all: static
+	cat *.txt > entryLabel4ssl
+	sort entryLabel4ssl | uniq > entryLabel4ssl.txt
+	rm entryLabel4ssl
+	mv entryLabel4ssl.txt ..
+	rm *.txt
 
 static: libmbedcrypto.a libmbedx509.a libmbedtls.a ssl_server.o
 

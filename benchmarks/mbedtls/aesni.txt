@@ -1,7 +1,0 @@
-mbedtls_aesni_has_support
-mbedtls_aesni_crypt_ecb
-mbedtls_aesni_gcm_mult
-mbedtls_aesni_inverse_key
-mbedtls_aesni_setkey_enc
-CFICheck
-exit

@@ -1,5 +1,0 @@
-mbedtls_version_get_number
-mbedtls_version_get_string
-mbedtls_version_get_string_full
-CFICheck
-exit
