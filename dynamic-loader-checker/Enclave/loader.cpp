@@ -426,6 +426,9 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <trts_internal.h>
 #include <trts_util.h>
 
+#include <capstone/platform.h>
+#include <capstone/capstone.h>
+
 /****************************** rewriter part ******************************/
 
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
@@ -1061,6 +1064,29 @@ int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr te
 	return 0;
 }
 
+int cs_disasm_iter_entry(unsigned char* buf, Elf64_Xword textSize, Elf64_Addr textAddr) {
+	csh handle;
+	cs_insn *insn;
+	const uint8_t *code;
+	
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+
+	insn = cs_malloc(handle);
+	code = buf;
+	while(cs_disasm_iter(handle, &code, &textSize, &textAddr, insn)) {
+		PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn->address, insn->mnemonic, insn->op_str);
+	}
+
+	cs_free(insn, 1);
+	cs_close(&handle);
+	return 0;
+}
+
 void rewrite_whole()
 {
 	int j;
@@ -1129,7 +1155,8 @@ void disasm_whole()
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				rv = cs_disasm_entry(buf, textSize, textAddr);
+				//rv = cs_disasm_entry(buf, textSize, textAddr);
+				rv = cs_disasm_iter_entry(buf, textSize, textAddr);
 				free(buf);
 			}
 			
@@ -1265,4 +1292,4 @@ void ecall_receive_binary(char *binary, int sz)
 
 }
 
-#include "checker.cpp"
+//#include "checker.cpp.bak"

@@ -42,7 +42,7 @@ enclave {
 	public void ecall_receive_binary([user_check] char *buffer, int sz);
 	public void ecall_receive_entrylabel([user_check] char *buffer, int sz);
 	//Weijie: test cs_disasm_iter()
-	public void ecall_test_capstone_iter();
+	//public void ecall_test_capstone_iter();
     };
     /* 
      * ocall_print_string - invokes OCALL to display string buffer inside the enclave.
