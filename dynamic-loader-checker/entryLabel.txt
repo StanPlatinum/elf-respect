@@ -1,5 +1,8 @@
-useless
 CFICheck
 exit
 enclave_main
+sort
 puts
+sprintf
+binsearch
+check

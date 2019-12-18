@@ -1,7 +1,7 @@
 #include <capstone/platform.h>
 #include <capstone/capstone.h>
 
-#define X86_CODE64 "\x55\x48\x8b\x05\xb8\x13\x00\x00"
+#define X86_CODE64 "\x55\x48\x8b\x05\xb8\x13\x00\x00\x55\x48\x8b\x05\xb8\x13\x00\x00"
 static void test()
 {
 	csh handle;

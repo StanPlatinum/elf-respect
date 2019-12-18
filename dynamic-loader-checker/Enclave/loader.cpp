@@ -1037,7 +1037,9 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 
 /***************************** disasm part ******************************/
 
-/* Weijie: used be an ecall of whole cs_open/disasm/close */
+/* Weijie: 
+ * Obsoleted.
+ * Used be an ecall of whole cs_open/disasm/close */
 int cs_disasm_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr) {
 	csh handle;
 	cs_insn *insn;
@@ -1274,8 +1276,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	pr_progress("debugging: validate if rewrites fine");
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
@@ -1292,4 +1294,4 @@ void ecall_receive_binary(char *binary, int sz)
 
 }
 
-//#include "checker.cpp.bak"
+#include "checker.cpp"
