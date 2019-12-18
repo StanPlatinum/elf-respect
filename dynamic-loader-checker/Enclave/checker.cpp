@@ -1,8 +1,7 @@
 #include <capstone/platform.h>
 #include <capstone/capstone.h>
 
-#define X86_CODE64 "\x55\x48\x8b\x05\xb8\x13\x00\x00\x55\x48\x8b\x05\xb8\x13\x00\x00"
-#define X86_CODE64_2 "\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
+#define X86_CODE64 "\x55\x48\x8b\x05\xb8\x13\x00\x00\x55\x48\x8b\x05\xb8\x13\x00\x00\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff\x55\x48\x8b\x05\xb8\x13\x00\x00\x55\x48\x8b\x05\xb8\x13\x00\x00\x55\x48\x8b\x05\xb8\x13\x00\x00\xe9\xea\xbe\xad\xde\xff\x25\x23\x01\x00\x00\xe8\xdf\xbe\xad\xde\x74\xff"
 
 /******************************** linklist operations ********************************/
 
@@ -13,16 +12,14 @@
 typedef cs_insn ElementType;
 typedef struct node
 {
-	ElementType data;    // 结点的数据
-	struct node *next;   // 结点指针
+	ElementType data;
+	struct node *next;
 }Node;
-typedef Node *PNode;     // 重命名结点指针类型
+typedef Node *PNode;
 
-// 头插法创建链表
 //int Create_List_Head(struct node ** head, ElementType data)
 int Create_List_Head(PNode *h, ElementType data)
 {
-	// 创建一个新的结点
 	//struct node * node = (struct node *)malloc(sizeof(Node)/sizeof(char));
 	PNode p = (PNode)malloc(sizeof(Node)/sizeof(char));
 	if (p == NULL)
@@ -30,13 +27,11 @@ int Create_List_Head(PNode *h, ElementType data)
 		return MALLOC_ERROR;
 	}
 	
-	// 将新数据赋给新结点
 	p->data = data;
 	p->next = *h;
 	*h = p;
 }
 
-// 尾插法创建链表
 int Create_List_Tail(PNode *h, ElementType data)
 {
 	PNode node = (PNode)malloc(sizeof(Node)/sizeof(char));
@@ -47,16 +42,14 @@ int Create_List_Tail(PNode *h, ElementType data)
 	node->data = data;
 	node->next = NULL;
 	
-	// 将node加入到链表最后，此处要考虑是否非空表
-  	if (*h == NULL)   // 空表
+  	if (*h == NULL)   
 	{
 		*h = node;
 	} 
-	else              // 非空表
+	else            
 	{
 		PNode temp = *h;
 		
-		// 找最后一个结点
 		while (temp->next)
 		{
 			temp = temp->next;
@@ -71,17 +64,16 @@ void DisPlay(PNode head)
 {
 	if (head == NULL)
 	{
-		printf ("该链表是空表!\n");
 		return;
 	}
 	PNode temp = head;
 	while (temp)
 	{
-		printf ("%4d", temp->data);
+		PrintDebugInfo("%s", (temp->data).mnemonic);
 		temp = temp->next;
 	}
 	
-	printf ("\n");
+	PrintDebugInfo("\n");
 }
 
 /******************************** test ********************************/
