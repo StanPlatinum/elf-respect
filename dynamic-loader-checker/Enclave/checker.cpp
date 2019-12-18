@@ -6,6 +6,10 @@
 
 /******************************** linklist operations ********************************/
 
+#define OK            0
+#define ERROR        -1
+#define MALLOC_ERROR -2 
+
 typedef cs_insn ElementType;
 typedef struct node
 {
