@@ -10,69 +10,95 @@
 #define MALLOC_ERROR -2 
 
 typedef cs_insn ElementType;
-typedef struct node
+typedef struct s_node
 {
 	ElementType data;
-	struct node *next;
+	struct s_node* pNext;
 }Node;
-typedef Node *PNode;
 
-//int Create_List_Head(struct node ** head, ElementType data)
-int Create_List_Head(PNode *h, ElementType data)
+Node* create_list_head();
+Node* create_new_node(int node_data);
+int add_node_head(Node* head, Node* new_node);
+void display_list(Node* head);
+void free_list(Node* head);
+Node* revert_list(Node* head);
+
+
+Node* create_list_head()
 {
-	//struct node * node = (struct node *)malloc(sizeof(Node)/sizeof(char));
-	PNode p = (PNode)malloc(sizeof(Node)/sizeof(char));
-	if (p == NULL)
+	Node* head = (Node*)malloc(sizeof(Node));
+	if(NULL != head)
 	{
-		return MALLOC_ERROR;
+		head->data= -1;
+		head->pNext= NULL;	
 	}
-	
-	p->data = data;
-	p->next = *h;
-	*h = p;
+	return head;
+} 
+ 
+Node* create_new_node(ElementType node_data)
+{
+	Node* new_node = (Node*)malloc(sizeof(Node));
+	if(NULL != new_node)
+	{
+		new_node->data= node_data;
+		new_node->pNext= NULL;	
+	}	
+	return new_node;
 }
-
-int Create_List_Tail(PNode *h, ElementType data)
+ 
+int add_node_head(Node* head, Node* new_node)
 {
-	PNode node = (PNode)malloc(sizeof(Node)/sizeof(char));
-	if (node == NULL)
-	{
-		return MALLOC_ERROR;
-	}
-	node->data = data;
-	node->next = NULL;
-	
-  	if (*h == NULL)   
-	{
-		*h = node;
-	} 
-	else            
-	{
-		PNode temp = *h;
-		
-		while (temp->next)
-		{
-			temp = temp->next;
-		}
-		temp->next = node;
-	}
-	return OK;
-}
-
-void DisPlay(PNode head)
+	if(NULL == head || NULL == new_node)
+		return -1;
+ 	new_node->pNext = head->pNext;
+	head->pNext = new_node;
+	return 0; 
+} 
+ 
+void display_list(Node* head)
 {
-	if (head == NULL)
-	{
+	if(NULL == head)
 		return;
-	}
-	PNode temp = head;
-	while (temp)
+	Node* tmp = head;
+	printf("list data:");
+	while(NULL !=(tmp=tmp->pNext))
 	{
-		PrintDebugInfo("%s", (temp->data).mnemonic);
-		temp = temp->next;
+		printf("%d  ", tmp->data);
+	}
+	printf("\n");
+}
+ 
+void free_list(Node* head)
+{
+	if(NULL == head) 
+		return;
+	Node* p = head;
+	while(p = p->pNext)
+	{
+		head->pNext = p->pNext;
+		//printf("free:%d\n", p->data);
+		free(p);
+		p = head;
+	}
+	free(head);
+} 
+ 
+Node* revert_list(Node* head)
+{
+	if(NULL == head)
+		return;
+ 
+	Node* p = head->pNext;
+	head->pNext= NULL;
+	Node* tmp = NULL;
+	while(p)
+	{
+		tmp = p->pNext;
+		add_node_head(head, p); 
+		p = tmp;	
 	}
 	
-	PrintDebugInfo("\n");
+	return head;
 }
 
 /******************************** test ********************************/
@@ -94,6 +120,15 @@ static void test()
 		abort();
 	}
 
+	//Weijie: create forward list
+	Node* head = create_list_head();
+	if(NULL == head)
+	{
+		printf("create forward list head failed!\n");
+		return -1;
+	}
+
+	
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
 	// allocate memory for the cache to be used by cs_disasm_iter()
 	insn = cs_malloc(handle);
@@ -105,9 +140,17 @@ static void test()
 
 	while(cs_disasm_iter(handle, &code, &size, &address, insn)) {
 
-		//Weijie:
-		//Create_List_Head();
-
+		//Weijie: add &insn to forward list
+		add_node_head(head, create_new_node(&insn));
+		PrintDebugInfo("befor reverse"); 
+		display_list(head);
+	
+		head = revert_list(head); 
+		PrintDebugInfo("after reverse"); 
+		display_list(head);
+	
+		free_list(head);
+		
 		int n;
 		PrintDebugInfo("0x%" PRIx64 ":\t%s\t\t%s // insn-ID: %u, insn-mnem: %s\n",
 				insn->address, insn->mnemonic, insn->op_str,
