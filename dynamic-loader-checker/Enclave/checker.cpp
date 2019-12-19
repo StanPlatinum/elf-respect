@@ -17,7 +17,7 @@ typedef struct s_node
 }Node;
 
 Node* create_list_head();
-Node* create_new_node(int node_data);
+Node* create_new_node(ElementType node_data);
 int add_node_head(Node* head, Node* new_node);
 void display_list(Node* head);
 void free_list(Node* head);
@@ -29,7 +29,7 @@ Node* create_list_head()
 	Node* head = (Node*)malloc(sizeof(Node));
 	if(NULL != head)
 	{
-		head->data= -1;
+		head->data= {NULL};
 		head->pNext= NULL;	
 	}
 	return head;
@@ -86,7 +86,7 @@ void free_list(Node* head)
 Node* revert_list(Node* head)
 {
 	if(NULL == head)
-		return;
+		return NULL;
  
 	Node* p = head->pNext;
 	head->pNext= NULL;
@@ -125,7 +125,6 @@ static void test()
 	if(NULL == head)
 	{
 		printf("create forward list head failed!\n");
-		return -1;
 	}
 
 	
@@ -141,7 +140,7 @@ static void test()
 	while(cs_disasm_iter(handle, &code, &size, &address, insn)) {
 
 		//Weijie: add &insn to forward list
-		add_node_head(head, create_new_node(&insn));
+		add_node_head(head, create_new_node(*insn));
 		PrintDebugInfo("befor reverse"); 
 		display_list(head);
 	
