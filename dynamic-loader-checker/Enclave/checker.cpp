@@ -56,7 +56,6 @@ int Create_List_Tail(PNode *h, ElementType data)
 		}
 		temp->next = node;
 	}
-	
 	return OK;
 }
 
@@ -105,6 +104,10 @@ static void test()
 	PrintDebugInfo("Disasm:\n");
 
 	while(cs_disasm_iter(handle, &code, &size, &address, insn)) {
+
+		//Weijie:
+		//Create_List_Head();
+
 		int n;
 		PrintDebugInfo("0x%" PRIx64 ":\t%s\t\t%s // insn-ID: %u, insn-mnem: %s\n",
 				insn->address, insn->mnemonic, insn->op_str,
