@@ -1,4 +1,4 @@
-# Privacy-preserving TEE prototype on a Service-Oriented Environment
+# S(gx)ELF-respect: Privacy-preserving TEE prototype on a Service-Oriented Environment
 
 ***
 
