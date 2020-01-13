@@ -57,7 +57,8 @@ $(MUSL_LIBC):
 
 LIBSSL = mbedtls/libmbedtls.a
 $(LIBSSL):
-		$(MAKE) -C mbedtls
+	$(MAKE) -C all
+#	$(MAKE) -C mbedtls
 
 https: $(TARGET_NAME) $(LIBSSL)
 	cp mbedtls/*.o objs
