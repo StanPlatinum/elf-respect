@@ -20,6 +20,8 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = bm_sort_and_binsearch
 TARGET_NAME = bm_hello
 
+SSL_SERVER = ssl_server
+
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 NOLIBC_FLAG = -nodefaultlibs -nostdlib
@@ -60,12 +62,16 @@ $(LIBSSL):
 	$(MAKE) -C all
 #	$(MAKE) -C mbedtls
 
-https: $(TARGET_NAME) $(LIBSSL)
+
+$(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) $(LIBGCC)
+	cp lib/*.o objs
+	cp libgcc/*.o objs
+
+https: $(MUSL_LIBC) $(SSL_SERVER) $(LIBSSL)
 	cp mbedtls/*.o objs
-	echo '' > objs/enclave_main.o
-	rm objs/enclave_main.o
 	ls objs/*.o > list
 	cat list | ./tools/linker https
+	@echo "Build successfully!"
 
 
 LIBNBENCH = nbench/nbench.a
@@ -94,6 +100,10 @@ lib/%.o: lib/%.s
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
+objs/libc_sslserver.a: $(SSL_SERVER).o malloc.o $(MUSL_LIBC)
+	cp $^ objs/
+	$(MAKE) -C objs libc_sslserver.a
+
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 	cp $^ objs/
 	$(MAKE) -C objs
@@ -104,6 +114,12 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 enclave_main.o: $(TARGET_NAME).c enclave.h
 	$(CC) -S -I. -o $(TARGET_NAME).s $<
 	$(CC) -c $(TARGET_NAME).s -o $@
+
+#mbedtls_Flag = -lmbedtls -lmbedcrypto -lmbedx509
+
+$(SSL_SERVER).o: $(SSL_SERVER).c enclave.h
+	$(CC) -S -I./mbedtls/include -I./musl-libc/include -o $(SSL_SERVER).s $< 
+	$(CC) -c $(SSL_SERVER).s -o $@
 
 clean:
 	rm -f *.s *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME)

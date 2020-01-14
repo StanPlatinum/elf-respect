@@ -41,7 +41,8 @@ OBJS_TLS=	debug.o		net.o		ssl_cache.o	\
 
 all: static
 
-static: libmbedcrypto.a libmbedx509.a libmbedtls.a ssl_server.o
+#static: libmbedcrypto.a libmbedx509.a libmbedtls.a ssl_server.o
+static: libmbedcrypto.a libmbedx509.a libmbedtls.a
 
 # tls
 libmbedtls.a: $(OBJS_TLS)
