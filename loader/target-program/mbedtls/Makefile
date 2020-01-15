@@ -2,8 +2,8 @@
 # Also see "include/mbedtls/config.h"
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
-LIBSGXDIR = ../../../libsgx
-CFLAGS = $(BASE_CFLAGS) -I$(LIBSGXDIR)/include -I$(LIBSGXDIR)/musl-libc/include \
+
+CFLAGS = $(BASE_CFLAGS) -I$(LIBSGXDIR)/musl-libc/include \
 		 -fno-stack-protector -fvisibility=hidden
 
 LOCAL_CFLAGS = -Iinclude -I../ -D_FILE_OFFSET_BITS=64

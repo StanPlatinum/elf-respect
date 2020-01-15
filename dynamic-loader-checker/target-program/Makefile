@@ -23,9 +23,10 @@ CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-add
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
-TARGET_NAME = bm_sort_and_binsearch
+#TARGET_NAME = bm_sort_and_binsearch
 
-#TARGET_NAME = bm_hello
+TARGET_NAME = bm_hello
+#TARGET_NAME = misc
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

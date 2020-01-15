@@ -57,11 +57,9 @@ $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
 
-LIBSSL = mbedtls/libmbedtls.a
+LIBSSL = mbedtls/libmbedtls.a mbedtls/libmbedcrypto.a mbedtls/libmbedx509.a
 $(LIBSSL):
 	$(MAKE) -C all
-#	$(MAKE) -C mbedtls
-
 
 $(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) $(LIBGCC)
 	cp lib/*.o objs
@@ -106,7 +104,7 @@ objs/libc_sslserver.a: $(SSL_SERVER).o malloc.o $(MUSL_LIBC)
 
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 	cp $^ objs/
-	$(MAKE) -C objs
+	$(MAKE) -C objs libs_targetprogram.a
 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
