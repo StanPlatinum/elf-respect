@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include "source.h"
+
+#include <iostream>
+
 #define Rate 9 //错误率
 #define Train 112   //训练数据组数
 #define Test 32		//测试数据组数
@@ -34,6 +37,7 @@ char Read(FILE* fp) {//读入数据
 //主程序
 int main()
 {
+	//Weijie: testNet is the key structure
 	BpNet testNet;
 	//int innode;
 	cout << "BP net for Credit Rating" << endl << "Version:5.19" << endl ;
@@ -72,6 +76,7 @@ int main()
 		sampleInOut[i].in = samplein[i];
 		sampleInOut[i].out = sampleout[i];
 	}
+
 	vector<sample> sampleGroup(sampleInOut, sampleInOut + Train);
 	testNet.training(sampleGroup, Rate);
 
@@ -97,6 +102,8 @@ int main()
 
 	// 预测测试数据，并输出结果
 	testNet.predict(testGroup);
+
+	//Weijie: do the output
 	for (int i = 0; i < testGroup.size(); i++)
 	{
 		int j = 0;

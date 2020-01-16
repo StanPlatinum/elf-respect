@@ -1,10 +1,8 @@
-#pragma once
-
-#include <iostream>
-#include <cmath>
 #include <vector>
+
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 using namespace std;
 #define innode 5     //输入结点数

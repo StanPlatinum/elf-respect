@@ -1,8 +1,7 @@
-#pragma once
 #include "BPnet.h"
+
 #include <assert.h>
-#include <algorithm>
-using namespace std;
+
 double lasterror = 0;
 
 BpNet::BpNet()
@@ -190,8 +189,10 @@ void BpNet::training(vector<sample> sampleGroup, double threshold)
 	while (error > threshold)
 		//for (int curTrainingTime = 0; curTrainingTime < trainingTime; curTrainingTime++)
 	{
-		cout << "training error: " << error;
-		cout << "       LearningRate: " << learningRate << endl;
+		//Weijie: comment the 'couts'
+		//cout << "training error: " << error;
+		//cout << "       LearningRate: " << learningRate << endl;
+
 		error = 0.f;         //重置error为0
 		// initialize delta sum
 		for (int i = 0; i < innode; i++) inputLayer[i]->wDeltaSum.assign(inputLayer[i]->wDeltaSum.size(), 0.f);
@@ -266,14 +267,14 @@ void BpNet::training(vector<sample> sampleGroup, double threshold)
 
 		//自适应学习率调整
 		//if (error > 10.23)
-			if (error > lasterror) {
-				learningRate *= 0.5;
-				learningRate = max(learningRate, 0.01);
-			}
-			else {
-				learningRate *= 1.05;
-				learningRate = min(learningRate, 1.0);
-			}
+		if (error > lasterror) {
+			learningRate *= 0.5;
+			learningRate = max(learningRate, 0.01);
+		}
+		else {
+			learningRate *= 1.05;
+			learningRate = min(learningRate, 1.0);
+		}
 		//assert(learningRate < 1.1 && learningRate >0);
 		lasterror = error;
 	}
