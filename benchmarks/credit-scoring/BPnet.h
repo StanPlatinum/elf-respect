@@ -10,7 +10,7 @@ using namespace std;
 #define hidelayer 1     //隐含层数
 #define outnode 1       //输出结点数
 //#define learningRate 0.95//学习速率，alpha
-double learningRate=0.5;
+//double learningRate=0.5;
 
 // --- -1~1 随机数产生器 ---
 inline double get_11Random()    // -1 ~ 1

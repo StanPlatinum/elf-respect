@@ -1,12 +1,18 @@
-#include <stdio.h>
 #include "source.h"
 
+#include <stdio.h>
 #include <iostream>
 
 #define Rate 9 //错误率
 #define Train 112   //训练数据组数
-#define Test 32		//测试数据组数
+#define Test 32     //测试数据组数
 #define F innode        //指标个数
+
+//Weijie: these following should be dealt with sgx8edger8 tool
+
+void ecall_train(BpNet testNet, vector<sample> sampleGroup);
+
+void ecall_predict(BpNet testNet, vector<sample> testGroup);
 
 int Readint(FILE* fp) {//读入数据
 	char ch = '#';
@@ -33,12 +39,11 @@ char Read(FILE* fp) {//读入数据
 	}
 }
 
-
-//主程序
 int main()
 {
 	//Weijie: testNet is the key structure
 	BpNet testNet;
+
 	//int innode;
 	cout << "BP net for Credit Rating" << endl << "Version:5.19" << endl ;
 
@@ -77,8 +82,11 @@ int main()
 		sampleInOut[i].out = sampleout[i];
 	}
 
+	cout << "training..." << endl;
 	vector<sample> sampleGroup(sampleInOut, sampleInOut + Train);
-	testNet.training(sampleGroup, Rate);
+	//Weijie: ecall
+	//testNet.training(sampleGroup, Rate);
+	ecall_train(testNet, sampleGroup);
 
 	// 测试数据
 	vector<double> testin[Test];
@@ -98,12 +106,15 @@ int main()
 	cout << "Result:" << endl;
 	sample testInOut[Test];
 	for (int i = 0; i < Test; i++) testInOut[i].in = testin[i];
-	vector<sample> testGroup(testInOut, testInOut + Test);
 
-	// 预测测试数据，并输出结果
-	testNet.predict(testGroup);
+	cout << "predicting..." << endl;
+	vector<sample> testGroup(testInOut, testInOut + Test);
+	//Weijie: ecall
+	//testNet.predict(testGroup);
+	ecall_predict(testNet, testGroup);
 
 	//Weijie: do the output
+	cout << "test group size: " << testGroup.size() << endl;
 	for (int i = 0; i < testGroup.size(); i++)
 	{
 		int j = 0;

@@ -1,8 +1,12 @@
+#ifndef _SOURCE_H_
+#define _SOURCE_H_
+
 #include "BPnet.h"
 
 #include <assert.h>
 
 double lasterror = 0;
+double learningRate=0.5;
 
 BpNet::BpNet()
 {
@@ -344,3 +348,5 @@ void BpNet::setOutput(vector<double> sampleOut)
 {
 	for (int i = 0; i < outnode; i++) outputLayer[i]->rightout = sampleOut[i];
 }
+
+#endif
