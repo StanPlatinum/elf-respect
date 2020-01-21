@@ -10,9 +10,9 @@
 
 //Weijie: these following should be dealt with sgx8edger8 tool
 
-void ecall_train(BpNet testNet, vector<sample> sampleGroup);
+void ecall_train(BpNet testNet, vector<sample>& sampleGroup);
 
-void ecall_predict(BpNet testNet, vector<sample> testGroup);
+void ecall_predict(BpNet testNet, vector<sample>& testGroup);
 
 int Readint(FILE* fp) {//∂¡»Î ˝æ›
 	char ch = '#';
