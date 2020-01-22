@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c" "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn/CMakeFiles/BPNN.dir/bpnn.c.o"
-  "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c" "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.o"
+  "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c" "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn/CMakeFiles/BPNN.dir/bpnn.c.o"
+  "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c" "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

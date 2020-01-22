@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c" "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/test_bpnn.dir/test_bpnn.c.o"
+  "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c" "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/test_bpnn.dir/test_bpnn.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 
@@ -15,7 +15,7 @@ set(CMAKE_C_TARGET_INCLUDE_PATH
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/liuweijie/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn/CMakeFiles/BPNN.dir/DependInfo.cmake"
+  "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn/CMakeFiles/BPNN.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.5)
 
 set(BPNN_INC_FILES bpnn.h bpnn_config.h bpnn_fit.h)
 set(BPNN_SRC_FILES bpnn.c bpnn_fit.c)

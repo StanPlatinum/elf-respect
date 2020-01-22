@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../bpnn/bpnn.h
+string.h
+-
+stdlib.h
+-
+stdbool.h
+-
+bpnn_config.h
+../bpnn/bpnn_config.h
+
+../bpnn/bpnn_config.h
+
+/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c
+stdio.h
+-
+assert.h
+-
+bpnn.h
+/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn.h
+

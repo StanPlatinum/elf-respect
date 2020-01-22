@@ -1,1 +1,1 @@
-/usr/bin/cc -O3 -DNDEBUG   CMakeFiles/test_bpnn.dir/test_bpnn.c.o  -o test_bpnn bpnn/libBPNN.a -lm 
+/usr/bin/cc  -O3 -DNDEBUG   CMakeFiles/test_bpnn.dir/test_bpnn.c.o  -o test_bpnn bpnn/libBPNN.a -lm 
