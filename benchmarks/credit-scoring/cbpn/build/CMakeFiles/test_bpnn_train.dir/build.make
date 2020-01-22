@@ -60,15 +60,15 @@ include CMakeFiles/test_bpnn_train.dir/flags.make
 CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o: CMakeFiles/test_bpnn_train.dir/flags.make
 CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o: ../test_bpnn_train.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o"
-	/usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c
+	/home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c
 
 CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.i"
-	/usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c > CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.i
+	/home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c > CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.i
 
 CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.s"
-	/usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c -o CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.s
+	/home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn_train.c -o CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.s
 
 CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o.requires:
 

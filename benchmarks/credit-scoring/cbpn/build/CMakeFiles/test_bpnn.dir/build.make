@@ -60,15 +60,15 @@ include CMakeFiles/test_bpnn.dir/flags.make
 CMakeFiles/test_bpnn.dir/test_bpnn.c.o: CMakeFiles/test_bpnn.dir/flags.make
 CMakeFiles/test_bpnn.dir/test_bpnn.c.o: ../test_bpnn.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/test_bpnn.dir/test_bpnn.c.o"
-	/usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/test_bpnn.dir/test_bpnn.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c
+	/home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/test_bpnn.dir/test_bpnn.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c
 
 CMakeFiles/test_bpnn.dir/test_bpnn.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/test_bpnn.dir/test_bpnn.c.i"
-	/usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c > CMakeFiles/test_bpnn.dir/test_bpnn.c.i
+	/home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c > CMakeFiles/test_bpnn.dir/test_bpnn.c.i
 
 CMakeFiles/test_bpnn.dir/test_bpnn.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/test_bpnn.dir/test_bpnn.c.s"
-	/usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c -o CMakeFiles/test_bpnn.dir/test_bpnn.c.s
+	/home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/test_bpnn.c -o CMakeFiles/test_bpnn.dir/test_bpnn.c.s
 
 CMakeFiles/test_bpnn.dir/test_bpnn.c.o.requires:
 

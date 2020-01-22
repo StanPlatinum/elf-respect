@@ -60,15 +60,15 @@ include bpnn/CMakeFiles/BPNN.dir/flags.make
 bpnn/CMakeFiles/BPNN.dir/bpnn.c.o: bpnn/CMakeFiles/BPNN.dir/flags.make
 bpnn/CMakeFiles/BPNN.dir/bpnn.c.o: ../bpnn/bpnn.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building C object bpnn/CMakeFiles/BPNN.dir/bpnn.c.o"
-	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/BPNN.dir/bpnn.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c
+	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/BPNN.dir/bpnn.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c
 
 bpnn/CMakeFiles/BPNN.dir/bpnn.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/BPNN.dir/bpnn.c.i"
-	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c > CMakeFiles/BPNN.dir/bpnn.c.i
+	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c > CMakeFiles/BPNN.dir/bpnn.c.i
 
 bpnn/CMakeFiles/BPNN.dir/bpnn.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/BPNN.dir/bpnn.c.s"
-	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c -o CMakeFiles/BPNN.dir/bpnn.c.s
+	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn.c -o CMakeFiles/BPNN.dir/bpnn.c.s
 
 bpnn/CMakeFiles/BPNN.dir/bpnn.c.o.requires:
 
@@ -84,15 +84,15 @@ bpnn/CMakeFiles/BPNN.dir/bpnn.c.o.provides.build: bpnn/CMakeFiles/BPNN.dir/bpnn.
 bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.o: bpnn/CMakeFiles/BPNN.dir/flags.make
 bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.o: ../bpnn/bpnn_fit.c
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.o"
-	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/BPNN.dir/bpnn_fit.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c
+	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/BPNN.dir/bpnn_fit.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c
 
 bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/BPNN.dir/bpnn_fit.c.i"
-	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c > CMakeFiles/BPNN.dir/bpnn_fit.c.i
+	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c > CMakeFiles/BPNN.dir/bpnn_fit.c.i
 
 bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/BPNN.dir/bpnn_fit.c.s"
-	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /usr/bin/cc  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c -o CMakeFiles/BPNN.dir/bpnn_fit.c.s
+	cd /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/bpnn && /home/weijliu/llvm-mc/build/bin/clang  $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/bpnn/bpnn_fit.c -o CMakeFiles/BPNN.dir/bpnn_fit.c.s
 
 bpnn/CMakeFiles/BPNN.dir/bpnn_fit.c.o.requires:
 

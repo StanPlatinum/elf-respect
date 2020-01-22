@@ -1,6 +1,6 @@
 The system is: Linux - 4.4.0-154-generic - x86_64
 Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
-Compiler: /usr/bin/cc 
+Compiler: /home/weijliu/llvm-mc/build/bin/clang 
 Build flags: 
 Id flags: 
 
@@ -10,10 +10,10 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
 
-The C compiler identification is GNU, found in "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/3.5.1/CompilerIdC/a.out"
+The C compiler identification is Clang, found in "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/3.5.1/CompilerIdC/a.out"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
-Compiler: /usr/bin/c++ 
+Compiler: /home/weijliu/llvm-mc/build/bin/clang++ 
 Build flags: 
 Id flags: 
 
@@ -23,44 +23,51 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
 
-The CXX compiler identification is GNU, found in "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/3.5.1/CompilerIdCXX/a.out"
+The CXX compiler identification is Clang, found in "/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/3.5.1/CompilerIdCXX/a.out"
 
 Determining if the C compiler works passed with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_eeef2/fast"
-/usr/bin/make -f CMakeFiles/cmTC_eeef2.dir/build.make CMakeFiles/cmTC_eeef2.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_2a12b/fast"
+/usr/bin/make -f CMakeFiles/cmTC_2a12b.dir/build.make CMakeFiles/cmTC_2a12b.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_eeef2.dir/testCCompiler.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_eeef2.dir/testCCompiler.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp/testCCompiler.c
-Linking C executable cmTC_eeef2
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_eeef2.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_eeef2.dir/testCCompiler.c.o  -o cmTC_eeef2 
+Building C object CMakeFiles/cmTC_2a12b.dir/testCCompiler.c.o
+/home/weijliu/llvm-mc/build/bin/clang     -o CMakeFiles/cmTC_2a12b.dir/testCCompiler.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_2a12b
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2a12b.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang       CMakeFiles/cmTC_2a12b.dir/testCCompiler.c.o  -o cmTC_2a12b 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
 Detecting C compiler ABI info compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_505f8/fast"
-/usr/bin/make -f CMakeFiles/cmTC_505f8.dir/build.make CMakeFiles/cmTC_505f8.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_4798f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_4798f.dir/build.make CMakeFiles/cmTC_4798f.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o
-/usr/bin/cc     -o CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c
-Linking C executable cmTC_505f8
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_505f8.dir/link.txt --verbose=1
-/usr/bin/cc      -v CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o  -o cmTC_505f8  
-Using built-in specs.
-COLLECT_GCC=/usr/bin/cc
-COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
-Target: x86_64-linux-gnu
-Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.12' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Building C object CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o
+/home/weijliu/llvm-mc/build/bin/clang     -o CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_4798f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4798f.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang      -v CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o  -o cmTC_4798f  
+clang version 9.0.0 (https://github.com/StanPlatinum/llvm-mc.git 4849ae354b8e083c81068f07b1b37ee6da0c117b)
+Target: x86_64-unknown-linux-gnu
 Thread model: posix
-gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.12) 
-COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
-LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_505f8' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/cclPGERQ.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_505f8 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+InstalledDir: /home/weijliu/llvm-mc/build/bin
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8.5
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9.3
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6.0.0
+Selected GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Candidate multilib: x32;@mx32
+Selected multilib: .;@m64
+ "/usr/bin/ld" -z relro --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_4798f /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0 -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu -L/lib/x86_64-linux-gnu -L/lib/../lib64 -L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../.. -L/home/weijliu/llvm-mc/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crtn.o
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -68,59 +75,59 @@ Parsed C implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_505f8/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_505f8.dir/build.make CMakeFiles/cmTC_505f8.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_4798f/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_4798f.dir/build.make CMakeFiles/cmTC_4798f.dir/build]
   ignore line: [make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building C object CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o]
-  ignore line: [/usr/bin/cc     -o CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c]
-  ignore line: [Linking C executable cmTC_505f8]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_505f8.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/cc      -v CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o  -o cmTC_505f8  ]
-  ignore line: [Using built-in specs.]
-  ignore line: [COLLECT_GCC=/usr/bin/cc]
-  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper]
-  ignore line: [Target: x86_64-linux-gnu]
-  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.12' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Building C object CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/home/weijliu/llvm-mc/build/bin/clang     -o CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o   -c /usr/share/cmake-3.5/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_4798f]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_4798f.dir/link.txt --verbose=1]
+  ignore line: [/home/weijliu/llvm-mc/build/bin/clang      -v CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o  -o cmTC_4798f  ]
+  ignore line: [clang version 9.0.0 (https://github.com/StanPlatinum/llvm-mc.git 4849ae354b8e083c81068f07b1b37ee6da0c117b)]
+  ignore line: [Target: x86_64-unknown-linux-gnu]
   ignore line: [Thread model: posix]
-  ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.12) ]
-  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
-  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_505f8' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/cclPGERQ.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_505f8 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/collect2] ==> ignore
-    arg [-plugin] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so] ==> ignore
-    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/cclPGERQ.res] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
-    arg [-plugin-opt=-pass-through=-lc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
-    arg [--sysroot=/] ==> ignore
-    arg [--build-id] ==> ignore
+  ignore line: [InstalledDir: /home/weijliu/llvm-mc/build/bin]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8.5]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9.3]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6.0.0]
+  ignore line: [Selected GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Candidate multilib: 32]
+  ignore line: [@m32]
+  ignore line: [Candidate multilib: x32]
+  ignore line: [@mx32]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  link line: [ "/usr/bin/ld" -z relro --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_4798f /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0 -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu -L/lib/x86_64-linux-gnu -L/lib/../lib64 -L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../.. -L/home/weijliu/llvm-mc/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
     arg [--eh-frame-hdr] ==> ignore
     arg [-m] ==> ignore
     arg [elf_x86_64] ==> ignore
-    arg [--hash-style=gnu] ==> ignore
-    arg [--as-needed] ==> ignore
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
-    arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_505f8] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib]
+    arg [cmTC_4798f] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtbegin.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5.4.0] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu]
     arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
-    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
-    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..]
-    arg [CMakeFiles/cmTC_505f8.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../..]
+    arg [-L/home/weijliu/llvm-mc/build/bin/../lib] ==> dir [/home/weijliu/llvm-mc/build/bin/../lib]
+    arg [-L/lib] ==> dir [/lib]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_4798f.dir/CMakeCCompilerABI.c.o] ==> ignore
     arg [-lgcc] ==> lib [gcc]
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -130,22 +137,23 @@ Parsed C implicit link information from above output:
     arg [--as-needed] ==> ignore
     arg [-lgcc_s] ==> lib [gcc_s]
     arg [--no-as-needed] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtend.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtend.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crtn.o] ==> ignore
   remove lib [gcc]
   remove lib [gcc_s]
   remove lib [gcc]
   remove lib [gcc_s]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5] ==> [/usr/lib/gcc/x86_64-linux-gnu/5]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0] ==> [/usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
   collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
-  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
   collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
-  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../..] ==> [/usr/lib]
+  collapse library dir [/home/weijliu/llvm-mc/build/bin/../lib] ==> [/home/weijliu/llvm-mc/build/lib]
+  collapse library dir [/lib] ==> [/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
   implicit libs: [c]
-  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/5;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/5.4.0;/usr/lib/x86_64-linux-gnu;/lib/x86_64-linux-gnu;/lib64;/usr/lib;/home/weijliu/llvm-mc/build/lib;/lib]
   implicit fwks: []
 
 
@@ -154,14 +162,14 @@ Parsed C implicit link information from above output:
 Detecting C [-std=c11] compiler features compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_30113/fast"
-/usr/bin/make -f CMakeFiles/cmTC_30113.dir/build.make CMakeFiles/cmTC_30113.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_3407f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_3407f.dir/build.make CMakeFiles/cmTC_3407f.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_30113.dir/feature_tests.c.o
-/usr/bin/cc    -std=c11 -o CMakeFiles/cmTC_30113.dir/feature_tests.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_30113
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_30113.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_30113.dir/feature_tests.c.o  -o cmTC_30113 
+Building C object CMakeFiles/cmTC_3407f.dir/feature_tests.c.o
+/home/weijliu/llvm-mc/build/bin/clang    -std=c11 -o CMakeFiles/cmTC_3407f.dir/feature_tests.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_3407f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3407f.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang       CMakeFiles/cmTC_3407f.dir/feature_tests.c.o  -o cmTC_3407f 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -174,14 +182,14 @@ make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/
 Detecting C [-std=c99] compiler features compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_b711d/fast"
-/usr/bin/make -f CMakeFiles/cmTC_b711d.dir/build.make CMakeFiles/cmTC_b711d.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_bcb3d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_bcb3d.dir/build.make CMakeFiles/cmTC_bcb3d.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_b711d.dir/feature_tests.c.o
-/usr/bin/cc    -std=c99 -o CMakeFiles/cmTC_b711d.dir/feature_tests.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_b711d
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_b711d.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_b711d.dir/feature_tests.c.o  -o cmTC_b711d 
+Building C object CMakeFiles/cmTC_bcb3d.dir/feature_tests.c.o
+/home/weijliu/llvm-mc/build/bin/clang    -std=c99 -o CMakeFiles/cmTC_bcb3d.dir/feature_tests.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_bcb3d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_bcb3d.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang       CMakeFiles/cmTC_bcb3d.dir/feature_tests.c.o  -o cmTC_bcb3d 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -194,14 +202,14 @@ make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/
 Detecting C [-std=c90] compiler features compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_57f6c/fast"
-/usr/bin/make -f CMakeFiles/cmTC_57f6c.dir/build.make CMakeFiles/cmTC_57f6c.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_e676f/fast"
+/usr/bin/make -f CMakeFiles/cmTC_e676f.dir/build.make CMakeFiles/cmTC_e676f.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building C object CMakeFiles/cmTC_57f6c.dir/feature_tests.c.o
-/usr/bin/cc    -std=c90 -o CMakeFiles/cmTC_57f6c.dir/feature_tests.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.c
-Linking C executable cmTC_57f6c
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_57f6c.dir/link.txt --verbose=1
-/usr/bin/cc       CMakeFiles/cmTC_57f6c.dir/feature_tests.c.o  -o cmTC_57f6c 
+Building C object CMakeFiles/cmTC_e676f.dir/feature_tests.c.o
+/home/weijliu/llvm-mc/build/bin/clang    -std=c90 -o CMakeFiles/cmTC_e676f.dir/feature_tests.c.o   -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.c
+Linking C executable cmTC_e676f
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e676f.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang       CMakeFiles/cmTC_e676f.dir/feature_tests.c.o  -o cmTC_e676f 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -212,39 +220,46 @@ make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/
 Determining if the CXX compiler works passed with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_a4712/fast"
-/usr/bin/make -f CMakeFiles/cmTC_a4712.dir/build.make CMakeFiles/cmTC_a4712.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_90001/fast"
+/usr/bin/make -f CMakeFiles/cmTC_90001.dir/build.make CMakeFiles/cmTC_90001.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_a4712.dir/testCXXCompiler.cxx.o
-/usr/bin/c++      -o CMakeFiles/cmTC_a4712.dir/testCXXCompiler.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
-Linking CXX executable cmTC_a4712
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a4712.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_a4712.dir/testCXXCompiler.cxx.o  -o cmTC_a4712 
+Building CXX object CMakeFiles/cmTC_90001.dir/testCXXCompiler.cxx.o
+/home/weijliu/llvm-mc/build/bin/clang++      -o CMakeFiles/cmTC_90001.dir/testCXXCompiler.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_90001
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_90001.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang++        CMakeFiles/cmTC_90001.dir/testCXXCompiler.cxx.o  -o cmTC_90001 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
 Detecting CXX compiler ABI info compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_e55c7/fast"
-/usr/bin/make -f CMakeFiles/cmTC_e55c7.dir/build.make CMakeFiles/cmTC_e55c7.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_30641/fast"
+/usr/bin/make -f CMakeFiles/cmTC_30641.dir/build.make CMakeFiles/cmTC_30641.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o
-/usr/bin/c++      -o CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp
-Linking CXX executable cmTC_e55c7
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e55c7.dir/link.txt --verbose=1
-/usr/bin/c++       -v CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_e55c7  
-Using built-in specs.
-COLLECT_GCC=/usr/bin/c++
-COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper
-Target: x86_64-linux-gnu
-Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.12' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu
+Building CXX object CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o
+/home/weijliu/llvm-mc/build/bin/clang++      -o CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_30641
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_30641.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang++       -v CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_30641  
+clang version 9.0.0 (https://github.com/StanPlatinum/llvm-mc.git 4849ae354b8e083c81068f07b1b37ee6da0c117b)
+Target: x86_64-unknown-linux-gnu
 Thread model: posix
-gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.12) 
-COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/
-LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/
-COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e55c7' '-shared-libgcc' '-mtune=generic' '-march=x86-64'
- /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqJ1ddc.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_e55c7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o
+InstalledDir: /home/weijliu/llvm-mc/build/bin
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8.5
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9.3
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6
+Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6.0.0
+Selected GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0
+Candidate multilib: .;@m64
+Candidate multilib: 32;@m32
+Candidate multilib: x32;@mx32
+Selected multilib: .;@m64
+ "/usr/bin/ld" -z relro --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_30641 /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0 -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu -L/lib/x86_64-linux-gnu -L/lib/../lib64 -L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../.. -L/home/weijliu/llvm-mc/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crtn.o
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -252,59 +267,59 @@ Parsed CXX implicit link information from above output:
   link line regex: [^( *|.*[/\])(ld|([^/\]+-)?ld|collect2)[^/\]*( |$)]
   ignore line: [Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp]
   ignore line: []
-  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_e55c7/fast"]
-  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_e55c7.dir/build.make CMakeFiles/cmTC_e55c7.dir/build]
+  ignore line: [Run Build Command:"/usr/bin/make" "cmTC_30641/fast"]
+  ignore line: [/usr/bin/make -f CMakeFiles/cmTC_30641.dir/build.make CMakeFiles/cmTC_30641.dir/build]
   ignore line: [make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp']
-  ignore line: [Building CXX object CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o]
-  ignore line: [/usr/bin/c++      -o CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp]
-  ignore line: [Linking CXX executable cmTC_e55c7]
-  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e55c7.dir/link.txt --verbose=1]
-  ignore line: [/usr/bin/c++       -v CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_e55c7  ]
-  ignore line: [Using built-in specs.]
-  ignore line: [COLLECT_GCC=/usr/bin/c++]
-  ignore line: [COLLECT_LTO_WRAPPER=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper]
-  ignore line: [Target: x86_64-linux-gnu]
-  ignore line: [Configured with: ../src/configure -v --with-pkgversion='Ubuntu 5.4.0-6ubuntu1~16.04.12' --with-bugurl=file:///usr/share/doc/gcc-5/README.Bugs --enable-languages=c,ada,c++,java,go,d,fortran,objc,obj-c++ --prefix=/usr --program-suffix=-5 --enable-shared --enable-linker-build-id --libexecdir=/usr/lib --without-included-gettext --enable-threads=posix --libdir=/usr/lib --enable-nls --with-sysroot=/ --enable-clocale=gnu --enable-libstdcxx-debug --enable-libstdcxx-time=yes --with-default-libstdcxx-abi=new --enable-gnu-unique-object --disable-vtable-verify --enable-libmpx --enable-plugin --with-system-zlib --disable-browser-plugin --enable-java-awt=gtk --enable-gtk-cairo --with-java-home=/usr/lib/jvm/java-1.5.0-gcj-5-amd64/jre --enable-java-home --with-jvm-root-dir=/usr/lib/jvm/java-1.5.0-gcj-5-amd64 --with-jvm-jar-dir=/usr/lib/jvm-exports/java-1.5.0-gcj-5-amd64 --with-arch-directory=amd64 --with-ecj-jar=/usr/share/java/eclipse-ecj.jar --enable-objc-gc --enable-multiarch --disable-werror --with-arch-32=i686 --with-abi=m64 --with-multilib-list=m32,m64,mx32 --enable-multilib --with-tune=generic --enable-checking=release --build=x86_64-linux-gnu --host=x86_64-linux-gnu --target=x86_64-linux-gnu]
+  ignore line: [Building CXX object CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/home/weijliu/llvm-mc/build/bin/clang++      -o CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o -c /usr/share/cmake-3.5/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_30641]
+  ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_30641.dir/link.txt --verbose=1]
+  ignore line: [/home/weijliu/llvm-mc/build/bin/clang++       -v CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_30641  ]
+  ignore line: [clang version 9.0.0 (https://github.com/StanPlatinum/llvm-mc.git 4849ae354b8e083c81068f07b1b37ee6da0c117b)]
+  ignore line: [Target: x86_64-unknown-linux-gnu]
   ignore line: [Thread model: posix]
-  ignore line: [gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.12) ]
-  ignore line: [COMPILER_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/]
-  ignore line: [LIBRARY_PATH=/usr/lib/gcc/x86_64-linux-gnu/5/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib/:/lib/x86_64-linux-gnu/:/lib/../lib/:/usr/lib/x86_64-linux-gnu/:/usr/lib/../lib/:/usr/lib/gcc/x86_64-linux-gnu/5/../../../:/lib/:/usr/lib/]
-  ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'cmTC_e55c7' '-shared-libgcc' '-mtune=generic' '-march=x86-64']
-  link line: [ /usr/lib/gcc/x86_64-linux-gnu/5/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper -plugin-opt=-fresolution=/tmp/ccqJ1ddc.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/ --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -z relro -o cmTC_e55c7 /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5 -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/5/../../.. CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o]
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/collect2] ==> ignore
-    arg [-plugin] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/liblto_plugin.so] ==> ignore
-    arg [-plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/5/lto-wrapper] ==> ignore
-    arg [-plugin-opt=-fresolution=/tmp/ccqJ1ddc.res] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lc] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
-    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
-    arg [--sysroot=/] ==> ignore
-    arg [--build-id] ==> ignore
+  ignore line: [InstalledDir: /home/weijliu/llvm-mc/build/bin]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.8.5]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/4.9.3]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6]
+  ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-linux-gnu/6.0.0]
+  ignore line: [Selected GCC installation: /usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+  ignore line: [Candidate multilib: .]
+  ignore line: [@m64]
+  ignore line: [Candidate multilib: 32]
+  ignore line: [@m32]
+  ignore line: [Candidate multilib: x32]
+  ignore line: [@mx32]
+  ignore line: [Selected multilib: .]
+  ignore line: [@m64]
+  link line: [ "/usr/bin/ld" -z relro --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_30641 /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crt1.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtbegin.o -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0 -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu -L/lib/x86_64-linux-gnu -L/lib/../lib64 -L/usr/lib/x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../.. -L/home/weijliu/llvm-mc/build/bin/../lib -L/lib -L/usr/lib CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtend.o /usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crtn.o]
+    arg [/usr/bin/ld] ==> ignore
+    arg [-zrelro] ==> ignore
+    arg [--hash-style=gnu] ==> ignore
     arg [--eh-frame-hdr] ==> ignore
     arg [-m] ==> ignore
     arg [elf_x86_64] ==> ignore
-    arg [--hash-style=gnu] ==> ignore
-    arg [--as-needed] ==> ignore
     arg [-dynamic-linker] ==> ignore
     arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
-    arg [-zrelro] ==> ignore
     arg [-o] ==> ignore
-    arg [cmTC_e55c7] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crt1.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crti.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtbegin.o] ==> ignore
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib]
+    arg [cmTC_30641] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crt1.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crti.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtbegin.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5.4.0] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu]
     arg [-L/lib/x86_64-linux-gnu] ==> dir [/lib/x86_64-linux-gnu]
-    arg [-L/lib/../lib] ==> dir [/lib/../lib]
+    arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
     arg [-L/usr/lib/x86_64-linux-gnu] ==> dir [/usr/lib/x86_64-linux-gnu]
-    arg [-L/usr/lib/../lib] ==> dir [/usr/lib/../lib]
-    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..]
-    arg [CMakeFiles/cmTC_e55c7.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-L/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../..] ==> dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../..]
+    arg [-L/home/weijliu/llvm-mc/build/bin/../lib] ==> dir [/home/weijliu/llvm-mc/build/bin/../lib]
+    arg [-L/lib] ==> dir [/lib]
+    arg [-L/usr/lib] ==> dir [/usr/lib]
+    arg [CMakeFiles/cmTC_30641.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
     arg [-lstdc++] ==> lib [stdc++]
     arg [-lm] ==> lib [m]
     arg [-lgcc_s] ==> lib [gcc_s]
@@ -312,22 +327,23 @@ Parsed CXX implicit link information from above output:
     arg [-lc] ==> lib [c]
     arg [-lgcc_s] ==> lib [gcc_s]
     arg [-lgcc] ==> lib [gcc]
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/crtend.o] ==> ignore
-    arg [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu/crtn.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/crtend.o] ==> ignore
+    arg [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu/crtn.o] ==> ignore
   remove lib [gcc_s]
   remove lib [gcc]
   remove lib [gcc_s]
   remove lib [gcc]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5] ==> [/usr/lib/gcc/x86_64-linux-gnu/5]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../../../lib] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0] ==> [/usr/lib/gcc/x86_64-linux-gnu/5.4.0]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../../x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
   collapse library dir [/lib/x86_64-linux-gnu] ==> [/lib/x86_64-linux-gnu]
-  collapse library dir [/lib/../lib] ==> [/lib]
+  collapse library dir [/lib/../lib64] ==> [/lib64]
   collapse library dir [/usr/lib/x86_64-linux-gnu] ==> [/usr/lib/x86_64-linux-gnu]
-  collapse library dir [/usr/lib/../lib] ==> [/usr/lib]
-  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5/../../..] ==> [/usr/lib]
+  collapse library dir [/usr/lib/gcc/x86_64-linux-gnu/5.4.0/../../..] ==> [/usr/lib]
+  collapse library dir [/home/weijliu/llvm-mc/build/bin/../lib] ==> [/home/weijliu/llvm-mc/build/lib]
+  collapse library dir [/lib] ==> [/lib]
+  collapse library dir [/usr/lib] ==> [/usr/lib]
   implicit libs: [stdc++;m;c]
-  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/5;/usr/lib/x86_64-linux-gnu;/usr/lib;/lib/x86_64-linux-gnu;/lib]
+  implicit dirs: [/usr/lib/gcc/x86_64-linux-gnu/5.4.0;/usr/lib/x86_64-linux-gnu;/lib/x86_64-linux-gnu;/lib64;/usr/lib;/home/weijliu/llvm-mc/build/lib;/lib]
   implicit fwks: []
 
 
@@ -336,14 +352,14 @@ Parsed CXX implicit link information from above output:
 Detecting CXX [-std=c++14] compiler features compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_01d84/fast"
-/usr/bin/make -f CMakeFiles/cmTC_01d84.dir/build.make CMakeFiles/cmTC_01d84.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_a6b8d/fast"
+/usr/bin/make -f CMakeFiles/cmTC_a6b8d.dir/build.make CMakeFiles/cmTC_a6b8d.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_01d84.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++14 -o CMakeFiles/cmTC_01d84.dir/feature_tests.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_01d84
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_01d84.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_01d84.dir/feature_tests.cxx.o  -o cmTC_01d84 
+Building CXX object CMakeFiles/cmTC_a6b8d.dir/feature_tests.cxx.o
+/home/weijliu/llvm-mc/build/bin/clang++     -std=c++14 -o CMakeFiles/cmTC_a6b8d.dir/feature_tests.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_a6b8d
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a6b8d.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang++        CMakeFiles/cmTC_a6b8d.dir/feature_tests.cxx.o  -o cmTC_a6b8d 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -409,14 +425,14 @@ make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/
 Detecting CXX [-std=c++11] compiler features compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_aacc9/fast"
-/usr/bin/make -f CMakeFiles/cmTC_aacc9.dir/build.make CMakeFiles/cmTC_aacc9.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_88987/fast"
+/usr/bin/make -f CMakeFiles/cmTC_88987.dir/build.make CMakeFiles/cmTC_88987.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_aacc9.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++11 -o CMakeFiles/cmTC_aacc9.dir/feature_tests.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_aacc9
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_aacc9.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_aacc9.dir/feature_tests.cxx.o  -o cmTC_aacc9 
+Building CXX object CMakeFiles/cmTC_88987.dir/feature_tests.cxx.o
+/home/weijliu/llvm-mc/build/bin/clang++     -std=c++11 -o CMakeFiles/cmTC_88987.dir/feature_tests.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_88987
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_88987.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang++        CMakeFiles/cmTC_88987.dir/feature_tests.cxx.o  -o cmTC_88987 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
@@ -482,14 +498,14 @@ make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/
 Detecting CXX [-std=c++98] compiler features compiled with the following output:
 Change Dir: /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp
 
-Run Build Command:"/usr/bin/make" "cmTC_1ca52/fast"
-/usr/bin/make -f CMakeFiles/cmTC_1ca52.dir/build.make CMakeFiles/cmTC_1ca52.dir/build
+Run Build Command:"/usr/bin/make" "cmTC_37bb1/fast"
+/usr/bin/make -f CMakeFiles/cmTC_37bb1.dir/build.make CMakeFiles/cmTC_37bb1.dir/build
 make[1]: Entering directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
-Building CXX object CMakeFiles/cmTC_1ca52.dir/feature_tests.cxx.o
-/usr/bin/c++     -std=c++98 -o CMakeFiles/cmTC_1ca52.dir/feature_tests.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.cxx
-Linking CXX executable cmTC_1ca52
-/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_1ca52.dir/link.txt --verbose=1
-/usr/bin/c++        CMakeFiles/cmTC_1ca52.dir/feature_tests.cxx.o  -o cmTC_1ca52 
+Building CXX object CMakeFiles/cmTC_37bb1.dir/feature_tests.cxx.o
+/home/weijliu/llvm-mc/build/bin/clang++     -std=c++98 -o CMakeFiles/cmTC_37bb1.dir/feature_tests.cxx.o -c /home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_37bb1
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_37bb1.dir/link.txt --verbose=1
+/home/weijliu/llvm-mc/build/bin/clang++        CMakeFiles/cmTC_37bb1.dir/feature_tests.cxx.o  -o cmTC_37bb1 
 make[1]: Leaving directory '/home/weijliu/elf-respect/benchmarks/credit-scoring/cbpn/build/CMakeFiles/CMakeTmp'
 
 
