@@ -1,1 +1,0 @@
-/home/weijliu/llvm-mc/build/bin/clang  -O3 -DNDEBUG   CMakeFiles/test_bpnn_train.dir/test_bpnn_train.c.o  -o test_bpnn_train bpnn/libBPNN.a -lm 

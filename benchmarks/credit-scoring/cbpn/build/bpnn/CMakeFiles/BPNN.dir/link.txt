@@ -1,2 +1,0 @@
-/usr/bin/ar qc libBPNN.a  CMakeFiles/BPNN.dir/bpnn.c.o CMakeFiles/BPNN.dir/bpnn_fit.c.o
-/usr/bin/ranlib libBPNN.a
