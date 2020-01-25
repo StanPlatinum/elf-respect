@@ -3,17 +3,16 @@ CC = /home/weijliu/llvm-mc/build/bin/clang
 dataset = ../dataset
 
 INC = -I./bpnn
-LIB = -L.
 
-FLAG = -lBPNN -lm
+FLAG = -lm
 
 all: credit_score credit_score_train
 
-credit_score: credit_score.c
-	$(CC) $< $(INC) $(LIB) $(FLAG) -o $@
+credit_score: credit_score.c 
+	$(CC) $< $(INC) $(FLAG) -o $@
 
-credit_score_train: credit_score_train.c
-	$(CC) $< $(INC) $(LIB) $(FLAG) -o $@
+credit_score_train: credit_score_train.c 
+	$(CC) $< $(INC) $(FLAG) -o $@
 
 clean:
-	rm -f credit_score credit_score_train
+	rm -f *.o credit_score credit_score_train
