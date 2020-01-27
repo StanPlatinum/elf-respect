@@ -30,7 +30,7 @@ void printf(const char *fmt, ...)
 #else
 #define dlog(...)
 #endif
-#define pr_progress(s) dlog("\n=== sec_loader: %s ===", s)
+#define pr_progress(s) dlog("\n=== bootstrap loader: %s ===", s)
 
 extern char __elf_end;          /* defined in the linker script */
 #define _HEAP_BASE (((addr_t)&__elf_end + 0xfff) & ~0xfff)
