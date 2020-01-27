@@ -60,7 +60,7 @@ T bpnn_fit_new(void) {
         goto cleanup;
 
     if (!get_parameter(bpnn)) {
-        printf("[BPNN] GET PARAMETER FAILED!\n");
+        //printf("[BPNN] GET PARAMETER FAILED!\n");
         goto cleanup;
     }
 
@@ -131,7 +131,7 @@ static bool get_parameter(T bpnn) {
     FILE *in = NULL;
     in = fopen(SAVE_PARAM_PATH, "r");
     if (in == NULL) {
-        fprintf(stderr, "[BPNN] OPEN FILE %s FAILED.\n", SAVE_PARAM_PATH);
+        //fprintf(stderr, "[BPNN] OPEN FILE %s FAILED.\n", SAVE_PARAM_PATH);
         return false;
     }
 
@@ -190,7 +190,7 @@ static bool get_parameter(T bpnn) {
     return true;
 
     cleanup:
-    fprintf(stderr, "[BPNN] BPNN PARAM FILE NOT FIT!\n");
+    //fprintf(stderr, "[BPNN] BPNN PARAM FILE NOT FIT!\n");
     fclose(in);
     return false;
 }
@@ -206,19 +206,19 @@ int main(void) {
 
     bpnn_t bpnn = bpnn_fit_new();
     if (bpnn == NULL) {
-        fprintf(stderr, "bpnn new failed!\n");
+        //fprintf(stderr, "bpnn new failed!\n");
         return 0;
     }
 
     in_file = fopen(IN_PATH, "r");
     if (in_file == NULL) {
-        fprintf(stderr, "open file %s failed.\n", IN_PATH);
+        //fprintf(stderr, "open file %s failed.\n", IN_PATH);
         return 0;
     }
 
     out_file = fopen(OUT_PATH, "r");
     if (out_file == NULL) {
-        fprintf(stderr, "open file %s failed.\n", OUT_PATH);
+        //fprintf(stderr, "open file %s failed.\n", OUT_PATH);
         return 0;
     }
 
@@ -226,10 +226,12 @@ int main(void) {
     while (test_set_get(in, out)) {
         bpnn_fit(bpnn, in, outy);
         for (size_t i = 0; i < IN_N; i++)
-            printf("%lf ", in[i]);
+            //printf("%lf ", in[i]);
+			puts("processing IN...\n");
         for (size_t j = 0; j < OUT_N; j++)
-            printf("%lf[%lf] ", out[j], outy[j]);
-        printf("\n");
+            //printf("%lf[%lf] ", out[j], outy[j]);
+			puts("processing OUT...\n");
+        //printf("\n");
     }
 
     bpnn_fit_free(&bpnn);
@@ -250,7 +252,7 @@ static bool test_set_get(double *in, double *out) {
             char *token = strtok(buffer, ",");
             for (size_t i = 0; i < IN_N; i++) {
                 if (token == NULL) {
-                    fprintf(stderr, "the format of input is not correct!\n");
+                    //fprintf(stderr, "the format of input is not correct!\n");
                     return false;
                 }
                 in[i] = strtod(token, NULL);
