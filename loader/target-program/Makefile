@@ -18,7 +18,9 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
-TARGET_NAME = bm_hello
+#TARGET_NAME = bm_hello
+
+TARGET_NAME = credit_score
 
 SSL_SERVER = ssl_server
 
@@ -104,7 +106,7 @@ objs/libc_sslserver.a: $(SSL_SERVER).o malloc.o $(MUSL_LIBC)
 
 objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
 	cp $^ objs/
-	$(MAKE) -C objs libs_targetprogram.a
+	$(MAKE) -C objs libc_targetprogram.a
 
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(SGX_CFLAGS) -o $@ $<
