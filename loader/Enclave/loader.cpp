@@ -146,7 +146,6 @@ void *get_buf(size_t size) {
 	void *ret = (void *)heap_end;
 	heap_end = heap_end + size;
 	//Weijie:
-	//dlog("xxx heap end after get_buf: 0x%lx", heap_end);
 	return ret;
 }
 
@@ -192,8 +191,6 @@ static void update_reltab(void)
 	//Weijie: allocate reltab
 	reltab = (Elf64_Rela **)get_buf(n_rel * sizeof(Elf64_Rela *));
 	
-	//Weijie:
-	//dlog("xxx in update_reltab 1 pehdr e_entry: %lx", pehdr->e_entry);
 	for(int k = 0; k < n_rel; k++)
 	{
 		reltab[k] = (Elf64_Rela *)get_buf(n_reltab[k] * sizeof(Elf64_Rela));
@@ -201,22 +198,11 @@ static void update_reltab(void)
 
 	n_rel = 0;
 	
-	//Weijie:
-	//dlog("xxx in update_reltab 2 pehdr e_entry: %lx", pehdr->e_entry);
-	//dlog("xxx in update_reltab symtab is 0x%lx, reltab is 0x%lx, pehdr is 0x%lx", (void *)symtab, (void *)reltab, (void *)pehdr);
-
 	for (unsigned i = 0; i < pehdr->e_shnum; ++i) {
 		if (pshdr[i].sh_type == SHT_RELA && pshdr[i].sh_size) {
 			
-			//Weijie:
-			//dlog("xxx n_rel: %u", n_rel);
-			//dlog("xxx before GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-
 			reltab[n_rel] = GET_OBJ(Elf64_Rela, pshdr[i].sh_offset);
 			
-			//Weijie:
-			//dlog("xxx after  GET_OBJ, i:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", i, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-
 			n_reltab[n_rel] = pshdr[i].sh_size / sizeof(Elf64_Rela);
 
 			/* update relocation table: r_offset --> dst + offset */
@@ -224,14 +210,8 @@ static void update_reltab(void)
 			for (size_t j = 0; j < n_reltab[n_rel]; ++j) {
 				unsigned dst = search(pshdr[i].sh_info, reltab[n_rel][j].r_offset);
 				
-				//Weijie:
-				//dlog("xxx after  search, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
-				
 				reltab[n_rel][j].r_offset =
 					REL_OFFSET(dst, reltab[n_rel][j].r_offset - symtab[dst].st_value);
-				
-				//Weijie:
-				//dlog("xxx after REL_OFF, j:%u pehdr: 0x%lx, e_entry: %lx, reltab[n_rel]: 0x%lx", j, (void *)pehdr, pehdr->e_entry, reltab[n_rel]);
 			}
 			++n_rel;
 
@@ -309,9 +289,7 @@ static void load(void)
 				symtab[i].st_value = last_st_value + symoff - last_off;
 			} else {
 				/* find main */
-
 				//Weijie: checking if loader could find main()...
-				//dlog("%u: finding main...", __LINE__);
 				//dlog("i: %u, symoff: %lx, pehdr e_entry: %lx", i, symoff, pehdr->e_entry);
 				if (symoff == pehdr->e_entry) {
 					main_sym = &symtab[i];
@@ -351,30 +329,29 @@ static void relocate(void)
 			const unsigned int type = ELF64_R_TYPE(reltab[k][i].r_info);
 
 			addr_t dst = (addr_t)symtab[dst_sym].st_value + (addr_t)ofs;
-
 			//dlog("rel[%04u] %04u (%08lx) --> %04u", i, dst_sym, dst, src_sym);
 			if (type == R_X86_64_64) {
 				/* word 64 */
 				*(addr_t *)dst = symtab[src_sym].st_value + reltab[k][i].r_addend;
-				dlog("%lx", *(addr_t *)dst);
+				//dlog("%lx", *(addr_t *)dst);
 			} else if (type == R_X86_64_32) {
 				/* word 32 */
 				*(uint32_t*)dst = (uint32_t)(symtab[src_sym].st_value + reltab[k][i].r_addend);
-				dlog("%x", *(uint32_t *)dst);
+				//dlog("%x", *(uint32_t *)dst);
 			} else if (type == R_X86_64_32S) {
 				/* word 32 */
 				*(int32_t*)dst = (int32_t)(symtab[src_sym].st_value + reltab[k][i].r_addend);
-				dlog("%x", *(int32_t *)dst);
+				//dlog("%x", *(int32_t *)dst);
 			} else if (type == R_X86_64_PC32 || type == R_X86_64_PLT32) {
 				/* word 32 */
 				*(uint32_t*)dst = (uint32_t)(symtab[src_sym].st_value
 						- dst + reltab[k][i].r_addend);
-				dlog("%x", *(uint32_t *)dst);
+				//dlog("%x", *(uint32_t *)dst);
 			} else if (type == R_X86_64_GOTPCREL) {
 				/* word 32 */
 				*(uint32_t*)dst = (uint32_t)((Elf64_Addr)&(symtab[src_sym].st_value)
 						- dst + reltab[k][i].r_addend);
-				dlog("%x", *(uint32_t *)dst);
+				//dlog("%x", *(uint32_t *)dst);
 			} else
 				dlog("%u: Relocation -- not supported type %u", __LINE__, type);
 		}
