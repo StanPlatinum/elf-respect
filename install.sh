@@ -140,6 +140,11 @@ cd $Bash_Dir
 
 echo "Configuring loader..."
 cd loader
+echo "Generating Makefile header..."
+echo "SGX_SRC_PATH = "$SGXSDK_Source_Path > Makefile_header4checker
+echo "ELFUTILS_PATH = "$Libelf_Path >> Makefile_header4checker
+echo "CAPSTONE_PATH = "$Capstone_Path >> Makefile_header4checker
+cat Makefile_header4checker Makefile_template4checker > Makefile
 make
 cd target-program
 echo "Generating Makefile header..."

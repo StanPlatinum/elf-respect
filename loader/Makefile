@@ -1,3 +1,21 @@
+SGX_SRC_PATH = /home/weijliu/linux-sgx
+ELFUTILS_PATH = /home/weijliu/elfutils4sgx/elfutils-0.176
+CAPSTONE_PATH = /home/weijliu/capstone
+
+######## Checker Settings ########
+
+TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
+ELFUTILS_INC_PATH = $(ELFUTILS_PATH)/libelf
+CAPSTONE_LIB_PATH = $(CAPSTONE_PATH)/install-x86/lib
+
+###### Link Path Settings ######
+
+CHECKER_Static_INC_PATH = -I$(CAPSTONE_PATH)/include -I$(ELFUTILS_INC_PATH) -I$(MUSL_LIBC_PATH)/install/include $(TRTS_INC_PATH)
+
+CHECKER_Static_LIB_PATH = ./Enclave/TrustedLib
+
+CHECKER_Link_Static := -L$(CHECKER_Static_LIB_PATH) -lelf_static -ldbg_capstone_static -lz_static -lc_static
+
 ######## Target Settings ########
 
 #Weijie: The input should be relocatable, not executable
