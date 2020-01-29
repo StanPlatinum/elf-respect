@@ -63,6 +63,7 @@ echo "ELFUTILS_PATH = "$Libelf_Path >> Makefile_header4checker
 echo "CAPSTONE_PATH = "$Capstone_Path >> Makefile_header4checker
 cat Makefile_header4checker Makefile_template4checker > Makefile
 make clean
+rm Makefile_header4checker
 cd target-program
 echo "Generating new Makefile header..."
 rm -f Makefile

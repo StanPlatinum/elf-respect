@@ -1,7 +1,6 @@
 SGX_SRC_PATH = /home/weijliu/linux-sgx
 ELFUTILS_PATH = /home/weijliu/elfutils4sgx/elfutils-0.176
 CAPSTONE_PATH = /home/weijliu/capstone
-
 ######## Checker Settings ########
 
 TRTS_INC_PATH = -I$(SGX_SRC_PATH)/sdk/trts -I$(SGX_SRC_PATH)/common/inc/internal
