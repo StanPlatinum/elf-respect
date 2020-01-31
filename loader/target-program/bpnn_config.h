@@ -15,10 +15,10 @@
 
 #define ACTIVATION_FUNC(x)              (1/(1+exp(-(x))))
 
-#define TEST_IN_PATH                    "./dataset/test_in.txt"
-#define TEST_OUT_PATH                   "./dataset/test_out.txt"
-#define IN_PATH                         "./dataset/in.txt"
-#define OUT_PATH                        "./dataset/out.txt"
-#define SAVE_PARAM_PATH                 "./dataset/bpnn_param.txt"
+#define TEST_IN_PATH                    "./target-program/dataset/test_in.txt"
+#define TEST_OUT_PATH                   "./target-program/dataset/test_out.txt"
+#define IN_PATH                         "./target-program/dataset/in.txt"
+#define OUT_PATH                        "./target-program/dataset/out.txt"
+#define SAVE_PARAM_PATH                 "./target-program/dataset/bpnn_param.txt"
 
 #endif //FETALHEART_BPNN_CONFIG_H

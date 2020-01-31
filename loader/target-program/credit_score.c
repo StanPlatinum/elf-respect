@@ -41,23 +41,17 @@ T bpnn_fit_new(void) {
     if (bpnn == NULL)
         goto cleanup;
 
-	puts("dbg1\n");
-
     for (size_t i = 0; i < D; i++) {
         bpnn->v[i] = malloc(sizeof(double) * Q);
         if (bpnn->v[i] == NULL)
             goto cleanup;
     }
 
-	puts("dbg2\n");
-
     for (size_t h = 0; h < Q; h++) {
         bpnn->w[h] = malloc(sizeof(double) * L);
         if (bpnn->w[h] == NULL)
             goto cleanup;
     }
-
-	puts("dbg3\n");
 
     bpnn->r = malloc(sizeof(double) * Q);
     if (bpnn->r == NULL)
@@ -66,8 +60,6 @@ T bpnn_fit_new(void) {
     if (bpnn->o == NULL)
         goto cleanup;
 	
-	puts("dbg4\n");
-    
 	bpnn->b = malloc(sizeof(double) * Q);
     if (bpnn->b == NULL)
         goto cleanup;
@@ -156,6 +148,8 @@ static bool get_parameter(T bpnn) {
 		return false;
 	}
 
+	puts("dbg0\n");
+
     char buffer[BUFFER_SIZE];
     //for (size_t i = 0; (i < 5) && (fgets(buffer, BUFFER_SIZE, in) != NULL); i++) {
     for (size_t i = 0; (i < 5) && (read(in_fd, buffer, BUFFER_SIZE) != NULL); i++) {
@@ -176,6 +170,8 @@ static bool get_parameter(T bpnn) {
         }
     }
 
+	puts("dbg1\n");
+
     for (size_t i = 0; i < D; i++)
         for (size_t h = 0; h < Q; h++) {
             //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
@@ -185,7 +181,10 @@ static bool get_parameter(T bpnn) {
                 goto cleanup;
             }
         }
-    for (size_t h = 0; h < Q; h++)
+
+	puts("dbg2\n");
+    
+	for (size_t h = 0; h < Q; h++)
         for (size_t j = 0; j < L; j++) {
             //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
             if (read(in_fd, buffer, BUFFER_SIZE) != NULL) {
@@ -217,7 +216,7 @@ static bool get_parameter(T bpnn) {
 
     cleanup:
     //fprintf(stderr, "[BPNN] BPNN PARAM FILE NOT FIT!\n");
-	puts("BPNN PARAM FILE NOT FIT!\n");
+	puts("clean up: BPNN PARAM FILE NOT FIT!\n");
     //fclose(in);
 	close(in_fd);
     return false;
