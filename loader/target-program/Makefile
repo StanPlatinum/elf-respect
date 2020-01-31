@@ -19,8 +19,9 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 #TARGET_NAME = bm_hello
+TARGET_NAME = file_io_test
 
-TARGET_NAME = credit_score
+#TARGET_NAME = credit_score
 
 SSL_SERVER = ssl_server
 

@@ -53,6 +53,8 @@ int ocall_sgx_puts(const char *str)
 
 int ocall_sgx_open(const char *pathname, int flags, unsigned mode)
 {
+	//Weijie: dbg
+	printf("path: %s, flags: 0x%x, mode: 0x%x\n", pathname, flags, mode);
     return open(pathname, flags, mode);
 }
 

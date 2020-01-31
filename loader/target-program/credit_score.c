@@ -20,6 +20,10 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include <fcntl.h>
+
+#include "enclave.h"
+
 struct T {
     double *v[D];
     double *w[Q];
@@ -37,11 +41,15 @@ T bpnn_fit_new(void) {
     if (bpnn == NULL)
         goto cleanup;
 
+	puts("dbg1\n");
+
     for (size_t i = 0; i < D; i++) {
         bpnn->v[i] = malloc(sizeof(double) * Q);
         if (bpnn->v[i] == NULL)
             goto cleanup;
     }
+
+	puts("dbg2\n");
 
     for (size_t h = 0; h < Q; h++) {
         bpnn->w[h] = malloc(sizeof(double) * L);
@@ -49,22 +57,27 @@ T bpnn_fit_new(void) {
             goto cleanup;
     }
 
+	puts("dbg3\n");
+
     bpnn->r = malloc(sizeof(double) * Q);
     if (bpnn->r == NULL)
         goto cleanup;
     bpnn->o = malloc(sizeof(double) * L);
     if (bpnn->o == NULL)
         goto cleanup;
-    bpnn->b = malloc(sizeof(double) * Q);
+	
+	puts("dbg4\n");
+    
+	bpnn->b = malloc(sizeof(double) * Q);
     if (bpnn->b == NULL)
         goto cleanup;
 
     if (!get_parameter(bpnn)) {
-        //printf("[BPNN] GET PARAMETER FAILED!\n");
+        puts("[BPNN] GET PARAMETER FAILED!\n");
         goto cleanup;
     }
-
-    return bpnn;
+    
+	return bpnn;
 
     cleanup:
     if (bpnn) {
@@ -128,15 +141,24 @@ void bpnn_fit_free(T *bpnn) {
 
 static bool get_parameter(T bpnn) {
 #define BUFFER_SIZE     128
+	/*
     FILE *in = NULL;
     in = fopen(SAVE_PARAM_PATH, "r");
     if (in == NULL) {
         //fprintf(stderr, "[BPNN] OPEN FILE %s FAILED.\n", SAVE_PARAM_PATH);
         return false;
     }
+	*/
+	int in_fd;
+	in_fd = open(SAVE_PARAM_PATH, O_RDONLY, S_IRUSR);
+	if (in_fd == -1) {
+		puts("PARAM file cannot be opened!\n");
+		return false;
+	}
 
     char buffer[BUFFER_SIZE];
-    for (size_t i = 0; (i < 5) && (fgets(buffer, BUFFER_SIZE, in) != NULL); i++) {
+    //for (size_t i = 0; (i < 5) && (fgets(buffer, BUFFER_SIZE, in) != NULL); i++) {
+    for (size_t i = 0; (i < 5) && (read(in_fd, buffer, BUFFER_SIZE) != NULL); i++) {
         if (buffer[0] == '#')
             continue;
         else if (buffer[0] == 'D' && buffer[1] == '=') {
@@ -156,7 +178,8 @@ static bool get_parameter(T bpnn) {
 
     for (size_t i = 0; i < D; i++)
         for (size_t h = 0; h < Q; h++) {
-            if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+            //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+            if (read(in_fd, buffer, BUFFER_SIZE) != NULL) {
                 bpnn->v[i][h] = strtod(buffer, NULL);
             } else {
                 goto cleanup;
@@ -164,34 +187,39 @@ static bool get_parameter(T bpnn) {
         }
     for (size_t h = 0; h < Q; h++)
         for (size_t j = 0; j < L; j++) {
-            if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+            //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+            if (read(in_fd, buffer, BUFFER_SIZE) != NULL) {
                 bpnn->w[h][j] = strtod(buffer, NULL);
             } else {
                 goto cleanup;
             }
         }
     for (size_t h = 0; h < Q; h++) {
-        if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+        //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+        if (read(in_fd, buffer, BUFFER_SIZE) != NULL) {
             bpnn->r[h] = strtod(buffer, NULL);
         } else {
             goto cleanup;
         }
     }
     for (size_t j = 0; j < L; j++) {
-        if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+        //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
+        if (read(in_fd, buffer, BUFFER_SIZE) != NULL) {
             bpnn->o[j] = strtod(buffer, NULL);
         } else {
             goto cleanup;
         }
     }
 
-    fclose(in);
-
+    //fclose(in);
+	close(in_fd);
     return true;
 
     cleanup:
     //fprintf(stderr, "[BPNN] BPNN PARAM FILE NOT FIT!\n");
-    fclose(in);
+	puts("BPNN PARAM FILE NOT FIT!\n");
+    //fclose(in);
+	close(in_fd);
     return false;
 }
 
@@ -199,31 +227,50 @@ static bool get_parameter(T bpnn) {
 
 static bool test_set_get(double *in, double *out);
 
-static FILE *in_file = NULL;
-static FILE *out_file = NULL;
+//static FILE *in_file = NULL;
+//static FILE *out_file = NULL;
+
+static int in_file_fd = 0;
+static int out_file_fd = 0;
 
 void enclave_main(void) {
+
+	puts("enclave begins...\n");
 
     bpnn_t bpnn = bpnn_fit_new();
     if (bpnn == NULL) {
         //fprintf(stderr, "bpnn new failed!\n");
 		puts("bpnn new failed!\n");
-        return;
+        //return;
     }
-
+	/*
     in_file = fopen(IN_PATH, "r");
     if (in_file == NULL) {
         //fprintf(stderr, "open file %s failed.\n", IN_PATH);
 		puts("open file failed!\n");
         return;
     }
-
+	*/
+	in_file_fd = open(IN_PATH, O_RDONLY, S_IRUSR);
+	if (in_file_fd == -1) {
+		puts("open file failed!\n");
+		//return;
+	}
+	/*
     out_file = fopen(OUT_PATH, "r");
     if (out_file == NULL) {
         //fprintf(stderr, "open file %s failed.\n", OUT_PATH);
 		puts("open file failed!\n");
         return;
     }
+	*/
+	out_file_fd = open(OUT_PATH, O_RDONLY, S_IRUSR);
+	if (out_file_fd == -1) {
+		puts("open file failed!\n");
+		//return;
+	}
+		
+	puts("start to run...\n");
 
     double in[IN_N], out[OUT_N], outy[OUT_N];
     while (test_set_get(in, out)) {
@@ -239,11 +286,14 @@ void enclave_main(void) {
 
     bpnn_fit_free(&bpnn);
 
-    fclose(in_file);
-    fclose(out_file);
+    //fclose(in_file);
+    //fclose(out_file);
+	close(in_file_fd);
+	close(out_file_fd);
 
 	puts("success!\n");
-    return;
+    //return;
+	enclave_exit();
 }
 
 static bool test_set_get(double *in, double *out) {
@@ -251,8 +301,10 @@ static bool test_set_get(double *in, double *out) {
 #define BUFFER_SIZE 128
     static char buffer[BUFFER_SIZE];
 
-    if (in_file && out_file) {
-        if (fgets(buffer, BUFFER_SIZE, in_file) != NULL) {
+    //if (in_file && out_file) {
+    if (in_file_fd && out_file_fd) {
+        //if (fgets(buffer, BUFFER_SIZE, in_file) != NULL) {
+        if (read(in_file_fd, buffer, BUFFER_SIZE) != NULL) {
             char *token = strtok(buffer, ",");
             for (size_t i = 0; i < IN_N; i++) {
                 if (token == NULL) {
@@ -267,7 +319,8 @@ static bool test_set_get(double *in, double *out) {
             return false;
         }
 
-        if (fgets(buffer, BUFFER_SIZE, out_file) != NULL) {
+        //if (fgets(buffer, BUFFER_SIZE, out_file) != NULL) {
+        if (read(out_file_fd, buffer, BUFFER_SIZE) != NULL) {
             out[0] = strtod(buffer, NULL);
         } else {
             return false;
