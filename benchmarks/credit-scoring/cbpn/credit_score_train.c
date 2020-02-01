@@ -67,7 +67,7 @@ void bpnn_train(test_set_get_t f_get, test_set_init_t f_init) {
         }
         E /= count;
         train_c++;
-        //printf("[BPNN] LOOP %d E %lf\n", train_c, E);
+        printf("[BPNN] LOOP %d E %lf\n", train_c, E);
         f_init();
         if (E < E_MIN)
             break;
@@ -188,28 +188,28 @@ static bool save_parameter(void) {
     FILE *out = NULL;
     out = fopen(SAVE_PARAM_PATH, "w+");
     if (out == NULL) {
-        //fprintf(stderr, "[BPNN] OPEN FILE %s FAILED.\n", SAVE_PARAM_PATH);
+        fprintf(stderr, "[BPNN] OPEN FILE %s FAILED.\n", SAVE_PARAM_PATH);
         return false;
     }
 
-    //fprintf(out, "#BPNN PARAM GENERATED AUTOMATICALLY IN %d SECONDS SINCE JABUARY 1, 1970\n", (int)time(NULL));
-    //fprintf(out, "#!!DO NOT MODIFY!!\n");
-    //fprintf(out, "D=%d\n", D);
-    //fprintf(out, "Q=%d\n", Q);
-    //fprintf(out, "L=%d\n", L);
+    fprintf(out, "#BPNN PARAM GENERATED AUTOMATICALLY IN %d SECONDS SINCE JABUARY 1, 1970\n", (int)time(NULL));
+    fprintf(out, "#!!DO NOT MODIFY!!\n");
+    fprintf(out, "D=%d\n", D);
+    fprintf(out, "Q=%d\n", Q);
+    fprintf(out, "L=%d\n", L);
     for (size_t i = 0; i < D; i++)
         for (size_t h = 0; h < Q; h++)
-            //fprintf(out, "%lf\n", v[i][h]);
+            fprintf(out, "%lf\n", v[i][h]);
 			puts("processing out v\n");
     for (size_t h = 0; h < Q; h++)
         for (size_t j = 0; j < L; j++)
-            //fprintf(out, "%lf\n", w[h][j]);
+            fprintf(out, "%lf\n", w[h][j]);
 			puts("processing out w\n");
     for (size_t h = 0; h < Q; h++)
-        //fprintf(out, "%lf\n", r[h]);
+        fprintf(out, "%lf\n", r[h]);
 		puts("processing out r\n");
     for (size_t j = 0; j < L; j++)
-        //fprintf(out, "%lf\n", o[j]);
+        fprintf(out, "%lf\n", o[j]);
 		puts("processing out o\n");
 
     fclose(out);
@@ -227,13 +227,13 @@ static FILE *out_file = NULL;
 int main(void) {
     in_file = fopen(TEST_IN_PATH, "r");
     if (in_file == NULL) {
-        //fprintf(stderr, "open file %s failed.\n", TEST_IN_PATH);
+        fprintf(stderr, "open file %s failed.\n", TEST_IN_PATH);
         return 0;
     }
 
     out_file = fopen(TEST_OUT_PATH, "r");
     if (out_file == NULL) {
-        //fprintf(stderr, "open file %s failed.\n", TEST_OUT_PATH);
+        fprintf(stderr, "open file %s failed.\n", TEST_OUT_PATH);
         return 0;
     }
 
@@ -245,13 +245,13 @@ int main(void) {
 
     in_file = fopen(IN_PATH, "r");
     if (in_file == NULL) {
-        //fprintf(stderr, "open file %s failed.\n", IN_PATH);
+        fprintf(stderr, "open file %s failed.\n", IN_PATH);
         return 0;
     }
 
     out_file = fopen(OUT_PATH, "r");
     if (out_file == NULL) {
-        //fprintf(stderr, "open file %s failed.\n", OUT_PATH);
+        fprintf(stderr, "open file %s failed.\n", OUT_PATH);
         return 0;
     }
 
@@ -273,7 +273,7 @@ static bool test_set_get(double *in, double *out) {
             char *token = strtok(buffer, ",");
             for (size_t i = 0; i < IN_N; i++) {
                 if (token == NULL) {
-                    //fprintf(stderr, "the format of input is not correct!\n");
+                    fprintf(stderr, "the format of input is not correct!\n");
                     return false;
                 }
                 in[i] = strtod(token, NULL);

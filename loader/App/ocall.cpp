@@ -65,6 +65,7 @@ int ocall_sgx_close(int fd)
 
 ssize_t ocall_sgx_read(int fd, char * buf, size_t buf_len)
 {
+	printf("fd: %d, buf addr: %p, length: %lu\n", fd, buf, (unsigned long)buf_len);
     return read(fd, buf, buf_len);
 }
 
