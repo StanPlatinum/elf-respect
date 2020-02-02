@@ -7,6 +7,7 @@
 
 //Weijie:
 // n should be larger than 1
+// buf size should be less than n
 int readline(int fd, char *buf, size_t n)
 {
 	for(int i = 0; i < n - 1; i++){
