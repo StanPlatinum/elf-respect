@@ -1,8 +1,7 @@
-CFICheck
-exit
+readline
+read
 enclave_main
-sort
+open
 puts
-sprintf
-binsearch
-check
+exit
+CFICheck

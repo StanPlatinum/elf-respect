@@ -4,10 +4,10 @@ CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fn
 #LLVM_PATH = /home/weijliu/proofGen4store
 #LLVM_PATH = /home/weijliu/proofGen4memwt
 LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
-#CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
+CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
-#CC = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
+CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
@@ -23,8 +23,10 @@ CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-add
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
-TARGET_NAME = bm_hello
+#TARGET_NAME = bm_hello
 #TARGET_NAME = misc
+
+TARGET_NAME = file_io_test
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
@@ -97,8 +99,9 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 #enclave_main.o: $(TARGET_NAME).s enclave.h CFICheck.h
 #	$(CC4AS) -c $< -o $@
 
+# Use Xclang
 $(TARGET_NAME).s: $(TARGET_NAME).c enclave.h CFICheck.h
-	$(CC) -S -I. $< -o $@
+	$(CC4CFICheck) -S -I. $< -o $@
 enclave_main.o: $(TARGET_NAME).s
 	$(CC) -c $< -o $@
 
