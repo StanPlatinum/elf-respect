@@ -54,7 +54,7 @@ int ocall_sgx_puts(const char *str)
 int ocall_sgx_open(const char *pathname, int flags, unsigned mode)
 {
 	//Weijie: dbg
-	printf("path: %s, flags: 0x%x, mode: 0x%x\n", pathname, flags, mode);
+	//printf("path: %s, flags: 0x%x, mode: 0x%x\n", pathname, flags, mode);
     return open(pathname, flags, mode);
 }
 
@@ -65,7 +65,7 @@ int ocall_sgx_close(int fd)
 
 ssize_t ocall_sgx_read(int fd, char * buf, size_t buf_len)
 {
-	printf("fd: %d, buf addr: %p, length: %lu\n", fd, buf, (unsigned long)buf_len);
+	//printf("fd: %d, buf addr: %p, length: %lu\n", fd, buf, (unsigned long)buf_len);
     return read(fd, buf, buf_len);
 }
 

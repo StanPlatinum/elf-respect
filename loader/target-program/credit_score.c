@@ -144,22 +144,27 @@ void bpnn_fit_free(T *bpnn)
 }
 
 //Weijie:
-int readline(int fd, const char *buf, size_t n)
+// n should be larger than 1
+// buf size should be less than n
+int readline(int fd, char *buf, size_t n)
 {
 	for(int i = 0; i < n - 1; i++){
-		if (read(fd, tmp_buf, 1) != NULL) {
-			strcat(buf, tmp_buf);
-			if (tmp_buf[0] == '\n')	{
-				strcat(buf, "\0");
+		char a;
+		if (read(fd, &a, 1) != NULL) {
+			if (a != '\n') {
+				buf[i] = a;
+			} else {
+				buf[i] = '\n';
+				buf[i+1] = '\0';
 				return (i+1);
 			}
 		}
 		else {
-			strcat(buf, "\0");
+			buf[i+1] = '\0';
 			return (i+1);
 		}
 	}
-	strcat(buf, "\0");
+	buf[n] = '\0';
 	return n;
 }
 
@@ -191,7 +196,8 @@ static bool get_parameter(T bpnn)
     }
     puts("dbg0.5\n");
     //for (size_t i = 0; (i < 5) && (fgets(buffer, BUFFER_SIZE, in) != NULL); i++) {
-    for (size_t i = 0; (i < 5) && (read(in_fd, buffer, BUFFER_SIZE) != NULL); i++)
+    //for (size_t i = 0; (i < 5) && (read(in_fd, buffer, BUFFER_SIZE) != NULL); i++)
+    for (size_t i = 0; (i < 5) && (readline(in_fd, buffer, BUFFER_SIZE) > 0); i++)
     {
 
         puts("Buffer:\n");
@@ -228,7 +234,8 @@ static bool get_parameter(T bpnn)
         for (size_t h = 0; h < Q; h++)
         {
             //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
-            if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+            //if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+            if (readline(in_fd, buffer, BUFFER_SIZE) > 0)
             {
                 bpnn->v[i][h] = strtod(buffer, NULL);
             }
@@ -244,7 +251,8 @@ static bool get_parameter(T bpnn)
         for (size_t j = 0; j < L; j++)
         {
             //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
-            if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+            //if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+            if (readline(in_fd, buffer, BUFFER_SIZE) > 0)
             {
                 bpnn->w[h][j] = strtod(buffer, NULL);
             }
@@ -256,7 +264,8 @@ static bool get_parameter(T bpnn)
     for (size_t h = 0; h < Q; h++)
     {
         //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
-        if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+        //if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+        if (readline(in_fd, buffer, BUFFER_SIZE) > 0)
         {
             bpnn->r[h] = strtod(buffer, NULL);
         }
@@ -268,7 +277,8 @@ static bool get_parameter(T bpnn)
     for (size_t j = 0; j < L; j++)
     {
         //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
-        if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+        //if (read(in_fd, buffer, BUFFER_SIZE) != NULL)
+        if (readline(in_fd, buffer, BUFFER_SIZE) > 0)
         {
             bpnn->o[j] = strtod(buffer, NULL);
         }
@@ -379,7 +389,8 @@ static bool test_set_get(double *in, double *out)
     if (in_file_fd && out_file_fd)
     {
         //if (fgets(buffer, BUFFER_SIZE, in_file) != NULL) {
-        if (read(in_file_fd, buffer, BUFFER_SIZE) != NULL)
+        //if (read(in_file_fd, buffer, BUFFER_SIZE) != NULL)
+        if (readline(in_file_fd, buffer, BUFFER_SIZE) > 0)
         {
             char *token = strtok(buffer, ",");
             for (size_t i = 0; i < IN_N; i++)
@@ -399,7 +410,8 @@ static bool test_set_get(double *in, double *out)
         }
 
         //if (fgets(buffer, BUFFER_SIZE, out_file) != NULL) {
-        if (read(out_file_fd, buffer, BUFFER_SIZE) != NULL)
+        //if (read(out_file_fd, buffer, BUFFER_SIZE) != NULL)
+        if (readline(out_file_fd, buffer, BUFFER_SIZE) > 0)
         {
             out[0] = strtod(buffer, NULL);
         }
