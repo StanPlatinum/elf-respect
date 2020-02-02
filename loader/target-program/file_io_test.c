@@ -6,23 +6,26 @@
 #define BUFFER_SIZE 100
 
 //Weijie:
-int readline(int fd, const char *buf, size_t n)
+// n should be larger than 1
+int readline(int fd, char *buf, size_t n)
 {
 	for(int i = 0; i < n - 1; i++){
-		char tmp_buf[1];
-		if (read(fd, tmp_buf, 1) != NULL) {
-			strcat(buf, tmp_buf);
-			if (tmp_buf[0] == '\n') {
-				strcat(buf, "\0");
+		char a;
+		if (read(fd, &a, 1) != NULL) {
+			if (a != '\n') {
+				buf[i] = a;
+			} else {
+				buf[i] = '\n';
+				buf[i+1] = '\0';
 				return (i+1);
 			}
 		}
 		else {
-			strcat(buf, "\0");
+			buf[i+1] = '\0';
 			return (i+1);
 		}
 	}
-	strcat(buf, "\0");
+	buf[n] = '\0';
 	return n;
 }
 
