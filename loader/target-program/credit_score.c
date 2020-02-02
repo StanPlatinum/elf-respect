@@ -143,6 +143,26 @@ void bpnn_fit_free(T *bpnn)
     *bpnn = NULL;
 }
 
+//Weijie:
+int readline(int fd, const char *buf, size_t n)
+{
+	for(int i = 0; i < n - 1; i++){
+		if (read(fd, tmp_buf, 1) != NULL) {
+			strcat(buf, tmp_buf);
+			if (tmp_buf[0] == '\n')	{
+				strcat(buf, "\0");
+				return (i+1);
+			}
+		}
+		else {
+			strcat(buf, "\0");
+			return (i+1);
+		}
+	}
+	strcat(buf, "\0");
+	return n;
+}
+
 static bool get_parameter(T bpnn)
 {
 #define BUFFER_SIZE 128
@@ -205,7 +225,6 @@ static bool get_parameter(T bpnn)
     puts("dbg1\n");
 
     for (size_t i = 0; i < D; i++)
-    {
         for (size_t h = 0; h < Q; h++)
         {
             //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
@@ -218,12 +237,10 @@ static bool get_parameter(T bpnn)
                 goto cleanup;
             }
         }
-    }
 
     puts("dbg2\n");
 
     for (size_t h = 0; h < Q; h++)
-    {
         for (size_t j = 0; j < L; j++)
         {
             //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
@@ -236,7 +253,6 @@ static bool get_parameter(T bpnn)
                 goto cleanup;
             }
         }
-    }
     for (size_t h = 0; h < Q; h++)
     {
         //if (fgets(buffer, BUFFER_SIZE, in) != NULL) {
@@ -262,6 +278,7 @@ static bool get_parameter(T bpnn)
         }
     }
 
+	puts("dbg2.5\n");
     //fclose(in);
     close(in_fd);
     return true;
