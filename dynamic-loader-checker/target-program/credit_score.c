@@ -331,12 +331,16 @@ void enclave_main(void)
 		return;
 		}
 	 */
+
     in_file_fd = open(IN_PATH, O_RDONLY, S_IRUSR);
-    if (in_file_fd == -1)
+	puts("dbg3\n");
+    
+	if (in_file_fd == -1)
     {
         puts("open file failed!\n");
         //return;
     }
+	
     /*
 		out_file = fopen(OUT_PATH, "r");
 		if (out_file == NULL) {
@@ -358,14 +362,12 @@ void enclave_main(void)
     while (test_set_get(in, out))
     {
         bpnn_fit(bpnn, in, outy);
-        for (size_t i = 0; i < IN_N; i++) {
+        for (size_t i = 0; i < IN_N; i++)
             //printf("%lf ", in[i]);
-            //puts("processing IN...");
-		}
-        for (size_t j = 0; j < OUT_N; j++) {
+            puts("processing IN...\n");
+        for (size_t j = 0; j < OUT_N; j++)
             //printf("%lf[%lf] ", out[j], outy[j]);
-            //puts("processing OUT...");
-		}
+            puts("processing OUT...\n");
         //printf("\n");
     }
 

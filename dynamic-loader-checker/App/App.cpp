@@ -291,7 +291,7 @@ int main(int argc, char *argv[])
 	printf("receiving/executing binary completed.\n");
 
 	//Weijie: call test ecall
-	ecall_test_capstone_iter(eid);
+	//ecall_test_capstone_iter(eid);
 
 	log("destroying the enclave");
 	sgx_destroy_enclave(eid);

@@ -9,7 +9,7 @@ LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
-CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
+CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
@@ -28,7 +28,8 @@ CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fno-asynchronous-unwind-tables -fno-
 #TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
-TARGET_NAME = file_io_test
+#TARGET_NAME = file_io_test
+TARGET_NAME = credit_score
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 

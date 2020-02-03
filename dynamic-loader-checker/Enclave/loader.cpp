@@ -1157,8 +1157,9 @@ void disasm_whole()
 				//Weijie: fill in buf
 				cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 				dlog("textAddr: %p, textSize: %u", textAddr, textSize);
-				//rv = cs_disasm_entry(buf, textSize, textAddr);
-				rv = cs_disasm_iter_entry(buf, textSize, textAddr);
+				rv = cs_disasm_entry(buf, textSize, textAddr);
+				//Weijie: multiple choices
+				//rv = cs_disasm_iter_entry(buf, textSize, textAddr);
 				free(buf);
 			}
 			
@@ -1276,8 +1277,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	//pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);

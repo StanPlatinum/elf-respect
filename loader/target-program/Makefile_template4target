@@ -71,6 +71,7 @@ https: $(MUSL_LIBC) $(SSL_SERVER) $(LIBSSL)
 	cp mbedtls/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker https
+	mv https ../program
 	@echo "Build successfully!"
 
 
