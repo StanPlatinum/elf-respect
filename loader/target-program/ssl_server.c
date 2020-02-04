@@ -19,7 +19,7 @@
  *  This file is part of mbed TLS (https://tls.mbed.org)
  */
 
-#include "./enclave.h"
+#include "enclave.h"
 
 #if !defined(MBEDTLS_CONFIG_FILE)
 #include "mbedtls/config.h"
@@ -156,7 +156,7 @@ void enclave_main()
     /*
      * 1. Load the certificates and private RSA key
      */
-    mbedtls_printf( "\n  . Loading the server cert. and key..." );
+    mbedtls_printf( "\n  . Loading the server cert. and key...\n" );
 
     /*
      * This demonstration program uses embedded test certificates.

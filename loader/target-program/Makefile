@@ -60,6 +60,8 @@ $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
 
+SSL_FLAGS = -D_FILE_OFFSET_BITS=64 -I./mbedtls/include -I./musl-libc/include
+
 LIBSSL = mbedtls/libmbedtls.a mbedtls/libmbedcrypto.a mbedtls/libmbedx509.a
 $(LIBSSL):
 	$(MAKE) -C all
@@ -120,7 +122,7 @@ enclave_main.o: $(TARGET_NAME).c enclave.h
 #mbedtls_Flag = -lmbedtls -lmbedcrypto -lmbedx509
 
 $(SSL_SERVER).o: $(SSL_SERVER).c enclave.h
-	$(CC) -S -I./mbedtls/include -I./musl-libc/include -o $(SSL_SERVER).s $< 
+	$(CC) -S $(SSL_FLAGS) -o $(SSL_SERVER).s $< 
 	$(CC) -c $(SSL_SERVER).s -o $@
 
 clean:

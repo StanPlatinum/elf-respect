@@ -9,7 +9,10 @@ CC = /home/weijliu/llvm-mc/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 # Also see "include/mbedtls/config.h"
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
-CFLAGS = $(BASE_CFLAGS) -I../musl-libc/include \
+
+NOLIBC_FLAG = -nodefaultlibs -nostdlib
+
+CFLAGS = $(BASE_CFLAGS) $(NOLIBC_FLAG) -I../musl-libc/include \
 		 -fno-stack-protector -fvisibility=hidden
 
 LOCAL_CFLAGS = -Iinclude -I../ -D_FILE_OFFSET_BITS=64

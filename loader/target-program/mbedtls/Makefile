@@ -3,7 +3,7 @@
 
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
-CFLAGS = $(BASE_CFLAGS) -I$(LIBSGXDIR)/musl-libc/include \
+CFLAGS = $(BASE_CFLAGS) -I../musl-libc/include \
 		 -fno-stack-protector -fvisibility=hidden
 
 LOCAL_CFLAGS = -Iinclude -I../ -D_FILE_OFFSET_BITS=64
