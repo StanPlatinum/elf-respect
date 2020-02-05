@@ -57,10 +57,27 @@ all: static
 
 mbedtls_Flag = -lmbedtls -lmbedcrypto -lmbedx509
 
-main: ssl_server_main.c static
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $< -o $@ $(mbedtls_Flag) -L.
+LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o  \
+			 libgcc/__divdi3.o libgcc/__divti3.o libgcc/__lshrdi3.o     \
+			 libgcc/multi3.o libgcc/__negti2.o libgcc/__udivdi3.o       \
+			 libgcc/__udivmoddi4.o libgcc/__udivmodti4.o                \
+			 libgcc/__udivti3.o libgcc/__umoddi3.o libgcc/__umodti3.o
 
-static: libmbedcrypto.a libmbedx509.a libmbedtls.a ssl_server.o
+CRT_LIBS = musl-libc/lib/crt1.o musl-libc/lib/crti.o musl-libc/lib/crtn.o
+
+malloc.o: malloc/malloc.c malloc/dlmalloc.inc
+	$(CC) -c $(LOCAL_CFLAGS) $(CFAGS) -o $@ $<
+
+#main: ssl_server_main.c static
+#	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $< -o $@ $(mbedtls_Flag) -L.
+
+ssl_server_main.o: ssl_server_main.c static
+	$(CC) -c $(LOCAL_CFLAGS) $(CFLAGS) $< -o $@ -lc -L. -L./musl-libc/lib
+
+main: ssl_server_main.o malloc.o $(LIBGCC) $(CRT_LIBS)
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $^ -o $@ $(mbedtls_Flag) -lc -L. -L./musl-libc/lib
+		
+static: libmbedcrypto.a libmbedx509.a libmbedtls.a
 
 # tls
 libmbedtls.a: $(OBJS_TLS)
