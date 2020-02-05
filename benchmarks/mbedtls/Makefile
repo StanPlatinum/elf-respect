@@ -105,4 +105,4 @@ libmbedcrypto.a: $(OBJS_CRYPTO)
 #	$(CC) -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so $< -o $@
 
 clean:
-	rm -f *.o libmbed*
+	rm -f main *.o libmbed*

@@ -63,8 +63,9 @@ $(MUSL_LIBC):
 SSL_FLAGS = -D_FILE_OFFSET_BITS=64 -I./mbedtls/include -I./musl-libc/include
 
 LIBSSL = mbedtls/libmbedtls.a mbedtls/libmbedcrypto.a mbedtls/libmbedx509.a
+
 $(LIBSSL):
-	$(MAKE) -C all
+	$(MAKE) -C mbedtls all
 
 $(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) $(LIBGCC)
 	cp lib/*.o objs
@@ -131,5 +132,6 @@ clean:
 clean-all:
 	rm -f *.o *.a objs/*.o objs/*.lo objs/*.a list $(TARGET_NAME) \
                 tools/linker lib/*.o
+	$(MAKE) -C nbench clean
+	$(MAKE) -C mbedtls clean
 	$(MAKE) -C musl-libc clean
-
