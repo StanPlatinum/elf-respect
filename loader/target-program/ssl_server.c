@@ -163,8 +163,13 @@ void enclave_main()
      * Instead, you may want to use mbedtls_x509_crt_parse_file() to read the
      * server and CA certificates, as well as mbedtls_pk_parse_keyfile().
      */
-    ret = mbedtls_x509_crt_parse( &srvcert, (const unsigned char *) mbedtls_test_srv_crt,
+	puts("dbg0\n");
+    
+	ret = mbedtls_x509_crt_parse( &srvcert, (const unsigned char *) mbedtls_test_srv_crt,
                           mbedtls_test_srv_crt_len );
+
+	puts("dbg1\n");
+
     if( ret != 0 )
     {
         mbedtls_printf( " failed\n  !  mbedtls_x509_crt_parse returned %d\n\n", ret );
@@ -309,7 +314,6 @@ reset:
      * 6. Read the HTTP Request
      */
     mbedtls_printf( "  < Read from client:" );
-
 
     do
     {

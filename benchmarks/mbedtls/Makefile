@@ -12,7 +12,7 @@ BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
 
 NOLIBC_FLAG = -nodefaultlibs -nostdlib
 
-CFLAGS = $(BASE_CFLAGS) $(NOLIBC_FLAG) -I../musl-libc/include \
+CFLAGS = $(BASE_CFLAGS) -I../musl-libc/include \
 		 -fno-stack-protector -fvisibility=hidden
 
 LOCAL_CFLAGS = -Iinclude -I../ -D_FILE_OFFSET_BITS=64
@@ -68,14 +68,14 @@ CRT_LIBS = musl-libc/lib/crt1.o musl-libc/lib/crti.o musl-libc/lib/crtn.o
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC) -c $(LOCAL_CFLAGS) $(CFAGS) -o $@ $<
 
-#main: ssl_server_main.c static
-#	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $< -o $@ $(mbedtls_Flag) -L.
+main: ssl_server_main.c static
+	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $< -o $@ $(mbedtls_Flag) -L.
 
-ssl_server_main.o: ssl_server_main.c static
-	$(CC) -c $(LOCAL_CFLAGS) $(CFLAGS) $< -o $@ -lc -L. -L./musl-libc/lib
+#ssl_server_main.o: ssl_server_main.c static
+#	$(CC) -c $(LOCAL_CFLAGS) $(CFLAGS) $(NOLIBC_FLAG) $< -o $@ -lc -L. -L./musl-libc/lib
 
-main: ssl_server_main.o malloc.o $(LIBGCC) $(CRT_LIBS)
-	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $^ -o $@ $(mbedtls_Flag) -lc -L. -L./musl-libc/lib
+#main: ssl_server_main.o malloc.o $(LIBGCC) $(CRT_LIBS)
+#	$(CC) $(LOCAL_CFLAGS) $(CFLAGS) $(NOLIBC_FLAG) $^ -o $@ $(mbedtls_Flag) -lc -L. -L./musl-libc/lib
 		
 static: libmbedcrypto.a libmbedx509.a libmbedtls.a
 
