@@ -29,7 +29,11 @@ CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = file_io_test
 TARGET_NAME = credit_score
 
+SSL_SERVER = ssl_server
+
 BASE_CFLAGS = -Wall -pedantic -Wno-unused-function -std=gnu11
+
+NOLIBC_FLAG = -nodefaultlibs -nostdlib
 
 MUSL_LIBC_DIR = ./musl-libc
 MUSL_LIBC = $(MUSL_LIBC_DIR)/lib/libc.a
@@ -43,6 +47,13 @@ STACK_OBJ = lib/stack.o
 #DEBUG_OBJ = lib/my_itoa.o
 
 ASM_OBJS = $(STACK_OBJ) $(DEBUG_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
+
+LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o  \
+		 libgcc/__divdi3.o libgcc/__divti3.o libgcc/__lshrdi3.o     \
+		 libgcc/multi3.o libgcc/__negti2.o libgcc/__udivdi3.o       \
+		 libgcc/__udivmoddi4.o libgcc/__udivmodti4.o                \
+		 libgcc/__udivti3.o libgcc/__umoddi3.o libgcc/__umodti3.o
+
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin 
 	mv $(TARGET_NAME).bin ../program
@@ -66,10 +77,27 @@ nben: $(TARGET_NAME).bin $(LIBNBENCH)
 $(LIBNBENCH):
 	$(MAKE) -C nbench nbench.a
 
-				 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)
 	make -C musl-libc lib/libc.a
+
+SSL_FLAGS = -D_FILE_OFFSET_BITS=64 -I./mbedtls/include -I./musl-libc/include
+
+LIBSSL = mbedtls/libmbedtls.a mbedtls/libmbedcrypto.a mbedtls/libmbedx509.a
+
+$(LIBSSL):
+	$(MAKE) -C mbedtls all
+
+$(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) $(LIBGCC)
+	cp lib/*.o objs
+	cp libgcc/*.o objs
+
+https: $(MUSL_LIBC) $(SSL_SERVER) $(LIBSSL)
+	cp mbedtls/*.o objs
+	ls objs/*.o > list
+	cat list | ./tools/linker https
+	mv https ../program
+	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
 $(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
@@ -86,10 +114,14 @@ lib/%.o: lib/%.s
 tools/linker: tools/linkage_editor.cpp
 	$(CXX) -o $@ $^
 
-objs/libc_targetprogram.a: enclave_main.o $(MUSL_LIBC)
+objs/libc_sslserver.a: $(SSL_SERVER).o malloc.o $(MUSL_LIBC)
 	cp $^ objs/
-	$(MAKE) -C objs
+	$(MAKE) -C objs libc_sslserver.a
 
+objs/libc_targetprogram.a: enclave_main.o malloc.o $(MUSL_LIBC)
+	cp $^ objs/
+	$(MAKE) -C objs libc_targetprogram.a
+	
 malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 	$(CC4AS) -c $(SGX_CFLAGS) -o $@ $<
 
@@ -109,6 +141,12 @@ enclave_main.o: $(TARGET_NAME).s
 #foo1.o: foo1.c
 #	$(CC) -c $< -o $@
 
+$(SSL_SERVER).o: $(SSL_SERVER).c enclave.h
+	$(CC) -S $(SSL_FLAGS) -o $(SSL_SERVER).s $<
+	$(CC) -c $(SSL_SERVER).s -o $@
+
+
+
 CFICheck.o: CFICheck.c
 	$(CC) -c $< -o $@
 
@@ -123,5 +161,5 @@ clean-all:
 	rm -rf $(TARGET_NAME)
 	$(MAKE) -C musl-libc clean
 	$(MAKE) -C nbench clean
-#	$(MAKE) -C mbedtls clean
+	$(MAKE) -C mbedtls clean
 
