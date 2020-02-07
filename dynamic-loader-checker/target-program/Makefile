@@ -9,7 +9,7 @@ LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
-CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -Xclang -load -Xclang $(CFIHello_So_PATH)
+CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
@@ -94,15 +94,20 @@ $(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_O
 	cp lib/*.o objs
 	cp libgcc/*.o objs
 
-https: $(MUSL_LIBC) $(SSL_SERVER) $(LIBSSL)
+https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
+	cp CFICheck.o objs/
 	cp mbedtls/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker https
 	mv https ../program
+#	cat entryLabel4ssl.txt $(SSL_SERVER).txt > entryLabel
+#	sort entryLabel| uniq > entryLabel.txt
+#	mv entryLabel.txt ..
+	cat $(SSL_SERVER).txt ../entryLabel.txt
 	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
-$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
 	cp CFICheck.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
@@ -144,13 +149,11 @@ enclave_main.o: $(TARGET_NAME).s
 #	$(CC) -c $< -o $@
 
 $(SSL_SERVER).o: $(SSL_SERVER).c enclave.h
-	$(CC) -S $(SSL_FLAGS) -o $(SSL_SERVER).s $<
+	$(CC4CFICheck) -S $(SSL_FLAGS) -o $(SSL_SERVER).s $<
 	$(CC) -c $(SSL_SERVER).s -o $@
 
-
-
 CFICheck.o: CFICheck.c
-	$(CC) -c $< -o $@
+	$(CC4CFICheck) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \
