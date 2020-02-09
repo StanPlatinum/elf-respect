@@ -228,7 +228,7 @@ static bool get_parameter(T bpnn)
         }
     }
 
-    puts("dbg1\n");
+    //puts("dbg1\n");
 
     for (size_t i = 0; i < D; i++)
         for (size_t h = 0; h < Q; h++)
@@ -245,7 +245,7 @@ static bool get_parameter(T bpnn)
             }
         }
 
-    puts("dbg2\n");
+    //puts("dbg2\n");
 
     for (size_t h = 0; h < Q; h++)
         for (size_t j = 0; j < L; j++)
@@ -288,7 +288,7 @@ static bool get_parameter(T bpnn)
         }
     }
 
-	puts("dbg2.5\n");
+	//puts("dbg2.5\n");
     //fclose(in);
     close(in_fd);
     return true;
@@ -332,8 +332,8 @@ void enclave_main(void)
 		}
 	 */
 
-    in_file_fd = open(IN_PATH, O_RDONLY, S_IRUSR);
-	puts("dbg3\n");
+    in_file_fd = open(TEST_IN_PATH, O_RDONLY, S_IRUSR);
+	//puts("dbg3\n");
     
 	if (in_file_fd == -1)
     {
@@ -349,7 +349,7 @@ void enclave_main(void)
 		return;
 		}
 	 */
-    out_file_fd = open(OUT_PATH, O_RDONLY, S_IRUSR);
+    out_file_fd = open(TEST_OUT_PATH, O_RDWR, S_IRUSR);
     if (out_file_fd == -1)
     {
         puts("open file failed!\n");

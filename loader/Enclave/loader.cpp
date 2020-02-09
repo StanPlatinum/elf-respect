@@ -391,8 +391,8 @@ void ecall_receive_binary(char *binary, int sz)
 	relocate();
 
 	//Weijie: use the following lines only if checker_part.cpp is included.
-	pr_progress("debugging: disasm...");
-	disasm_whole();
+	//pr_progress("debugging: disasm...");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
