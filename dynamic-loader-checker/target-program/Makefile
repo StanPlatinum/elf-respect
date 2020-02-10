@@ -103,7 +103,7 @@ https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 #	cat entryLabel4ssl.txt $(SSL_SERVER).txt > entryLabel
 #	sort entryLabel| uniq > entryLabel.txt
 #	mv entryLabel.txt ..
-	cat $(SSL_SERVER).txt ../entryLabel.txt
+	mv $(SSL_SERVER).txt ../entryLabel.txt
 	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
