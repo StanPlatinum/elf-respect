@@ -38,12 +38,16 @@ enclave {
 
     /* Weijie: use an ECALL to receive target binary and load it into the 32M blob */
     trusted {
-	//Weijie: try "out"
-	//public void ecall_receive_binary([out, size=sz] char *buffer, int sz);
-	//public void ecall_receive_binary([in, size=sz] char *buffer, int sz);
-	//Xinyu & Weijie: try "user_check"
-	public void ecall_receive_binary([user_check] char *buffer, int sz);
         //public void enclave_main();
+	
+		//Weijie: try "out"
+		//public void ecall_receive_binary([out, size=sz] char *buffer, int sz);
+		//public void ecall_receive_binary([in, size=sz] char *buffer, int sz);
+		//Xinyu & Weijie: try "user_check"
+		public void ecall_receive_binary([user_check] char *buffer, int sz);
+
+		/* Hongbo & Weijie: use an ECALL to receive data and load it into the 32M blob */
+		public void ecall_receive_data([user_check] char *buffer, int sz);
     };
 
     /* 

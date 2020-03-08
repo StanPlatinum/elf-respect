@@ -363,6 +363,11 @@ static void relocate(void)
  * Usage: cs_disasm_entry(unsigned char* buf_test, ...);
  */
 
+/* Hongbo: need to do the sanitation */
+/* Weijie: copy data from outside to a .sgx.data section*/
+void ecall_receive_data(char *data, int sz)
+{}
+
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
