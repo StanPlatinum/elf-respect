@@ -368,6 +368,9 @@ static void relocate(void)
 void ecall_receive_data(char *data, int sz)
 {}
 
+void cleanup_data()
+{}
+
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
@@ -409,7 +412,8 @@ void ecall_receive_binary(char *binary, int sz)
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
 	pr_progress("r13/14/15 popped");
-
 	pr_progress("returning");
-	
+
+	cleanup_data();	
+	pr_progress("cleaning");
 }
