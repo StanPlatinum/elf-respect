@@ -365,11 +365,23 @@ static void relocate(void)
 
 /* Hongbo: need to do the sanitation */
 /* Weijie: copy data from outside to a .sgx.data section*/
+char *userdata = (char *)_SGXDATA_BASE;
+size_t userdata_size = 0;
 void ecall_receive_data(char *data, int sz)
-{}
+{
+	cpy(userdata, data, (size_t)sz);
+	userdata_size = sz;
+}
 
-void cleanup_data()
-{}
+void cleanup_code(size_t sz)
+{
+	fill_zero(program, sz);
+}
+
+void cleanup_data(size_t sz)
+{
+	fill_zero(userdata, sz);
+}
 
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
@@ -414,6 +426,7 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("r13/14/15 popped");
 	pr_progress("returning");
 
-	cleanup_data();	
-	pr_progress("cleaning");
+	cleanup_code(program_size);	
+	cleanup_data(userdata_size);	
+	pr_progress("cleansing");
 }

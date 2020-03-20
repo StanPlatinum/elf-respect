@@ -1,17 +1,8 @@
 /* 
  * Weijie: 
- * operations for .sgx.bin and .sgx.code which are inserted using objcopy
+ * operations for .sgx.code which is inserted using objcopy
+ * .sgx.data is defined inside the loader.cpp
  */
-
-/*
- * Weijie: the following is redundant
-    .sgx.bin : {
-        __sgx_start = .;
-        *(.sgx.bin)
-        __sgx_end = .;
-    }
-    . = . + 0x2000000;
-*/
 
 SECTIONS
 {
@@ -19,7 +10,5 @@ SECTIONS
         __elf_start = .;
         *(.sgx.code)
     }
-    /* Weijie: reserve room for binary received from Ecall */
-    /* . = . + 0x200000; */
 }
 __elf_end = .;
