@@ -4,6 +4,8 @@
  - MachineRegisterInfo.cpp is used to replace llvm/lib/CodeGen/MachineRegisterInfo.cpp.  
  - ChangeMachineRegisterInfo.jpg shows the changes of MachineRegisterInfo.cpp.  
  - CFICheck.c is the source file of CFICheck function.  
+ - transactionBegin.c is the source file of transactionBegin function.  
+ - fun_need_wrapper_list.txt is a demo file of the funs which need a wrapper.  
  - foo.c and foo1.c are demo source files.  
  - CFIShell.py is the assembly of the shell to compile, link, opt and llc by llvm.  
  - 1.sh/run.sh is the demo of executing CFISHell.py.  
@@ -59,9 +61,26 @@ xxx.txt is the txt file which save entry lables of this module.
     ~~~
  - 2 Execute command to compile CFICheck.c:
     ~~~
-    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so CFICheck.c -o CFICheck.o
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so -c CFICheck.c -o CFICheck.o
     ~~~
  - 3 Link your object file with CFICheck.o
+
+### UsageWithTSX
+ - 1 Create file fun_need_wrapper_list.txt with one function per line, The functions in which need wrappers.
+ - 2 Move fun_need_wrapper_list.txt to the path where your source file is located.
+ - 3 Execute command to compile your source:
+    ~~~
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so -S yoursourcefile.c -o yourasmfile.s
+    ~~~
+ - 4 Execute command to compile CFICheck.c:
+    ~~~
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so -c CFICheck.c -o CFICheck.o
+    ~~~
+ - 5 Execute command to compile transactionBegin.c:
+    ~~~
+    /your/llvm/path/build/bin/clang -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $/your/llvm/path/build/lib/LLVMCFIHello.so -c transactionBegin.c -o transactionBegin.o
+    ~~~
+ - 6 Link your object file with CFICheck.o and transactionBegin.o
 
 ***
 
