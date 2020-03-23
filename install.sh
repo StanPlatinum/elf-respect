@@ -185,6 +185,25 @@ make clean-all
 echo "Generating musl-libc"
 make CC="$CC4AS"
 make clean
+cd ..
+cd sc-resil-tg
+echo "Generating Makefile header..."
+echo "CC = "$CC4AS > Makefile_header4target
+echo "LLVM_PATH = "$ProofGen_Path > Makefile_header4target
+echo "Our_AS_Path = "$LLVM_MC_Path >> Makefile_header4target
+cat Makefile_header4target Makefile_template4target > Makefile
+rm Makefile_header4target
+echo "Generating all including musl-libc"
+make clean-all
+make CC="$CC4AS"
+if [ $? -ne 0 ]
+then
+	echo "Musl-libc install failed!"
+	make clean-all
+else
+	echo "Musl-libc install succeed!"
+fi
+make clean
 cd ../..
 
 

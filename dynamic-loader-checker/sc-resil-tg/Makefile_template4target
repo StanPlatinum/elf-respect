@@ -8,6 +8,7 @@ CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
+CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
@@ -44,7 +45,6 @@ OCALL_LIB_MK = lib/ocall.mk
 include $(OCALL_LIB_MK)
 
 STACK_OBJ = lib/stack.o
-#DEBUG_OBJ = lib/my_itoa.o
 
 ASM_OBJS = $(STACK_OBJ) $(DEBUG_OBJ) lib/start.o lib/ocall.o lib/rop_gadget.o
 
@@ -63,6 +63,7 @@ $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@
 #	$(CC) -c $< -o $@
 
+#Weijie: using sprintf for debugging
 #$(DEBUG_OBJ): lib/my_itoa.c
 #	$(CC4AS) -c $< -o $@
 
@@ -152,6 +153,9 @@ $(SSL_SERVER).o: $(SSL_SERVER).c enclave.h
 
 CFICheck.o: CFICheck.c
 	$(CC4CFICheck) -c $< -o $@
+
+transactionBegin.o: transactionBegin.c rtm.h
+	$(CC4TSX) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \

@@ -93,6 +93,16 @@ echo "Our_AS_Path = "$LLVM_MC_Path >> Makefile_header4target
 cat Makefile_header4target Makefile_template4target > Makefile
 rm Makefile_header4target
 make clean
+cd ..
+cd sc-resil-tg
+echo "Generating new Makefile header..."
+rm -f Makefile
+echo "LLVM_PATH = "$ProofGen_Path > Makefile_header4target
+echo "Our_AS_Path = "$LLVM_MC_Path >> Makefile_header4target
+cat Makefile_header4target Makefile_template4target > Makefile
+rm Makefile_header4target
+make clean
+
 cd ../..
 
 
