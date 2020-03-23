@@ -1233,6 +1233,26 @@ void relocate_entrylabel()
 
 }
 
+/* Hongbo: need to do the sanitation */
+/* Weijie: copy data from outside to a .sgx.data section*/
+char *userdata = (char *)_SGXDATA_BASE;
+size_t userdata_size = 0;
+void ecall_receive_data(char *data, int sz)
+{
+        cpy(userdata, data, (size_t)sz);
+        userdata_size = sz;
+}
+
+void cleanup_code(size_t sz)
+{
+        fill_zero(program, sz);
+}
+
+void cleanup_data(size_t sz)
+{
+        fill_zero(userdata, sz);
+}
+
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
@@ -1292,6 +1312,10 @@ void ecall_receive_binary(char *binary, int sz)
 	entry();
 	__asm__ __volatile__( "pop %%r15\n" "pop %%r14\n" "pop %%r13\n" ::);
 	pr_progress("returning");
+
+        cleanup_code(program_size);
+        cleanup_data(userdata_size);
+        pr_progress("cleansing");
 
 }
 

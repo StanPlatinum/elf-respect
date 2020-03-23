@@ -3,6 +3,9 @@ CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fn
 
 #LLVM_PATH = /home/weijliu/proofGen4store
 #LLVM_PATH = /home/weijliu/proofGen4memwt
+#Weijie: 
+#Note that the llvm version on my thinkpad is 9.0.0, with TSX instrumentation
+
 LLVM_BIN_PATH = $(LLVM_PATH)/build/bin
 CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 
@@ -61,7 +64,6 @@ all: $(MUSL_LIBC) $(TARGET_NAME).bin
 
 $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@
-#	$(CC) -c $< -o $@
 
 #Weijie: using sprintf for debugging
 #$(DEBUG_OBJ): lib/my_itoa.c
@@ -95,6 +97,7 @@ $(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_O
 
 https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	cp CFICheck.o objs/
+	cp transactionBegin.o objs/
 	cp mbedtls/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker https
@@ -106,8 +109,9 @@ https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
-$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o
 	cp CFICheck.o objs/
+	cp transactionBegin.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
 	ls objs/*.o > list
