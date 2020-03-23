@@ -13,7 +13,8 @@ void transactionBegin()
         }
         else
         {//fallback here
-            printf("abort %d\n", i);
+            //printf("abort %d\n", i);
+	    puts("warning!");
         }
     }
     exit(-1);

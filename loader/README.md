@@ -1,5 +1,7 @@
 ## Usage
 
+Please be noted that, using proofGen/tsx to generate code + proof w/ TSX, using proofGen/master to generate code + proof w/o TSX.
+
 ***
 
 ### Basic usage
