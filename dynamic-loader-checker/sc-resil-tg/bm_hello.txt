@@ -1,0 +1,6 @@
+useless
+CFICheck
+exit
+enclave_main
+puts
+transactionBegin
