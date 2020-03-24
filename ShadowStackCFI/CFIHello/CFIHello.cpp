@@ -321,7 +321,6 @@ namespace {
     bool runOnModule(Module &M) override {
         if (!(M.getName().str() == "CFICheck.c" || M.getName().str() == "transactionBegin.c"))
         {   
-            //readFunNeedWrapperListFile("fun_need_wrapper_list.txt");
             readFunNeedWrapperListFile("fun_need_wrapper_list");
             makeWrapper(M);
             callWrapper(M);

@@ -132,7 +132,9 @@ TSX插桩
                 addq	%r10, %r11
                 movq	(%rsp), %r10
                 movq	%r10, (%r11)
-            函数出口处，TSX插桩在ShadowStack插桩之后，即：
+            函数出口处，TSX插桩在ShadowStack插桩之前，即：
+                movq	%rax, %r15
+                callq	transactionBegin
                 movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
                 movq	(%r11), %r10
                 addq	%r11, %r10
@@ -140,9 +142,6 @@ TSX插桩
                 movq	(%r10), %r11
                 cmpq	%r11, (%rsp)
                 jne	.LBB0_4
-                movq	%rax, %r15
-                callq	transactionBegin
-            注：enclave_main函数无此冲突
         TSX与indirect call的冲突
             TSX插桩在indirect call插桩之后，即在callq *%reg之前：
                 movq	%reg, %rdi
@@ -150,5 +149,6 @@ TSX插桩
                 movq	%rax, %r15
 	            callq	transactionBegin
         其它
+            对mov检查、rsp检查和ShadowStack插桩造成的分支指令不作TSX插桩
             CFICheck函数和transactionBegin函数本身不作TSX插桩，对它们的调用也不作TSX插桩
-            目前CFIChec、transactionBegin和所有wrapper函数都有完整的mov检查、rsp检查和ShadowStack插桩
+            目前CFIChec和所有wrapper函数都有完整的mov检查、rsp检查和ShadowStack插桩，transactionBegin有rsp检查和ShadowStack插桩

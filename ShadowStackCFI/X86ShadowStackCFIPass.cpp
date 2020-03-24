@@ -157,16 +157,10 @@ namespace {
         bool hasCFICheck = false;
         bool hasTransactionBegin = false;
         bool entryLabelPrinted = false;
-        
-	//bool needInsertCFI = true;  //用于设置是否需要进行CFICheck插桩
-        bool needInsertCFI = false;  //用于设置是否需要进行CFICheck插桩
-        //bool needShadowStack = true;
-        bool needShadowStack = false;
-        //bool needRspInsert = true;
-        bool needRspInsert = false;
-        //bool needMovInsert = true;
-        bool needMovInsert = false;
-
+        bool needInsertCFI = true;  //用于设置是否需要进行CFICheck插桩
+        bool needShadowStack = true;
+        bool needRspInsert = true;
+        bool needMovInsert = true;
         bool needTsxInsert = true;
         bool needExit = needShadowStack || needRspInsert || needMovInsert;
         string mainFunName = "enclave_main";
@@ -631,17 +625,17 @@ namespace {
                     // if (SimpleMFRegBool)
                     //     insertSSRetSimple(TII, MBB, MI, *Trap, SimpleMFReg);
                     // else
-                    if (hasTransactionEntry == true)
-                    {
-                        MII--;MII--;
+                    // if (hasTransactionEntry == true)
+                    // {
+                    //     MII--;MII--;
+                    //     MachineInstr &MI = *MII;
+                    //     insertSSRet(TII, MBB, MI, *Trap);
+                    // }
+                    // else
+                    // {
                         MachineInstr &MI = *MII;
                         insertSSRet(TII, MBB, MI, *Trap);
-                    }
-                    else
-                    {
-                        MachineInstr &MI = *MII;
-                        insertSSRet(TII, MBB, MI, *Trap);
-                    }
+                    //}
                     return true;
                 }
             }
@@ -1153,7 +1147,8 @@ namespace {
         virtual bool runOnMachineFunction(MachineFunction &MF) {
             bool bm = false, bs = false, bc = false, br = false, bt = false;
             string funName = MF.getFunction().getName().str();
-            needTsxInsert = ((funName.find("CFICheck") != string::npos) || (funName.find("transactionBegin") != string::npos)) ? false : true;            
+            needTsxInsert = ((funName.find("CFICheck") != string::npos) || (funName.find("transactionBegin") != string::npos)) ? false : true;
+            needMovInsert = (funName.find("transactionBegin") != string::npos) ? false : true;
             outs() << MF.getFunction().getParent()->getName() << "\n";
 
             if ((hasExit == false && needExit == true) || (hasCFICheck == false && needInsertCFI == true) || (hasTransactionBegin == false && needTsxInsert == true))
