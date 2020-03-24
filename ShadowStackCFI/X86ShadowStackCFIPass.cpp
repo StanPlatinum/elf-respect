@@ -157,10 +157,16 @@ namespace {
         bool hasCFICheck = false;
         bool hasTransactionBegin = false;
         bool entryLabelPrinted = false;
-        bool needInsertCFI = true;  //用于设置是否需要进行CFICheck插桩
-        bool needShadowStack = true;
-        bool needRspInsert = true;
-        bool needMovInsert = true;
+        
+	//bool needInsertCFI = true;  //用于设置是否需要进行CFICheck插桩
+        bool needInsertCFI = false;  //用于设置是否需要进行CFICheck插桩
+        //bool needShadowStack = true;
+        bool needShadowStack = false;
+        //bool needRspInsert = true;
+        bool needRspInsert = false;
+        //bool needMovInsert = true;
+        bool needMovInsert = false;
+
         bool needTsxInsert = true;
         bool needExit = needShadowStack || needRspInsert || needMovInsert;
         string mainFunName = "enclave_main";
