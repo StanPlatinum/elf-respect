@@ -499,6 +499,8 @@ int find_xbegin(cs_insn *ins)
 int find_xend(cs_insn *ins)
 {}
 
+/****************** P2 checker ******************/
+
 /* Weijie: if the return value is 1, then it means that one of the oprands of insn[j] is rsp */
 int find_rsp(cs_insn *ins)
 {

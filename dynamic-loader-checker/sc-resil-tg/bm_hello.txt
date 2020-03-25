@@ -1,8 +1,0 @@
-useless
-CFICheck
-exit
-enclave_main
-puts
-wrapper_by_compiler_exit
-wrapper_by_compiler_puts
-transactionBegin
