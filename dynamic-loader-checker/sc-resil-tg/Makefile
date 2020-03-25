@@ -17,7 +17,6 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
-#TARGET_NAME = simple_malloc
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
@@ -26,10 +25,10 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
-#TARGET_NAME = bm_sprintf
+TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
-TARGET_NAME = bm_hello
+#TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test

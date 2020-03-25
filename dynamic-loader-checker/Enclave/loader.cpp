@@ -494,10 +494,27 @@ void get_bounds()
 /****************************** 2. checker part ******************************/
 
 int find_xbegin(cs_insn *ins)
-{}
+{
+	return 0;
+}
 
 int find_xend(cs_insn *ins)
-{}
+{
+	return 0;
+}
+
+int check_bb(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+{
+	//Weijie: at the beginning of a bb
+	//xend
+	//movq	%r15, %rax
+	//Weijie: at the end of a bb
+	//movq	%r15, %rax
+	//call transactionBegin
+	//Weijie: or a ret
+	//all these should exist before ss instrumentation
+	return 0;
+}
 
 /****************** P2 checker ******************/
 
