@@ -118,6 +118,8 @@ $(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_O
 	cp lib/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker $(TARGET_NAME).bin
+#	cat transactionBegin.txt $(TARGET_NAME).txt >> entryLabel
+#	sort entryLabel| uniq > entryLabel.txt
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s

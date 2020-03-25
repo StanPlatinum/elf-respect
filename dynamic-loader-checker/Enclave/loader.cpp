@@ -429,7 +429,7 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <capstone/platform.h>
 #include <capstone/capstone.h>
 
-/****************************** rewriter part ******************************/
+/****************************** 1. rewriter part ******************************/
 
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
@@ -491,7 +491,13 @@ void get_bounds()
 	dlog("upper bound: %p, lower bound: %p", data_upper_bound, data_lower_bound);
 }
 
-/****************************** checker part ******************************/
+/****************************** 2. checker part ******************************/
+
+int find_xbegin(cs_insn *ins)
+{}
+
+int find_xend(cs_insn *ins)
+{}
 
 /* Weijie: if the return value is 1, then it means that one of the oprands of insn[j] is rsp */
 int find_rsp(cs_insn *ins)
@@ -1297,8 +1303,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	//pr_progress("debugging: validate if rewrites fine");
-	//disasm_whole();
+	pr_progress("debugging: validate if rewrites fine");
+	disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
@@ -1319,4 +1325,4 @@ void ecall_receive_binary(char *binary, int sz)
 
 }
 
-#include "checker.cpp"
+#include "iterdis_checker.cpp"
