@@ -493,32 +493,56 @@ void get_bounds()
 
 /****************************** 2. checker part ******************************/
 
-int find_xbegin(cs_insn *ins)
+/*
+ *
+ * P1: Mem Write
+ * P2: RSP Write
+ * P3
+ * P4
+ * P5
+ * P6
+ * P7: TSX
+ *
+ */
+
+/* Weijie: if the return value is 1, it means its a transactionBegin call, aka there exist xbegin instruction */
+int find_transBegin(cs_insn *ins)
 {
 	return 0;
 }
 
-int find_xend(cs_insn *ins)
-{
-	return 0;
-}
-
-int check_bb(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
+//Weijie: check the whole basic block
+int check_bb_head(cs_insn* whole_ins)
 {
 	//Weijie: at the beginning of a bb
 	//xend
 	//movq	%r15, %rax
+	if (
+		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
+		(strncmp("movq", whole_ins[1].mnemonic, 4))
+	   )	
+		PrintDebugInfo("found a bb/func call/branch\n");
+	else
+		PrintDebugInfo("Violate P7\n");	
+}
+
+int check_bb_tail(cs_insn* ins)
+{
 	//Weijie: at the end of a bb
 	//movq	%r15, %rax
 	//call transactionBegin
 	//Weijie: or a ret
 	//all these should exist before ss instrumentation
+	if (find_transBegin(ins) == 1)
+	{
+		PrintDebugInfo("checking the seqs...\n");
+	};
 	return 0;
 }
 
 /****************** P2 checker ******************/
 
-/* Weijie: if the return value is 1, then it means that one of the oprands of insn[j] is rsp */
+/* Weijie: if the return value is 1, it means that one of the oprands of insn[j] is rsp */
 int find_rsp(cs_insn *ins)
 {
 	cs_x86 *x86;
