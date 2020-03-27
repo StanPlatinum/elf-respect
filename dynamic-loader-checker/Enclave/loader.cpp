@@ -497,11 +497,13 @@ void get_bounds()
  *
  * P1: Mem Write
  * P2: RSP Write
- * P3
- * P4
- * P5
+ * P3: Shadow Stack
+ * P4: Call Graph
+ * P5: Mem Read
  * P6
- * P7: TSX
+ * P7: T-SGX
+ * P8: Hyperrace
+ * P9: Multi-user Data Cleansing
  *
  */
 
@@ -526,7 +528,7 @@ int check_bb_head(cs_insn* whole_ins)
 		PrintDebugInfo("Violate P7\n");	
 }
 
-int check_bb_tail(cs_insn* ins)
+int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *backward_ins)
 {
 	//Weijie: at the end of a bb
 	//movq	%r15, %rax
@@ -535,7 +537,17 @@ int check_bb_tail(cs_insn* ins)
 	//all these should exist before ss instrumentation
 	if (find_transBegin(ins) == 1)
 	{
-		PrintDebugInfo("checking the seqs...\n");
+		PrintDebugInfo("checking instruments...\n");
+		if (
+			(strncmp("movq", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("movabs", backward_ins[0].mnemonic, 6) == 0)
+		) {
+			return 1;
+		}
+		else {
+			PrintDebugInfo("Violate P7\n");
+			return -1;
+		}
 	};
 	return 0;
 }
@@ -1297,9 +1309,10 @@ void cleanup_code(size_t sz)
         fill_zero(program, sz);
 }
 
-void cleanup_data(size_t sz)
+int cleanup_data(size_t sz)
 {
         fill_zero(userdata, sz);
+	return 0;
 }
 
 //Weijie: Enclave starts here
@@ -1363,7 +1376,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("returning");
 
         cleanup_code(program_size);
-        cleanup_data(userdata_size);
+        if (0 == cleanup_data(userdata_size))
+		PrintDebugInfo("Violate P9\n");
         pr_progress("cleansing");
 
 }
