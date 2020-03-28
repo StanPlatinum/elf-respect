@@ -1242,6 +1242,18 @@ void rewrite_whole()
 					free(buf);
 				}
 
+				//Weijie: get transBegin info
+				int iftsx_rv = strncmp("transactionBegin", &strtab[symtab[j].st_name], 8);
+				if (iftsx_rv == 0) {
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					//dlog("transBegin: textAddr: %p, textSize: %u", textAddr, textSize);
+					//fill in transBegin_sym_addr
+					rv = cs_check_transBegin(buf, textSize, textAddr);
+					free(buf);
+				}
+
 				//Weijie: rewrite Memory write and long call/ret, not including CFICheck
 				textAddr = symtab[j].st_value;
 				buf = (unsigned char *)malloc(textSize);
