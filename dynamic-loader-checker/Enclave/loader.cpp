@@ -507,7 +507,7 @@ void get_bounds()
  *
  */
 
-/****************** P2 checker ******************/
+/****************** P7 & P8 checker ******************/
 
 Elf64_Addr transBegin_sym_addr;
 
@@ -524,7 +524,21 @@ int find_transBegin(cs_insn *ins)
 	//Weijie: returning -1 means this insn[j] has no oprand
 	//check mnemonic and the operand
 
-	return 0;
+	//Weijie: returning 0 means this is not call transBegin, returning 1 means it is.
+	if (strncmp("call", ins->mnemonic, 4) == 0) {
+		//Weijie: check if the oprand is the address of CFICheck
+		cs_x86 x86 = ins->detail->x86;
+		cs_x86_op op = x86.operands[0];
+		if ((int)op.type == X86_OP_IMM && op.imm == transBegin_sym_addr){
+			return 1;
+		}
+		else {
+			return 0;
+		};
+	}
+	else {
+		return 0;
+	}
 }
 
 //Weijie: check the whole basic block
@@ -570,7 +584,7 @@ int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *
 	return 0;
 }
 
-/****************** P2 checker ******************/
+/****************** P1 & P2 checker ******************/
 
 /* Weijie: if the return value is 1, it means that one of the oprands of insn[j] is rsp */
 int find_rsp(cs_insn *ins)
@@ -680,7 +694,6 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		return 0;
 }
 
-
 int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *forward_ins)
 {
 	int if_rsp = find_rsp(ins);
@@ -756,6 +769,8 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 	else
 		return 0;
 }
+
+/****************** P3 & P4 checker ******************/
 
 /* Weijie: if the return value is 1, then it means that this insn[j] is calling and it's safe */
 int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
@@ -1394,7 +1409,7 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("returning");
 
         cleanup_code(program_size);
-        if (0 == cleanup_data(userdata_size))
+        if (0 != cleanup_data(userdata_size))
 		PrintDebugInfo("Violate P9\n");
         pr_progress("cleansing");
 
