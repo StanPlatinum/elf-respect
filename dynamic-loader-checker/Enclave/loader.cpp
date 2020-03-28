@@ -507,9 +507,23 @@ void get_bounds()
  *
  */
 
+/****************** P2 checker ******************/
+
+Elf64_Addr transBegin_sym_addr;
+
 /* Weijie: if the return value is 1, it means its a transactionBegin call, aka there exist xbegin instruction */
 int find_transBegin(cs_insn *ins)
 {
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is "data" instruction
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	//check mnemonic and the operand
+
 	return 0;
 }
 
@@ -522,10 +536,14 @@ int check_bb_head(cs_insn* whole_ins)
 	if (
 		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
 		(strncmp("movq", whole_ins[1].mnemonic, 4))
-	   )	
-		PrintDebugInfo("found a bb/func call/branch\n");
-	else
-		PrintDebugInfo("Violate P7\n");	
+	   ) {	
+		PrintDebugInfo("found a bb/func/branch\n");
+		return 1;
+	}
+	else {
+		PrintDebugInfo("not a bb/func/branch\n");
+		return 0;
+	}
 }
 
 int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *backward_ins)
@@ -611,19 +629,19 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	if (if_memwt > 0){
 		//Weijie: checking if they are 'movabs rbx, 0ximm', 'cmp rax, rbx' and so on
 		if (
-				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("push", forward_ins[1].mnemonic, 4) == 0)	&&
-				(strncmp("pushfq", forward_ins[2].mnemonic, 6) == 0)	&&
-				(strncmp("lea", forward_ins[3].mnemonic, 3) == 0)	&&
-				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", forward_ins[7].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[8].mnemonic, 3) == 0)	&&
-				(strncmp("jb", forward_ins[9].mnemonic, 2) == 0)	&&
-				(strncmp("popfq", forward_ins[10].mnemonic, 5) == 0)	&&
-				(strncmp("pop", forward_ins[11].mnemonic, 3) == 0)	&&
-				(strncmp("pop", forward_ins[12].mnemonic, 3) == 0)
+			(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("push", forward_ins[1].mnemonic, 4) == 0)	&&
+			(strncmp("pushfq", forward_ins[2].mnemonic, 6) == 0)	&&
+			(strncmp("lea", forward_ins[3].mnemonic, 3) == 0)	&&
+			(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
+			(strncmp("ja", forward_ins[6].mnemonic, 2) == 0)	&&
+			(strncmp("movabs", forward_ins[7].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[8].mnemonic, 3) == 0)	&&
+			(strncmp("jb", forward_ins[9].mnemonic, 2) == 0)	&&
+			(strncmp("popfq", forward_ins[10].mnemonic, 5) == 0)	&&
+			(strncmp("pop", forward_ins[11].mnemonic, 3) == 0)	&&
+			(strncmp("pop", forward_ins[12].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//Weijie: getting the address
@@ -644,9 +662,9 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		}
 		/*
 		else if (
-				(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
-				(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
-				(strncmp("add", forward_ins[7].mnemonic, 3) == 0)
+			(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
+			(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
+			(strncmp("add", forward_ins[7].mnemonic, 3) == 0)
 			) {
 			//PrintDebugInfo("memory write by shadow stack.\n");
 			//PrintDebugInfo("memory write check done.\n");
@@ -670,14 +688,14 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 		//PrintDebugInfo("found rsp writes and back_ins.\n");
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
-				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("movabs", backward_ins[1].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", backward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("ja", backward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", backward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", backward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jb", backward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("pop", backward_ins[7].mnemonic, 3) == 0)
+			(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("movabs", backward_ins[1].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", backward_ins[2].mnemonic, 3) == 0)	&&
+			(strncmp("ja", backward_ins[3].mnemonic, 2) == 0)	&&
+			(strncmp("movabs", backward_ins[4].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", backward_ins[5].mnemonic, 3) == 0)	&&
+			(strncmp("jb", backward_ins[6].mnemonic, 2) == 0)	&&
+			(strncmp("pop", backward_ins[7].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//PrintDebugInfo("setting bounds...\n");
@@ -704,14 +722,14 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 	{
 		//PrintDebugInfo("found rsp writes and for_ins.\n");
 		if (
-				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("movabs", forward_ins[1].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jb", forward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
+			(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("movabs", forward_ins[1].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
+			(strncmp("ja", forward_ins[3].mnemonic, 2) == 0)	&&
+			(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
+			(strncmp("jb", forward_ins[6].mnemonic, 2) == 0)	&&
+			(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
 		){
 			//Weijie: check: mov rbp, rsp
 			//Weijie: replace 2 imms
@@ -745,9 +763,9 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 	int exist = 0;
 	//Weijie: to-do: check if this insn is a long func's indirect call...
 	if (
-			(strncmp("mov", ins->mnemonic, 3) == 0)	&&
-			(strncmp("rbp, rsp", ins->op_str, 7) == 0)	&&
-			(strncmp("push", forward_ins[6].mnemonic, 4) == 0)
+		(strncmp("mov", ins->mnemonic, 3) == 0)	&&
+		(strncmp("rbp, rsp", ins->op_str, 7) == 0)	&&
+		(strncmp("push", forward_ins[6].mnemonic, 4) == 0)
 	   )
 	{
 		exist = 1;		
@@ -770,11 +788,11 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 			else	return -1;
 
 			if (
-					(strncmp("add", forward_ins[1].mnemonic, 3) == 0)	&&
-					(strncmp("mov", forward_ins[2].mnemonic, 3) == 0)	&&
-					(strncmp("add", forward_ins[3].mnemonic, 3) == 0)	&&
-					(strncmp("mov", forward_ins[4].mnemonic, 3) == 0)	&&
-					(strncmp("mov", forward_ins[5].mnemonic, 3) == 0)	
+				(strncmp("add", forward_ins[1].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[2].mnemonic, 3) == 0)	&&
+				(strncmp("add", forward_ins[3].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[4].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[5].mnemonic, 3) == 0)	
 			   ){
 				//PrintDebugInfo("long call check done.\n");
 			}
@@ -816,12 +834,12 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 
 			if (
 					//Weijie: to-do: check other 5 insns...
-					(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
-					(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
-					(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
-					(strncmp("mov", forward_ins[4].mnemonic, 3) == 0) &&
-					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
-					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
+				(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
+				(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
+				(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+				(strncmp("mov", forward_ins[4].mnemonic, 3) == 0) &&
+				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
+				(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
 			   ){
 				//PrintDebugInfo("long ret check done.\n");
 			}
