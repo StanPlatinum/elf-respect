@@ -507,82 +507,9 @@ void get_bounds()
  *
  */
 
-/****************** P7 & P8 checker ******************/
+Elf64_Addr CFICheck_sym_addr;
 
 Elf64_Addr transBegin_sym_addr;
-
-/* Weijie: if the return value is 1, it means its a transactionBegin call, aka there exist xbegin instruction */
-int find_transBegin(cs_insn *ins)
-{
-	cs_x86 *x86;
-	int i, exist = 0;
-
-	if (ins->detail == NULL)	return -2;
-	//Weijie: returning -2 means this insn[j] is "data" instruction
-	x86 = &(ins->detail->x86);
-	if (x86->op_count == 0)		return -1;
-	//Weijie: returning -1 means this insn[j] has no oprand
-	//check mnemonic and the operand
-
-	//Weijie: returning 0 means this is not call transBegin, returning 1 means it is.
-	if (strncmp("call", ins->mnemonic, 4) == 0) {
-		//Weijie: check if the oprand is the address of CFICheck
-		cs_x86 x86 = ins->detail->x86;
-		cs_x86_op op = x86.operands[0];
-		if ((int)op.type == X86_OP_IMM && op.imm == transBegin_sym_addr){
-			return 1;
-		}
-		else {
-			return 0;
-		};
-	}
-	else {
-		return 0;
-	}
-}
-
-//Weijie: check the whole basic block
-int check_bb_head(cs_insn* whole_ins)
-{
-	//Weijie: at the beginning of a bb
-	//xend
-	//movq	%r15, %rax
-	if (
-		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
-		(strncmp("movq", whole_ins[1].mnemonic, 4))
-	   ) {	
-		PrintDebugInfo("found a bb/func/branch\n");
-		return 1;
-	}
-	else {
-		PrintDebugInfo("not a bb/func/branch\n");
-		return 0;
-	}
-}
-
-int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *backward_ins)
-{
-	//Weijie: at the end of a bb
-	//movq	%r15, %rax
-	//call transactionBegin
-	//Weijie: or a ret
-	//all these should exist before ss instrumentation
-	if (find_transBegin(ins) == 1)
-	{
-		PrintDebugInfo("checking instruments...\n");
-		if (
-			(strncmp("movq", forward_ins[0].mnemonic, 4) == 0)	&&
-			(strncmp("movabs", backward_ins[0].mnemonic, 6) == 0)
-		) {
-			return 1;
-		}
-		else {
-			PrintDebugInfo("Violate P7\n");
-			return -1;
-		}
-	};
-	return 0;
-}
 
 /****************** P1 & P2 checker ******************/
 
@@ -886,8 +813,82 @@ int is_op_reg(cs_insn *ins)
 	return exist;
 }
 
-//Weijie:
-Elf64_Addr CFICheck_sym_addr;
+/****************** P7 & P8 checker ******************/
+
+/* Weijie: if the return value is 1, it means its a transactionBegin call, aka there exist xbegin instruction */
+int find_transBegin(cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is "data" instruction
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	//check mnemonic and the operand
+
+	//Weijie: returning 0 means this is not call transBegin, returning 1 means it is.
+	if (strncmp("call", ins->mnemonic, 4) == 0) {
+		//Weijie: check if the oprand is the address of CFICheck
+		cs_x86 x86 = ins->detail->x86;
+		cs_x86_op op = x86.operands[0];
+		if ((int)op.type == X86_OP_IMM && op.imm == transBegin_sym_addr){
+			return 1;
+		}
+		else {
+			return 0;
+		};
+	}
+	else {
+		return 0;
+	}
+}
+
+//Weijie: check the whole basic block
+int check_bb_head(cs_insn* whole_ins)
+{
+	//Weijie: at the beginning of a bb
+	//xend
+	//movq	%r15, %rax
+	if (
+		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
+		(strncmp("movq", whole_ins[1].mnemonic, 4))
+	   ) {	
+		PrintDebugInfo("found a bb/func/branch\n");
+		return 1;
+	}
+	else {
+		PrintDebugInfo("not a bb/func/branch\n");
+		return 0;
+	}
+}
+
+int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *backward_ins)
+{
+	//Weijie: at the end of a bb
+	//movq	%r15, %rax
+	//call transactionBegin
+	//Weijie: or a ret
+	//all these should exist before ss instrumentation
+	if (find_transBegin(ins) == 1)
+	{
+		PrintDebugInfo("checking instruments...\n");
+		if (
+			(strncmp("movq", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("movabs", backward_ins[0].mnemonic, 6) == 0)
+		) {
+			return 1;
+		}
+		else {
+			PrintDebugInfo("Violate P7\n");
+			return -1;
+		}
+	};
+	return 0;
+}
+
+/****************** Multiple checkers ******************/
 
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
@@ -907,6 +908,37 @@ int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		//PrintDebugInfo("no instrumentations on this indirect call\n");
 		return -1;
 	}
+}
+
+//Weijie: given the symbol 'transactionBegin'
+int cs_check_transBegin(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
+{
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+
+	transBegin_sym_addr = textAddr;
+	//PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		//Weijie: disasming and checking...
+		for (j = 0; j < count; j++) {
+			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+		}
+		cs_free(insn, count);
+	} else
+		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+	cs_close(&handle);
+
+	return 0;
 }
 
 //Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
@@ -939,7 +971,6 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 
 			//Weijie: start checking...
-
 			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
 				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
 				if ((int)op2.type == X86_OP_IMM) {
