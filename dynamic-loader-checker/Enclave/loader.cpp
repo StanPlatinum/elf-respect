@@ -855,11 +855,11 @@ int check_bb_head(cs_insn* whole_ins)
 		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
 		(strncmp("movq", whole_ins[1].mnemonic, 4))
 	   ) {	
-		PrintDebugInfo("found a bb/func/branch\n");
+		//PrintDebugInfo("found a bb/func/branch\n");
 		return 1;
 	}
 	else {
-		PrintDebugInfo("not a bb/func/branch\n");
+		//PrintDebugInfo("not a bb/func/branch\n");
 		return 0;
 	}
 }
@@ -931,7 +931,7 @@ int cs_check_transBegin(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 		size_t j;
 		//Weijie: disasming and checking...
 		for (j = 0; j < count; j++) {
-			PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 		}
 		cs_free(insn, count);
 	} else
@@ -1037,10 +1037,17 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int indirect_call_safe = 0;
 		int forward_farthest = 13;
 		int backward_farthest = 8;
+
+		//Weijie: first we check the bb
+		if (0 == check_bb_head(insn)){
+			//PrintDebugInfo("not a bb\n");
+		}
+
 		for (j = 0; j < count; j++) {
 			//Weijie: comment for benchmarking
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			//Weijie: maintain a insn set including more than 8? insns right before the current disasmed insn
+			//Weijie: maintain an insn set including more than 8?
+			//Weijie: insns should be right before the current disasmed insn
 			if (j >= 13){
 				cs_insn forward_insn[13];
 				forward_insn[0] = insn[j-13];
@@ -1151,6 +1158,15 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				}
 			}
 			//if (indirect_call_safe < 0)	PrintDebugInfo("Check failed! Illegal indirect call instrumentation!\n");
+
+			//Weijie: side channel resilient checker
+			if (j >= 1 && (count - j - 1 >= 9)){
+				cs_insn forward_insn[1];
+				cs_insn backward_insn[1];
+				if (check_bb_tail(handle, CS_MODE_64, &insn[j], forward_insn, backward_insn) < 0) {
+					//PrintDebugInfo("Check failed! Illegal TSX instrumentation!\n");
+				}
+			}
 		}
 		cs_free(insn, count);
 	} else
@@ -1435,8 +1451,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	pr_progress("debugging: validate if rewrites fine");
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
