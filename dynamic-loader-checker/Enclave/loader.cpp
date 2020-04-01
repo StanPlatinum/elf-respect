@@ -853,7 +853,7 @@ int check_bb_head(cs_insn* whole_ins)
 	//movq	%r15, %rax
 	if (
 		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
-		(strncmp("movq", whole_ins[1].mnemonic, 4))
+		(strncmp("mov", whole_ins[1].mnemonic, 3))
 	   ) {	
 		//PrintDebugInfo("found a bb/func/branch\n");
 		return 1;
@@ -875,7 +875,7 @@ int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *
 	{
 		PrintDebugInfo("checking instruments...\n");
 		if (
-			(strncmp("movq", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("mov", forward_ins[0].mnemonic, 3) == 0)	&&
 			(strncmp("movabs", backward_ins[0].mnemonic, 6) == 0)
 		) {
 			return 1;
