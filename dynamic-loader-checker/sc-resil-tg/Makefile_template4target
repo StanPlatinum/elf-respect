@@ -1,4 +1,8 @@
 
+SGX_SRC_PATH = /home/liuweijie/linux-sgx
+
+SGX_COM_INC = $(SGX_SRC_PATH)/common/inc
+
 CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 
 #LLVM_PATH = /home/weijliu/proofGen4store
@@ -162,6 +166,9 @@ CFICheck.o: CFICheck.c
 
 transactionBegin.o: transactionBegin.c rtm.h
 	$(CC4TSX) -c $< -o $@
+
+telib_t.o: telib_t.c
+	$(CC4AS) -I$(SGX_COM_INC) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \
