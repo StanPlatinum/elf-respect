@@ -24,6 +24,7 @@
 #include "llvm/Support/MemoryBuffer.h"
 #include "llvm/Support/LineIterator.h"
 #include "llvm/Support/FileSystem.h"
+#include "llvm/Transforms/Utils/BasicBlockUtils.h"
 #include <string>
 #include <vector>
 #include <fstream>
@@ -32,10 +33,14 @@ using namespace llvm;
 using namespace std;
 
 #define DEBUG_TYPE "hello"
- 
+
 namespace {
   class CFIHello : public ModulePass {
-      map<string, Function*> wrapperMap;
+    map<string, Function*> wrapperMap;
+    char config_full[220];
+    int mode;
+    double threshold;
+    int k = 20;
   public:
     static char ID; // Pass identification, rep lacement for typeid
     CFIHello() : ModulePass(ID) {}
@@ -318,17 +323,150 @@ namespace {
         }
     }
 
-    bool runOnModule(Module &M) override {
-        if (!(M.getName().str() == "CFICheck.c" || M.getName().str() == "transactionBegin.c"))
-        {   
-            readFunNeedWrapperListFile("fun_need_wrapper_list");
-            makeWrapper(M);
-            callWrapper(M);
+    void hyperrace(Module &M)
+    {
+        GlobalVariable *gv, *gv0;
+        LoadInst *load;
+        LLVMContext &llvm_context = M.getContext();
+        Type *I64Ty = Type::getInt64Ty(llvm_context);
+        Type *I8PtrTy = Type::getInt8PtrTy(llvm_context);
+        Type *VoidTy = Type::getVoidTy(llvm_context);
+        Type *DoubleTy = Type::getDoubleTy(llvm_context);
+        PointerType *I64PTy = PointerType::get(I64Ty, 64);
+        FunctionCallee FC = M.getOrInsertFunction("instrument_function_get_time", VoidTy);
+        Function* instru_get_time_f = cast<Function>(FC.getCallee()->stripPointerCasts());
+        Constant *initial_value_int_zero = ConstantInt::get(I64Ty, 0);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::InternalLinkage, 0, "last_inline_begin_time");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "current_time");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "previous_time");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "int_flag");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::InternalLinkage, 0, "anormaly_total");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "bb_run_count");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "pre_bb_num");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64PTy, false, GlobalValue::AvailableExternallyLinkage, 0, "m");
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "v");
+        // gv->setInitializer(initial_value_int_zero);
+        // gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "add");
+        // gv->setInitializer(initial_value_int_zero);
+        gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "main_rip_addr");
+        gv->setInitializer(initial_value_int_zero);
+        gv = new GlobalVariable(M, I64Ty, false, GlobalValue::AvailableExternallyLinkage, 0, "shadow_rip_addr");
+        gv->setInitializer(initial_value_int_zero);
+
+        for(auto FI = M.begin(), FE = M.end(); FI != FE; FI++)
+        {
+            //Function *F = MI;
+            int bbcount = 0;
+            int blocktoskip = 0;
+            Value *mainpptr = NULL, *shadowpptr = NULL;
+            for(auto BBI = FI->begin(), BBE = FI->end(); BBI != BBE; BBI++)
+            {
+                if (blocktoskip > 0)
+                {
+                    blocktoskip--;
+                    continue;
+                }	
+                //BasicBlock *BB = FI;
+
+                auto FPI = BBI->getFirstInsertionPt();
+                Instruction &FP = *FPI;
+                IRBuilder<> IRB0(&FP);
+
+                if (mainpptr == NULL || shadowpptr == NULL)
+                {
+                    gv = M.getGlobalVariable(StringRef("main_rip_addr"), true);
+                    load = IRB0.CreateLoad(gv);
+                    mainpptr = IRB0.CreateIntToPtr(load, I64PTy, "");
+                
+                    gv = M.getGlobalVariable(StringRef("shadow_rip_addr"), true);
+                    load = IRB0.CreateLoad(gv);
+                    shadowpptr = IRB0.CreateIntToPtr(load, I64PTy, "");
+                }
+                Value *mainval, *shadowval;
+                mainval = IRB0.CreateLoad(mainpptr);
+                shadowval = IRB0.CreateLoad(shadowpptr);
+                
+                Value *mainorshadowval = IRB0.CreateOr(mainval, shadowval);
+                Value * cmpv = IRB0.CreateICmpEQ(mainorshadowval, initial_value_int_zero);
+                
+                BasicBlock *newBB1 = BBI->splitBasicBlock(&FP, "newbasicblock2");
+                FPI = newBB1->getFirstInsertionPt();
+                Instruction &FP1 = *FPI;
+                IRBuilder<> IRB1(&FP1);
+                IRB1.CreateCall(instru_get_time_f);
+                
+                BasicBlock *newBB2 = newBB1->splitBasicBlock(&FP1, "newbasicblock3");
+                
+                Instruction *I1 = BBI->getTerminator();
+                BranchInst *bran1 = BranchInst::Create(newBB2, newBB1, cmpv);
+                ReplaceInstWithInst(I1, bran1);
+                
+                blocktoskip += 2;
+                int count = k;
+                BasicBlock *BB = newBB2;
+                
+                auto II = BB->getFirstInsertionPt(), IIE = BB->end();
+                
+                while (II != IIE)
+                {
+                    if (count > 0) {
+                        count--;
+                        II++;
+                        continue;
+                    }
+                    //Instruction *FIP = BI;
+                    Instruction &IIP = *II;
+                    IRBuilder<> IRB0(&IIP);
+                    
+                    Value *mainval, *shadowval;
+                    mainval = IRB0.CreateLoad(mainpptr);
+                    shadowval = IRB0.CreateLoad(shadowpptr);
+                
+                    Value *mainorshadowval = IRB0.CreateOr(mainval, shadowval);
+                    Value * cmpv = IRB0.CreateICmpEQ(mainorshadowval, initial_value_int_zero);
+                
+                    newBB1 = BB->splitBasicBlock(II, "newbasicblock2");
+                    FPI = newBB1->getFirstInsertionPt();
+                    Instruction &FP2 = *FPI;
+                    IRBuilder<> IRB1(&FP2);
+                    IRB1.CreateCall(instru_get_time_f);
+                
+                    newBB2 = newBB1->splitBasicBlock(&FP2, "newbasicblock3");
+                
+                    Instruction *I1 = BB->getTerminator();
+                    BranchInst *bran1 = BranchInst::Create(newBB2, newBB1, cmpv);
+                    ReplaceInstWithInst(I1, bran1);
+                    BB = newBB2;
+                    
+                    count = k;
+                    blocktoskip += 2;
+                    II = BB->getFirstInsertionPt();
+                    IIE = BB->end();
+                }
+            }
         }
-        LLVMContext &ctx = M.getContext();
-        FunctionCallee funDeclareCFICheck = M.getOrInsertFunction("CFICheck", Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
-        FunctionCallee funDeclareExit = M.getOrInsertFunction("exit", Type::getVoidTy(ctx), Type::getInt32Ty(ctx));
-        FunctionCallee funDeclareTransactionBegin = M.getOrInsertFunction("transactionBegin", Type::getVoidTy(ctx));
+        return;
+    }
+
+    bool runOnModule(Module &M) override {
+        // if (!(M.getName().str() == "CFICheck.c" || M.getName().str() == "transactionBegin.c"))
+        // {   
+        //     readFunNeedWrapperListFile("fun_need_wrapper_list");
+        //     makeWrapper(M);
+        //     callWrapper(M);
+        // }
+        // LLVMContext &ctx = M.getContext();
+        // FunctionCallee funDeclareCFICheck = M.getOrInsertFunction("CFICheck", Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
+        // FunctionCallee funDeclareExit = M.getOrInsertFunction("exit", Type::getVoidTy(ctx), Type::getInt32Ty(ctx));
+        // FunctionCallee funDeclareTransactionBegin = M.getOrInsertFunction("transactionBegin", Type::getVoidTy(ctx));
+        hyperrace(M);
         return true;
     }
   };
