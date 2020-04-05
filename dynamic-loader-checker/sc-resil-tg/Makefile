@@ -1,6 +1,10 @@
 LLVM_PATH = /home/liuweijie/proofGen
 Our_AS_Path = /home/liuweijie/llvm-mc
 
+SGX_SRC_PATH = /home/liuweijie/linux-sgx
+
+SGX_COM_INC = $(SGX_SRC_PATH)/common/inc
+
 CC4AS = $(Our_AS_Path)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 
 #LLVM_PATH = /home/weijliu/proofGen4store
@@ -17,7 +21,6 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
-#TARGET_NAME = simple_malloc
 #TARGET_NAME = malloc_and_sort
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
@@ -26,10 +29,10 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
-#TARGET_NAME = bm_sprintf
+TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
-TARGET_NAME = bm_hello
+#TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test
@@ -118,6 +121,8 @@ $(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_O
 	cp lib/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker $(TARGET_NAME).bin
+#	cat transactionBegin.txt $(TARGET_NAME).txt >> entryLabel
+#	sort entryLabel| uniq > entryLabel.txt
 	@echo "Build successfully!"
 
 lib/%.o: lib/%.s
@@ -163,6 +168,9 @@ CFICheck.o: CFICheck.c
 
 transactionBegin.o: transactionBegin.c rtm.h
 	$(CC4TSX) -c $< -o $@
+
+telib_t.o: telib_t.c
+	$(CC4AS) -I$(SGX_COM_INC) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \

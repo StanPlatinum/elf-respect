@@ -429,7 +429,7 @@ void PrintDebugInfo(const char *fmt, ...)
 #include <capstone/platform.h>
 #include <capstone/capstone.h>
 
-/****************************** rewriter part ******************************/
+/****************************** 1. rewriter part ******************************/
 
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
 {
@@ -491,9 +491,29 @@ void get_bounds()
 	dlog("upper bound: %p, lower bound: %p", data_upper_bound, data_lower_bound);
 }
 
-/****************************** checker part ******************************/
+/****************************** 2. checker part ******************************/
 
-/* Weijie: if the return value is 1, then it means that one of the oprands of insn[j] is rsp */
+/*
+ *
+ * P1: Mem Write
+ * P2: RSP Write
+ * P3: Shadow Stack
+ * P4: Call Graph
+ * P5: Mem Read
+ * P6
+ * P7: T-SGX
+ * P8: Hyperrace
+ * P9: Multi-user Data Cleansing
+ *
+ */
+
+Elf64_Addr CFICheck_sym_addr;
+
+Elf64_Addr transBegin_sym_addr;
+
+/****************** P1 & P2 checker ******************/
+
+/* Weijie: if the return value is 1, it means that one of the oprands of insn[j] is rsp */
 int find_rsp(cs_insn *ins)
 {
 	cs_x86 *x86;
@@ -550,19 +570,19 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 	if (if_memwt > 0){
 		//Weijie: checking if they are 'movabs rbx, 0ximm', 'cmp rax, rbx' and so on
 		if (
-				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("push", forward_ins[1].mnemonic, 4) == 0)	&&
-				(strncmp("pushfq", forward_ins[2].mnemonic, 6) == 0)	&&
-				(strncmp("lea", forward_ins[3].mnemonic, 3) == 0)	&&
-				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", forward_ins[7].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[8].mnemonic, 3) == 0)	&&
-				(strncmp("jb", forward_ins[9].mnemonic, 2) == 0)	&&
-				(strncmp("popfq", forward_ins[10].mnemonic, 5) == 0)	&&
-				(strncmp("pop", forward_ins[11].mnemonic, 3) == 0)	&&
-				(strncmp("pop", forward_ins[12].mnemonic, 3) == 0)
+			(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("push", forward_ins[1].mnemonic, 4) == 0)	&&
+			(strncmp("pushfq", forward_ins[2].mnemonic, 6) == 0)	&&
+			(strncmp("lea", forward_ins[3].mnemonic, 3) == 0)	&&
+			(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
+			(strncmp("ja", forward_ins[6].mnemonic, 2) == 0)	&&
+			(strncmp("movabs", forward_ins[7].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[8].mnemonic, 3) == 0)	&&
+			(strncmp("jb", forward_ins[9].mnemonic, 2) == 0)	&&
+			(strncmp("popfq", forward_ins[10].mnemonic, 5) == 0)	&&
+			(strncmp("pop", forward_ins[11].mnemonic, 3) == 0)	&&
+			(strncmp("pop", forward_ins[12].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//Weijie: getting the address
@@ -583,9 +603,9 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		}
 		/*
 		else if (
-				(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
-				(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
-				(strncmp("add", forward_ins[7].mnemonic, 3) == 0)
+			(strncmp("movabs", forward_ins[5].mnemonic, 6) == 0)	&&
+			(strncmp("mov", forward_ins[6].mnemonic, 3) == 0)	&&
+			(strncmp("add", forward_ins[7].mnemonic, 3) == 0)
 			) {
 			//PrintDebugInfo("memory write by shadow stack.\n");
 			//PrintDebugInfo("memory write check done.\n");
@@ -601,7 +621,6 @@ int check_rewrite_memwt(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		return 0;
 }
 
-
 int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *forward_ins)
 {
 	int if_rsp = find_rsp(ins);
@@ -609,14 +628,14 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 		//PrintDebugInfo("found rsp writes and back_ins.\n");
 		//Weijie: checking if they are 'cmp rax, 0ximm' and so on
 		if (
-				(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("movabs", backward_ins[1].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", backward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("ja", backward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", backward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", backward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jb", backward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("pop", backward_ins[7].mnemonic, 3) == 0)
+			(strncmp("push", backward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("movabs", backward_ins[1].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", backward_ins[2].mnemonic, 3) == 0)	&&
+			(strncmp("ja", backward_ins[3].mnemonic, 2) == 0)	&&
+			(strncmp("movabs", backward_ins[4].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", backward_ins[5].mnemonic, 3) == 0)	&&
+			(strncmp("jb", backward_ins[6].mnemonic, 2) == 0)	&&
+			(strncmp("pop", backward_ins[7].mnemonic, 3) == 0)
 		   ){
 			//Weijie: replace 2 imms
 			//PrintDebugInfo("setting bounds...\n");
@@ -643,14 +662,14 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 	{
 		//PrintDebugInfo("found rsp writes and for_ins.\n");
 		if (
-				(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
-				(strncmp("movabs", forward_ins[1].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
-				(strncmp("ja", forward_ins[3].mnemonic, 2) == 0)	&&
-				(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
-				(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
-				(strncmp("jb", forward_ins[6].mnemonic, 2) == 0)	&&
-				(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
+			(strncmp("push", forward_ins[0].mnemonic, 4) == 0)	&&
+			(strncmp("movabs", forward_ins[1].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[2].mnemonic, 3) == 0)	&&
+			(strncmp("ja", forward_ins[3].mnemonic, 2) == 0)	&&
+			(strncmp("movabs", forward_ins[4].mnemonic, 6) == 0)	&&
+			(strncmp("cmp", forward_ins[5].mnemonic, 3) == 0)	&&
+			(strncmp("jb", forward_ins[6].mnemonic, 2) == 0)	&&
+			(strncmp("pop", forward_ins[7].mnemonic, 3) == 0)
 		){
 			//Weijie: check: mov rbp, rsp
 			//Weijie: replace 2 imms
@@ -678,15 +697,17 @@ int check_rsp(csh ud, cs_mode, cs_insn *ins, cs_insn *backward_ins, cs_insn *for
 		return 0;
 }
 
+/****************** P3 & P4 checker ******************/
+
 /* Weijie: if the return value is 1, then it means that this insn[j] is calling and it's safe */
 int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
 	int exist = 0;
 	//Weijie: to-do: check if this insn is a long func's indirect call...
 	if (
-			(strncmp("mov", ins->mnemonic, 3) == 0)	&&
-			(strncmp("rbp, rsp", ins->op_str, 7) == 0)	&&
-			(strncmp("push", forward_ins[6].mnemonic, 4) == 0)
+		(strncmp("mov", ins->mnemonic, 3) == 0)	&&
+		(strncmp("rbp, rsp", ins->op_str, 7) == 0)	&&
+		(strncmp("push", forward_ins[6].mnemonic, 4) == 0)
 	   )
 	{
 		exist = 1;		
@@ -709,11 +730,11 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 			else	return -1;
 
 			if (
-					(strncmp("add", forward_ins[1].mnemonic, 3) == 0)	&&
-					(strncmp("mov", forward_ins[2].mnemonic, 3) == 0)	&&
-					(strncmp("add", forward_ins[3].mnemonic, 3) == 0)	&&
-					(strncmp("mov", forward_ins[4].mnemonic, 3) == 0)	&&
-					(strncmp("mov", forward_ins[5].mnemonic, 3) == 0)	
+				(strncmp("add", forward_ins[1].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[2].mnemonic, 3) == 0)	&&
+				(strncmp("add", forward_ins[3].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[4].mnemonic, 3) == 0)	&&
+				(strncmp("mov", forward_ins[5].mnemonic, 3) == 0)	
 			   ){
 				//PrintDebugInfo("long call check done.\n");
 			}
@@ -755,12 +776,12 @@ int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_i
 
 			if (
 					//Weijie: to-do: check other 5 insns...
-					(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
-					(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
-					(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
-					(strncmp("mov", forward_ins[4].mnemonic, 3) == 0) &&
-					(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
-					(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
+				(strncmp("mov", forward_ins[1].mnemonic, 3) == 0) &&
+				(strncmp("add", forward_ins[2].mnemonic, 3) == 0) &&
+				(strncmp("sub", forward_ins[3].mnemonic, 3) == 0) &&
+				(strncmp("mov", forward_ins[4].mnemonic, 3) == 0) &&
+				(strncmp("cmp", forward_ins[4].mnemonic, 3) == 0) &&
+				(strncmp("jne", forward_ins[5].mnemonic, 3) == 0)
 			   ){
 				//PrintDebugInfo("long ret check done.\n");
 			}
@@ -792,8 +813,82 @@ int is_op_reg(cs_insn *ins)
 	return exist;
 }
 
-//Weijie:
-Elf64_Addr CFICheck_sym_addr;
+/****************** P7 & P8 checker ******************/
+
+/* Weijie: if the return value is 1, it means its a transactionBegin call, aka there exist xbegin instruction */
+int find_transBegin(cs_insn *ins)
+{
+	cs_x86 *x86;
+	int i, exist = 0;
+
+	if (ins->detail == NULL)	return -2;
+	//Weijie: returning -2 means this insn[j] is "data" instruction
+	x86 = &(ins->detail->x86);
+	if (x86->op_count == 0)		return -1;
+	//Weijie: returning -1 means this insn[j] has no oprand
+	//check mnemonic and the operand
+
+	//Weijie: returning 0 means this is not call transBegin, returning 1 means it is.
+	if (strncmp("call", ins->mnemonic, 4) == 0) {
+		//Weijie: check if the oprand is the address of CFICheck
+		cs_x86 x86 = ins->detail->x86;
+		cs_x86_op op = x86.operands[0];
+		if ((int)op.type == X86_OP_IMM && op.imm == transBegin_sym_addr){
+			return 1;
+		}
+		else {
+			return 0;
+		};
+	}
+	else {
+		return 0;
+	}
+}
+
+//Weijie: check the whole basic block
+int check_bb_head(cs_insn* whole_ins)
+{
+	//Weijie: at the beginning of a bb
+	//xend
+	//movq	%r15, %rax
+	if (
+		(strncmp("xend", whole_ins[0].mnemonic, 4) == 0)	&&
+		(strncmp("mov", whole_ins[1].mnemonic, 3))
+	   ) {	
+		//PrintDebugInfo("found a bb/func/branch\n");
+		return 1;
+	}
+	else {
+		//PrintDebugInfo("not a bb/func/branch\n");
+		return 0;
+	}
+}
+
+int check_bb_tail(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins, cs_insn *backward_ins)
+{
+	//Weijie: at the end of a bb
+	//movq	%r15, %rax
+	//call transactionBegin
+	//Weijie: or a ret
+	//all these should exist before ss instrumentation
+	if (find_transBegin(ins) == 1)
+	{
+		PrintDebugInfo("checking instruments...\n");
+		if (
+			(strncmp("mov", forward_ins[0].mnemonic, 3) == 0)	&&
+			(strncmp("movabs", backward_ins[0].mnemonic, 6) == 0)
+		) {
+			return 1;
+		}
+		else {
+			PrintDebugInfo("Violate P7\n");
+			return -1;
+		}
+	};
+	return 0;
+}
+
+/****************** Multiple checkers ******************/
 
 int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
@@ -813,6 +908,37 @@ int check_indirect_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 		//PrintDebugInfo("no instrumentations on this indirect call\n");
 		return -1;
 	}
+}
+
+//Weijie: given the symbol 'transactionBegin'
+int cs_check_transBegin(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr textAddr)
+{
+	csh handle;
+	cs_insn *insn;
+	size_t count;
+
+	if (cs_open(CS_ARCH_X86, CS_MODE_64, &handle)) {
+		PrintDebugInfo("ERROR: Failed to initialize engine!\n");
+		return -1;
+	}
+	//Weijie: must add option
+	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
+	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
+
+	transBegin_sym_addr = textAddr;
+	//PrintDebugInfo("-----printing-----\n");
+	if (count) {
+		size_t j;
+		//Weijie: disasming and checking...
+		for (j = 0; j < count; j++) {
+			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
+		}
+		cs_free(insn, count);
+	} else
+		PrintDebugInfo("ERROR: Failed to disassemble given code!\n");
+	cs_close(&handle);
+
+	return 0;
 }
 
 //Weijie: given the symbol 'CFICheck', get/set CFI info, and rewrite the movabs insn
@@ -845,7 +971,6 @@ int cs_rewrite_CFICheck(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Add
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 
 			//Weijie: start checking...
-
 			if (strncmp("movabs", insn[j].mnemonic, 6) == 0) {
 				cs_x86_op op2 = (insn[j]).detail->x86.operands[1];
 				if ((int)op2.type == X86_OP_IMM) {
@@ -912,10 +1037,17 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		int indirect_call_safe = 0;
 		int forward_farthest = 13;
 		int backward_farthest = 8;
+
+		//Weijie: first we check the bb
+		if (0 == check_bb_head(insn)){
+			//PrintDebugInfo("not a bb\n");
+		}
+
 		for (j = 0; j < count; j++) {
 			//Weijie: comment for benchmarking
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
-			//Weijie: maintain a insn set including more than 8? insns right before the current disasmed insn
+			//Weijie: maintain an insn set including more than 8?
+			//Weijie: insns should be right before the current disasmed insn
 			if (j >= 13){
 				cs_insn forward_insn[13];
 				forward_insn[0] = insn[j-13];
@@ -1026,6 +1158,15 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				}
 			}
 			//if (indirect_call_safe < 0)	PrintDebugInfo("Check failed! Illegal indirect call instrumentation!\n");
+
+			//Weijie: side channel resilient checker
+			if (j >= 1 && (count - j - 1 >= 9)){
+				cs_insn forward_insn[1];
+				cs_insn backward_insn[1];
+				if (check_bb_tail(handle, CS_MODE_64, &insn[j], forward_insn, backward_insn) < 0) {
+					//PrintDebugInfo("Check failed! Illegal TSX instrumentation!\n");
+				}
+			}
 		}
 		cs_free(insn, count);
 	} else
@@ -1114,6 +1255,18 @@ void rewrite_whole()
 					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
 					//dlog("disassembling CFICheck: textAddr: %p, textSize: %u", textAddr, textSize);
 					rv = cs_rewrite_CFICheck(buf, textSize, textAddr);
+					free(buf);
+				}
+
+				//Weijie: get transBegin info
+				int iftsx_rv = strncmp("transactionBegin", &strtab[symtab[j].st_name], 8);
+				if (iftsx_rv == 0) {
+					textAddr = symtab[j].st_value;
+					buf = (unsigned char *)malloc(textSize);
+					cpy((char *)buf, (char *)symtab[j].st_value, symtab[j].st_size);
+					//dlog("transBegin: textAddr: %p, textSize: %u", textAddr, textSize);
+					//fill in transBegin_sym_addr
+					rv = cs_check_transBegin(buf, textSize, textAddr);
 					free(buf);
 				}
 
@@ -1248,9 +1401,10 @@ void cleanup_code(size_t sz)
         fill_zero(program, sz);
 }
 
-void cleanup_data(size_t sz)
+int cleanup_data(size_t sz)
 {
         fill_zero(userdata, sz);
+	return 0;
 }
 
 //Weijie: Enclave starts here
@@ -1314,9 +1468,10 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("returning");
 
         cleanup_code(program_size);
-        cleanup_data(userdata_size);
+        if (0 != cleanup_data(userdata_size))
+		PrintDebugInfo("Violate P9\n");
         pr_progress("cleansing");
 
 }
 
-#include "checker.cpp"
+#include "iterdis_checker.cpp"

@@ -201,6 +201,11 @@ App/App.o: App/App.cpp App/ocall.cpp
 	@$(CXX) $(App_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
 	@echo "CXX  <=  $<"
 
+#Weijie:
+telib_u.o: telib_u.c
+	@$(CC) $(SGX_COMMON_CFLAGS) $(App_Compile_CFlags) -c $< -o $@
+	@echo "CC   <=  $<"
+
 
 # edited by Weijie
 # @$(CXX) -static $^ -o $@ -Wl,-Bdynamic $(App_Link_Flags)
