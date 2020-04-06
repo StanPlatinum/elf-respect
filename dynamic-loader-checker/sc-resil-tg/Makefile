@@ -18,6 +18,7 @@ CFIHello_So_PATH = $(LLVM_PATH)/build/lib/LLVMCFIHello.so
 CC = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign
 CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
 CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
+CC4HR = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
 #TARGET_NAME = nw
@@ -29,10 +30,10 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
-TARGET_NAME = bm_sprintf
+#TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
-#TARGET_NAME = bm_hello
+TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test
@@ -102,7 +103,8 @@ $(SSL_SERVER): objs/libc_sslserver.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_O
 
 https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	cp CFICheck.o objs/
-	cp transactionBegin.o objs/
+#	cp transactionBegin.o objs/
+#	cp telib_t.o objs/
 	cp mbedtls/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker https
@@ -114,9 +116,10 @@ https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
-$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o telib_t.o
 	cp CFICheck.o objs/
 	cp transactionBegin.o objs/
+	cp telib_t.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
 	ls objs/*.o > list
@@ -170,7 +173,7 @@ transactionBegin.o: transactionBegin.c rtm.h
 	$(CC4TSX) -c $< -o $@
 
 telib_t.o: telib_t.c
-	$(CC4AS) -I$(SGX_COM_INC) -c $< -o $@
+	$(CC4HR) -I$(SGX_COM_INC) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \
