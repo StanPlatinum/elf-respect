@@ -242,6 +242,11 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+	//Weijie:
+	log("init for hyperrace");
+	secure_timer(eid);
+	main_ssa_init(eid);
+
 	log("call enclave main");
 
 	char *entrylabel_buffer;

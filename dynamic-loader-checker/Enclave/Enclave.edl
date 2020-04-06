@@ -38,12 +38,18 @@ enclave {
 
     /* Weijie: use an ECALL to receive target binary and load it into the blob */
     trusted {
+
 	//Xinyu & Weijie: try "user_check"
 	public void ecall_receive_binary([user_check] char *buffer, int sz);
 	public void ecall_receive_entrylabel([user_check] char *buffer, int sz);
 	//Weijie: test cs_disasm_iter()
 	public void ecall_test_capstone_iter();
+
+	//Weijie: add Hyperrace support
+	public void secure_timer();
+	public void main_ssa_init();
     };
+
     /* 
      * ocall_print_string - invokes OCALL to display string buffer inside the enclave.
      *  [in]: copy the string buffer to App outside.

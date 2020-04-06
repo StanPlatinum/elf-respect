@@ -14,6 +14,7 @@ uint64_t result2 = 100;
 
 void instrument_function_get_time()
 {
+#if 0
 	aep_count++;
 	re_try_count = 0;
 	while (main_ssa->rip != 0 || shadow_ssa->rip != 0) {
@@ -45,11 +46,10 @@ void instrument_function_get_time()
 			main_ssa->REG(ip) = 1;
 			re_try_count ++;
 			if (re_try_count > 22) {
-				//if (main_ssa->rip == 0 && shadow_ssa->rip == 0) {
-				//printf("Co-location re-try count exceeds limit\n");
 				__asm __volatile("hlt");
-			}
 			}
 		}
 	}
+#endif
+}
 

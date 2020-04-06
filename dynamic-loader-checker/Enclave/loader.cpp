@@ -1474,4 +1474,7 @@ void ecall_receive_binary(char *binary, int sz)
 
 }
 
+//Weijie: add hyperrace support
+#include "ssa_init.cpp"
+
 #include "iterdis_checker.cpp"

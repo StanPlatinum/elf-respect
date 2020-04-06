@@ -91,6 +91,7 @@ endif
 App_Cpp_Files := App/App.cpp
 
 #add by Weijie
+App_C_Files := App/telib_u.cpp
 App_Include_Paths := -IInclude -IApp -I$(SGX_SDK)/include $(CHECKER_Dyn_INC_PATH)
 
 App_C_Flags := $(SGX_COMMON_CFLAGS) -fPIC -Wno-attributes $(App_Include_Paths)
@@ -200,14 +201,14 @@ App/Enclave_u.o: App/enclave.c App/Enclave_u.c
 #	@$(CC) $(App_C_Flags) -c $< -o $@
 #	@echo "CC   <=  $<"
 
-App/App.o: App/App.cpp App/ocall.cpp
+App/App.o: App/App.cpp App/ocall.cpp 
 	@$(CXX) $(App_Cpp_Flags) $(DEBUG_OPT) -c $< -o $@
 	@echo "CXX  <=  $<"
 
 #Weijie:
-telib_u.o: telib_u.c
-	@$(CC) $(SGX_COMMON_CFLAGS) $(App_Compile_CFlags) -c $< -o $@
-	@echo "CC   <=  $<"
+#telib_u.o: telib_u.c
+#	@$(CC) $(SGX_COMMON_CFLAGS) $(App_Compile_CFlags) -c $< -o $@
+#	@echo "CC   <=  $<"
 
 
 # edited by Weijie
