@@ -4,20 +4,25 @@
 #define MAX_LEN 1000
 #define PLOT_RES 100
 
-ssa_gpr_t *main_ssa = NULL, *shadow_ssa = NULL;
-unsigned long long *main_rip = NULL, *shadow_rip = NULL;
-unsigned long long main_rip_addr = 0, shadow_rip_addr = 0;
-int aep_count = 0, re_try_count = 0;
+ssa_gpr_t *main_ssa;
+//ssa_gpr_t *shadow_ssa;
+unsigned long long *main_rip;
+//unsigned long long *shadow_rip;
+unsigned long long main_rip_addr;
+//unsigned long long shadow_rip_addr;
 
-uint64_t result1 = 100;
-uint64_t result2 = 100;
+int aep_count;
+int re_try_count;
+
+uint64_t result1;
+uint64_t result2;
 
 void instrument_function_get_time()
 {
-#if 0
 	aep_count++;
 	re_try_count = 0;
-	while (main_ssa->rip != 0 || shadow_ssa->rip != 0) {
+	//while (main_ssa->rip != 0 || shadow_ssa->rip != 0) {
+	while (main_ssa->rip != 0 ) {
 		// set SSA marker
 		main_ssa->REG(ip) = 0;
 		if (
@@ -41,7 +46,8 @@ void instrument_function_get_time()
 					((result2>>56) & 0xff) >= 0xf2 
 				     )
 		   ) {
-			if (main_ssa->rip != 0 || shadow_ssa->rip != 0) re_try_count = 0;
+			//if (main_ssa->rip != 0 || shadow_ssa->rip != 0) re_try_count = 0;
+			if (main_ssa->rip != 0 ) re_try_count = 0;
 		} else {
 			main_ssa->REG(ip) = 1;
 			re_try_count ++;
@@ -50,6 +56,5 @@ void instrument_function_get_time()
 			}
 		}
 	}
-#endif
 }
 
