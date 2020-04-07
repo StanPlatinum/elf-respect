@@ -6,12 +6,12 @@
 
 ssa_gpr_t *main_ssa;
 //ssa_gpr_t *shadow_ssa;
-unsigned long long *main_rip;
+//unsigned long long *main_rip;
 //unsigned long long *shadow_rip;
-unsigned long long main_rip_addr;
+//unsigned long long main_rip_addr;
 //unsigned long long shadow_rip_addr;
 
-int aep_count;
+//int aep_count;
 int re_try_count;
 
 uint64_t result1;
@@ -19,7 +19,7 @@ uint64_t result2;
 
 void instrument_function_get_time()
 {
-	aep_count++;
+	//aep_count++;
 	re_try_count = 0;
 	//while (main_ssa->rip != 0 || shadow_ssa->rip != 0) {
 	while (main_ssa->rip != 0 ) {
