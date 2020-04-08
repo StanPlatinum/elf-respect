@@ -116,10 +116,12 @@ https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker malloc.o $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o foo1.o
-$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o telib_t.o
+#$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o telib_t.o
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o simplelib_t.o
 	cp CFICheck.o objs/
 	cp transactionBegin.o objs/
-	cp telib_t.o objs/
+	#cp telib_t.o objs/
+	cp simplelib_t.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
 	ls objs/*.o > list
@@ -174,6 +176,9 @@ transactionBegin.o: transactionBegin.c rtm.h
 
 telib_t.o: telib_t.c
 	$(CC4HR) -I$(SGX_COM_INC) -c $< -o $@
+
+simplelib_t.o: simplelib_t.c
+	$(CC4AS) -c $< -o $@
 
 clean:
 	rm -f *.ll *.s *.txt *.o objs/*.o objs/*.lo objs/*.a \
