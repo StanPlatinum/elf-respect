@@ -1,0 +1,6 @@
+useless
+CFICheck
+exit
+enclave_main
+puts
+instrument_function_get_time

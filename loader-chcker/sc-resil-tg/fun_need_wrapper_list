@@ -1,0 +1,6 @@
+malloc
+free
+sprintf
+puts
+exit
+enclave_exit
