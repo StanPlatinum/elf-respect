@@ -46,7 +46,8 @@ enclave {
 	public void ecall_test_capstone_iter();
 
 	//Weijie: add Hyperrace support
-	public void secure_timer();
+	public void simple_init();
+	//public void secure_timer();
 	public void main_ssa_init();
     };
 

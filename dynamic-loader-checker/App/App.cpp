@@ -244,8 +244,9 @@ int main(int argc, char *argv[])
 
 	//Weijie:
 	log("init for hyperrace");
-	secure_timer(eid);
-	main_ssa_init(eid);
+	simple_init(eid);
+	//secure_timer(eid);
+	//main_ssa_init(eid);
 
 	log("call enclave main");
 
