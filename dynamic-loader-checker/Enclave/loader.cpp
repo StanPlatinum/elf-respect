@@ -295,7 +295,6 @@ static void load(void)
 	Elf64_Xword last_size = 0;
 	unsigned shndx = -1;
 
-
 	for (unsigned h = 1; h < n_symtab; ++h) {		
 		//Weijie: record original st_value in .text
 		Elf64_Addr last_original_st_value;
@@ -309,7 +308,6 @@ static void load(void)
 				//dlog("processing NOTYPE symbol[%d] in .text...", h-1);
 				symtab[h-1].st_size = this_original_st_value - last_original_st_value;
 				//dlog("symbol[%d] real st size: 0x%lx", h-1, symtab[h-1].st_size);
-
 			}
 			last_original_st_value = this_original_st_value;
 		}
@@ -328,12 +326,14 @@ static void load(void)
 			find_special_symbol(&strtab[symtab[i].st_name], i) : 0;
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
+			//Weijie: processing p_inprogram
+			dlog("COMMON symbol: %s", &strtab[symtab[i].st_name]);
+
 			symtab[i].st_value = (Elf64_Addr)reserve(0, symtab[i].st_size, symtab[i].st_value);
 			fill_zero((char *)symtab[i].st_value, symtab[i].st_size);
 		} else if (!found) {
 			//Weijie:
 			//dlog("processing symbol[%d]...", i);
-
 			Elf64_Addr symoff = pshdr[symtab[i].st_shndx].sh_offset + symtab[i].st_value;
 			/* potentially WEAK bind */
 			if (last_off <= symoff && symoff < (last_off + last_size)) {
