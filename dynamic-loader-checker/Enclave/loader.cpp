@@ -16,7 +16,6 @@ extern char __elf_end;		/* defined in the linker script */
 char *program = (char *)&__elf_start;
 size_t program_size = 0;
 
-
 /* Weijie: add shadow stack pointer */
 char *shadow_stack = (char *)&__ss_start;
 
@@ -62,16 +61,13 @@ static Elf64_Rela **reltab; /* array of pointers to relocation tables */
 #define REL_DST_OFS(ofs) ((ofs) & 0xffffffff)
 #define REL_OFFSET(ndx, ofs) ((((unsigned long)(ndx)) << 32) | ((unsigned long)(ofs)))
 
+int *p_specialname = NULL;
+
+/****************************** loader part ******************************/
+
 uint64_t rounddown(uint64_t align, uint64_t n)
 {
 	return (n / align) * align;
-}
-
-static uint32_t get_rand(void)
-{
-	uint32_t val;
-	sgx_read_rand((unsigned char *)&val, sizeof(uint32_t));
-	return val;
 }
 
 void *reserve_data(size_t size, size_t align)
@@ -260,6 +256,7 @@ static void cpy(char *dst, char *src, size_t size) {
 
 #include "ocall_stub.cpp"
 #include "ocall_stub_table.cpp"
+
 static unsigned char find_special_symbol(const char* name, const size_t i)
 {
 	if (STR_EQUAL(name, "dep.bdr\0", 8)) {
@@ -276,8 +273,10 @@ static unsigned char find_special_symbol(const char* name, const size_t i)
 		symtab[i].st_value = (Elf64_Addr)do_sgx_ocall;
 		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
 		return 1;
-	} else if (STR_EQUAL(name, "rand_internal\0", 14)) {
-		symtab[i].st_value = (Elf64_Addr)get_rand;
+	} else if (STR_EQUAL(name, "p_inprogram\0", 12)) {
+		//Weijie: replace the value of p_inprogram with the value of p_specialname
+		//symtab[i].st_value = (Elf64_Addr)reserve_data(symtab[i].st_size, 64);
+		symtab[i].st_value = (Elf64_Addr)p_specialname;
 		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
 		return 1;
 	} else if (STR_EQUAL(name, "_stack\0", 7)) {
@@ -327,8 +326,7 @@ static void load(void)
 		/* special shndx --> assumption: no abs, no undef */
 		if (symtab[i].st_shndx == SHN_COMMON && !found) {
 			//Weijie: processing p_inprogram
-			dlog("COMMON symbol: %s", &strtab[symtab[i].st_name]);
-
+			//dlog("COMMON symbol: %s", &strtab[symtab[i].st_name]);
 			symtab[i].st_value = (Elf64_Addr)reserve(0, symtab[i].st_size, symtab[i].st_value);
 			fill_zero((char *)symtab[i].st_value, symtab[i].st_size);
 		} else if (!found) {
@@ -428,6 +426,12 @@ void PrintDebugInfo(const char *fmt, ...)
 
 #include <capstone/platform.h>
 #include <capstone/capstone.h>
+
+//Weijie: add hyperrace support
+#include "ssa_init.cpp"
+
+//Weijie: add iter disasm support
+#include "iterdis_checker.cpp"
 
 /****************************** 1. rewriter part ******************************/
 
@@ -1473,8 +1477,3 @@ void ecall_receive_binary(char *binary, int sz)
         pr_progress("cleansing");
 
 }
-
-//Weijie: add hyperrace support
-#include "ssa_init.cpp"
-
-#include "iterdis_checker.cpp"

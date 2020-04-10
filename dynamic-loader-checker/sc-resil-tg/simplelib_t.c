@@ -1,5 +1,5 @@
 #include <stdlib.h>
-int *p_inprogram;
+int *p_inprogram = NULL;
 
 void instrument_function_get_time()
 {

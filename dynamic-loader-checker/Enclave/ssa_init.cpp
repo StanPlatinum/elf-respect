@@ -4,7 +4,7 @@
 #define MAX_LEN 1000
 #define PLOT_RES 100
 
-int *p_specialname = NULL;
+//int *p_specialname = NULL;
 ssa_gpr_t *main_ssa = NULL;
 
 //ssa_gpr_t *shadow_ssa = NULL;
