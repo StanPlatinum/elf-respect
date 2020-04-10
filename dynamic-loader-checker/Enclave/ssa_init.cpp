@@ -16,7 +16,9 @@ void simple_init()
 	PrintDebugInfo("simple init\n");
 	int psn = 0;
 	p_specialname = &psn;
+	PrintDebugInfo("p_specialname: %p\n", p_specialname);
 	psn = 1;
+	PrintDebugInfo("value at p_specialname: %d\n", *p_specialname);
 }
 
 #if 0

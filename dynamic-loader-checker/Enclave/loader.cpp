@@ -1414,8 +1414,7 @@ int cleanup_data(size_t sz)
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
-	//Weijie: v1: do not use the following line
-	//program = (char*) binary;
+	pr_progress("Initializing");
 	dlog("line %d start ecall_receive_binary", __LINE__);
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
@@ -1432,11 +1431,12 @@ void ecall_receive_binary(char *binary, int sz)
 	dlog("HEAP BASE = %lx", _HEAP_BASE);
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
+	dlog("p_specialname = %p", p_specialname);
 
-	dlog("line %d call validate_ehdr", __LINE__);
+	//dlog("line %d call validate_ehdr", __LINE__);
 	validate_ehdr();
 
-	dlog("line %d call update_reltab", __LINE__);	
+	//dlog("line %d call update_reltab", __LINE__);	
 	update_reltab();
 
 	pr_progress("loading");
@@ -1455,8 +1455,8 @@ void ecall_receive_binary(char *binary, int sz)
 	pr_progress("disassembling, checking and rewritting");
 	rewrite_whole();
 
-	pr_progress("debugging: validate if rewrites fine");
-	disasm_whole();
+	//pr_progress("debugging: validate if rewrites fine");
+	//disasm_whole();
 
 	pr_progress("executing input binary");
 	entry = (void (*)())(main_sym->st_value);
