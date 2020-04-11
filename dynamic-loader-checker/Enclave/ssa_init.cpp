@@ -1,10 +1,8 @@
 #include "thread_data.h"
 #include "arch.h"
 
-#define MAX_LEN 1000
-#define PLOT_RES 100
-
 //int *p_specialname = NULL;
+int psn = 1;
 ssa_gpr_t *main_ssa = NULL;
 
 //ssa_gpr_t *shadow_ssa = NULL;
@@ -14,13 +12,12 @@ ssa_gpr_t *main_ssa = NULL;
 void simple_init()
 {
 	PrintDebugInfo("simple init\n");
-	//int psn = 0;
-	//p_specialname = &psn;
-	//PrintDebugInfo("p_specialname: %p\n", p_specialname);
-	//psn = 111;
-	p_specialname = 128;
-	//PrintDebugInfo("value at p_specialname: %d\n", *p_specialname);
-	PrintDebugInfo("value of p_specialname: %d\n", p_specialname);
+	p_specialname = &psn;
+	PrintDebugInfo("value of p_specialname: %p\n", p_specialname);
+	psn = 128;
+	//p_specialname = 128;
+	PrintDebugInfo("value at p_specialname: %d\n", *p_specialname);
+	//PrintDebugInfo("value of p_specialname: %d\n", p_specialname);
 }
 
 #if 0

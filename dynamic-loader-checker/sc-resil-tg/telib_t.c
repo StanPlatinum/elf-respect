@@ -1,9 +1,6 @@
 #include "internal/thread_data.h"
 #include "internal/arch.h"
 
-#define MAX_LEN 1000
-#define PLOT_RES 100
-
 ssa_gpr_t *main_ssa;
 //ssa_gpr_t *shadow_ssa;
 //unsigned long long *main_rip;

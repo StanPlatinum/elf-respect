@@ -61,8 +61,8 @@ static Elf64_Rela **reltab; /* array of pointers to relocation tables */
 #define REL_DST_OFS(ofs) ((ofs) & 0xffffffff)
 #define REL_OFFSET(ndx, ofs) ((((unsigned long)(ndx)) << 32) | ((unsigned long)(ofs)))
 
-//int *p_specialname = NULL;
-int p_specialname;
+int *p_specialname = NULL;
+//int p_specialname;
 
 /****************************** loader part ******************************/
 
