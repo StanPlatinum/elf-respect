@@ -1,14 +1,17 @@
 #include <stdlib.h>
-int *p_inprogram = NULL;
+
+int p_inprogram = 0;
+//int *p_inprogram = NULL;
 
 void instrument_function_get_time()
 {
-	int tmp;
-	if (p_inprogram == NULL)	puts("init failed");
-	p_inprogram = &tmp;
-	tmp = 129;
-	//Weijie: debugging
-	puts("tmp:");
-	//sprintf();
-	//puts();
+	if (p_inprogram == 0)	puts("init failed");
+	//if (p_inprogram == NULL)	puts("init failed");
+	else {
+		//Weijie: debugging
+		char tmp[20];
+		//sprintf(tmp, "%p", p_inprogram);
+		sprintf(tmp, "%d", p_inprogram);
+		puts(tmp);
+	}
 }

@@ -244,7 +244,7 @@ int main(int argc, char *argv[])
 
 	//Weijie:
 	log("init for hyperrace");
-	simple_init(eid);
+	//simple_init(eid);
 	//secure_timer(eid);
 	//main_ssa_init(eid);
 

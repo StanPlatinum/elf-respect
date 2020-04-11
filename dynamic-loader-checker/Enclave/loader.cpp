@@ -61,7 +61,8 @@ static Elf64_Rela **reltab; /* array of pointers to relocation tables */
 #define REL_DST_OFS(ofs) ((ofs) & 0xffffffff)
 #define REL_OFFSET(ndx, ofs) ((((unsigned long)(ndx)) << 32) | ((unsigned long)(ofs)))
 
-int *p_specialname = NULL;
+//int *p_specialname = NULL;
+int p_specialname;
 
 /****************************** loader part ******************************/
 
@@ -276,7 +277,7 @@ static unsigned char find_special_symbol(const char* name, const size_t i)
 	} else if (STR_EQUAL(name, "p_inprogram\0", 12)) {
 		//Weijie: replace the value of p_inprogram with the value of p_specialname
 		//symtab[i].st_value = (Elf64_Addr)reserve_data(symtab[i].st_size, 64);
-		symtab[i].st_value = (Elf64_Addr)p_specialname;
+		symtab[i].st_value = (Elf64_Addr)&p_specialname;
 		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
 		return 1;
 	} else if (STR_EQUAL(name, "_stack\0", 7)) {
@@ -1414,8 +1415,11 @@ int cleanup_data(size_t sz)
 //Weijie: Enclave starts here
 void ecall_receive_binary(char *binary, int sz)
 {
-	pr_progress("Initializing");
-	dlog("line %d start ecall_receive_binary", __LINE__);
+	pr_progress("Initializing ssa");
+	simple_init();
+
+	pr_progress("Initializing binary");
+	//dlog("line %d start ecall_receive_binary", __LINE__);
 	cpy(program, binary, (size_t)sz);
 	program_size = sz;
 
