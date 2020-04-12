@@ -39,7 +39,7 @@ namespace {
     map<string, Function*> wrapperMap;
     int k = 20;
     bool needCFIInsert = true;
-    bool needExitInsert = false;
+    bool needExitInsert = true;
     bool needTsxInsert = true;
     bool needHyperraceInsert = false;
   public:
