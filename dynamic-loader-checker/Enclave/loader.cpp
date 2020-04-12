@@ -287,7 +287,8 @@ static unsigned char find_special_symbol(const char* name, const size_t i)
 		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
 		return 1;
 	} else if (STR_EQUAL(name, "p_inprogram\0", 12)) {
-		//Weijie: replace the value of p_inprogram with the value of p_specialname
+		//Weijie: for test
+		//replace the value of p_inprogram with the value of p_specialname
 		//symtab[i].st_value = (Elf64_Addr)reserve_data(symtab[i].st_size, 64);
 		symtab[i].st_value = (Elf64_Addr)&p_specialname;
 		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
