@@ -61,8 +61,16 @@ static Elf64_Rela **reltab; /* array of pointers to relocation tables */
 #define REL_DST_OFS(ofs) ((ofs) & 0xffffffff)
 #define REL_OFFSET(ndx, ofs) ((((unsigned long)(ndx)) << 32) | ((unsigned long)(ofs)))
 
+/****************************** init part ******************************/
+
+#include "thread_data.h"
+#include "arch.h"
+
 int *p_specialname = NULL;
+int psn = 1;
 //int p_specialname;
+ssa_gpr_t *main_ssa = NULL;
+thread_data_t *thread_data = get_thread_data();
 
 /****************************** loader part ******************************/
 
@@ -272,6 +280,10 @@ static unsigned char find_special_symbol(const char* name, const size_t i)
 		return 1;
 	} else if (STR_EQUAL(name, "sgx_ocall.loader\0", 14)) {
 		symtab[i].st_value = (Elf64_Addr)do_sgx_ocall;
+		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
+		return 1;
+	} else if (STR_EQUAL(name, "ssa_inprogram\0", 14)) {
+		symtab[i].st_value = (Elf64_Addr)&main_ssa;
 		dlog("%s: %lx", &strtab[symtab[i].st_name], symtab[i].st_value);
 		return 1;
 	} else if (STR_EQUAL(name, "p_inprogram\0", 12)) {
@@ -1030,7 +1042,7 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 	}
 	//Weijie: must add option
 	cs_option(handle, CS_OPT_DETAIL, CS_OPT_ON);
-
+	
 	count = cs_disasm(handle, buf_test, textSize, textAddr, 0, &insn);
 	//PrintDebugInfo("Symbol insn count: %d\n", count);
 	if (count) {
@@ -1112,7 +1124,6 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 			}
 			//if (register_intact < 0)	PrintDebugInfo("Abort! Illegal rsp writes instrumentation!\n");
 
-
 			if (j >= 7){
 				cs_insn forward_insn[7];
 				forward_insn[0] = insn[j-7];
@@ -1128,7 +1139,6 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 				//Weijie: to-do
 			}
 			//if (longfunc_call_safe < 0)	PrintDebugInfo("Check failed! Illegal long func instrumentation!\n");
-
 
 			if (j >= 6){
 				cs_insn forward_insn[7];
@@ -1350,20 +1360,17 @@ void relocate_entrylabel()
 {
 	// shawn233: in function load, symtab[i].st_value has been updated to the address of symbols
 	// so we can directly replace symbols to these addresses
-
 	//Weijie: redirect call target to the new section: calltg
 	//Weijie & Xinyu: target_table starts those label strings, while call_target starts those target addresses;
 	call_target = (Elf64_Addr *)target_table + target_table_size + 10;
 
 	unsigned call_target_idx = 0;
-
 	for (unsigned i = 0; i < target_table_size; ++ i) {
 		if (target_table[i] == '\n') {
 			target_table[i] = '\0';
 			call_target_idx ++;
 		}
 	}
-
 	call_target_idx_global = call_target_idx;
 
 	// shawn233: target_entries is an array that stores the pointers to each target entry
@@ -1417,6 +1424,7 @@ void ecall_receive_binary(char *binary, int sz)
 {
 	pr_progress("Initializing ssa");
 	simple_init();
+	main_ssa_init();
 
 	pr_progress("Initializing binary");
 	//dlog("line %d start ecall_receive_binary", __LINE__);
@@ -1435,7 +1443,10 @@ void ecall_receive_binary(char *binary, int sz)
 	dlog("HEAP BASE = %lx", _HEAP_BASE);
 	sgx_push_gadget((unsigned long)_SGXCODE_BASE);
 	sgx_push_gadget((unsigned long)_SGXDATA_BASE);
+	
+	//Weijie: check those vars again and again
 	dlog("p_specialname = %p", p_specialname);
+	dlog("main_ssa = %p", main_ssa);
 
 	//dlog("line %d call validate_ehdr", __LINE__);
 	validate_ehdr();
@@ -1479,5 +1490,4 @@ void ecall_receive_binary(char *binary, int sz)
         if (0 != cleanup_data(userdata_size))
 		PrintDebugInfo("Violate P9\n");
         pr_progress("cleansing");
-
 }

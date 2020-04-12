@@ -1,13 +1,3 @@
-#include "thread_data.h"
-#include "arch.h"
-
-//int *p_specialname = NULL;
-int psn = 1;
-ssa_gpr_t *main_ssa = NULL;
-
-//ssa_gpr_t *shadow_ssa = NULL;
-//unsigned long *main_rip = NULL, *shadow_rip = NULL;
-//unsigned long long main_rip_addr = 0, shadow_rip_addr = 0;
 
 void simple_init()
 {
@@ -37,13 +27,12 @@ void secure_timer()
 
 void main_ssa_init()
 {
+	unsigned long *main_rip = NULL;
 	PrintDebugInfo("ssa init\n");
-        thread_data_t *thread_data = get_thread_data();
         main_ssa = (ssa_gpr_t *)(thread_data->first_ssa_gpr);
-        //main_rip = &(main_ssa->REG(ip));
-        //main_rip_addr = (unsigned long long)&(main_ssa->REG(ip));
+        main_rip = &(main_ssa->REG(ip));
         main_ssa->REG(ip) = 1;
+	PrintDebugInfo("rip in ssa: %d\n", (int)main_ssa->REG(ip));
         //*main_rip = 1;
         //while (shadow_ssa == NULL) __asm __volatile("pause");
 }
-

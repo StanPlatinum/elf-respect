@@ -1,27 +1,18 @@
 #include "internal/thread_data.h"
 #include "internal/arch.h"
 
-ssa_gpr_t *main_ssa;
-//ssa_gpr_t *shadow_ssa;
-//unsigned long long *main_rip;
-//unsigned long long *shadow_rip;
-//unsigned long long main_rip_addr;
-//unsigned long long shadow_rip_addr;
-
-//int aep_count;
-int re_try_count;
+ssa_gpr_t *ssa_inprogram = NULL;
 
 uint64_t result1;
 uint64_t result2;
 
 void instrument_function_get_time()
 {
-	//aep_count++;
-	re_try_count = 0;
-	//while (main_ssa->rip != 0 || shadow_ssa->rip != 0) {
-	while (main_ssa->rip != 0 ) {
+	puts("checking...");
+	int re_try_count = 0;
+	if (ssa_inprogram->rip != 0 ) {
 		// set SSA marker
-		main_ssa->REG(ip) = 0;
+		ssa_inprogram->REG(ip) = 0;
 		if (
 				(
 				 ((result1>>0) & 0xff) >= 0xe1 ||
@@ -43,15 +34,16 @@ void instrument_function_get_time()
 					((result2>>56) & 0xff) >= 0xf2 
 				     )
 		   ) {
-			//if (main_ssa->rip != 0 || shadow_ssa->rip != 0) re_try_count = 0;
-			if (main_ssa->rip != 0 ) re_try_count = 0;
+			if (ssa_inprogram->rip != 0 ) re_try_count = 0;
 		} else {
-			main_ssa->REG(ip) = 1;
+			ssa_inprogram->REG(ip) = 1;
 			re_try_count ++;
 			if (re_try_count > 22) {
 				__asm __volatile("hlt");
 			}
 		}
 	}
+	else
+		puts("ssa init failed!");
 }
 
