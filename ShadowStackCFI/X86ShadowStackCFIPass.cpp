@@ -157,11 +157,11 @@ namespace {
         bool hasCFICheck = false;
         bool hasTransactionBegin = false;
         bool entryLabelPrinted = false;
-        bool needCFIInsert = false;  //用于设置是否需要进行CFICheck插桩
-        bool needShadowStackInsert = false; //用于设置是否需要进行ShadowStack插桩
-        bool needRspInsert = false; //用于设置是否需要进行rsp检查插桩
-        bool needMovInsert = false; //用于设置是否需要进行mov检查插桩
-        bool needTsxInsert = false; //用于设置是否需要进行tsx插桩
+        bool needCFIInsert = true;  //用于设置是否需要进行CFICheck插桩
+        bool needShadowStackInsert = true; //用于设置是否需要进行ShadowStack插桩
+        bool needRspInsert = true; //用于设置是否需要进行rsp检查插桩
+        bool needMovInsert = true; //用于设置是否需要进行mov检查插桩
+        bool needTsxInsert = true; //用于设置是否需要进行tsx插桩
         string mainFunName = "enclave_main";
 
     public:
@@ -1149,11 +1149,14 @@ namespace {
             string funName = MF.getFunction().getName().str();
             needTsx = ((funName.find("CFICheck") != string::npos) || (funName.find("transactionBegin") != string::npos)) ? false : true;
             needMov = (funName.find("transactionBegin") != string::npos) ? false : true;
+            needShadowStack = (funName.find("transactionBegin") != string::npos) ? false : true;
+            needRsp = (funName.find("transactionBegin") != string::npos) ? false : true;
+            needCFI = (funName.find("transactionBegin") != string::npos) ? false : true;
             needTsx = needTsx && needTsxInsert;
             needMov = needMov && needMovInsert;
-            needCFI = needCFIInsert;
-            needShadowStack = needShadowStackInsert;
-            needRsp = needRspInsert;
+            needCFI = needCFI && needCFIInsert;
+            needShadowStack = needShadowStack && needShadowStackInsert;
+            needRsp = needRsp && needRspInsert;
             needExit = needShadowStack || needRsp || needMov;
             outs() << MF.getFunction().getParent()->getName() << "\n";
 

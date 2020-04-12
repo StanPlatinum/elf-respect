@@ -37,10 +37,11 @@ using namespace std;
 namespace {
   class CFIHello : public ModulePass {
     map<string, Function*> wrapperMap;
-    char config_full[220];
-    int mode;
-    double threshold;
     int k = 20;
+    bool needCFIInsert = true;
+    bool needExitInsert = false;
+    bool needTsxInsert = true;
+    bool needHyperraceInsert = false;
   public:
     static char ID; // Pass identification, rep lacement for typeid
     CFIHello() : ModulePass(ID) {}
@@ -435,17 +436,31 @@ namespace {
     }
 
     bool runOnModule(Module &M) override {
-        // if (!(M.getName().str() == "CFICheck.c" || M.getName().str() == "transactionBegin.c"))
-        // {   
-        //     readFunNeedWrapperListFile("fun_need_wrapper_list");
-        //     makeWrapper(M);
-        //     callWrapper(M);
-        // }
-        // LLVMContext &ctx = M.getContext();
-        // FunctionCallee funDeclareCFICheck = M.getOrInsertFunction("CFICheck", Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
-        // FunctionCallee funDeclareExit = M.getOrInsertFunction("exit", Type::getVoidTy(ctx), Type::getInt32Ty(ctx));
-        // FunctionCallee funDeclareTransactionBegin = M.getOrInsertFunction("transactionBegin", Type::getVoidTy(ctx));
-        hyperrace(M);
+        bool needCFI = false, needExit = false, needTsx = false, needHyperrace = false;
+        needCFI = needCFIInsert;
+        needExit = needExitInsert;
+        needTsx = needTsxInsert && (!(M.getName().str() == "CFICheck.c" || M.getName().str() == "transactionBegin.c"));
+        needHyperrace = needHyperraceInsert;
+        LLVMContext &ctx = M.getContext();
+        if (needTsx == true)
+        { 
+            readFunNeedWrapperListFile("fun_need_wrapper_list");
+            makeWrapper(M);
+            callWrapper(M);
+            FunctionCallee funDeclareTransactionBegin = M.getOrInsertFunction("transactionBegin", Type::getVoidTy(ctx));
+        }
+        if (needCFI == true)
+        {
+            FunctionCallee funDeclareCFICheck = M.getOrInsertFunction("CFICheck", Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
+        }
+        if (needExit == true)
+        {
+            FunctionCallee funDeclareExit = M.getOrInsertFunction("exit", Type::getVoidTy(ctx), Type::getInt32Ty(ctx));
+        }
+        if (needHyperrace == true)
+        {
+            hyperrace(M);
+        }
         return true;
     }
   };
