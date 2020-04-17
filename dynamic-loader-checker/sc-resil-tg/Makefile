@@ -25,14 +25,14 @@ CC4HR = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
-#TARGET_NAME = bm_clock
+TARGET_NAME = bm_clock
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
-TARGET_NAME = bm_hello
+#TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test
@@ -114,10 +114,10 @@ https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	mv $(SSL_SERVER).txt ../entryLabel.txt
 	@echo "Build successfully!"
 
-#$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o telib_t.o
+#$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
 $(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o telib_t.o
 	cp CFICheck.o objs/
-	cp transactionBegin.o objs/
+	#cp transactionBegin.o objs/
 	cp telib_t.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
@@ -153,13 +153,11 @@ malloc.o: malloc/malloc.c malloc/dlmalloc.inc
 
 # Use Xclang
 $(TARGET_NAME).s: $(TARGET_NAME).c enclave.h CFICheck.h
-	$(CC4TSX) -S -I. $< -o $@
+	$(CC4HR) -S -I. $< -o $@
+	#$(CC4TSX) -S -I. $< -o $@
 	#$(CC4CFICheck) -S -I. $< -o $@
 enclave_main.o: $(TARGET_NAME).s
 	$(CC) -c $< -o $@
-
-#foo1.o: foo1.c
-#	$(CC) -c $< -o $@
 
 $(SSL_SERVER).o: $(SSL_SERVER).c enclave.h
 	$(CC4CFICheck) -S $(SSL_FLAGS) -o $(SSL_SERVER).s $<
@@ -169,7 +167,8 @@ CFICheck.o: CFICheck.c
 	$(CC4CFICheck) -c $< -o $@
 
 transactionBegin.o: transactionBegin.c rtm.h
-	$(CC4TSX) -c $< -o $@
+	$(CC4AS) -c $< -o $@
+	#$(CC4TSX) -c $< -o $@
 
 telib_t.o: telib_t.c
 	$(CC4AS) -I$(SGX_COM_INC) -c $< -o $@

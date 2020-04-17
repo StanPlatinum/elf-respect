@@ -6,8 +6,9 @@
 #include "CFICheck.h"
 //#include "CFICheck.c"
 #include "enclave.h"
-#include "foo1.h"
+//#include "foo1.h"
 
+#if 0
 void useless()
 {
 	int a = 0, b = 1;
@@ -21,6 +22,7 @@ void useless()
 	}
 	return;
 }
+#endif
 
 void enclave_main()
 {

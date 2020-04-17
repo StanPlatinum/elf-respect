@@ -5,8 +5,9 @@
 #include <enclave.h>
 #include <time.h>
 
+//#include "CFICheck.c"
+#include "CFICheck.h"
 #include "enclave.h"
-#include "CFICheck.c"
 
 double TicksToFracSecs(unsigned long tickamount)
 {
@@ -16,7 +17,8 @@ double TicksToFracSecs(unsigned long tickamount)
 void enclave_main()
 {
     unsigned long startticks = (unsigned long)clock();
-    char* buf = (char*)malloc(0x8000);
+    //char* buf = (char*)malloc(0x8000);
+    char buf[8000];
     if (buf) {
         sprintf(buf, "The number is %d, the string is %s, another number is 0x%llx\n\0",
                 137, "\"A long long long string\"\0", 0x123456789101112LLU);

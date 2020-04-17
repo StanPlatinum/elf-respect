@@ -1,6 +1,9 @@
-useless
-CFICheck
-exit
+TicksToFracSecs
 enclave_main
+clock
+sprintf
 puts
+free
+exit
+CFICheck
 instrument_function_get_time

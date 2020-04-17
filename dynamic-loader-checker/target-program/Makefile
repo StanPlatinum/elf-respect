@@ -18,14 +18,14 @@ CC4CFICheck = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
-#TARGET_NAME = bm_clock
+TARGET_NAME = bm_clock
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
 #TARGET_NAME = bm_sort_and_binsearch
 
-TARGET_NAME = bm_hello
+#TARGET_NAME = bm_hello
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test
