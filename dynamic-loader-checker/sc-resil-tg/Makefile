@@ -25,7 +25,7 @@ CC4HR = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
-TARGET_NAME = bm_clock
+#TARGET_NAME = bm_clock
 #TARGET_NAME = bm_malloc_memalign_magic
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
@@ -36,7 +36,7 @@ TARGET_NAME = bm_clock
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test
-#TARGET_NAME = credit_score
+TARGET_NAME = credit_score
 
 SSL_SERVER = ssl_server
 
@@ -70,20 +70,21 @@ all: $(MUSL_LIBC) $(TARGET_NAME).bin
 $(STACK_OBJ): lib/stack.c
 	$(CC4AS) -c $< -o $@
 
-#Weijie: using sprintf for debugging
+#Weijie: using sprintf for debugging instead
 #$(DEBUG_OBJ): lib/my_itoa.c
 #	$(CC4AS) -c $< -o $@
 
+#Weijie: to build nbench, firstly, do 'make' in the nbench dir, ignore the linking error, then do the following
 LIBNBENCH = nbench/nbench.a
+$(LIBNBENCH):
+	$(MAKE) -C nbench nbench.a
+
 nben: $(TARGET_NAME).bin $(LIBNBENCH)
 	cp nbench/*.o objs
 	ls objs/*.o > list
 	cat list | ./tools/linker nben
 	mv nben ../
 	rm $(TARGET_NAME).bin
-
-$(LIBNBENCH):
-	$(MAKE) -C nbench nbench.a
 
 $(MUSL_LIBC):
 	(cd musl-libc; ./configure)

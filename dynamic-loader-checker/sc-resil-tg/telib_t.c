@@ -8,7 +8,7 @@ uint64_t result2;
 
 void instrument_function_get_time()
 {
-	puts("checking...");
+	//puts("checking...");
 	int re_try_count = 0;
 	if (ssa_inprogram->rip != 0 ) {
 		// set SSA marker

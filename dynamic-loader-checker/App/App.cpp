@@ -274,6 +274,7 @@ int main(int argc, char *argv[])
 	//base = *(unsigned long *)((unsigned long )sgx_create_enclave+0x212098);
 	char *buffer;
 	FILE *fp = fopen("./program", "rb");
+	//Weijie: the following line is for nbench
 	//FILE *fp = fopen("./nben", "rb");
 	if (fp == NULL) {
 		perror("[error] file open failed.\n");
