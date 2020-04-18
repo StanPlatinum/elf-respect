@@ -1040,6 +1040,13 @@ namespace {
                         MII++;
                         if (MII == MBBI->end())
                         {
+                            MII--;
+                            if(MII->isBranch() && MII->getOperand(0).isMBB())
+                            {
+                                MachineBasicBlock* MBB = MII->getOperand(0).getMBB();
+                                MBB->setLabelMustBeEmitted();
+                            }
+                            MII++;
                             //xend
                             BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::XEND));
                             //movq %r15, %rax
@@ -1065,17 +1072,23 @@ namespace {
                     {
                         continue;
                     }
-                    
                 }
                 if (!MBBI->isReturnBlock())
                 {
+                    auto MII = MBBI->end();
+                    MII--;
+                    if(MII->isBranch() && MII->getOperand(0).isMBB())
+                    {
+                       MachineBasicBlock* MBB = MII->getOperand(0).getMBB();
+                       MBB->setLabelMustBeEmitted();
+                    }
                     //movq %rax, %r15
                     BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
                     //callq transactionBegin
                     BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionBeginGV);
+                    
                 }
             }
-            
             return true;
         }
         
