@@ -1047,6 +1047,7 @@ namespace {
                                 MBB->setLabelMustBeEmitted();
                             }
                             MII++;
+
                             //xend
                             BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::XEND));
                             //movq %r15, %rax
@@ -1086,8 +1087,13 @@ namespace {
                     BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
                     //callq transactionBegin
                     BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionBeginGV);
-                    
                 }
+                MBBI++;
+                if (MBBI != MF.end())
+                {
+                    MBBI->setLabelMustBeEmitted();
+                }
+                MBBI--;
             }
             return true;
         }
