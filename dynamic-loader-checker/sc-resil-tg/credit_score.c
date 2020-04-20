@@ -1,10 +1,14 @@
-
 #include "bpnn_fit.h"
+#include "bpnn_config.h"
+
 #include <stdlib.h>
 #include <assert.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <string.h>
+
+#include <fcntl.h>
 
 #define T bpnn_t
 
@@ -12,16 +16,8 @@
 #define Q HIDDEN_N
 #define L OUT_N
 
-#include "bpnn_config.h"
-#include "bpnn_fit.h"
-#include <stdio.h>
-#include <assert.h>
-#include <stdbool.h>
-#include <string.h>
-#include <stdlib.h>
 
-#include <fcntl.h>
-
+#include "CFICheck.h"
 #include "enclave.h"
 
 struct T

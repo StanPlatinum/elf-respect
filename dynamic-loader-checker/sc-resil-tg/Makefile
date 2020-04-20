@@ -20,7 +20,7 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 CC4HR = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
-#TARGET_NAME = nw
+TARGET_NAME = nw
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
@@ -29,7 +29,7 @@ CC4HR = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-
 #TARGET_NAME = bm_memcpy
 #TARGET_NAME = bm_memchr
 #TARGET_NAME = bm_sprintf
-TARGET_NAME = bm_sort_and_binsearch
+#TARGET_NAME = bm_sort_and_binsearch
 
 #TARGET_NAME = bm_hello
 #TARGET_NAME = misc
@@ -60,7 +60,6 @@ LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o  \
 		 libgcc/multi3.o libgcc/__negti2.o libgcc/__udivdi3.o       \
 		 libgcc/__udivmoddi4.o libgcc/__udivmodti4.o                \
 		 libgcc/__udivti3.o libgcc/__umoddi3.o libgcc/__umodti3.o
-
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin 
 	mv $(TARGET_NAME).bin ../program

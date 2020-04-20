@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 //#include "CFICheck.c"
+#include "CFICheck.h"
 #include "enclave.h"
 
 #define IM 139968
