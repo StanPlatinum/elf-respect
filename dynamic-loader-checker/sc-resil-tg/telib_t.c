@@ -14,6 +14,7 @@ void instrument_function_get_time()
 		// set SSA marker
 		ssa_inprogram->REG(ip) = 0;
 		if (
+			//Weijie: the following lines are useless
 				(
 				 ((result1>>0) & 0xff) >= 0xe1 ||
 				 ((result1>>8) & 0xff) >= 0xe1 ||
