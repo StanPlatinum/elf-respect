@@ -459,6 +459,7 @@ namespace {
             makeWrapper(M);
             callWrapper(M);
             FunctionCallee funDeclareTransactionBegin = M.getOrInsertFunction("transactionBegin", Type::getVoidTy(ctx));
+            FunctionCallee funDeclareTransactionEndBegin = M.getOrInsertFunction("transactionEndBegin", Type::getVoidTy(ctx));
         }
         if (needCFI == true)
         {

@@ -153,9 +153,11 @@ namespace {
         const GlobalValue* exitGV;
         const GlobalValue* CFICheckGV;
         const GlobalValue* transactionBeginGV;
+        const GlobalValue* transactionEndBeginGV;
         bool hasExit = false;
         bool hasCFICheck = false;
         bool hasTransactionBegin = false;
+        bool hasTransactionEndBegin = false;
         bool entryLabelPrinted = false;
         bool needCFIInsert = true;  //用于设置是否需要进行CFICheck插桩
         bool needShadowStackInsert = true; //用于设置是否需要进行ShadowStack插桩
@@ -420,7 +422,7 @@ namespace {
             auto MII = MBB.begin();
             if (hasTransaction == true)
             {
-                MII++;MII++;
+                //MII++;MII++;MII++;MII++;MII++;MII++;MII++;
             }
             // mov r11, 0x2fffffffffffffff
             BuildMI(MBB, MII, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
@@ -572,13 +574,13 @@ namespace {
         }
 
         //插入shadowstack指令，目前尚未添加ret地址更改后的处理，ss首地址写为0x2FFFFFFFFFFFFFFF
-        bool insertShadowStackInst(MachineFunction &MF)
+        bool insertShadowStackInst(MachineFunction &MF, bool needTsx)
         {
             bool hasTransactionEntry = false;
             if (!checkSSMF(MF))
                 return false;
             
-            if ((MF.getFunction().getName().str().find(mainFunName) == string::npos) && needTsxInsert && hasTransactionBegin)
+            if ((MF.getFunction().getName().str().find(mainFunName) == string::npos) && needTsx && hasTransactionBegin)
             {
                 hasTransactionEntry = true;
             }
@@ -718,7 +720,7 @@ namespace {
         }
 
         //插入地址检查Fun
-        bool insertCFIFun(MachineFunction &MF)
+        bool insertCFIFun(MachineFunction &MF, bool needTsx)
         {
             for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
             {
@@ -726,9 +728,9 @@ namespace {
                 for (auto MII = MBB.begin(); MII != MBB.end(); MII++)
                 {
                     MachineInstr &MI = *MII;
-                    if (hasTransactionBegin == true && needTsxInsert == true)
+                    if (hasTransactionBegin == true && needTsx == true)
                     {
-                        MII--;MII--;
+                        //MII--;MII--;MII--;MII--;MII--;MII--;MII--;
                     }
                     if (MI.getOpcode() == CALL64r)
                     {//call reg
@@ -754,9 +756,9 @@ namespace {
                         //callq CFICheck
                         MachineInstr &tmpMI1 = *BuildMI(MBB, *MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(CFICheckGV);
                     }
-                    if (hasTransactionBegin == true && needTsxInsert == true)
+                    if (hasTransactionBegin == true && needTsx == true)
                     {
-                        MII++;MII++;
+                        //MII++;MII++;MII++;MII++;MII++;MII++;MII++;
                     }
                 }
             }
@@ -818,7 +820,7 @@ namespace {
             MachineBasicBlock* Trap = MF.CreateMachineBasicBlock();
             Trap->setLabelMustBeEmitted();
             //popfq
-            BuildMI(Trap, DL, TII->get(X86::POPF64));
+            //BuildMI(Trap, DL, TII->get(X86::POPF64));
             //popq %rax
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(RAX);
             //popq %rbx
@@ -833,7 +835,7 @@ namespace {
             {
                 for (auto MII = (*MBBI).begin(); MII != (*MBBI).end(); MII++)
                 {
-                    MachineInstr &MI = *MII;                    
+                    MachineInstr &MI = *MII;
                     if (MI.mayStore() == false)
                     {
                         continue;
@@ -865,7 +867,11 @@ namespace {
                             //pushq %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
                             //pushfq
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSHF64));
+                            //BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSHF64));
+                            // lahf
+                            //BuildMI(*MBBI, *MII, DL, TII->get(LAHF));
+                            // movq	%rax, %r15
+                            //BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
                             if (Disp.isImm())
                             {
                                 //leaq (BaseReg+Disp*IndexReg), %rax
@@ -883,20 +889,24 @@ namespace {
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x3FFFFFFFFFFFFFFF);
                             //cmpq %rbx, %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
-                            //ja trap
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
+                            //jae trap
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(3);
                             
                             //检查上界，如果rbx<rax，则exit
                             //movq $0x4FFFFFFFFFFFFFFF, %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x4FFFFFFFFFFFFFFF);
-                            //cmpq %rbx, %rax
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
-                            //jb trap
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
+                            //cmpq %rax, %rbx
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RBX).addReg(X86::RAX);
+                            //jbe trap
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(6);
 
                             
                             //popfq
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::POPF64));
+                            //BuildMI(*MBBI, *MII, DL, TII->get(X86::POPF64));
+                            // movq	%r15, %rax
+                            //BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+                            // sahf
+                            //BuildMI(*MBBI, *MII, DL, TII->get(SAHF));
                             //popq %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(RAX);
                             //popq %rbx
@@ -956,23 +966,30 @@ namespace {
                     }
                     //pushq %rax
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::PUSH64r)).addReg(X86::RAX);
-
+                    // lahf
+                    //BuildMI(*MBBI, *MII, DL, TII->get(LAHF));
+                    // movq	%rax, %r15
+                    //BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
                     //检查下界，如果imm>rsp，则exit
                     //movq $0x5FFFFFFFFFFFFFFF, %rax
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RAX).addImm(0x5FFFFFFFFFFFFFFF);
                     //cmpq %rax, %rsp
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(checkReg).addReg(X86::RAX);
-                    //ja trap
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
+                    //jae trap
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(3);
 
                     //检查上界，如果imm<rsp，则exit
                     //movq $0x6FFFFFFFFFFFFFFF, %rax
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RAX).addImm(0x6FFFFFFFFFFFFFFF);
                     //cmpq %rax, %rsp
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(checkReg).addReg(X86::RAX);
-                    //jb trap
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
+                    //jbe trap
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(6);
 
+                    // movq	%r15, %rax
+                    //BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+                    // sahf
+                    //BuildMI(*MBBI, *MII, DL, TII->get(SAHF));
                     //popq %rax
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::POP64r)).addReg(X86::RAX);
 
@@ -991,6 +1008,27 @@ namespace {
             return hasRsp;
         }
 
+        void inserTransactionCall(MachineBasicBlock &MBB, MachineInstr &MI, const GlobalValue* transactionCallGV)
+        {
+            const TargetInstrInfo *TII;
+            TII = MBB.getParent()->getSubtarget().getInstrInfo();
+            const DebugLoc &DL = MBB.front().getDebugLoc();
+            //movq %rax, %r15
+            BuildMI(MBB, MI, DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
+            //lahf
+            BuildMI(MBB, MI, DL, TII->get(LAHF));
+            //movq	%rax, %r14
+            BuildMI(MBB, MI, DL, TII->get(MOV64rr)).addReg(X86::R14).addReg(X86::RAX);
+            //callq transactionEndBegin or transactionBegin
+            BuildMI(MBB, MI, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionCallGV);
+            //movq %r14, %rax
+            BuildMI(MBB, MI, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R14);
+            //sahf
+            BuildMI(MBB, MI, DL, TII->get(SAHF));
+            //movq %r15, %rax
+            BuildMI(MBB, MI, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+        }
+
         bool wrapperTsxInsert(MachineFunction &MF)
         {
             const TargetInstrInfo *TII;
@@ -999,16 +1037,15 @@ namespace {
             const MachineBasicBlock *NonEmpty = MBBf.empty() ? MBBf.getFallThrough() : &MBBf;
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
             auto MBBI = MF.begin();
-            //movq %r15, %rax
-            BuildMI(*MBBI, MBBI->begin(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+            MachineBasicBlock &MBB = *MBBI;
+            // //movq %r15, %rax
+            // BuildMI(*MBBI, MBBI->begin(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
             //xend
             BuildMI(*MBBI, MBBI->begin(), DL, TII->get(X86::XEND));
             auto MII = MBBI->end();
             MII--;
-            //movq %rax, %r15
-            BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
-            //callq transactionBegin
-            BuildMI(*MBBI, *MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionBeginGV);
+            MachineInstr &MI = *MII;
+            inserTransactionCall(MBB, MI, transactionBeginGV);
         }
 
         bool normalTsxInsert(MachineFunction &MF)
@@ -1019,55 +1056,65 @@ namespace {
             MachineBasicBlock &MBBf = MF.front();
             const MachineBasicBlock *NonEmpty = MBBf.empty() ? MBBf.getFallThrough() : &MBBf;
             const DebugLoc &DL = NonEmpty->front().getDebugLoc();
-
             for (auto MBBI = MF.begin(); MBBI != MF.end(); MBBI++)
             {
+                auto MII = MBBI->begin();
                 if (!(funName == mainFunName && MBBI == MF.begin()))
                 {
                     //movq %r15, %rax
-                    BuildMI(*MBBI, MBBI->begin(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+                    //BuildMI(*MBBI, MBBI->begin(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
                     //xend
-                    BuildMI(*MBBI, MBBI->begin(), DL, TII->get(X86::XEND));
+                    //BuildMI(*MBBI, MBBI->begin(), DL, TII->get(X86::XEND));
+                    MachineBasicBlock &MBB = *MBBI;
+                    MachineInstr &MI = *MII;
+                    inserTransactionCall(MBB, MI, transactionEndBeginGV);
                 }
-                for (auto MII = MBBI->begin(); MII != MBBI->end(); MII++)
+                else if (funName == mainFunName && MBBI == MF.begin())
+                {
+                    MachineBasicBlock &MBB = *MBBI;
+                    MachineInstr &MI = *MII;
+                    inserTransactionCall(MBB, MI, transactionBeginGV);
+                }
+                for (; MII != MBBI->end(); MII++)
                 {
                     if (MII->isBranch() || MII->isCall())
                     {
-                        //movq %rax, %r15
-                        BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
-                        //callq transactionBegin
-                        BuildMI(*MBBI, *MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionBeginGV);
+                        MachineBasicBlock &MBB = *MBBI;
+                        MachineInstr &MI = *MII;
+                        inserTransactionCall(MBB, MI, transactionEndBeginGV);
                         MII++;
                         if (MII == MBBI->end())
                         {
                             MII--;
                             if(MII->isBranch() && MII->getOperand(0).isMBB())
                             {
-                                MachineBasicBlock* MBB = MII->getOperand(0).getMBB();
-                                MBB->setLabelMustBeEmitted();
+                                MachineBasicBlock* MBBSI = MII->getOperand(0).getMBB();
+                                MBBSI->setLabelMustBeEmitted();
                             }
                             MII++;
 
-                            //xend
-                            BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::XEND));
-                            //movq %r15, %rax
-                            BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+                            // //xend
+                            // BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::XEND));
+                            // //movq %r15, %rax
+                            // BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
                         }
                         else
                         {
-                            //xend
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::XEND));
-                            //movq %r15, %rax
-                            BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+                            // //xend
+                            // BuildMI(*MBBI, *MII, DL, TII->get(X86::XEND));
+                            // //movq %r15, %rax
+                            // BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
+                            MachineBasicBlock &MBB = *MBBI;
+                            MachineInstr &MI = *MII;
+                            inserTransactionCall(MBB, MI, transactionEndBeginGV);
                         }
                         MII--;
                     }
                     else if(MII->isReturn() && funName != mainFunName)
                     {
-                        //movq %rax, %r15
-                        BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
-                        //callq transactionBegin
-                        BuildMI(*MBBI, *MII, DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionBeginGV);
+                        MachineBasicBlock &MBB = *MBBI;
+                        MachineInstr &MI = *MII;
+                        inserTransactionCall(MBB, MI, transactionEndBeginGV);
                     }
                     else
                     {
@@ -1080,13 +1127,23 @@ namespace {
                     MII--;
                     if(MII->isBranch() && MII->getOperand(0).isMBB())
                     {
-                       MachineBasicBlock* MBB = MII->getOperand(0).getMBB();
-                       MBB->setLabelMustBeEmitted();
+                       MachineBasicBlock* MBBSI = MII->getOperand(0).getMBB();
+                       MBBSI->setLabelMustBeEmitted();
                     }
-                    //movq %rax, %r15
+                    // movq %rax, %r15
                     BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::R15).addReg(X86::RAX);
-                    //callq transactionBegin
-                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionBeginGV);
+                    // lahf
+                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(LAHF));
+                    // movq	%rax, %r14
+                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::R14).addReg(X86::RAX);
+                    // callq transactionEndBegin
+                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(X86::CALL64pcrel32)).addGlobalAddress(transactionEndBeginGV);
+                    // movq %r14, %rax
+                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R14);
+                    // sahf
+                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(SAHF));
+                    // movq %r15, %rax
+                    BuildMI(*MBBI, MBBI->end(), DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
                 }
                 MBBI++;
                 if (MBBI != MF.end())
@@ -1159,6 +1216,13 @@ namespace {
                         hasTransactionBegin = true;
                         outs() << "Found transactionBegin\n";
                     }
+                    else if (hasTransactionEndBegin == false && FI->getName().str().find("transactionEndBegin") != string::npos)
+                    {
+                        const Function &F = *FI;
+                        transactionEndBeginGV = &F;
+                        hasTransactionEndBegin = true;
+                        outs() << "Found transactionEndBegin\n";
+                    }
                 }
         }
         
@@ -1216,7 +1280,7 @@ namespace {
                 }
                 if (needShadowStack == true)
                 {
-                    bs = insertShadowStackInst(MF);
+                    bs = insertShadowStackInst(MF, needTsx);
                 }
                 else
                 {
@@ -1239,7 +1303,7 @@ namespace {
             
             if (hasCFICheck == true && needCFI == true)
             {
-                bc = insertCFIFun(MF);
+                bc = insertCFIFun(MF, needTsx);
             }
             else
             {
