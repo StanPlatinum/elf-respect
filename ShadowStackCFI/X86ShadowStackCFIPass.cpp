@@ -164,6 +164,7 @@ namespace {
         bool needRspInsert = true; //用于设置是否需要进行rsp检查插桩
         bool needMovInsert = true; //用于设置是否需要进行mov检查插桩
         bool needTsxInsert = true; //用于设置是否需要进行tsx插桩
+        bool needSSLeaveTsx = false;    //用于设置SS是否需要跳出tsx
         string mainFunName = "enclave_main";
 
     public:
@@ -424,8 +425,11 @@ namespace {
             {
                 //MII++;MII++;MII++;MII++;MII++;MII++;MII++;
             }
-            //xend
-            BuildMI(MBB, MII, DL, TII->get(X86::XEND));
+            if (needSSLeaveTsx)
+            {
+                //xend
+                BuildMI(MBB, MII, DL, TII->get(X86::XEND));
+            }
             // mov r11, 0x2fffffffffffffff
             BuildMI(MBB, MII, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
             // add [r11], 8
@@ -438,17 +442,24 @@ namespace {
             addDirectMem(BuildMI(MBB, MII, DL, TII->get(X86::MOV64rm)).addDef(X86::R10), X86::RSP);
             // mov [r11], r10
             BuildMI(MBB, MII, DL, TII->get(X86::MOV64mr)).addReg(X86::R11).addImm(1).addReg(0).addImm(0).addReg(0).addReg(X86::R10);
-            MachineInstr &MI = *MII;
-            //call transactionBegin
-            inserTransactionCall(MBB, MI, transactionBeginGV);
+            if (needSSLeaveTsx)
+            {
+                MachineInstr &MI = *MII;
+                //call transactionBegin
+                inserTransactionCall(MBB, MI, transactionBeginGV);
+            }
+            
         }
 
         //在函数出口进行ShadowStack插桩
         void insertSSRet(const TargetInstrInfo *TII, MachineBasicBlock &MBB, MachineInstr &MI, MachineBasicBlock &TrapBB)
         {
             const DebugLoc &DL = MI.getDebugLoc();
-            //xend
-            BuildMI(MBB, MI, DL, TII->get(X86::XEND));
+            if (needSSLeaveTsx)
+            {
+                //xend
+                BuildMI(MBB, MI, DL, TII->get(X86::XEND));
+            }
             // mov r11, 0x2fffffffffffffff
             BuildMI(MBB, MI, DL, TII->get(X86::MOV64ri)).addReg(X86::R11).addImm(0x2fffffffffffffff);
             // mov r10, [r11]
@@ -464,8 +475,11 @@ namespace {
             // jne trap
             BuildMI(MBB, MI, DL, TII->get(X86::JCC_1)).addMBB(&TrapBB).addImm(5);
             MBB.addSuccessorWithoutProb(&TrapBB);
-            //call transactionBegin
-            inserTransactionCall(MBB, MI, transactionBeginGV);
+            if (needSSLeaveTsx)
+            {
+                //call transactionBegin
+                inserTransactionCall(MBB, MI, transactionBeginGV);
+            }
         }
 
         //在leaf函数入口进行ShadowStack插桩
