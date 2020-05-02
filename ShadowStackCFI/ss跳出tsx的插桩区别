@@ -1,0 +1,95 @@
+ss不跳出tsx：
+    函数开头：
+        movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF   //ss插桩
+        addq	$8, (%r11)
+        movq	(%r11), %r10
+        addq	%r10, %r11
+        movq	(%rsp), %r10
+        movq	%r10, (%r11)
+        movq	%rax, %r15  //tsx插桩
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
+        pushq	%rbp    //正常函数开头
+        movq	%rsp, %rbp
+
+    函数结尾：
+        movq	%rbp, %rsp  //正常函数结尾
+        popq	%rbp
+        movq	%rax, %r15  //tsx插桩
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
+        movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF   //ss插桩
+        movq	(%r11), %r10
+        addq	%r11, %r10
+        subq	$8, (%r11)
+        movq	(%r10), %r11
+        cmpq	%r11, (%rsp)
+        jne	.LBB0_2
+        retq    //正常函数结尾
+
+ss跳出tsx：
+    函数开头：
+        xend    //跳出tsx
+        movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF   //ss插桩
+        addq	$8, (%r11)
+        movq	(%r11), %r10
+        addq	%r10, %r11
+        movq	(%rsp), %r10
+        movq	%r10, (%r11)
+        movq	%rax, %r15  //回到tsx
+        lahf
+        movq	%rax, %r14
+        callq	transactionBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
+        movq	%rax, %r15  //tsx插桩
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
+        pushq	%rbp    //正常函数开头
+        movq	%rsp, %rbp
+
+    函数结尾：
+        movq	%rbp, %rsp  //正常函数结尾
+        popq	%rbp
+        movq	%rax, %r15  //tsx插桩
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
+        xend    //跳出tsx
+        movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF   //ss插桩
+        movq	(%r11), %r10
+        addq	%r11, %r10
+        subq	$8, (%r11)
+        movq	(%r10), %r11
+        cmpq	%r11, (%rsp)
+        jne	.LBB0_2
+        movq	%rax, %r15  //回到tsx
+        lahf
+        movq	%rax, %r14
+        callq	transactionBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
+        retq    //正常函数结尾
+
+区别：
+    函数开头处，跳出tsx增加了：
+        40行，47-53行
+    函数结尾处，跳出tsx增加了：
+        74行，82-88行
