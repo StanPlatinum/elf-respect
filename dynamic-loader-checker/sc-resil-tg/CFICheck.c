@@ -1,8 +1,12 @@
 #include <stdio.h>
-#include "CFICheck.h"
+#include "rtm.h"
+#define TSX
 
 void CFICheck(unsigned long long target)
 {
+#ifdef TSX
+    _xend();
+#endif
 	unsigned long long *CFICheckAddressPtr = (unsigned long long *)0x1FFFFFFFFFFFFFFFULL;
     int CFICheckAddressNum = 0x1FFFFFFF;
 	int low = 0, high = CFICheckAddressNum, mid=0;
@@ -30,9 +34,11 @@ void CFICheck(unsigned long long target)
 		}
         else
         {
+#ifdef TSX
+            transactionBegin();
+#endif
 			return;
         }
-        
 	}
 	exit(-1);
 }

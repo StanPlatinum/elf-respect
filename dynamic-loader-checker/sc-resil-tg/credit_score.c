@@ -309,7 +309,7 @@ static int out_file_fd = 0;
 
 void enclave_main(void)
 {
-
+    unsigned long long magic = 0;
     puts("enclave begins...\n");
 
     bpnn_t bpnn = bpnn_fit_new();
