@@ -96,11 +96,13 @@
 
 TSX插桩
     函数入口处：
+        movq	%rax, %r15
         lahf
         movq	%rax, %r14
         callq	transactionEndBegin
         movq	%r14, %rax
         sahf
+        movq	%r15, %rax
          注：enclave_main函数会将transactionEndBegin改为transactionBegin
     函数出口处(即ret之前)：
         movq	%rax, %r15
