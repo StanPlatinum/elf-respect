@@ -780,7 +780,7 @@ int quick_rewrite_ss(csh ud, cs_mode, cs_insn ins)
 				Elf64_Addr imm_addr = get_immAddr(ins, movabs_imm_offset);
 				rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
 				//dlog("imm address: %p", imm_addr);
-				PrintDebugInfo("ss rewritting done.\n");
+				//PrintDebugInfo("ss rewritting done.\n");
 			}
 		}
 	}
