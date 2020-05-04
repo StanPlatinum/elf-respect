@@ -766,6 +766,27 @@ int check_rewrite_longfunc_call(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_
 	return 0;
 }
 
+int quick_rewrite_ss(csh ud, cs_mode, cs_insn ins)
+{
+	//Weijie: start checking...
+	if (strncmp("movabs", ins.mnemonic, 6) == 0) {
+		cs_x86_op op2 = (ins.detail)->x86.operands[1];
+		if ((int)op2.type == X86_OP_IMM) {
+			//Weijie: getting the second oprand and see if it is 0x1/2fffffffffffffff
+			//PrintDebugInfo("The last insn is accessing imm, the second op is: %llx\n", op2.imm);
+			if (op2.imm == 0x2fffffffffffffff) {
+				//Weijie: do the rewritting of shadow stack base pointer
+				Elf64_Addr movabs_imm_offset = 2; //10-8=2;
+				Elf64_Addr imm_addr = get_immAddr(ins, movabs_imm_offset);
+				rewrite_imm(imm_addr, (Elf64_Addr)&__ss_start);
+				//dlog("imm address: %p", imm_addr);
+				//PrintDebugInfo("ss rewritting done.\n");
+			}
+		}
+	}
+
+}
+
 /* Weijie: if the return value is 1, then it means that this insn[j] is a return and it's safe */
 int check_rewrite_longfunc_ret(csh ud, cs_mode, cs_insn *ins, cs_insn *forward_ins)
 {
@@ -1062,6 +1083,9 @@ int cs_rewrite_entry(unsigned char* buf_test, Elf64_Xword textSize, Elf64_Addr t
 		}
 
 		for (j = 0; j < count; j++) {
+
+			quick_rewrite_ss(handle, CS_MODE_64, insn[j]);
+
 			//Weijie: comment for benchmarking
 			//PrintDebugInfo("0x%"PRIx64":\t%s\t\t%s\n", insn[j].address, insn[j].mnemonic, insn[j].op_str);
 			//Weijie: maintain an insn set including more than 8?

@@ -20,7 +20,7 @@ CC4TSX = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno
 CC4HR = $(LLVM_PATH)/build/bin/clang -fPIC -fno-asynchronous-unwind-tables -fno-addrsig -mstackrealign -Xclang -load -Xclang $(CFIHello_So_PATH)
 
 #TARGET_NAME = fasta
-TARGET_NAME = nw
+#TARGET_NAME = nw
 #TARGET_NAME = foo2
 #TARGET_NAME = bm_malloc_and_sort
 #TARGET_NAME = bm_malloc_magic
@@ -35,7 +35,7 @@ TARGET_NAME = nw
 #TARGET_NAME = misc
 
 #TARGET_NAME = file_io_test
-#TARGET_NAME = credit_score
+TARGET_NAME = credit_score
 
 SSL_SERVER = ssl_server
 
@@ -60,6 +60,7 @@ LIBGCC = libgcc/ashldi3.o libgcc/ashrdi3.o libgcc/__divide_error.o  \
 		 libgcc/multi3.o libgcc/__negti2.o libgcc/__udivdi3.o       \
 		 libgcc/__udivmoddi4.o libgcc/__udivmodti4.o                \
 		 libgcc/__udivti3.o libgcc/__umoddi3.o libgcc/__umodti3.o
+
 
 all: $(MUSL_LIBC) $(TARGET_NAME).bin 
 	mv $(TARGET_NAME).bin ../program
@@ -114,9 +115,10 @@ https: $(SSL_SERVER) $(MUSL_LIBC) $(LIBSSL) CFICheck.o
 	@echo "Build successfully!"
 
 #$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o
-$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o telib_t.o
+$(TARGET_NAME).bin: objs/libc_targetprogram.a tools/linker $(OCALL_OBJS) $(ASM_OBJS) CFICheck.o transactionBegin.o transactionEndBegin.o telib_t.o
 	cp CFICheck.o objs/
 	cp transactionBegin.o objs/
+	cp transactionEndBegin.o objs/
 	#cp telib_t.o objs/
 	cp malloc.o objs/
 	cp lib/*.o objs
@@ -169,6 +171,12 @@ CFICheck.o: CFICheck.c
 transactionBegin.o: transactionBegin.c rtm.h
 	$(CC4AS) -c $< -o $@
 	#$(CC4TSX) -c $< -o $@
+
+
+transactionEndBegin.o: transactionEndBegin.c rtm.h
+	$(CC4AS) -c $< -o $@
+	#$(CC4TSX) -c $< -o $@
+
 
 telib_t.o: telib_t.c
 	$(CC4AS) -I$(SGX_COM_INC) -c $< -o $@
