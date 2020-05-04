@@ -447,6 +447,9 @@ void PrintDebugInfo(const char *fmt, ...)
 //Weijie: add iter disasm support
 #include "iterdis_checker.cpp"
 
+//Weijie: add RA support
+//#include "ra.cpp"
+
 /****************************** 1. rewriter part ******************************/
 
 void cpy_imm2addr32(Elf64_Addr *dst, uint32_t src)
