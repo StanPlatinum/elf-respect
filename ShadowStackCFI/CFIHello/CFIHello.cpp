@@ -40,8 +40,8 @@ namespace {
     int k = 20;
     bool needCFIInsert = true;
     bool needExitInsert = true;
-    bool needTsxInsert = true;
-    bool needHyperraceInsert = false;
+    bool needTsxInsert = false;
+    bool needHyperraceInsert = true;
   public:
     static char ID; // Pass identification, rep lacement for typeid
     CFIHello() : ModulePass(ID) {}

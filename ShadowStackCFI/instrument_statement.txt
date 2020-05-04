@@ -50,7 +50,6 @@
     在mov xxx, [reg+imm]之前：
         pushq   %rbx
         pushq   %rax
-        pushfq
         leaq    [reg+imm], %rax
         movq    $0x3FFFFFFFFFFFFFFF, %rbx
         cmpq    %rbx, %rax
@@ -58,12 +57,10 @@
         movq    $0x4FFFFFFFFFFFFFFF, %rbx
         cmpq    %rbx, %rax
         jb      exit_label
-        popfq
         popq    %rax
         popq    %rbx
     在函数末尾进行如下插桩(即ret之后)，此处插桩目的是进行exit系统调用：
     exit_label:
-        popfq
         popq    %rax
         popq    %rbx
         movl    $-1, %edi
@@ -112,7 +109,7 @@ TSX插桩
         movq	%r14, %rax
         sahf
         movq	%r15, %rax
-    分支指令前(包括函数调用和跳转)：
+    分支指令前后(包括函数调用和跳转)：
         movq	%rax, %r15
         lahf
         movq	%rax, %r14
@@ -121,24 +118,7 @@ TSX插桩
         sahf
         movq	%r15, %rax
          注：wrapper函数无此插桩，因mov检查、rsp检查、ShadowStack和CFICheck造成的分支无此插桩
-    分支指令后(包括函数调用和跳转)：
-        movq	%rax, %r15
-        lahf
-        movq	%rax, %r14
-        callq	transactionEndBegin
-        movq	%r14, %rax
-        sahf
-        movq	%r15, %rax
-         注：wrapper函数无此插桩，因mov检查、rsp检查、SadowStack和CFICheck造成的分支无此插桩
-    BasicBlock入口处(即BasicBlock的第一个指令)：
-        movq	%rax, %r15
-        lahf
-        movq	%rax, %r14
-        callq	transactionEndBegin
-        movq	%r14, %rax
-        sahf
-        movq	%r15, %rax
-    BasicBlock出口处(即BasicBlock的最后一个指令)：
+    BasicBlock出入口处：
         movq	%rax, %r15
         lahf
         movq	%rax, %r14

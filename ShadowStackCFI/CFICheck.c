@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "rtm.h"
 #define TSX
+#undef TSX
 
 void CFICheck(unsigned long long target)
 {

@@ -163,7 +163,7 @@ namespace {
         bool needShadowStackInsert = true; //用于设置是否需要进行ShadowStack插桩
         bool needRspInsert = true; //用于设置是否需要进行rsp检查插桩
         bool needMovInsert = true; //用于设置是否需要进行mov检查插桩
-        bool needTsxInsert = true; //用于设置是否需要进行tsx插桩
+        bool needTsxInsert = false; //用于设置是否需要进行tsx插桩
         bool needSSLeaveTsx = false;    //用于设置SS是否需要跳出tsx
         string mainFunName = "enclave_main";
 
@@ -912,16 +912,16 @@ namespace {
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x3FFFFFFFFFFFFFFF);
                             //cmpq %rbx, %rax
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RAX).addReg(X86::RBX);
-                            //jae trap
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(3);
+                            //ja trap
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
                             
                             //检查上界，如果rbx<rax，则exit
                             //movq $0x4FFFFFFFFFFFFFFF, %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RBX).addImm(0x4FFFFFFFFFFFFFFF);
                             //cmpq %rax, %rbx
                             BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(X86::RBX).addReg(X86::RAX);
-                            //jbe trap
-                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(6);
+                            //jb trap
+                            BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
 
                             
                             //popfq
@@ -960,6 +960,8 @@ namespace {
 
             MachineBasicBlock* Trap = MF.CreateMachineBasicBlock();
             Trap->setLabelMustBeEmitted();
+            //popfq
+            //BuildMI(Trap, DL, TII->get(X86::POPF64));
             //popq %rax
             BuildMI(Trap, DL, TII->get(X86::POP64r)).addReg(X86::RAX);
             //movq $-1, %edi
@@ -998,16 +1000,16 @@ namespace {
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RAX).addImm(0x5FFFFFFFFFFFFFFF);
                     //cmpq %rax, %rsp
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(checkReg).addReg(X86::RAX);
-                    //jae trap
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(3);
+                    //ja trap
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(7);
 
                     //检查上界，如果imm<rsp，则exit
                     //movq $0x6FFFFFFFFFFFFFFF, %rax
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::MOV64ri)).addReg(X86::RAX).addImm(0x6FFFFFFFFFFFFFFF);
                     //cmpq %rax, %rsp
                     BuildMI(*MBBI, *MII, DL, TII->get(X86::CMP64rr)).addReg(checkReg).addReg(X86::RAX);
-                    //jbe trap
-                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(6);
+                    //jb trap
+                    BuildMI(*MBBI, *MII, DL, TII->get(X86::JCC_1)).addMBB(Trap).addImm(2);
 
                     // movq	%r15, %rax
                     //BuildMI(*MBBI, *MII, DL, TII->get(MOV64rr)).addReg(X86::RAX).addReg(X86::R15);
