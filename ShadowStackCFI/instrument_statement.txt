@@ -95,35 +95,72 @@
         callq   exit
 
 TSX插桩
-    函数入口处(即函数的第一个指令)：
-        xend
-        movq	%r15, %rax
-         注：enclave_main函数无此插桩
+    函数入口处：
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+         注：enclave_main函数会将transactionEndBegin改为transactionBegin
     函数出口处(即ret之前)：
         movq	%rax, %r15
-        call    transactionBegin
-         注：enclave_main函数无此插桩
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
     分支指令前(包括函数调用和跳转)：
         movq	%rax, %r15
-        call transactionBegin
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
          注：wrapper函数无此插桩，因mov检查、rsp检查、ShadowStack和CFICheck造成的分支无此插桩
     分支指令后(包括函数调用和跳转)：
-        xend
+        movq	%rax, %r15
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
         movq	%r15, %rax
          注：wrapper函数无此插桩，因mov检查、rsp检查、SadowStack和CFICheck造成的分支无此插桩
     BasicBlock入口处(即BasicBlock的第一个指令)：
-        xend
+        movq	%rax, %r15
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
         movq	%r15, %rax
     BasicBlock出口处(即BasicBlock的最后一个指令)：
         movq	%rax, %r15
-        call transactionBegin
+        lahf
+        movq	%rax, %r14
+        callq	transactionEndBegin
+        movq	%r14, %rax
+        sahf
+        movq	%r15, %rax
          注：若BasicBlock最后的指令是ret，则无此插桩
     关于wrapper函数
         名称：若原函数名称为funA，则其对应的wrapper函数名称为wrapper_by_compiler_funA
         插桩：wrapper函数仅有函数入口和函数出口的TSX插桩
+        wrapper函数入口处插桩：
+            xend
+        wrapper函数出口处插桩：
+            movq	%rax, %r15
+            lahf
+            movq	%rax, %r14
+            callq	transactionBegin
+            movq	%r14, %rax
+            sahf
+            movq	%r15, %rax
     关于插桩冲突
         TSX与ShadowStack的冲突
-            函数入口处，TSX插桩在ShadowStack插桩之前，即：
+            函数入口处，ShadowStack插桩将改为：
                 xend
                 movq	%r15, %rax
                 movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
@@ -132,9 +169,15 @@ TSX插桩
                 addq	%r10, %r11
                 movq	(%rsp), %r10
                 movq	%r10, (%r11)
-            函数出口处，TSX插桩在ShadowStack插桩之前，即：
                 movq	%rax, %r15
+                lahf
+                movq	%rax, %r14
                 callq	transactionBegin
+                movq	%r14, %rax
+                sahf
+                movq	%r15, %rax
+            函数出口处，ShadowStack插桩将改为：
+                xend
                 movabsq	$3458764513820540927, %r11 # imm = 0x2FFFFFFFFFFFFFFF
                 movq	(%r11), %r10
                 addq	%r11, %r10
@@ -142,13 +185,16 @@ TSX插桩
                 movq	(%r10), %r11
                 cmpq	%r11, (%rsp)
                 jne	.LBB0_4
-        TSX与indirect call的冲突
-            TSX插桩在indirect call插桩之后，即在callq *%reg之前：
-                movq	%reg, %rdi
-                callq	CFICheck
                 movq	%rax, %r15
-	            callq	transactionBegin
+                lahf
+                movq	%rax, %r14
+                callq	transactionBegin
+                movq	%r14, %rax
+                sahf
+                movq	%r15, %rax
+        TSX与CFICheck的冲突
+            在CFICheck.c中跳出TSX
         其它
             对mov检查、rsp检查和ShadowStack插桩造成的分支指令不作TSX插桩
-            CFICheck函数和transactionBegin函数本身不作TSX插桩，对它们的调用也不作TSX插桩
-            目前CFIChec和所有wrapper函数都有完整的mov检查、rsp检查和ShadowStack插桩，transactionBegin有rsp检查和ShadowStack插桩
+            CFICheck函数和transactionBegin、transactionEndBegin函数本身不作TSX插桩，对它们的调用也不作TSX插桩
+            目前CFICheck和所有wrapper函数都有完整的mov检查、rsp检查和ShadowStack插桩，transactionBegin和transactionEndBegin无插桩
