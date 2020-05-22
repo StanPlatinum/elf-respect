@@ -38,10 +38,10 @@ namespace {
   class CFIHello : public ModulePass {
     map<string, Function*> wrapperMap;
     int k = 20;
-    bool needCFIInsert = true;
+    bool needCFIInsert = false;
     bool needExitInsert = true;
     bool needTsxInsert = false;
-    bool needHyperraceInsert = true;
+    bool needHyperraceInsert = false;
   public:
     static char ID; // Pass identification, rep lacement for typeid
     CFIHello() : ModulePass(ID) {}

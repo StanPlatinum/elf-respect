@@ -159,10 +159,12 @@ namespace {
         bool hasTransactionBegin = false;
         bool hasTransactionEndBegin = false;
         bool entryLabelPrinted = false;
-        bool needCFIInsert = true;  //用于设置是否需要进行CFICheck插桩
-        bool needShadowStackInsert = true; //用于设置是否需要进行ShadowStack插桩
-        bool needRspInsert = true; //用于设置是否需要进行rsp检查插桩
+        bool needCFIInsert = false;  //用于设置是否需要进行CFICheck插桩
+        bool needShadowStackInsert = false; //用于设置是否需要进行ShadowStack插桩
+        bool needRspInsert = false; //用于设置是否需要进行rsp检查插桩
         bool needMovInsert = true; //用于设置是否需要进行mov检查插桩
+        bool needWriteInsert = true;
+        bool needReadInsert = true;
         bool needTsxInsert = false; //用于设置是否需要进行tsx插桩
         bool needSSLeaveTsx = false;    //用于设置SS是否需要跳出tsx
         string mainFunName = "enclave_main";
@@ -859,7 +861,16 @@ namespace {
                 for (auto MII = (*MBBI).begin(); MII != (*MBBI).end(); MII++)
                 {
                     MachineInstr &MI = *MII;
-                    if (MI.mayStore() == false)
+                    bool b;
+                    if (needWriteInsert == true && needReadInsert = false)
+                        b = MI.mayStore();
+                    if (needWriteInsert == false && needReadInsert = true)
+                        b = MI.mayLoad();
+                    if (needWriteInsert == false && needReadInsert = false)
+                        b = false;
+                    if (needWriteInsert == true && needReadInsert = true)
+                        b = MI.mayStore() || MI.mayLoad();
+                    if (b == false)
                     {
                         continue;
                     }
