@@ -154,19 +154,28 @@ namespace {
         const GlobalValue* CFICheckGV;
         const GlobalValue* transactionBeginGV;
         const GlobalValue* transactionEndBeginGV;
+        const GlobalValue* needCFIInsertGV;
+        const GlobalValue* needShadowStackInsertGV;
+        const GlobalValue* needRspInsertGV;
+        const GlobalValue* needMovInsertGV;
+        const GlobalValue* needTsxInsertGV;
+        const GlobalValue* needWriteInsertGV;
+        const GlobalValue* needReadInsertGV;
+        const GlobalValue* needSSLeaveTsxGV;
+        bool hasGV = false;
         bool hasExit = false;
         bool hasCFICheck = false;
         bool hasTransactionBegin = false;
         bool hasTransactionEndBegin = false;
         bool entryLabelPrinted = false;
-        bool needCFIInsert = false;  //用于设置是否需要进行CFICheck插桩
-        bool needShadowStackInsert = false; //用于设置是否需要进行ShadowStack插桩
-        bool needRspInsert = false; //用于设置是否需要进行rsp检查插桩
-        bool needMovInsert = true; //用于设置是否需要进行mov检查插桩
-        bool needWriteInsert = true;
-        bool needReadInsert = true;
-        bool needTsxInsert = false; //用于设置是否需要进行tsx插桩
-        bool needSSLeaveTsx = false;    //用于设置SS是否需要跳出tsx
+        bool needCFIInsert = false;
+        bool needShadowStackInsert = false;
+        bool needRspInsert = false;
+        bool needMovInsert = false;
+        bool needTsxInsert = false;
+        bool needWriteInsert = false;
+        bool needReadInsert = false;
+        bool needSSLeaveTsx = false;
         string mainFunName = "enclave_main";
 
     public:
@@ -420,13 +429,9 @@ namespace {
         }
         
         //在函数入口进行ShadowStack插桩
-        void insertSSEntry(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL, bool hasTransaction)
+        void insertSSEntry(const TargetInstrInfo *TII, MachineBasicBlock &MBB, const DebugLoc &DL)
         { 
             auto MII = MBB.begin();
-            if (hasTransaction == true)
-            {
-                //MII++;MII++;MII++;MII++;MII++;MII++;MII++;
-            }
             if (needSSLeaveTsx)
             {
                 //xend
@@ -450,7 +455,6 @@ namespace {
                 //call transactionBegin
                 inserTransactionCall(MBB, MI, transactionBeginGV);
             }
-            
         }
 
         //在函数出口进行ShadowStack插桩
@@ -601,14 +605,8 @@ namespace {
         //插入shadowstack指令，目前尚未添加ret地址更改后的处理，ss首地址写为0x2FFFFFFFFFFFFFFF
         bool insertShadowStackInst(MachineFunction &MF, bool needTsx)
         {
-            bool hasTransactionEntry = false;
             if (!checkSSMF(MF))
                 return false;
-            
-            if ((MF.getFunction().getName().str().find(mainFunName) == string::npos) && needTsx && hasTransactionBegin)
-            {
-                hasTransactionEntry = true;
-            }
 
             // MCPhysReg SimpleMFReg = checkSimpleMF(MF);
             // const bool SimpleMFRegBool = (SimpleMFReg != X86::NoRegister);
@@ -624,7 +622,7 @@ namespace {
             // if (SimpleMFRegBool)
             //     insertSSEntrySimple(TII, MBB, DL, SimpleMFReg);
             // else
-            insertSSEntry(TII, MBB, DL, hasTransactionEntry);
+            insertSSEntry(TII, MBB, DL);
 
             MachineBasicBlock *Trap = nullptr;
             for (auto &MBB : MF)
@@ -862,13 +860,13 @@ namespace {
                 {
                     MachineInstr &MI = *MII;
                     bool b;
-                    if (needWriteInsert == true && needReadInsert = false)
+                    if (needWriteInsert == true && needReadInsert == false)
                         b = MI.mayStore();
-                    if (needWriteInsert == false && needReadInsert = true)
+                    if (needWriteInsert == false && needReadInsert == true)
                         b = MI.mayLoad();
-                    if (needWriteInsert == false && needReadInsert = false)
+                    if (needWriteInsert == false && needReadInsert == false)
                         b = false;
-                    if (needWriteInsert == true && needReadInsert = true)
+                    if (needWriteInsert == true && needReadInsert == true)
                         b = MI.mayStore() || MI.mayLoad();
                     if (b == false)
                     {
@@ -1227,42 +1225,42 @@ namespace {
         }
         
         //获取CFICheck和exit函数的GlobaValue指针
-        void findCFICheckExitTrsactionBegin(const Module &M)
+        void findGV(const Module &M)
         {
-            for (auto FI = M.begin(); FI != M.end(); FI++)
-                {
-                    if (hasCFICheck == false && FI->getName().str().find("CFICheck") != string::npos)
-                    {
-                        const Function &F = *FI;
-                        CFICheckGV = &F;
-                        hasCFICheck = true;
-                        outs() << "Found CFICheck\n";
-                    }
-                    else if (hasExit == false && FI->getName().str().find("exit") != string::npos)
-                    {
-                        const Function &F = *FI;
-                        exitGV = &F;
-                        hasExit = true;
-                        outs() << "Found exit\n";
-                    }
-                    else if (hasTransactionBegin == false && FI->getName().str().find("transactionBegin") != string::npos)
-                    {
-                        const Function &F = *FI;
-                        transactionBeginGV = &F;
-                        hasTransactionBegin = true;
-                        outs() << "Found transactionBegin\n";
-                    }
-                    else if (hasTransactionEndBegin == false && FI->getName().str().find("transactionEndBegin") != string::npos)
-                    {
-                        const Function &F = *FI;
-                        transactionEndBeginGV = &F;
-                        hasTransactionEndBegin = true;
-                        outs() << "Found transactionEndBegin\n";
-                    }
-                }
+            exitGV = M.getNamedValue("exit");
+            CFICheckGV = M.getNamedValue("CFICheck");
+            transactionBeginGV = M.getNamedValue("transactionBegin");
+            transactionEndBeginGV = M.getNamedValue("transactionEndBegin");
+            needCFIInsertGV = M.getNamedValue("needCFIInsertFun");
+            needShadowStackInsertGV = M.getNamedValue("needShadowStackInsertFun");
+            needRspInsertGV = M.getNamedValue("needRspInsertFun");
+            needMovInsertGV = M.getNamedValue("needMovInsertFun");
+            needTsxInsertGV = M.getNamedValue("needTsxInsertFun");
+            needWriteInsertGV = M.getNamedValue("needWriteInsertFun");
+            needReadInsertGV = M.getNamedValue("needReadInsertFun");
+            needSSLeaveTsxGV = M.getNamedValue("needSSLeaveTsxFun");
+            hasExit = (exitGV != NULL);
+            hasCFICheck = (CFICheckGV != NULL);
+            hasTransactionBegin = (transactionBeginGV != NULL);
+            hasTransactionEndBegin = (transactionEndBeginGV != NULL);
+            needCFIInsert = (needCFIInsertGV != NULL);
+            needShadowStackInsert = (needShadowStackInsertGV != NULL);
+            needRspInsert = (needRspInsertGV != NULL);
+            needMovInsert = (needMovInsertGV != NULL);
+            needTsxInsert = (needTsxInsertGV != NULL);
+            needWriteInsert = (needWriteInsertGV != NULL);
+            needReadInsert = (needReadInsertGV != NULL);
+            needSSLeaveTsx = (needSSLeaveTsxGV != NULL);
+            hasGV = true;
         }
         
         virtual bool runOnMachineFunction(MachineFunction &MF) {
+            if (hasGV == false)
+            {
+                const Function &FF = MF.getFunction();
+                const Module &M = *FF.getParent();
+                findGV(M);
+            }
             bool bm = false, bs = false, bc = false, br = false, bt = false;
             bool needCFI = false, needShadowStack = false, needTsx = false, needRsp = false, needMov = false, needExit = false;
             string funName = MF.getFunction().getName().str();
@@ -1278,13 +1276,6 @@ namespace {
             needRsp = needRsp && needRspInsert;
             needExit = needShadowStack || needRsp || needMov;
             outs() << MF.getFunction().getParent()->getName() << "\n";
-
-            if ((hasExit == false && needExit == true) || (hasCFICheck == false && needCFI == true) || (hasTransactionBegin == false && needTsx == true))
-            {
-                const Function &FF = MF.getFunction();
-                const Module &M = *FF.getParent();
-                findCFICheckExitTrsactionBegin(M);
-            }
 
             if (needCFI == true && entryLabelPrinted == false)
             {

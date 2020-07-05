@@ -37,11 +37,16 @@ using namespace std;
 namespace {
   class CFIHello : public ModulePass {
     map<string, Function*> wrapperMap;
-    int k = 20;
-    bool needCFIInsert = false;
-    bool needExitInsert = true;
-    bool needTsxInsert = false;
-    bool needHyperraceInsert = false;
+    int k = 20; //hypperrace最大代码段
+    bool needCFIInsert = true;  //用于设置是否需要进行CFICheck插桩
+    bool needShadowStackInsert = true; //用于设置是否需要进行ShadowStack插桩
+    bool needRspInsert = true; //用于设置是否需要进行rsp检查插桩
+    bool needMovInsert = true; //用于设置是否需要进行store或load检查插桩
+    bool needHyperraceInsert = true; //用于设置是否需要进行hyperrace插桩
+    bool needTsxInsert = false; //用于设置是否需要进行tsx插桩，一般为false
+    bool needWriteInsert = true; //用于设置是否需要进行store检查插桩，一般为true
+    bool needReadInsert = false; //用于设置是否需要进行load检查插桩，一般为false
+    bool needSSLeaveTsx = false; //用于设置SS是否需要跳出tsx，一般为false
   public:
     static char ID; // Pass identification, rep lacement for typeid
     CFIHello() : ModulePass(ID) {}
@@ -449,7 +454,7 @@ namespace {
     bool runOnModule(Module &M) override {
         bool needCFI = false, needExit = false, needTsx = false, needHyperrace = false;
         needCFI = needCFIInsert;
-        needExit = needExitInsert;
+        needExit = needShadowStackInsert || needRspInsert || needMovInsert;
         needTsx = needTsxInsert && (!(M.getName().str() == "CFICheck.c" || M.getName().str() == "transactionBegin.c"));
         needHyperrace = needHyperraceInsert;
         LLVMContext &ctx = M.getContext();
@@ -460,10 +465,12 @@ namespace {
             callWrapper(M);
             FunctionCallee funDeclareTransactionBegin = M.getOrInsertFunction("transactionBegin", Type::getVoidTy(ctx));
             FunctionCallee funDeclareTransactionEndBegin = M.getOrInsertFunction("transactionEndBegin", Type::getVoidTy(ctx));
+            FunctionCallee funDeclareNeedTSXInsertFun = M.getOrInsertFunction("needTsxInsertFun", Type::getVoidTy(ctx));
         }
         if (needCFI == true)
         {
             FunctionCallee funDeclareCFICheck = M.getOrInsertFunction("CFICheck", Type::getVoidTy(ctx), Type::getInt64Ty(ctx));
+            FunctionCallee funDeclareNeedCFICheckInsertFun = M.getOrInsertFunction("needCFIInsertFun", Type::getVoidTy(ctx));
         }
         if (needExit == true)
         {
@@ -472,6 +479,30 @@ namespace {
         if (needHyperrace == true)
         {
             hyperrace(M);
+        }
+        if (needShadowStackInsert)
+        {
+            FunctionCallee funDeclareNeedShadowStackInsertFun = M.getOrInsertFunction("needShadowStackInsertFun", Type::getVoidTy(ctx));
+        }
+        if (needRspInsert)
+        {
+            FunctionCallee funDeclareNeedRspInsertFun = M.getOrInsertFunction("needRspInsertFun", Type::getVoidTy(ctx));
+        }
+        if (needMovInsert)
+        {
+            FunctionCallee funDeclareNeedMovInsertFun = M.getOrInsertFunction("needMovInsertFun", Type::getVoidTy(ctx));
+        }
+        if (needWriteInsert)
+        {
+            FunctionCallee funDeclareNeedWriteInsertFun = M.getOrInsertFunction("needWriteInsertFun", Type::getVoidTy(ctx));
+        }
+        if (needReadInsert)
+        {
+            FunctionCallee funDeclareNeedReadInsertFun = M.getOrInsertFunction("needReadInsertFun", Type::getVoidTy(ctx));
+        }
+        if (needSSLeaveTsx)
+        {
+            FunctionCallee funDeclareNeedSSLeaveTsxFun = M.getOrInsertFunction("needSSLeaveTsxFun", Type::getVoidTy(ctx));
         }
         return true;
     }
