@@ -862,13 +862,13 @@ namespace {
                 {
                     MachineInstr &MI = *MII;
                     bool b;
-                    if (needWriteInsert == true && needReadInsert = false)
+                    if (needWriteInsert == true && needReadInsert == false)
                         b = MI.mayStore();
-                    if (needWriteInsert == false && needReadInsert = true)
+                    if (needWriteInsert == false && needReadInsert == true)
                         b = MI.mayLoad();
-                    if (needWriteInsert == false && needReadInsert = false)
+                    if (needWriteInsert == false && needReadInsert == false)
                         b = false;
-                    if (needWriteInsert == true && needReadInsert = true)
+                    if (needWriteInsert == true && needReadInsert == true)
                         b = MI.mayStore() || MI.mayLoad();
                     if (b == false)
                     {

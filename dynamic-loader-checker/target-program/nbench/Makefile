@@ -19,10 +19,12 @@ default: nbench
 # You should leave -static in the CFLAGS so that your sysinfo can be
 # compiled into the executable.
 
-LLVM_PATH = /home/weijliu/llvm-mc
+#LLVM_PATH = /home/weijliu/llvm-mc
+#LLVM_PATH = /home/liuweijie/llvm-mc
 #LLVM_PATH = /home/weijliu/proofGen4store
 #LLVM_PATH = /home/weijliu/proofGen4memwt
 #LLVM_PATH = /home/weijliu/proofGen4libc
+LLVM_PATH = /home/liuweijie/proofGen
 #LLVM_PATH = /home/weijliu/proofGen
 
 CC = $(LLVM_PATH)/build/bin/clang
